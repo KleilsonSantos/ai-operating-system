@@ -14,7 +14,7 @@
 
 Validar arquitetura e fluxos do AIOS.
 
-- [ ] Intent Engine (interpretar pedido)
+- [x] Intent Engine (interpretar pedido) — #5
 - [ ] Policy Engine (regras fixas da plataforma)
 - [ ] Context Engine (repo + docs)
 - [ ] Orchestration + Workflow (escolher agentes)

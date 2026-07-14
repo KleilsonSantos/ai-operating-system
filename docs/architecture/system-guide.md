@@ -30,7 +30,13 @@ flowchart TD
 | Engine API | Interno | Eventos tipados entre engines |
 | Plugin API | Agentes | Input de contexto + policies → artefato |
 
-Detalhamento de schemas chega com o scaffold de código (próximo marco).
+### Intent Engine (`@aios/intent`) — issue #5
+
+`resolveIntent(raw)` → `{ raw, kind, confidence, signals }`.
+
+Kinds Fase 1: `analyze.project` · `explain.code` · `review.change` · `unknown`.
+
+Classificação heurística (sem LLM). Detalhe: [`engines/intent/README.md`](../../engines/intent/README.md).
 
 ## O que Fase 1 NÃO inclui
 

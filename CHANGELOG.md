@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- ✨ Intent Engine: classificação heurística `analyze` / `explain` / `review` + testes Vitest (#5)
+
 ## [0.1.1] - 2026-07-14
 
 ### Added
