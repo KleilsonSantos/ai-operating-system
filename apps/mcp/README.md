@@ -1,37 +1,22 @@
 # @aios/mcp — MCP server (Nível 2)
 
-Liga o **Agent do Cursor** ao runtime AIOS (`runPipeline`, policies).
+Liga o **Agent do Cursor** ao runtime AIOS (`runPipeline`, policies, workspaces).
 
 ## Tools
 
 | Tool | Papel |
 | --- | --- |
 | `aios_contract_version` | Versão do contrato (`1`) |
+| `aios_list_workspaces` | Registry multi-repo (#43) |
 | `aios_load_policies` | Carrega policies + constraints |
 | `aios_run_pipeline` | Núcleo completo → `PipelineResponse` |
 
 ## Cursor / MCP config
 
-No Cursor MCP settings (ou `.cursor/mcp.json` se suportado no projeto), algo como:
+Preferir **caminho absoluto do `node`** (GUI do Cursor costuma não herdar `nvm`/`pnpm`):
 
-```json
-{
-  "mcpServers": {
-    "aios": {
-      "command": "pnpm",
-      "args": ["--filter", "@aios/mcp", "exec", "node", "--experimental-strip-types", "./src/index.ts"],
-      "cwd": "/ABS/PATH/TO/ai-operating-system"
-    }
-  }
-}
-```
+Ver [`.cursor/mcp.json.example`](../../.cursor/mcp.json.example). Defina `AIOS_HOME` para o monorepo AIOS.
 
-Ou, a partir de `apps/mcp`:
+Variáveis: `AIOS_HOME`, `AIOS_REPO`, `AIOS_WORKSPACE`, `AIOS_SCOPE`, `AIOS_POLICIES_PATH`, `AIOS_WORKSPACES_PATH`.
 
-```bash
-pnpm --filter @aios/mcp dev
-```
-
-Variáveis: `AIOS_REPO`, `AIOS_SCOPE`, `AIOS_POLICIES_PATH`.
-
-Issue #38 · guia [cursor-chat-bridge](../../docs/guides/cursor-chat-bridge.md) · ADR-0003.
+Issue #38 · #43 · guia [cursor-chat-bridge](../../docs/guides/cursor-chat-bridge.md) · ADR-0003 · ADR-0004.

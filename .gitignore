@@ -38,6 +38,8 @@ coverage
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+# Local MCP (path absoluto da máquina; use mcp.json.example)
+.cursor/mcp.json
 .idea
 .DS_Store
 *.suo

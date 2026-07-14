@@ -4,6 +4,12 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-07-14
+
+### Added
+
+- 🗂️ Multi-repo onboarding: `@aios/workspace`, `workspaces/aios.workspaces.json`, ADR-0004, MCP `aios_list_workspaces` (#43)
+
 ## [0.7.0] - 2026-07-14
 
 ### Added

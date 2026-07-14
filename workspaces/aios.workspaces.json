@@ -1,0 +1,10 @@
+{
+  "workspaces": [
+    {
+      "id": "aios",
+      "name": "AI Operating System",
+      "path": ".",
+      "default": true
+    }
+  ]
+}
