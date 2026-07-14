@@ -80,6 +80,42 @@ export type WorkspaceRegistry = {
   workspaces: WorkspaceEntry[]
 }
 
+/** Knowledge Graph (Fase 2 · #47). */
+export type KnowledgeNodeKind =
+  | 'project'
+  | 'module'
+  | 'package'
+  | 'engine'
+  | 'doc'
+  | 'policy'
+  | 'workspace'
+  | 'infra'
+  | 'api'
+  | 'database'
+
+export type KnowledgeEdgeKind = 'contains' | 'depends_on' | 'documents'
+
+export type KnowledgeNode = {
+  id: string
+  kind: KnowledgeNodeKind
+  label: string
+  path?: string
+  meta?: Record<string, string>
+}
+
+export type KnowledgeEdge = {
+  from: string
+  to: string
+  kind: KnowledgeEdgeKind
+}
+
+export type KnowledgeGraph = {
+  repoPath?: string
+  nodes: KnowledgeNode[]
+  edges: KnowledgeEdge[]
+  signals: string[]
+}
+
 /** Pedido do integrador → núcleo AIOS. */
 export type PipelineRequest = {
   /** Texto livre do usuário (intent raw) */
@@ -121,6 +157,13 @@ export type PipelineResponse = {
     id: string
     name?: string
     registryPath?: string
+  }
+  /** Resumo do Knowledge Graph heurístico (#47) */
+  knowledge?: {
+    nodeCount: number
+    edgeCount: number
+    kinds: Record<string, number>
+    signals: string[]
   }
   workflow: {
     ran: string[]
