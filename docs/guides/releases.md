@@ -18,6 +18,7 @@ Exceções que **não** forçam bump sozinhas: `chore`, `docs`, `ci`, `test`, `s
 
 | Tag | Descrição |
 | --- | --- |
+| `v0.5.0` | Orchestration + Decision + plugins + Quality Gate (#8) |
 | `v0.4.0` | Context Engine (#7) + ponte Cursor Chat (policies → Project Rules) |
 | `v0.3.0` | Policy Engine — carga JSON + injeção no workflow (#6) |
 | `v0.2.0` | Intent Engine — classificação heurística (#5) |
