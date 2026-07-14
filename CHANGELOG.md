@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- ✨ Orchestration + Decision + plugins heurísticos + Quality Gate end-to-end (#8)
+
 ## [0.4.0] - 2026-07-14
 
 ### Added

@@ -17,10 +17,10 @@ Validar arquitetura e fluxos do AIOS.
 - [x] Intent Engine (interpretar pedido) — #5
 - [x] Policy Engine (regras fixas da plataforma) — #6
 - [x] Context Engine (repo + docs) — #7
-- [ ] Orchestration + Workflow (escolher agentes)
-- [ ] Agentes plugin: Architecture, AppSec, Docs, QA
-- [ ] Decision Engine (precisa este agente?)
-- [ ] Quality Gate (antes da resposta sair)
+- [x] Orchestration + Workflow (escolher agentes) — #8
+- [x] Agentes plugin: Architecture, AppSec, Docs, QA — #8
+- [x] Decision Engine (precisa este agente?) — #8
+- [x] Quality Gate (antes da resposta sair) — #8
 - [ ] CLI / API mínima para consumir o núcleo
 
 ## Fase 2 — Multi-repositório (`v0.y.0`)

@@ -114,6 +114,9 @@ importers:
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@26.1.1)
 
   engines/intent:
     dependencies:
@@ -189,6 +192,9 @@ importers:
       '@aios/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@aios/decision':
+        specifier: workspace:*
+        version: link:../decision
       '@aios/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -196,6 +202,9 @@ importers:
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@26.1.1)
 
   packages/core:
     dependencies:
