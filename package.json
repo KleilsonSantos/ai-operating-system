@@ -1,7 +1,7 @@
 {
   "name": "ai-operating-system",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "AI Operating System \u2014 plataforma de governan\u00e7a para IA aplicada ao desenvolvimento de software",
   "license": "MIT",
   "packageManager": "pnpm@11.5.2",
@@ -13,7 +13,8 @@
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "sync:cursor-rules": "node scripts/sync-cursor-rules-from-policies.mjs"
   },
   "devDependencies": {
     "turbo": "^2.5.4",

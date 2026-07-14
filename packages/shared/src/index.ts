@@ -24,6 +24,28 @@ export type PolicyRule = {
   severity: 'must' | 'should' | 'may'
 }
 
+/** Snippet recuperado do repositório (Context Engine — #7). */
+export type ContextSnippetKind = 'doc' | 'code' | 'manifest'
+
+export type ContextSnippet = {
+  /** Caminho relativo à raiz do repo */
+  path: string
+  kind: ContextSnippetKind
+  /** Conteúdo truncado */
+  content: string
+  bytes: number
+}
+
+export type ContextBundle = {
+  /** Raiz resolvida do repositório */
+  repoPath: string
+  /** Escopo relativo (`. ` = repo inteiro priorizado) */
+  scope: string
+  snippets: ContextSnippet[]
+  /** Sinais de coleta (audit / debug) */
+  signals: string[]
+}
+
 export type AgentResult = {
   agentId: string
   ok: boolean

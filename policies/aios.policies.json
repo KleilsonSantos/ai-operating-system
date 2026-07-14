@@ -2,27 +2,52 @@
   "policies": [
     {
       "id": "official-docs",
-      "description": "Sempre consultar documentação oficial",
+      "description": "Sempre consultar documentação oficial antes de inventar APIs ou contratos",
       "severity": "must"
     },
     {
       "id": "trade-offs",
-      "description": "Sempre indicar trade-offs",
+      "description": "Sempre indicar trade-offs relevantes nas decisões técnicas",
       "severity": "must"
     },
     {
       "id": "no-overengineering",
-      "description": "Sempre evitar overengineering",
+      "description": "Sempre evitar overengineering — solução mínima que resolve o pedido",
       "severity": "must"
     },
     {
       "id": "justify-decisions",
-      "description": "Sempre justificar decisões",
+      "description": "Sempre justificar decisões não óbvias em uma frase",
       "severity": "must"
     },
     {
       "id": "no-abandoned-libs",
-      "description": "Nunca usar biblioteca abandonada",
+      "description": "Nunca usar biblioteca abandonada ou sem manutenção clara",
+      "severity": "must"
+    },
+    {
+      "id": "no-deprecated-apis",
+      "description": "Não introduzir APIs/libs depreciadas; preferir alternativas suportadas",
+      "severity": "must"
+    },
+    {
+      "id": "short-user-prompt",
+      "description": "Não pedir ao usuário para repetir best practices no chat — já estão nestas policies",
+      "severity": "must"
+    },
+    {
+      "id": "git-flow-sandbox",
+      "description": "Fluxo Git: Issue → feature/* from sandbox → PR → sandbox → PR → main",
+      "severity": "must"
+    },
+    {
+      "id": "conventional-commits",
+      "description": "Commits: type: <gitmoji> … · autoria Kleilson Santos · sem Co-authored-by de IDE",
+      "severity": "must"
+    },
+    {
+      "id": "agents-as-plugins",
+      "description": "Agentes são plugins — não expor chamada direta de agente no UX principal",
       "severity": "must"
     }
   ]

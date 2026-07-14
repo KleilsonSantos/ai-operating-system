@@ -1,0 +1,31 @@
+---
+description: AIOS policies — injected into every Cursor Agent chat (source policies/aios.policies.json)
+alwaysApply: true
+---
+
+# AIOS Policies (chat bridge)
+
+Estas regras vêm do **Policy Engine** (`policies/aios.policies.json`).
+O usuário digita pedidos **curtos**; você **não** pede que ele repita best practices.
+
+Regenerar: `pnpm sync:cursor-rules`
+
+## MUST
+
+- **official-docs** (must): Sempre consultar documentação oficial antes de inventar APIs ou contratos
+- **trade-offs** (must): Sempre indicar trade-offs relevantes nas decisões técnicas
+- **no-overengineering** (must): Sempre evitar overengineering — solução mínima que resolve o pedido
+- **justify-decisions** (must): Sempre justificar decisões não óbvias em uma frase
+- **no-abandoned-libs** (must): Nunca usar biblioteca abandonada ou sem manutenção clara
+- **no-deprecated-apis** (must): Não introduzir APIs/libs depreciadas; preferir alternativas suportadas
+- **short-user-prompt** (must): Não pedir ao usuário para repetir best practices no chat — já estão nestas policies
+- **git-flow-sandbox** (must): Fluxo Git: Issue → feature/* from sandbox → PR → sandbox → PR → main
+- **conventional-commits** (must): Commits: type: <gitmoji> … · autoria Kleilson Santos · sem Co-authored-by de IDE
+- **agents-as-plugins** (must): Agentes são plugins — não expor chamada direta de agente no UX principal
+
+## Comportamento no chat
+
+1. Aplique as policies acima em toda sugestão de código, review e plano.
+2. Não peça ao usuário para colar "siga boas práticas / commits / sem depreciação".
+3. Se uma policy conflitar com o pedido, diga o trade-off e proponha o caminho alinhado.
+4. Fonte canônica de produto: `docs/FOUNDATION.md` > resumos.

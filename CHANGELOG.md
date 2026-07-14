@@ -4,6 +4,18 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-14
+
+### Added
+
+- ✨ Context Engine: coleta heurística por path + bundle tipado e injeção no workflow (#7)
+- 🔗 Ponte Cursor Chat ↔ policies: `pnpm sync:cursor-rules` gera `.cursor/rules` a partir de `policies/aios.policies.json`
+- 📝 Guia [`docs/guides/cursor-chat-bridge.md`](./docs/guides/cursor-chat-bridge.md)
+
+### Changed
+
+- 🔒 Policies expandidas (Git flow, commits, sem APIs depreciadas, prompt curto)
+
 ## [0.3.0] - 2026-07-14
 
 ### Added
