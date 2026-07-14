@@ -1,5 +1,10 @@
 /** Orchestration Engine — Coordena workflow e plugins a partir do intent. */
-import type { Intent, AgentResult, PolicyRule } from '@aios/shared'
+import type {
+  Intent,
+  AgentResult,
+  PolicyRule,
+  ContextBundle,
+} from '@aios/shared'
 import { applyPolicies, loadPolicies } from '@aios/policy'
 import { shouldRunAgent } from '@aios/decision'
 import { runArchitectureAgent } from '@aios/agent-architecture'
@@ -17,11 +22,12 @@ const plugins = [
 export type WorkflowOptions = {
   /** Policies already loaded; se omitido, usa `loadPolicies()` */
   policies?: PolicyRule[]
+  /** Bundle do Context Engine — injetado nos plugins (#7) */
+  context?: ContextBundle
 }
 
 /**
- * Executa plugins elegíveis e injeta referências de policies (`must`)
- * em cada resultado — ponta de injeção Fase 1 (policies > prompts).
+ * Executa plugins elegíveis e injeta policies + referências de contexto.
  */
 export async function runWorkflow(
   intent: Intent,
@@ -30,18 +36,22 @@ export async function runWorkflow(
   const rules = options.policies ?? loadPolicies().rules
   const applied = applyPolicies(rules)
   const policyRefs = applied.mustIds.map((id) => `policy:${id}`)
+  const ctx = options.context
+  const contextRefs = (ctx?.snippets ?? []).map((s) => `context:${s.path}`)
 
   const results: AgentResult[] = []
   for (const plugin of plugins) {
     if (!shouldRunAgent(plugin.id, intent.kind)) continue
-    const result = await plugin.run(intent)
+    const result = await plugin.run(intent, ctx)
+    const findings = [...result.findings]
+    if (applied.constraints.length > 0) findings.unshift('policies.injected')
+    if (ctx && ctx.snippets.length > 0) {
+      findings.unshift(`context.injected:${ctx.snippets.length}`)
+    }
     results.push({
       ...result,
-      references: [...result.references, ...policyRefs],
-      findings:
-        applied.constraints.length > 0
-          ? [`policies.injected`, ...result.findings]
-          : result.findings,
+      references: [...result.references, ...policyRefs, ...contextRefs],
+      findings,
     })
   }
   return results

@@ -8,6 +8,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 - 🔗 Ponte Cursor Chat ↔ policies: `pnpm sync:cursor-rules` gera `.cursor/rules` a partir de `policies/aios.policies.json`
 - 📝 Guia [`docs/guides/cursor-chat-bridge.md`](./docs/guides/cursor-chat-bridge.md)
+- ✨ Context Engine: coleta heurística por path + bundle tipado e injeção no workflow (#7)
 
 ### Changed
 
