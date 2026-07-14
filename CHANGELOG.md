@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-07-14
+
 ### Fixed
 
 - 👷 CI: `pnpm-lock.yaml` + `@types/node` no CLI (setup-node cache/pnpm)
