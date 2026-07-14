@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Changed
+
+- 👷 GitHub Actions: checkout@v7, pnpm/action-setup@v6, setup-node@v6
+
 ## [0.1.0] - 2026-07-14
 
 ### Fixed
