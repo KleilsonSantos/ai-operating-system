@@ -14,14 +14,15 @@
     "test": "node -e \"process.exit(0)\""
   },
   "dependencies": {
-    "@aios/shared": "workspace:*",
-    "@aios/intent": "workspace:*",
-    "@aios/policy": "workspace:*",
     "@aios/context": "workspace:*",
+    "@aios/intent": "workspace:*",
     "@aios/orchestration": "workspace:*",
-    "@aios/quality-gate": "workspace:*"
+    "@aios/policy": "workspace:*",
+    "@aios/quality-gate": "workspace:*",
+    "@aios/shared": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "^22.20.1",
     "typescript": "^5.9.2"
   }
 }
