@@ -36,3 +36,14 @@ jobs:
       - run: pnpm lint
       - run: pnpm test
       - run: pnpm build
+
+  # Issue #15 — impede main à frente da última tag SemVer sem bump
+  semver-align:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && github.base_ref == 'main')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Check SemVer alignment vs last tag
+        run: bash scripts/check-semver-alignment.sh
