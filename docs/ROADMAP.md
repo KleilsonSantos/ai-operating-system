@@ -3,8 +3,8 @@
 ## Fase 0 — Bootstrap ⏳ (`v0.0.0` → `v0.1.0`)
 
 - [x] Repositório `ai-operating-system` (LICENSE, README, package)
-- [ ] Visão de produto canônica (`docs/VISION.md`)
-- [ ] ADR de produto separado do portfólio
+- [x] Visão de produto canônica (`docs/VISION.md`)
+- [x] ADR de produto separado do portfólio
 - [ ] Arquitetura target documentada (engines + agents-as-plugins)
 - [ ] Fluxo Git enterprise (`sandbox` → `main`, SemVer)
 - [ ] Community health (Issues, Project, Wiki mapa, CI/templates)

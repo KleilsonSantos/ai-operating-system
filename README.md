@@ -27,6 +27,7 @@ Misturar os dois aumenta complexidade. Aqui o AIOS é a plataforma; o portfólio
 | Visão | [`docs/VISION.md`](./docs/VISION.md) |
 | Roadmap | [`docs/ROADMAP.md`](./docs/ROADMAP.md) |
 | ADR | [ADR-0001 — produto separado](./docs/adr/0001-product-separation.md) |
+| Arquitetura | [`docs/architecture/overview.md`](./docs/architecture/overview.md) |
 
 ## Documentação
 
@@ -35,6 +36,8 @@ Misturar os dois aumenta complexidade. Aqui o AIOS é a plataforma; o portfólio
 | [VISION](./docs/VISION.md) | Por que existe, relação portfólio↔AIOS, fases |
 | [ROADMAP](./docs/ROADMAP.md) | O que entra em cada fase |
 | [ADR-0001](./docs/adr/0001-product-separation.md) | Decisão de produto separado |
+| [Arquitetura](./docs/architecture/overview.md) | Engines, plugins, policies, quality gate |
+| [System guide](./docs/architecture/system-guide.md) | Fluxo Fase 1 |
 
 ## Licença
 
