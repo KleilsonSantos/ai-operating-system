@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "aios": {
+      "command": "pnpm",
+      "args": [
+        "--filter",
+        "@aios/mcp",
+        "exec",
+        "node",
+        "--experimental-strip-types",
+        "apps/mcp/src/index.ts"
+      ]
+    }
+  }
+}

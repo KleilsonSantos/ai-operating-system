@@ -31,6 +31,7 @@ Você escreve *"Analise meu projeto."* — policies, contexto, agentes e quality
 
 ```text
 apps/cli/                 # Cliente fino → @aios/pipeline
+apps/mcp/                 # MCP stdio → Cursor Agent (#38)
 packages/
   shared/                 # Tipos + PipelineRequest/Response
   core/                   # ai-core (eventos)

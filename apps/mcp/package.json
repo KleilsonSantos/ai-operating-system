@@ -1,0 +1,28 @@
+{
+  "name": "@aios/mcp",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "aios-mcp": "./src/index.ts"
+  },
+  "description": "MCP stdio server — ponte viva Cursor ↔ AIOS pipeline (#38).",
+  "scripts": {
+    "dev": "node --experimental-strip-types ./src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "node -e \"process.exit(0)\"",
+    "test": "node -e \"process.exit(0)\""
+  },
+  "dependencies": {
+    "@aios/pipeline": "workspace:*",
+    "@aios/policy": "workspace:*",
+    "@aios/shared": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "typescript": "^5.9.2"
+  }
+}
