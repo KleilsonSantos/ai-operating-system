@@ -1,7 +1,7 @@
 {
   "name": "ai-operating-system",
   "private": true,
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "AI Operating System — plataforma de governança para IA aplicada ao desenvolvimento de software",
   "license": "MIT",
   "packageManager": "pnpm@11.5.2",
