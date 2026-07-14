@@ -16,9 +16,9 @@ Você escreve *"Analise meu projeto."* — policies, contexto, agentes e quality
 
 | Item | Valor |
 | --- | --- |
-| Fase | Bootstrap concluído · `v0.1.1` |
+| Fase | Fase 1 (Intent) · `v0.2.0` |
 | Produção | `main` + tag SemVer |
-| Última release | [`v0.1.1`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.1.1) |
+| Última release | [`v0.2.0`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.2.0) |
 | Monorepo | pnpm workspaces + Turborepo (stubs) |
 | Integração | `sandbox` → `main` · SemVer ([guia](./docs/guides/git-workflow.md)) |
 | Pedra base | [`docs/FOUNDATION.md`](./docs/FOUNDATION.md) |
