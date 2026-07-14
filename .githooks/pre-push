@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# pre-push: avisa/bloqueia push direto para main se houver drift SemVer (#15).
+# Bypass não recomendado; CI também aplica o gate.
+
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+remote="${1:-}"
+url="${2:-}"
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [[ -z "${local_ref:-}" ]] && continue
+  if [[ "$remote_ref" == "refs/heads/main" ]]; then
+    echo "pre-push: verificando alinhamento SemVer antes de push para main…"
+    bash "$ROOT/scripts/check-semver-alignment.sh" "" "$local_sha"
+  fi
+done
+
+exit 0
