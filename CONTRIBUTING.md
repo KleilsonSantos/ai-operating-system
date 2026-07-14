@@ -15,14 +15,27 @@ flowchart LR
 
 **Nunca** commit direto em `main` ou `sandbox`.
 
+## Hooks Git (obrigatório)
+
+```bash
+git config core.hooksPath .githooks
+```
+
+- `commit-msg` — Conventional Commits + Gitmoji; remove trailers de IDE
+- `pre-push` — bloqueia push para `main` com drift SemVer (issue #15)
+
+CI revalida mensagens e alinhamento SemVer (não use `--no-verify`).
+
 ## Como contribuir
 
 1. Issue → In Progress no Project
 2. Branch a partir de `sandbox`
-3. Commits: Conventional Commits + Gitmoji
-4. Autoria: `Kleilson Santos <kdsddesign1@gmail.com>` — sem co-autoria de IDE
-5. PR → `sandbox` → depois `sandbox` → `main`
-6. Docs no mesmo PR se mudar build/uso/arquitetura
+3. Ativar hooks (`core.hooksPath`)
+4. Commits: Conventional Commits + Gitmoji
+5. Autoria: `Kleilson Santos <kdsddesign1@gmail.com>` — sem co-autoria de IDE
+6. PR → `sandbox` → depois `sandbox` → `main`
+7. Entrega releaseable em `main` exige bump SemVer + CHANGELOG + tag ([releases.md](./docs/guides/releases.md))
+8. Docs no mesmo PR se mudar build/uso/arquitetura
 
 ## Prefixos de branch
 

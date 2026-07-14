@@ -4,6 +4,17 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-07-14
+
+### Added
+
+- 🔒 Gate SemVer anti-drift (`scripts/check-semver-alignment.sh` + CI em PRs para `main`) — #15
+- 🔧 Hook `pre-push` e docs de `core.hooksPath` obrigatório
+
+### Changed
+
+- 👷 GitHub Actions: checkout@v7, pnpm/action-setup@v6, setup-node@v6
+
 ## [0.1.0] - 2026-07-14
 
 ### Fixed
