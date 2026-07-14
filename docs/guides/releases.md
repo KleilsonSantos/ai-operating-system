@@ -18,6 +18,7 @@ Exceções que **não** forçam bump sozinhas: `chore`, `docs`, `ci`, `test`, `s
 
 | Tag | Descrição |
 | --- | --- |
+| `v0.7.0` | MCP server `@aios/mcp` (stdio) + Cursor bridge Nível 2 (#38) |
 | `v0.6.0` | Contrato CLI/API `@aios/pipeline` + ADR-0003 (#9) |
 | `v0.5.0` | Orchestration + Decision + plugins + Quality Gate (#8) |
 | `v0.4.0` | Context Engine (#7) + ponte Cursor Chat (policies → Project Rules) |
