@@ -1,6 +1,6 @@
 # ROADMAP
 
-## Fase 0 — Bootstrap ⏳ (`v0.0.0` → `v0.1.0`)
+## Fase 0 — Bootstrap ✅ (`v0.1.0`)
 
 - [x] Repositório `ai-operating-system` (LICENSE, README, package)
 - [x] Pedra base (`docs/FOUNDATION.md`) + visão operacional

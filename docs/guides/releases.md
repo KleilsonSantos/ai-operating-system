@@ -6,7 +6,7 @@ SemVer `vMAJOR.MINOR.PATCH` com **tags anotadas**.
 
 | Tag | Descrição |
 | --- | --- |
-| (pendente) | `v0.1.0` — bootstrap + visão + scaffold Fase 1 + Git enterprise |
+| `v0.1.0` | Bootstrap + FOUNDATION + scaffold Fase 1 + Git enterprise + CI |
 
 ## Criar release
 
