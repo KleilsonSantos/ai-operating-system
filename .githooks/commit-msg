@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# Valida Conventional Commits + Gitmoji no subject (primeira linha).
+# Formato: type: <emoji> descrição
+# Merges: merge: 🔀 ...
+# Remove trailers de IDE/agente (ex.: Co-authored-by: Cursor) — autoria = autor do projeto.
+
+set -euo pipefail
+
+MSG_FILE="${1:-}"
+if [[ -z "$MSG_FILE" || ! -f "$MSG_FILE" ]]; then
+  echo "commit-msg: missing message file" >&2
+  exit 1
+fi
+
+# Strip IDE/agent attribution trailers (Cursor Attribution, etc.)
+python3 - "$MSG_FILE" <<'PY'
+import re, sys
+path = sys.argv[1]
+with open(path, "r", encoding="utf-8") as f:
+    text = f.read()
+pat = re.compile(
+    r"^(Co-authored-by|Signed-off-by):\s*.*(Cursor|cursoragent@cursor\.com).*\n?",
+    re.IGNORECASE | re.MULTILINE,
+)
+cleaned, n = pat.subn("", text)
+if n:
+    cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).rstrip() + "\n"
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(cleaned)
+    print(f"commit-msg: removido(s) {n} trailer(s) de IDE/agente (Cursor)", file=sys.stderr)
+PY
+
+subject="$(head -n 1 "$MSG_FILE" | tr -d '\r')"
+
+if [[ "$subject" =~ ^merge:\ 🔀 ]]; then
+  exit 0
+fi
+
+if [[ "$subject" =~ ^Merge\ pull\ request ]]; then
+  echo "commit-msg: merge sem gitmoji. Use: merge: 🔀 PR #<n> — <branch>" >&2
+  exit 1
+fi
+
+python3 - "$subject" <<'PY'
+import re, sys
+subject = sys.argv[1]
+pat = re.compile(
+    r"^(feat|fix|docs|chore|ci|refactor|test|style|perf|build|merge):\s+"
+    r"(?P<emoji>\S+)\s+.+"
+)
+m = pat.match(subject)
+if not m:
+    print(
+        "commit-msg: use Conventional Commits + Gitmoji\n"
+        "  exemplo: feat: ✨ adicionar página de projetos\n"
+        "  merge:   merge: 🔀 PR #12 — feature/foo",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+emoji = m.group("emoji")
+if emoji.isascii() and emoji.isalnum():
+    print(f"commit-msg: falta gitmoji após o tipo (recebido {emoji!r})", file=sys.stderr)
+    sys.exit(1)
+if emoji[0].isascii() and emoji[0].isalnum():
+    print("commit-msg: gitmoji inválido — coloque o emoji logo após 'type: '", file=sys.stderr)
+    sys.exit(1)
+sys.exit(0)
+PY

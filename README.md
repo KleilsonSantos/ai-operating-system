@@ -25,6 +25,7 @@ Misturar os dois aumenta complexidade. Aqui o AIOS é a plataforma; o portfólio
 | Fase | Scaffold Fase 1 (`v0.0.0`) |
 | Produção | ainda não |
 | Monorepo | pnpm workspaces + Turborepo (stubs) |
+| Integração | `sandbox` → `main` · SemVer ([guia](./docs/guides/git-workflow.md)) |
 | Visão | [`docs/VISION.md`](./docs/VISION.md) |
 | Roadmap | [`docs/ROADMAP.md`](./docs/ROADMAP.md) |
 | ADR | [ADR-0001 — produto separado](./docs/adr/0001-product-separation.md) |

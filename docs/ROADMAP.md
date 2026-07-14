@@ -7,7 +7,7 @@
 - [x] ADR de produto separado do portfólio
 - [x] Arquitetura target documentada (engines + agents-as-plugins)
 - [x] Scaffold monorepo Fase 1 (engines + plugins + CLI)
-- [ ] Fluxo Git enterprise (`sandbox` → `main`, SemVer)
+- [x] Fluxo Git enterprise (`sandbox` → `main`, SemVer)
 - [ ] Community health (Issues, Project, Wiki mapa, CI/templates)
 
 ## Fase 1 — Núcleo no portfólio (`v0.1.0`+)

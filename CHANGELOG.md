@@ -1,0 +1,13 @@
+# Changelog
+
+Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
+
+## [Unreleased]
+
+### Added
+
+- 🎉 Bootstrap do repositório AIOS (LICENSE, README, package)
+- 📝 Visão de produto, ROADMAP e ADR-0001 (produto separado do portfólio)
+- 📝 Arquitetura target (engines, plugins, policies, quality gate)
+- 🔧 Scaffold monorepo Fase 1 (`engines/*`, plugins, `@aios/cli`)
+- 📝 ADR-0002 + guias Git (sandbox, SemVer, kickoff)
