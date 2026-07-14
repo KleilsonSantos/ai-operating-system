@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "aios": {
+      "command": "pnpm",
+      "args": ["--filter", "@aios/mcp", "dev"],
+      "cwd": "/ABS/PATH/TO/ai-operating-system"
+    }
+  }
+}

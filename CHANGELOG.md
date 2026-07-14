@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🔌 MCP server `@aios/mcp` (stdio): `aios_run_pipeline`, `aios_load_policies`, `aios_contract_version` (#38)
+
 ## [0.6.0] - 2026-07-14
 
 ### Added

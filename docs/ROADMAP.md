@@ -25,7 +25,7 @@ Validar arquitetura e fluxos do AIOS.
 
 ## Fase 2 — Multi-repositório (`v0.y.0`)
 
-- [ ] Contratos de integração estáveis
+- [x] Contratos de integração estáveis — ADR-0003 / `@aios/pipeline` (#9); MCP Nível 2 (#38)
 - [ ] Onboarding de múltiplos repositórios
 - [ ] Knowledge Graph básico (relações Projeto → API → Banco → …)
 - [ ] Memory Engine (sessão / projeto)
@@ -34,7 +34,7 @@ Validar arquitetura e fluxos do AIOS.
 
 - [ ] Multi-repo genérico
 - [ ] Multi-provider (ChatGPT, Claude, Gemini, Copilot, …)
-- [ ] Integrations / MCP orchestration
+- [x] Integrations / MCP orchestration — MVP stdio `@aios/mcp` (#38; expansão futura)
 - [ ] UI de governança
 - [ ] Documentation / Governance engines completos
 
