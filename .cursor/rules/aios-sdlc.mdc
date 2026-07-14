@@ -1,0 +1,32 @@
+---
+description: AIOS SDLC — Git flow, commits, ROADMAP discipline for this repo
+alwaysApply: true
+---
+
+# AIOS SDLC (este repositório)
+
+Espelha `AGENTS.md` + policies de fluxo. Aplicar em todo Agent chat neste workspace.
+
+## Git
+
+- Issue → `feature/*` from `sandbox` → PR → `sandbox` → PR → `main`
+- Não push force em `main`/`sandbox`
+- Commits só quando o humano pedir (exceto bootstrap autorizado)
+
+## Commits
+
+- Formato: `type: <gitmoji> …`
+- Author: Kleilson Santos `<kdsddesign1@gmail.com>`
+- Sem `Co-authored-by: Cursor` / trailers de IDE
+
+## Produto
+
+- AIOS é standalone (ADR-0001); agents = plugins
+- Não implementar todos os engines de uma vez — seguir `docs/ROADMAP.md`
+- CHANGELOG `[Unreleased]` se notável; PR para `sandbox`
+
+## Checklist rápido
+
+- Alinhado à fase do ROADMAP?
+- ADR se decisão arquitetural?
+- Policies (não prompts longos) para regras permanentes?

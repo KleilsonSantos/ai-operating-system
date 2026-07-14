@@ -48,6 +48,12 @@ Injeção Fase 1: `runWorkflow(intent, { policies })` anexa `policy:<id>` e `pol
 
 Detalhe: [`engines/policy/README.md`](../../engines/policy/README.md).
 
+### Ponte Cursor Chat (Nível 1)
+
+`pnpm sync:cursor-rules` → `.cursor/rules/aios-*.mdc` (`alwaysApply`) a partir de `policies/aios.policies.json`.
+
+Pedido curto no chat; policies injetadas sem CLI. Guia: [`docs/guides/cursor-chat-bridge.md`](../guides/cursor-chat-bridge.md).
+
 ## O que Fase 1 NÃO inclui
 
 - UI completa
