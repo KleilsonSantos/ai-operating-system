@@ -22,9 +22,19 @@ Misturar os dois aumenta complexidade. Aqui o AIOS é a plataforma; o portfólio
 
 | Item | Valor |
 | --- | --- |
-| Fase | Bootstrap (`v0.0.0`) |
+| Fase | Visão de produto (`v0.0.0`) |
 | Produção | ainda não |
-| Visão / roadmap | em construção nos próximos commits |
+| Visão | [`docs/VISION.md`](./docs/VISION.md) |
+| Roadmap | [`docs/ROADMAP.md`](./docs/ROADMAP.md) |
+| ADR | [ADR-0001 — produto separado](./docs/adr/0001-product-separation.md) |
+
+## Documentação
+
+| Doc | Para quê |
+| --- | --- |
+| [VISION](./docs/VISION.md) | Por que existe, relação portfólio↔AIOS, fases |
+| [ROADMAP](./docs/ROADMAP.md) | O que entra em cada fase |
+| [ADR-0001](./docs/adr/0001-product-separation.md) | Decisão de produto separado |
 
 ## Licença
 
