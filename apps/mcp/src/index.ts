@@ -7,16 +7,23 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod'
-import { runPipeline, PIPELINE_CONTRACT_VERSION } from '@aios/pipeline'
+import { runPipeline, runAcrossWorkspaces, PIPELINE_CONTRACT_VERSION } from '@aios/pipeline'
 import { loadPolicies, applyPolicies } from '@aios/policy'
-import { loadWorkspaces, resolveWorkspace } from '@aios/workspace'
+import {
+  loadWorkspaces,
+  resolveWorkspace,
+  upsertWorkspace,
+  removeWorkspace,
+  validateWorkspace,
+  listValidatedWorkspaces,
+} from '@aios/workspace'
 import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge'
 import { remember, recall, clearMemory, listMemoryWorkspaces } from '@aios/memory'
 import { resolve } from 'node:path'
 
 const server = new McpServer({
   name: 'aios',
-  version: '0.10.0',
+  version: '0.11.0',
 })
 
 server.registerTool(
@@ -71,6 +78,7 @@ server.registerTool(
         name: w.name,
         path: w.path,
         default: Boolean(w.default),
+        tags: w.tags,
         repoPath: resolved?.repoPath,
       }
     })
@@ -90,6 +98,135 @@ server.registerTool(
           ),
         },
       ],
+    }
+  },
+)
+
+server.registerTool(
+  'aios_workspace_upsert',
+  {
+    title: 'Upsert workspace',
+    description:
+      'Register or update a workspace in workspaces/aios.workspaces.json (multi-repo genérico · #55).',
+    inputSchema: {
+      id: z.string().describe('Stable workspace id'),
+      path: z.string().describe('Absolute or relative path to the repo'),
+      name: z.string().optional(),
+      tags: z.array(z.string()).optional(),
+      makeDefault: z.boolean().optional(),
+      homePath: z.string().optional(),
+    },
+  },
+  async ({ id, path, name, tags, makeDefault, homePath }) => {
+    const result = upsertWorkspace(
+      { id, path, name, tags, makeDefault },
+      { cwd: homePath || process.env.AIOS_HOME || process.cwd() },
+    )
+    return {
+      content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+    }
+  },
+)
+
+server.registerTool(
+  'aios_workspace_remove',
+  {
+    title: 'Remove workspace',
+    description: 'Remove a workspace id from the registry (#55).',
+    inputSchema: {
+      id: z.string(),
+      homePath: z.string().optional(),
+    },
+  },
+  async ({ id, homePath }) => {
+    const result = removeWorkspace(id, {
+      cwd: homePath || process.env.AIOS_HOME || process.cwd(),
+    })
+    return {
+      content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+    }
+  },
+)
+
+server.registerTool(
+  'aios_workspace_validate',
+  {
+    title: 'Validate workspace(s)',
+    description:
+      'Checks that registered workspace paths look like usable repos (#55). Omit id to validate all.',
+    inputSchema: {
+      id: z.string().optional().describe('Single workspace id; omit = all'),
+      homePath: z.string().optional(),
+    },
+  },
+  async ({ id, homePath }) => {
+    const cwd = homePath || process.env.AIOS_HOME || process.cwd()
+    if (id) {
+      const v = validateWorkspace(id, { cwd })
+      return {
+        content: [{ type: 'text', text: JSON.stringify(v, null, 2) }],
+      }
+    }
+    const all = listValidatedWorkspaces({ cwd })
+    return {
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify(
+            {
+              count: all.length,
+              workspaces: all.map((w) => ({
+                id: w.id,
+                repoPath: w.repoPath,
+                ok: w.validation.ok,
+                signals: w.validation.signals,
+              })),
+            },
+            null,
+            2,
+          ),
+        },
+      ],
+    }
+  },
+)
+
+server.registerTool(
+  'aios_run_across_workspaces',
+  {
+    title: 'Run pipeline across workspaces',
+    description:
+      'Runs runPipeline for each registered workspace (or a subset). Multi-repo genérico (#55).',
+    inputSchema: {
+      input: z.string().describe('Short user intent'),
+      workspaceIds: z
+        .array(z.string())
+        .optional()
+        .describe('Subset of ids; default = all'),
+      homePath: z.string().optional(),
+      scope: z.string().optional(),
+    },
+  },
+  async ({ input, workspaceIds, homePath, scope }) => {
+    try {
+      const result = await runAcrossWorkspaces({
+        input,
+        workspaceIds,
+        homePath: homePath || process.env.AIOS_HOME || process.cwd(),
+        scope,
+      })
+      return {
+        content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+        isError: result.results.some((r) => !r.verdictPassed || r.error),
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return {
+        content: [
+          { type: 'text', text: `aios_run_across_workspaces failed: ${message}` },
+        ],
+        isError: true,
+      }
     }
   },
 )

@@ -27,6 +27,8 @@ Ligação **viva** com o runtime: o Agent chama tools.
 | --- | --- |
 | `aios_contract_version` | `contractVersion` |
 | `aios_list_workspaces` | Registry multi-repo (Fase 2 · #43) |
+| `aios_workspace_upsert` / `remove` / `validate` | Multi-repo genérico (#55) |
+| `aios_run_across_workspaces` | Pipeline em N workspaces (#55) |
 | `aios_build_knowledge` | Knowledge Graph heurístico (#47; `full: true` = nós/arestas) |
 | `aios_memory_remember` / `recall` / `clear` | Memória sessão/projeto (#51) |
 | `aios_load_policies` | Policies + constraints |
