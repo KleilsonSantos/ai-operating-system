@@ -1,6 +1,6 @@
 /**
  * @aios/mcp — MCP stdio server (Cursor Agent ↔ AIOS pipeline).
- * Issue #38 · Nível 2 da ponte chat.
+ * Issue #38 · #43 (workspaces)
  *
  * stdout = JSON-RPC MCP — use console.error for logs.
  */
@@ -9,11 +9,12 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod'
 import { runPipeline, PIPELINE_CONTRACT_VERSION } from '@aios/pipeline'
 import { loadPolicies, applyPolicies } from '@aios/policy'
+import { loadWorkspaces, resolveWorkspace } from '@aios/workspace'
 import { resolve } from 'node:path'
 
 const server = new McpServer({
   name: 'aios',
-  version: '0.6.0',
+  version: '0.8.0',
 })
 
 server.registerTool(
@@ -34,6 +35,64 @@ server.registerTool(
 )
 
 server.registerTool(
+  'aios_list_workspaces',
+  {
+    title: 'List AIOS workspaces',
+    description:
+      'Lists registered multi-repo workspaces from workspaces/aios.workspaces.json (Fase 2).',
+    inputSchema: {
+      homePath: z
+        .string()
+        .optional()
+        .describe('AIOS home / search root (default: AIOS_HOME / cwd)'),
+      workspacesPath: z
+        .string()
+        .optional()
+        .describe('Override path to aios.workspaces.json'),
+    },
+  },
+  async ({ homePath, workspacesPath }) => {
+    const cwd = resolve(
+      homePath || process.env.AIOS_HOME || process.cwd(),
+    )
+    const bundle = loadWorkspaces({
+      cwd,
+      configPath: workspacesPath || process.env.AIOS_WORKSPACES_PATH,
+    })
+    const listed = bundle.workspaces.map((w) => {
+      const resolved = resolveWorkspace(w.id, {
+        cwd,
+        configPath: bundle.path,
+      })
+      return {
+        id: w.id,
+        name: w.name,
+        path: w.path,
+        default: Boolean(w.default),
+        repoPath: resolved?.repoPath,
+      }
+    })
+    return {
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify(
+            {
+              source: bundle.source,
+              path: bundle.path,
+              count: listed.length,
+              workspaces: listed,
+            },
+            null,
+            2,
+          ),
+        },
+      ],
+    }
+  },
+)
+
+server.registerTool(
   'aios_load_policies',
   {
     title: 'Load AIOS policies',
@@ -44,14 +103,24 @@ server.registerTool(
         .string()
         .optional()
         .describe('Repo root (default: process.cwd() / AIOS_REPO)'),
+      workspaceId: z
+        .string()
+        .optional()
+        .describe('Workspace id from registry (resolves repoPath)'),
       policiesPath: z
         .string()
         .optional()
         .describe('Optional path to policies JSON'),
     },
   },
-  async ({ repoPath, policiesPath }) => {
-    const cwd = resolve(repoPath || process.env.AIOS_REPO || process.cwd())
+  async ({ repoPath, workspaceId, policiesPath }) => {
+    let cwd = resolve(repoPath || process.env.AIOS_REPO || process.cwd())
+    if (!repoPath && workspaceId) {
+      const ws = resolveWorkspace(workspaceId, {
+        cwd: process.env.AIOS_HOME || process.cwd(),
+      })
+      if (ws) cwd = ws.repoPath
+    }
     const bundle = loadPolicies({
       cwd,
       configPath: policiesPath || process.env.AIOS_POLICIES_PATH,
@@ -84,7 +153,7 @@ server.registerTool(
   {
     title: 'Run AIOS pipeline',
     description:
-      'Runs the Fase 1 nucleus: intent → policies → context → agents → quality gate. Prefer short user intents; policies are loaded by the engine. Returns PipelineResponse JSON (contractVersion 1).',
+      'Runs the nucleus: intent → policies → context → agents → quality gate. Prefer short user intents. Returns PipelineResponse JSON (contractVersion 1).',
     inputSchema: {
       input: z
         .string()
@@ -92,7 +161,11 @@ server.registerTool(
       repoPath: z
         .string()
         .optional()
-        .describe('Target repository root (default cwd / AIOS_REPO)'),
+        .describe('Target repository root (wins over workspaceId)'),
+      workspaceId: z
+        .string()
+        .optional()
+        .describe('Id from workspaces/aios.workspaces.json'),
       scope: z
         .string()
         .optional()
@@ -100,11 +173,12 @@ server.registerTool(
       policiesPath: z.string().optional().describe('Optional policies JSON path'),
     },
   },
-  async ({ input, repoPath, scope, policiesPath }) => {
+  async ({ input, repoPath, workspaceId, scope, policiesPath }) => {
     try {
       const response = await runPipeline({
         input,
         repoPath: repoPath || process.env.AIOS_REPO,
+        workspaceId: workspaceId || process.env.AIOS_WORKSPACE,
         scope: scope || process.env.AIOS_SCOPE,
         policiesPath: policiesPath || process.env.AIOS_POLICIES_PATH,
       })

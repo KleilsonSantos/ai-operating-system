@@ -45,4 +45,38 @@ describe('runPipeline', () => {
     expect(res.workflow.ran).toEqual([])
     expect(res.verdict.passed).toBe(true)
   })
+
+  it('resolve workspaceId do registry', async () => {
+    const home = mkdtempSync(join(tmpdir(), 'aios-pipe-ws-'))
+    temps.push(home)
+    const target = join(home, 'target')
+    mkdirSync(target)
+    mkdirSync(join(target, '.git'))
+    writeFileSync(join(target, 'README.md'), '# Target\n')
+    writeFileSync(
+      join(target, 'package.json'),
+      JSON.stringify({ name: 'ws-target', private: true }),
+    )
+    mkdirSync(join(home, 'workspaces'))
+    writeFileSync(
+      join(home, 'workspaces', 'aios.workspaces.json'),
+      JSON.stringify({
+        workspaces: [{ id: 'target', path: 'target', default: true }],
+      }),
+    )
+    const prev = process.env.AIOS_HOME
+    process.env.AIOS_HOME = home
+    try {
+      const res = await runPipeline({
+        input: 'Analise meu projeto.',
+        workspaceId: 'target',
+      })
+      expect(res.workspace?.id).toBe('target')
+      expect(res.context.repoPath).toBe(target)
+      expect(res.verdict.passed).toBe(true)
+    } finally {
+      if (prev === undefined) delete process.env.AIOS_HOME
+      else process.env.AIOS_HOME = prev
+    }
+  })
 })

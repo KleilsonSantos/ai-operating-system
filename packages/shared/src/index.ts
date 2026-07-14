@@ -64,16 +64,39 @@ export const PIPELINE_CONTRACT_VERSION = '1' as const
 
 export type PipelineContractVersion = typeof PIPELINE_CONTRACT_VERSION
 
+/** Entrada do registry multi-repo (Fase 2 · #43). */
+export type WorkspaceEntry = {
+  /** Identificador estável (ex.: `aios`, `portfolio`) */
+  id: string
+  /** Absoluto ou relativo à âncora do registry */
+  path: string
+  /** Label humano opcional */
+  name?: string
+  /** Se true, usado quando workspaceId omitido */
+  default?: boolean
+}
+
+export type WorkspaceRegistry = {
+  workspaces: WorkspaceEntry[]
+}
+
 /** Pedido do integrador → núcleo AIOS. */
 export type PipelineRequest = {
   /** Texto livre do usuário (intent raw) */
   input: string
   /** Diretório do repositório alvo (default: process.cwd()) */
   repoPath?: string
+  /**
+   * Id no registry `workspaces/aios.workspaces.json`.
+   * Se definido, resolve `repoPath` (exceto se `repoPath` explícito vencer).
+   */
+  workspaceId?: string
   /** Escopo relativo para Context Engine */
   scope?: string
   /** JSON de policies (opcional; senão defaults / walk-up) */
   policiesPath?: string
+  /** Override do arquivo de workspaces */
+  workspacesPath?: string
 }
 
 /** Resposta estável do núcleo (stdout JSON do CLI = este shape). */
@@ -92,6 +115,12 @@ export type PipelineResponse = {
     snippetCount: number
     paths: string[]
     signals: string[]
+  }
+  /** Presente quando um workspace do registry foi usado */
+  workspace?: {
+    id: string
+    name?: string
+    registryPath?: string
   }
   workflow: {
     ran: string[]

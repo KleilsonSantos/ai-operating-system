@@ -73,9 +73,13 @@ Pedido curto no chat; policies injetadas sem CLI. Guia: [`docs/guides/cursor-cha
 
 ### Contrato CLI/API (`@aios/pipeline`) — issue #9
 
-`runPipeline({ input, repoPath?, scope?, policiesPath? })` → `PipelineResponse` com `contractVersion: "1"`.
+`runPipeline({ input, repoPath?, workspaceId?, scope?, policiesPath? })` → `PipelineResponse` com `contractVersion: "1"`.
 
-CLI (`@aios/cli`) é cliente fino desse contrato. Integradores dependem de `@aios/pipeline` + `@aios/shared` — [ADR-0003](../adr/0003-pipeline-integration-contract.md).
+CLI (`@aios/cli`) é cliente fino desse contrato (`--workspace`). Integradores dependem de `@aios/pipeline` + `@aios/shared` — [ADR-0003](../adr/0003-pipeline-integration-contract.md).
+
+### Multi-repo (`@aios/workspace`) — issue #43
+
+Registry `workspaces/aios.workspaces.json` · resolve por `workspaceId` · [ADR-0004](../adr/0004-multi-repo-workspace-registry.md).
 
 ## O que Fase 1 NÃO inclui
 
