@@ -1,0 +1,31 @@
+# Referência de labels — bootstrap do repositório
+- name: enhancement
+  color: a2eeef
+  description: Nova funcionalidade ou melhoria
+- name: bug
+  color: d73a4a
+  description: Algo não funciona como esperado
+- name: documentation
+  color: 0075ca
+  description: Melhorias ou adições à documentação
+- name: ci
+  color: bfdadc
+  description: CI/CD e automação
+- name: phase-0
+  color: 7057ff
+  description: Fase 0 — Bootstrap e governança
+- name: phase-1
+  color: 7057ff
+  description: Fase 1 — Núcleo AIOS no portfólio
+- name: phase-2
+  color: 7057ff
+  description: Fase 2 — Multi-projeto pessoal
+- name: phase-3
+  color: 7057ff
+  description: Fase 3 — Plataforma independente
+- name: engine
+  color: 0e8a16
+  description: Trabalho em engine do AIOS
+- name: agent-plugin
+  color: fbca04
+  description: Plugin / agente do AIOS
