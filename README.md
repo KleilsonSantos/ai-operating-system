@@ -5,6 +5,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge)](./LICENSE)
 
+[Repo](https://github.com/KleilsonSantos/ai-operating-system) · [Issues](https://github.com/KleilsonSantos/ai-operating-system/issues) · [Project board](https://github.com/users/KleilsonSantos/projects/7) · [Wiki](https://github.com/KleilsonSantos/ai-operating-system/wiki)
+
+---
+
 ## Em uma frase
 
 Você escreve *"Analise meu projeto."* — políticas, contexto, agentes e quality gates rodam por baixo. Agentes são **plugins**; você não os chama diretamente.
