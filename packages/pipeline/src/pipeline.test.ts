@@ -36,6 +36,7 @@ describe('runPipeline', () => {
     expect(res.workflow.ran.length).toBeGreaterThan(0)
     expect(res.verdict.checks).toBeDefined()
     expect(res.context.snippetCount).toBeGreaterThan(0)
+    expect(res.knowledge?.nodeCount).toBeGreaterThan(0)
   })
 
   it('unknown não agenda plugins', async () => {

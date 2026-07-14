@@ -1,6 +1,6 @@
 /**
  * @aios/pipeline — porta estável do núcleo (CLI / integradores).
- * Issue #9 · ADR-0003 · workspace resolve #43
+ * Issue #9 · ADR-0003 · workspace #43 · knowledge #47
  */
 import { resolve } from 'node:path'
 import { resolveIntent } from '@aios/intent'
@@ -9,6 +9,7 @@ import { gatherContext } from '@aios/context'
 import { runWorkflow } from '@aios/orchestration'
 import { evaluateQuality } from '@aios/quality-gate'
 import { resolveWorkspace } from '@aios/workspace'
+import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge'
 import {
   PIPELINE_CONTRACT_VERSION,
   type PipelineRequest,
@@ -59,6 +60,9 @@ export async function runPipeline(
     repoPath,
     scope: request.scope,
   })
+  const knowledge = summarizeKnowledge(
+    buildKnowledgeGraph({ repoPath }),
+  )
   const workflow = await runWorkflow(intent, {
     policies: policyBundle.rules,
     context,
@@ -86,6 +90,7 @@ export async function runPipeline(
       signals: context.signals,
     },
     ...(workspaceMeta ? { workspace: workspaceMeta } : {}),
+    knowledge,
     workflow: {
       ran: [...workflow.ran],
       skipped: [...workflow.skipped],

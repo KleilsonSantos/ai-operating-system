@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🧠 Knowledge Graph heurístico: `@aios/knowledge`, `PipelineResponse.knowledge`, MCP `aios_build_knowledge`, ADR-0005 (#47)
+
 ## [0.8.0] - 2026-07-14
 
 ### Added

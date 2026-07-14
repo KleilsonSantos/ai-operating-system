@@ -81,11 +81,15 @@ CLI (`@aios/cli`) é cliente fino desse contrato (`--workspace`). Integradores d
 
 Registry `workspaces/aios.workspaces.json` · resolve por `workspaceId` · [ADR-0004](../adr/0004-multi-repo-workspace-registry.md).
 
+### Knowledge Graph (`@aios/knowledge`) — issue #47
+
+`buildKnowledgeGraph` heurístico · resumo em `PipelineResponse.knowledge` · MCP `aios_build_knowledge` · [ADR-0005](../adr/0005-knowledge-graph-heuristic.md).
+
 ## O que Fase 1 NÃO inclui
 
 - UI completa
 - Multi-provider LLM genérico
-- Knowledge Graph completo
+- Knowledge Graph completo (embeddings / store)
 - Memory persistente multi-projeto
 
 Esses itens entram nas Fases 2–3 ([ROADMAP](../ROADMAP.md)).
