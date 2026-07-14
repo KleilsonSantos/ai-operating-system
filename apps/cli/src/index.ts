@@ -4,13 +4,40 @@ import { gatherContext } from '@aios/context'
 import { runWorkflow } from '@aios/orchestration'
 import { evaluateQuality } from '@aios/quality-gate'
 
+function parseArgs(argv: string[]): { raw: string; scope?: string } {
+  let scope: string | undefined
+  const parts: string[] = []
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i]!
+    if (a === '--scope') {
+      scope = argv[++i]
+      continue
+    }
+    if (a.startsWith('--scope=')) {
+      scope = a.slice('--scope='.length)
+      continue
+    }
+    parts.push(a)
+  }
+  return {
+    raw: parts.join(' ').trim() || 'Analise meu projeto.',
+    scope: scope || process.env.AIOS_SCOPE,
+  }
+}
+
 async function main(): Promise<void> {
-  const raw = process.argv.slice(2).join(' ') || 'Analise meu projeto.'
+  const { raw, scope } = parseArgs(process.argv.slice(2))
   const intent = resolveIntent(raw)
-  const bundle = loadPolicies()
-  const applied = applyPolicies(bundle.rules)
-  const context = gatherContext(process.cwd())
-  const results = await runWorkflow(intent, { policies: bundle.rules })
+  const policies = loadPolicies()
+  const applied = applyPolicies(policies.rules)
+  const context = gatherContext({
+    repoPath: process.cwd(),
+    scope,
+  })
+  const results = await runWorkflow(intent, {
+    policies: policies.rules,
+    context,
+  })
   const verdict = evaluateQuality(results)
 
   console.log(
@@ -18,12 +45,18 @@ async function main(): Promise<void> {
       {
         intent,
         policies: {
-          source: bundle.source,
-          path: bundle.path,
-          count: bundle.rules.length,
+          source: policies.source,
+          path: policies.path,
+          count: policies.rules.length,
           mustIds: applied.mustIds,
         },
-        contextRepo: context.repoPath,
+        context: {
+          repoPath: context.repoPath,
+          scope: context.scope,
+          snippetCount: context.snippets.length,
+          paths: context.snippets.map((s) => s.path),
+          signals: context.signals,
+        },
         results,
         verdict,
       },

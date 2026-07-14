@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- ✨ Context Engine: coleta heurística por path + bundle tipado e injeção no workflow (#7)
+
 ## [0.3.0] - 2026-07-14
 
 ### Added
