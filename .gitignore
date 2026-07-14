@@ -1,0 +1,47 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Secrets (nunca commitar)
+.env
+.env.*
+!.env.example
+
+# Capturas / dumps locais
+Captura*.png
+Captura*.jpg
+*.screenshot.png
+
+node_modules
+dist
+dist-ssr
+*.local
+*.tsbuildinfo
+coverage
+
+# Playwright / Lighthouse (futuro)
+/test-results/
+**/test-results/
+/playwright-report/
+**/playwright-report/
+/blob-report/
+/playwright/.cache/
+.lighthouseci/
+**/.lighthouseci/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
