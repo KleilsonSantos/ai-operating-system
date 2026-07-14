@@ -85,11 +85,15 @@ Registry `workspaces/aios.workspaces.json` · resolve por `workspaceId` · [ADR-
 
 `buildKnowledgeGraph` heurístico · resumo em `PipelineResponse.knowledge` · MCP `aios_build_knowledge` · [ADR-0005](../adr/0005-knowledge-graph-heuristic.md).
 
+### Memory (`@aios/memory`) — issue #51
+
+Store local `.aios/memory/{workspaceId}.json` · `remember`/`recall` · MCP `aios_memory_*` · [ADR-0006](../adr/0006-memory-engine-session.md).
+
 ## O que Fase 1 NÃO inclui
 
 - UI completa
 - Multi-provider LLM genérico
 - Knowledge Graph completo (embeddings / store)
-- Memory persistente multi-projeto
+- Memory distribuída multi-máquina
 
 Esses itens entram nas Fases 2–3 ([ROADMAP](../ROADMAP.md)).
