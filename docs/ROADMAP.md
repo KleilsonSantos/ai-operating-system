@@ -21,7 +21,7 @@ Validar arquitetura e fluxos do AIOS.
 - [x] Agentes plugin: Architecture, AppSec, Docs, QA — #8
 - [x] Decision Engine (precisa este agente?) — #8
 - [x] Quality Gate (antes da resposta sair) — #8
-- [ ] CLI / API mínima para consumir o núcleo
+- [x] CLI / API mínima para consumir o núcleo — #9
 
 ## Fase 2 — Multi-repositório (`v0.y.0`)
 

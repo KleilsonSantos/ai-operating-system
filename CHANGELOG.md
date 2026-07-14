@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📦 Contrato CLI/API v1: `@aios/pipeline` (`runPipeline`) + ADR-0003 (#9)
+
 ## [0.5.0] - 2026-07-14
 
 ### Added

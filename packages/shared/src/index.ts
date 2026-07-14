@@ -58,3 +58,45 @@ export type QualityVerdict = {
   checks: Record<string, boolean>
   blockers: string[]
 }
+
+/** Versão do contrato CLI/API estável (issue #9). */
+export const PIPELINE_CONTRACT_VERSION = '1' as const
+
+export type PipelineContractVersion = typeof PIPELINE_CONTRACT_VERSION
+
+/** Pedido do integrador → núcleo AIOS. */
+export type PipelineRequest = {
+  /** Texto livre do usuário (intent raw) */
+  input: string
+  /** Diretório do repositório alvo (default: process.cwd()) */
+  repoPath?: string
+  /** Escopo relativo para Context Engine */
+  scope?: string
+  /** JSON de policies (opcional; senão defaults / walk-up) */
+  policiesPath?: string
+}
+
+/** Resposta estável do núcleo (stdout JSON do CLI = este shape). */
+export type PipelineResponse = {
+  contractVersion: PipelineContractVersion
+  intent: Intent
+  policies: {
+    source: string
+    path?: string
+    count: number
+    mustIds: string[]
+  }
+  context: {
+    repoPath: string
+    scope: string
+    snippetCount: number
+    paths: string[]
+    signals: string[]
+  }
+  workflow: {
+    ran: string[]
+    skipped: string[]
+  }
+  results: AgentResult[]
+  verdict: QualityVerdict
+}
