@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-07-14
+
 ### Added
 
 - 🧩 Memory Engine: `@aios/memory` (`.aios/memory/`), MCP `aios_memory_*`, `PipelineResponse.memory`, ADR-0006 (#51)

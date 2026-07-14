@@ -18,6 +18,7 @@ Exceções que **não** forçam bump sozinhas: `chore`, `docs`, `ci`, `test`, `s
 
 | Tag | Descrição |
 | --- | --- |
+| `v0.10.0` | Memory Engine `@aios/memory` + ADR-0006 (#51) — Fase 2 completa |
 | `v0.9.0` | Knowledge Graph `@aios/knowledge` + ADR-0005 (#47) |
 | `v0.8.0` | Multi-repo onboarding `@aios/workspace` + ADR-0004 (#43) |
 | `v0.7.0` | MCP server `@aios/mcp` (stdio) + Cursor bridge Nível 2 (#38) |
