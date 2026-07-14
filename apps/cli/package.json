@@ -14,11 +14,7 @@
     "test": "node -e \"process.exit(0)\""
   },
   "dependencies": {
-    "@aios/context": "workspace:*",
-    "@aios/intent": "workspace:*",
-    "@aios/orchestration": "workspace:*",
-    "@aios/policy": "workspace:*",
-    "@aios/quality-gate": "workspace:*",
+    "@aios/pipeline": "workspace:*",
     "@aios/shared": "workspace:*"
   },
   "devDependencies": {
