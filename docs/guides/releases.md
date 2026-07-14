@@ -18,6 +18,7 @@ Exceções que **não** forçam bump sozinhas: `chore`, `docs`, `ci`, `test`, `s
 
 | Tag | Descrição |
 | --- | --- |
+| `v0.2.0` | Intent Engine — classificação heurística (#5) |
 | `v0.1.1` | Gate SemVer anti-drift (#15) + bump GitHub Actions |
 | `v0.1.0` | Bootstrap + FOUNDATION + scaffold Fase 1 + Git enterprise + CI |
 
