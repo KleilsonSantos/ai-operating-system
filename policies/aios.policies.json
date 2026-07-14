@@ -1,0 +1,29 @@
+{
+  "policies": [
+    {
+      "id": "official-docs",
+      "description": "Sempre consultar documentação oficial",
+      "severity": "must"
+    },
+    {
+      "id": "trade-offs",
+      "description": "Sempre indicar trade-offs",
+      "severity": "must"
+    },
+    {
+      "id": "no-overengineering",
+      "description": "Sempre evitar overengineering",
+      "severity": "must"
+    },
+    {
+      "id": "justify-decisions",
+      "description": "Sempre justificar decisões",
+      "severity": "must"
+    },
+    {
+      "id": "no-abandoned-libs",
+      "description": "Nunca usar biblioteca abandonada",
+      "severity": "must"
+    }
+  ]
+}
