@@ -6,7 +6,7 @@
 
 ## Contexto
 
-O AIOS adota desde o início o mesmo fluxo enterprise do portfólio: branch de integração `sandbox`, branches semânticas e releases SemVer — para rastreabilidade e disciplina de produto.
+O AIOS adota desde o início um fluxo Git enterprise: branch de integração `sandbox`, branches semânticas e releases SemVer — para rastreabilidade e disciplina de produto.
 
 ## Decisão
 
@@ -29,7 +29,7 @@ feature/* | fix/* | docs/* | chore/* | ci/* | ...
 3. Commits: Conventional Commits + Gitmoji.
 4. Releases: tags anotadas `vX.Y.Z` + GitHub Release + CHANGELOG.
 
-Bootstrap inicial em `main` até `v0.1.0` é a exceção documentada (igual ao padrão do portfólio).
+Bootstrap inicial em `main` até `v0.1.0` é a exceção documentada.
 
 ## Referências
 

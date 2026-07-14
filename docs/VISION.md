@@ -1,32 +1,23 @@
 # Visão de Produto — AIOS
 
+> Resumo operacional. **Pedra base:** [`FOUNDATION.md`](./FOUNDATION.md).
+
 ## Resposta curta
 
-O AIOS é um **produto próprio**, não uma feature do portfólio.
+O AIOS é uma **plataforma de governança para IA aplicada ao desenvolvimento de software**.
 
-| Produto | Objetivo |
-| --- | --- |
-| Portfólio | Mostrar quem você é · projetos · habilidades · interviews |
-| **AIOS** | Gerenciar agentes · prompts · contexto · documentação · conhecimento · MCPs · workflows |
-
-São problemas diferentes. Misturar os dois aumenta complexidade sem necessidade.
-
-## Relação com outros projetos
+## Objetivo
 
 ```text
-Portfolio ──────────┐
-Sistema Financeiro ──┤
-ERP ─────────────────┼──►  AIOS (plataforma)
-CRM ─────────────────┘
+Gerenciar agentes · prompts · contexto · documentação · conhecimento
+Orquestrar MCPs · executar workflows
 ```
-
-O portfólio (e qualquer app futuro) é **cliente**. O AIOS é a **plataforma**.
 
 ## Posicionamento
 
 Existem pedaços do problema em LangChain, CrewAI, AutoGen, OpenHands, Semantic Kernel, OpenAI Agents SDK.
 
-Nenhum resolve exatamente o foco deste produto: **governança de IA aplicada à engenharia de software** (políticas, qualidade, decisão, contexto de repositório, agentes como plugins).
+O AIOS foca no que falta como produto único: **policies, quality gates, decision, contexto de repositório e agentes como plugins** — voltado à engenharia de software.
 
 ## Ideia central
 
@@ -39,9 +30,8 @@ Nenhum resolve exatamente o foco deste produto: **governança de IA aplicada à 
 
 | Fase | Meta |
 | --- | --- |
-| **1** | AIOS voltado ao portfólio — validar arquitetura e fluxos |
-| **2** | Plataforma reutilizável para outros projetos pessoais |
-| **3** | Independente do portfólio — multi-repo, multi-tool (ChatGPT, Claude, Gemini, Copilot) e provedores de contexto |
+| **1** | Núcleo — intent, policy, context, orchestration, plugins, quality gate |
+| **2** | Multi-repositório · Knowledge Graph · memory |
+| **3** | Multi-tool (ChatGPT, Claude, Gemini, Copilot) · MCP · UI de governança |
 
-Detalhe operacional: [`ROADMAP.md`](./ROADMAP.md).
-Arquitetura target: [`architecture/overview.md`](./architecture/overview.md) (próximos commits).
+Detalhe: [`ROADMAP.md`](./ROADMAP.md) · [`architecture/overview.md`](./architecture/overview.md) · [ADR-0001](./adr/0001-standalone-platform.md).
