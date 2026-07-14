@@ -20,7 +20,8 @@
     "@aios/orchestration": "workspace:*",
     "@aios/quality-gate": "workspace:*",
     "@aios/workspace": "workspace:*",
-    "@aios/knowledge": "workspace:*"
+    "@aios/knowledge": "workspace:*",
+    "@aios/memory": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

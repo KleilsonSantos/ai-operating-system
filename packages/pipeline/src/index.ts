@@ -1,6 +1,6 @@
 /**
  * @aios/pipeline — porta estável do núcleo (CLI / integradores).
- * Issue #9 · ADR-0003 · workspace #43 · knowledge #47
+ * Issue #9 · ADR-0003 · workspace #43 · knowledge #47 · memory #51
  */
 import { resolve } from 'node:path'
 import { resolveIntent } from '@aios/intent'
@@ -10,6 +10,7 @@ import { runWorkflow } from '@aios/orchestration'
 import { evaluateQuality } from '@aios/quality-gate'
 import { resolveWorkspace } from '@aios/workspace'
 import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge'
+import { recall } from '@aios/memory'
 import {
   PIPELINE_CONTRACT_VERSION,
   type PipelineRequest,
@@ -30,6 +31,7 @@ export async function runPipeline(
 
   let repoPath: string
   let workspaceMeta: PipelineResponse['workspace']
+  let memoryWorkspaceId: string | undefined
 
   if (request.repoPath) {
     repoPath = resolve(request.repoPath)
@@ -45,9 +47,14 @@ export async function runPipeline(
         name: ws.entry.name,
         registryPath: ws.registryPath,
       }
+      memoryWorkspaceId = ws.entry.id
     } else {
       repoPath = resolve(process.cwd())
     }
+  }
+
+  if (request.workspaceId) {
+    memoryWorkspaceId = request.workspaceId
   }
 
   const intent = resolveIntent(input)
@@ -63,6 +70,25 @@ export async function runPipeline(
   const knowledge = summarizeKnowledge(
     buildKnowledgeGraph({ repoPath }),
   )
+
+  const wantMemory =
+    request.includeMemory === true ||
+    (request.includeMemory !== false && Boolean(memoryWorkspaceId))
+
+  let memoryMeta: PipelineResponse['memory']
+  if (wantMemory && memoryWorkspaceId) {
+    const mem = recall(memoryWorkspaceId, {
+      homePath: process.env.AIOS_HOME || process.cwd(),
+      limit: request.memoryLimit ?? 5,
+    })
+    memoryMeta = {
+      workspaceId: mem.workspaceId,
+      count: mem.entries.length,
+      entries: mem.entries,
+      path: mem.path,
+    }
+  }
+
   const workflow = await runWorkflow(intent, {
     policies: policyBundle.rules,
     context,
@@ -91,6 +117,7 @@ export async function runPipeline(
     },
     ...(workspaceMeta ? { workspace: workspaceMeta } : {}),
     knowledge,
+    ...(memoryMeta ? { memory: memoryMeta } : {}),
     workflow: {
       ran: [...workflow.ran],
       skipped: [...workflow.skipped],

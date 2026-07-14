@@ -11,11 +11,12 @@ import { runPipeline, PIPELINE_CONTRACT_VERSION } from '@aios/pipeline'
 import { loadPolicies, applyPolicies } from '@aios/policy'
 import { loadWorkspaces, resolveWorkspace } from '@aios/workspace'
 import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge'
+import { remember, recall, clearMemory, listMemoryWorkspaces } from '@aios/memory'
 import { resolve } from 'node:path'
 
 const server = new McpServer({
   name: 'aios',
-  version: '0.9.0',
+  version: '0.10.0',
 })
 
 server.registerTool(
@@ -128,6 +129,91 @@ server.registerTool(
       : { ...summarizeKnowledge(graph), repoPath: graph.repoPath }
     return {
       content: [{ type: 'text', text: JSON.stringify(payload, null, 2) }],
+    }
+  },
+)
+
+server.registerTool(
+  'aios_memory_remember',
+  {
+    title: 'Remember for workspace',
+    description:
+      'Persists a short session/project fact under .aios/memory/{workspaceId}.json (Fase 2 · #51).',
+    inputSchema: {
+      workspaceId: z
+        .string()
+        .describe('Workspace id (e.g. aios)'),
+      content: z.string().describe('Fact / note to remember'),
+      tags: z.array(z.string()).optional().describe('Optional tags'),
+    },
+  },
+  async ({ workspaceId, content, tags }) => {
+    try {
+      const entry = remember(workspaceId, content, {
+        homePath: process.env.AIOS_HOME || process.cwd(),
+        tags,
+      })
+      return {
+        content: [{ type: 'text', text: JSON.stringify({ ok: true, entry }, null, 2) }],
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return {
+        content: [{ type: 'text', text: `aios_memory_remember failed: ${message}` }],
+        isError: true,
+      }
+    }
+  },
+)
+
+server.registerTool(
+  'aios_memory_recall',
+  {
+    title: 'Recall workspace memory',
+    description: 'Reads recent memory entries for a workspace (#51).',
+    inputSchema: {
+      workspaceId: z.string().describe('Workspace id'),
+      limit: z.number().optional().describe('Max entries (default 10)'),
+      query: z.string().optional().describe('Substring filter'),
+      tag: z.string().optional().describe('Tag filter'),
+    },
+  },
+  async ({ workspaceId, limit, query, tag }) => {
+    const result = recall(workspaceId, {
+      homePath: process.env.AIOS_HOME || process.cwd(),
+      limit,
+      query,
+      tag,
+    })
+    return {
+      content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+    }
+  },
+)
+
+server.registerTool(
+  'aios_memory_clear',
+  {
+    title: 'Clear workspace memory',
+    description: 'Deletes the memory file for a workspace (#51).',
+    inputSchema: {
+      workspaceId: z.string().describe('Workspace id'),
+    },
+  },
+  async ({ workspaceId }) => {
+    const cleared = clearMemory(workspaceId, {
+      homePath: process.env.AIOS_HOME || process.cwd(),
+    })
+    const remaining = listMemoryWorkspaces({
+      homePath: process.env.AIOS_HOME || process.cwd(),
+    })
+    return {
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify({ cleared, workspaceId, remaining }, null, 2),
+        },
+      ],
     }
   },
 )

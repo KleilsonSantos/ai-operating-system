@@ -65,6 +65,11 @@ describe('runPipeline', () => {
         workspaces: [{ id: 'target', path: 'target', default: true }],
       }),
     )
+    const { remember } = await import('@aios/memory')
+    remember('target', 'use feature branches from sandbox', {
+      homePath: home,
+      tags: ['git'],
+    })
     const prev = process.env.AIOS_HOME
     process.env.AIOS_HOME = home
     try {
@@ -75,6 +80,8 @@ describe('runPipeline', () => {
       expect(res.workspace?.id).toBe('target')
       expect(res.context.repoPath).toBe(target)
       expect(res.verdict.passed).toBe(true)
+      expect(res.memory?.count).toBe(1)
+      expect(res.memory?.entries[0]?.content).toContain('sandbox')
     } finally {
       if (prev === undefined) delete process.env.AIOS_HOME
       else process.env.AIOS_HOME = prev
