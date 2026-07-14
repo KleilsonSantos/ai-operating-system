@@ -1,5 +1,14 @@
 # @aios/orchestration — Orchestration Engine
 
-Coordena workflow e plugins a partir do intent.
+Coordena Decision → plugins → injeção de policies/context.
 
-Scaffold Fase 1. Contrato e fluxo: `docs/architecture/system-guide.md`.
+```ts
+const { results, ran, skipped } = await runWorkflow(intent, {
+  policies,
+  context,
+})
+```
+
+Plugins são **plugins** — o usuário não os escolhe; a matriz do Decision agenda.
+
+Issue #8 · [system-guide](../../docs/architecture/system-guide.md)

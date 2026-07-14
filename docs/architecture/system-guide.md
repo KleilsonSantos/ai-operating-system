@@ -64,6 +64,13 @@ Detalhe: [`engines/context/README.md`](../../engines/context/README.md).
 
 Pedido curto no chat; policies injetadas sem CLI. Guia: [`docs/guides/cursor-chat-bridge.md`](../guides/cursor-chat-bridge.md).
 
+### Decision · Orchestration · Quality Gate — issue #8
+
+- `shouldRunAgent` / `agentsForIntent` — matriz por `IntentKind` (unknown = nenhum).
+- `runWorkflow` → `{ results, ran, skipped }` com injeção de policies + context.
+- Plugins (architecture / appsec / docs / qa): findings heurísticos sobre o bundle.
+- `evaluateQuality(results, { intent, context })` bloqueia pacote inconsistente; CLI exit `1` se falhar.
+
 ## O que Fase 1 NÃO inclui
 
 - UI completa

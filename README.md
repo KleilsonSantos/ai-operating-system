@@ -16,9 +16,9 @@ Você escreve *"Analise meu projeto."* — policies, contexto, agentes e quality
 
 | Item | Valor |
 | --- | --- |
-| Fase | Fase 1 (Intent · Policy · Context · Chat bridge) · `v0.4.0` |
+| Fase | Fase 1 (núcleo até Quality Gate) · `v0.5.0` |
 | Produção | `main` + tag SemVer |
-| Última release | [`v0.4.0`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.4.0) |
+| Última release | [`v0.5.0`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.5.0) |
 | Monorepo | pnpm workspaces + Turborepo (stubs) |
 | Integração | `sandbox` → `main` · SemVer · [ponte Cursor Chat](./docs/guides/cursor-chat-bridge.md) |
 | Pedra base | [`docs/FOUNDATION.md`](./docs/FOUNDATION.md) |

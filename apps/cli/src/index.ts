@@ -34,11 +34,15 @@ async function main(): Promise<void> {
     repoPath: process.cwd(),
     scope,
   })
-  const results = await runWorkflow(intent, {
+  const workflow = await runWorkflow(intent, {
     policies: policies.rules,
     context,
   })
-  const verdict = evaluateQuality(results)
+  const verdict = evaluateQuality(workflow.results, {
+    intent,
+    context,
+    skipped: workflow.skipped,
+  })
 
   console.log(
     JSON.stringify(
@@ -57,13 +61,21 @@ async function main(): Promise<void> {
           paths: context.snippets.map((s) => s.path),
           signals: context.signals,
         },
-        results,
+        workflow: {
+          ran: workflow.ran,
+          skipped: workflow.skipped,
+        },
+        results: workflow.results,
         verdict,
       },
       null,
       2,
     ),
   )
+
+  if (!verdict.passed) {
+    process.exitCode = 1
+  }
 }
 
 main().catch((err) => {
