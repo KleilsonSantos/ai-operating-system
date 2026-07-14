@@ -1,0 +1,27 @@
+{
+  "name": "@aios/orchestration",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "description": "Coordena workflow e plugins a partir do intent.",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "node -e \"process.exit(0)\"",
+    "test": "node -e \"process.exit(0)\""
+  },
+  "dependencies": {
+    "@aios/shared": "workspace:*",
+    "@aios/core": "workspace:*",
+    "@aios/decision": "workspace:*",
+    "@aios/agent-architecture": "workspace:*",
+    "@aios/agent-appsec": "workspace:*",
+    "@aios/agent-docs": "workspace:*",
+    "@aios/agent-qa": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}

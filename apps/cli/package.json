@@ -1,0 +1,27 @@
+{
+  "name": "@aios/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "aios": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "node --experimental-strip-types ./src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "node -e \"process.exit(0)\"",
+    "test": "node -e \"process.exit(0)\""
+  },
+  "dependencies": {
+    "@aios/shared": "workspace:*",
+    "@aios/intent": "workspace:*",
+    "@aios/policy": "workspace:*",
+    "@aios/context": "workspace:*",
+    "@aios/orchestration": "workspace:*",
+    "@aios/quality-gate": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}

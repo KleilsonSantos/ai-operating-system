@@ -22,12 +22,35 @@ Misturar os dois aumenta complexidade. Aqui o AIOS é a plataforma; o portfólio
 
 | Item | Valor |
 | --- | --- |
-| Fase | Visão de produto (`v0.0.0`) |
+| Fase | Scaffold Fase 1 (`v0.0.0`) |
 | Produção | ainda não |
+| Monorepo | pnpm workspaces + Turborepo (stubs) |
 | Visão | [`docs/VISION.md`](./docs/VISION.md) |
 | Roadmap | [`docs/ROADMAP.md`](./docs/ROADMAP.md) |
 | ADR | [ADR-0001 — produto separado](./docs/adr/0001-product-separation.md) |
 | Arquitetura | [`docs/architecture/overview.md`](./docs/architecture/overview.md) |
+
+## Estrutura (Fase 1)
+
+```text
+apps/cli/                 # Cliente mínimo (portfólio consumirá depois)
+packages/
+  shared/                 # Tipos compartilhados
+  core/                   # ai-core (pipeline stub)
+engines/
+  intent/ policy/ context/ decision/
+  orchestration/ quality-gate/
+  agent-architecture/ agent-appsec/ agent-docs/ agent-qa/   # plugins
+docs/
+  VISION.md ROADMAP.md adr/ architecture/
+```
+
+## Quick start
+
+```bash
+pnpm install
+pnpm --filter @aios/cli dev -- "Analise meu projeto."
+```
 
 ## Documentação
 

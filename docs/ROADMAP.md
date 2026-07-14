@@ -5,7 +5,8 @@
 - [x] Repositório `ai-operating-system` (LICENSE, README, package)
 - [x] Visão de produto canônica (`docs/VISION.md`)
 - [x] ADR de produto separado do portfólio
-- [ ] Arquitetura target documentada (engines + agents-as-plugins)
+- [x] Arquitetura target documentada (engines + agents-as-plugins)
+- [x] Scaffold monorepo Fase 1 (engines + plugins + CLI)
 - [ ] Fluxo Git enterprise (`sandbox` → `main`, SemVer)
 - [ ] Community health (Issues, Project, Wiki mapa, CI/templates)
 
