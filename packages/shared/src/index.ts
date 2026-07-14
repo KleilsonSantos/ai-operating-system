@@ -116,6 +116,20 @@ export type KnowledgeGraph = {
   signals: string[]
 }
 
+/** Memory Engine (Fase 2 · #51). */
+export type MemoryEntry = {
+  id: string
+  content: string
+  createdAt: string
+  tags?: string[]
+}
+
+export type MemoryStore = {
+  workspaceId: string
+  updatedAt: string
+  entries: MemoryEntry[]
+}
+
 /** Pedido do integrador → núcleo AIOS. */
 export type PipelineRequest = {
   /** Texto livre do usuário (intent raw) */
@@ -133,6 +147,13 @@ export type PipelineRequest = {
   policiesPath?: string
   /** Override do arquivo de workspaces */
   workspacesPath?: string
+  /**
+   * Se true, anexa recall de memória ao response
+   * (default: true quando workspaceId presente).
+   */
+  includeMemory?: boolean
+  /** Limite de entradas de memória no response */
+  memoryLimit?: number
 }
 
 /** Resposta estável do núcleo (stdout JSON do CLI = este shape). */
@@ -164,6 +185,13 @@ export type PipelineResponse = {
     edgeCount: number
     kinds: Record<string, number>
     signals: string[]
+  }
+  /** Recall de memória de sessão/projeto (#51) */
+  memory?: {
+    workspaceId: string
+    count: number
+    entries: MemoryEntry[]
+    path?: string
   }
   workflow: {
     ran: string[]

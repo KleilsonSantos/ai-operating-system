@@ -36,6 +36,9 @@ importers:
       '@aios/knowledge':
         specifier: workspace:*
         version: link:../../engines/knowledge
+      '@aios/memory':
+        specifier: workspace:*
+        version: link:../../engines/memory
       '@aios/pipeline':
         specifier: workspace:*
         version: link:../../packages/pipeline
@@ -169,6 +172,22 @@ importers:
         specifier: ^3.2.4
         version: 3.2.7(@types/node@26.1.1)
 
+  engines/memory:
+    dependencies:
+      '@aios/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+    devDependencies:
+      '@types/node':
+        specifier: ^26.1.1
+        version: 26.1.1
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@26.1.1)
+
   engines/orchestration:
     dependencies:
       '@aios/agent-appsec':
@@ -278,6 +297,9 @@ importers:
       '@aios/knowledge':
         specifier: workspace:*
         version: link:../../engines/knowledge
+      '@aios/memory':
+        specifier: workspace:*
+        version: link:../../engines/memory
       '@aios/orchestration':
         specifier: workspace:*
         version: link:../../engines/orchestration

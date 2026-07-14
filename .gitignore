@@ -40,6 +40,8 @@ coverage
 !.vscode/settings.json
 # Local MCP (path absoluto da máquina; use mcp.json.example)
 .cursor/mcp.json
+# Memory Engine local store (#51)
+.aios/
 .idea
 .DS_Store
 *.suo

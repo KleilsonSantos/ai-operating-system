@@ -20,6 +20,7 @@
     "@aios/shared": "workspace:*",
     "@aios/workspace": "workspace:*",
     "@aios/knowledge": "workspace:*",
+    "@aios/memory": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^3.25.0"
   },
