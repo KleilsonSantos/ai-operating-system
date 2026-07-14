@@ -1,8 +1,8 @@
-# Ponte Cursor Chat ↔ AIOS (Nível 1)
+# Ponte Cursor Chat ↔ AIOS
 
-O Agent do Cursor **não** descobre o AIOS sozinho. Este repo injeta as policies em todo chat via **Project Rules**.
+O Agent do Cursor **não** descobre o AIOS sozinho. Duas camadas:
 
-## Como funciona
+## Nível 1 — Project Rules (sempre ligado neste repo)
 
 ```text
 Você digita no chat (pedido curto)
@@ -10,29 +10,34 @@ Você digita no chat (pedido curto)
 Cursor Agent carrega .cursor/rules/*.mdc (alwaysApply)
         ↓
 Conteúdo gerado a partir de policies/aios.policies.json
-        ↓
-Resposta já alinhada (best practices, Git, sem depreciação…)
 ```
-
-Não precisa lembrar do CLI para “seguir o regulamento”.
-
-## Regenerar após editar policies
 
 ```bash
 pnpm sync:cursor-rules
 ```
 
-Isso atualiza:
+- `.cursor/rules/aios-policies.mdc`
+- `.cursor/rules/aios-sdlc.mdc`
 
-- `.cursor/rules/aios-policies.mdc` — policies do Policy Engine
-- `.cursor/rules/aios-sdlc.mdc` — fluxo Git / commits / ROADMAP
-- `.cursor/rules/.sync-meta.json` — metadados da geração
+## Nível 2 — MCP server (`@aios/mcp`) — issue #38
 
-## Próximo nível (ainda não neste PR)
+Ligação **viva** com o runtime: o Agent chama tools.
 
-MCP server com `load_policies` / `gather_context` — ligação viva com o runtime. Ver ROADMAP Fase 3 (integrations) e adiantamento possível após o núcleo.
+| Tool | Papel |
+| --- | --- |
+| `aios_contract_version` | `contractVersion` |
+| `aios_load_policies` | Policies + constraints |
+| `aios_run_pipeline` | Núcleo completo (`PipelineResponse`) |
 
-## Smoke CLI (opcional)
+Exemplo de config: [`.cursor/mcp.json.example`](../../.cursor/mcp.json.example).
+
+```bash
+pnpm --filter @aios/mcp dev
+```
+
+Detalhe: [`apps/mcp/README.md`](../../apps/mcp/README.md) · contrato [ADR-0003](../adr/0003-pipeline-integration-contract.md).
+
+## Smoke CLI
 
 ```bash
 pnpm --filter @aios/cli dev -- "Analise meu projeto."
