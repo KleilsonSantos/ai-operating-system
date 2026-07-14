@@ -20,7 +20,7 @@ Você escreve *"Analise meu projeto."* — policies, contexto, agentes e quality
 | Produção | `main` + tag SemVer |
 | Última release | [`v0.3.0`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.3.0) |
 | Monorepo | pnpm workspaces + Turborepo (stubs) |
-| Integração | `sandbox` → `main` · SemVer ([guia](./docs/guides/git-workflow.md)) |
+| Integração | `sandbox` → `main` · SemVer · [ponte Cursor Chat](./docs/guides/cursor-chat-bridge.md) |
 | Pedra base | [`docs/FOUNDATION.md`](./docs/FOUNDATION.md) |
 | Visão (resumo) | [`docs/VISION.md`](./docs/VISION.md) |
 | Roadmap | [`docs/ROADMAP.md`](./docs/ROADMAP.md) |
@@ -46,8 +46,11 @@ docs/
 
 ```bash
 pnpm install
+pnpm sync:cursor-rules   # policies → .cursor/rules (chat do Cursor)
 pnpm --filter @aios/cli dev -- "Analise meu projeto."
 ```
+
+No Cursor Agent deste workspace, as policies já entram sozinhas (Project Rules). Guia: [cursor-chat-bridge](./docs/guides/cursor-chat-bridge.md).
 
 ## Documentação
 
@@ -59,6 +62,7 @@ pnpm --filter @aios/cli dev -- "Analise meu projeto."
 | [ADR-0001](./docs/adr/0001-standalone-platform.md) | Plataforma standalone |
 | [Arquitetura](./docs/architecture/overview.md) | Engines, plugins, policies, quality gate |
 | [System guide](./docs/architecture/system-guide.md) | Fluxo Fase 1 |
+| [Cursor chat bridge](./docs/guides/cursor-chat-bridge.md) | Policies no chat sem CLI |
 
 ## Licença
 
