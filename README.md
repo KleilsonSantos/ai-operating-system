@@ -16,24 +16,25 @@ Você escreve *"Analise meu projeto."* — policies, contexto, agentes e quality
 
 | Item | Valor |
 | --- | --- |
-| Fase | Fase 1 (núcleo até Quality Gate) · `v0.5.0` |
+| Fase | Fase 1 (núcleo completo) · `v0.6.0` |
 | Produção | `main` + tag SemVer |
-| Última release | [`v0.5.0`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.5.0) |
+| Última release | [`v0.6.0`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.6.0) |
 | Monorepo | pnpm workspaces + Turborepo (stubs) |
-| Integração | `sandbox` → `main` · SemVer · [ponte Cursor Chat](./docs/guides/cursor-chat-bridge.md) |
+| Integração | `sandbox` → `main` · [`@aios/pipeline`](./packages/pipeline/README.md) · [Cursor chat](./docs/guides/cursor-chat-bridge.md) |
 | Pedra base | [`docs/FOUNDATION.md`](./docs/FOUNDATION.md) |
 | Visão (resumo) | [`docs/VISION.md`](./docs/VISION.md) |
 | Roadmap | [`docs/ROADMAP.md`](./docs/ROADMAP.md) |
-| ADR | [ADR-0001 — plataforma standalone](./docs/adr/0001-standalone-platform.md) |
+| ADR | [ADR-0001](./docs/adr/0001-standalone-platform.md) · [ADR-0003 pipeline](./docs/adr/0003-pipeline-integration-contract.md) |
 | Arquitetura | [`docs/architecture/overview.md`](./docs/architecture/overview.md) |
 
 ## Estrutura (Fase 1)
 
 ```text
-apps/cli/                 # Cliente mínimo
+apps/cli/                 # Cliente fino → @aios/pipeline
 packages/
-  shared/                 # Tipos compartilhados
-  core/                   # ai-core (pipeline stub)
+  shared/                 # Tipos + PipelineRequest/Response
+  core/                   # ai-core (eventos)
+  pipeline/               # runPipeline — contrato estável (#9)
 engines/
   intent/ policy/ context/ decision/
   orchestration/ quality-gate/
@@ -60,6 +61,7 @@ No Cursor Agent deste workspace, as policies já entram sozinhas (Project Rules)
 | [VISION](./docs/VISION.md) | Resumo operacional |
 | [ROADMAP](./docs/ROADMAP.md) | O que entra em cada fase |
 | [ADR-0001](./docs/adr/0001-standalone-platform.md) | Plataforma standalone |
+| [ADR-0003](./docs/adr/0003-pipeline-integration-contract.md) | Contrato `@aios/pipeline` |
 | [Arquitetura](./docs/architecture/overview.md) | Engines, plugins, policies, quality gate |
 | [System guide](./docs/architecture/system-guide.md) | Fluxo Fase 1 |
 | [Cursor chat bridge](./docs/guides/cursor-chat-bridge.md) | Policies no chat sem CLI |

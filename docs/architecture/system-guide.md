@@ -26,7 +26,7 @@ flowchart TD
 
 | Porta | Quem fala | O quê |
 | --- | --- | --- |
-| CLI / API | Humano ou integrador | Intent + escopo (path do repo) |
+| CLI / API | Humano ou integrador | `PipelineRequest` → `runPipeline` → `PipelineResponse` (`contractVersion: "1"`) |
 | Engine API | Interno | Eventos tipados entre engines |
 | Plugin API | Agentes | Input de contexto + policies → artefato |
 
@@ -70,6 +70,12 @@ Pedido curto no chat; policies injetadas sem CLI. Guia: [`docs/guides/cursor-cha
 - `runWorkflow` → `{ results, ran, skipped }` com injeção de policies + context.
 - Plugins (architecture / appsec / docs / qa): findings heurísticos sobre o bundle.
 - `evaluateQuality(results, { intent, context })` bloqueia pacote inconsistente; CLI exit `1` se falhar.
+
+### Contrato CLI/API (`@aios/pipeline`) — issue #9
+
+`runPipeline({ input, repoPath?, scope?, policiesPath? })` → `PipelineResponse` com `contractVersion: "1"`.
+
+CLI (`@aios/cli`) é cliente fino desse contrato. Integradores dependem de `@aios/pipeline` + `@aios/shared` — [ADR-0003](../adr/0003-pipeline-integration-contract.md).
 
 ## O que Fase 1 NÃO inclui
 
