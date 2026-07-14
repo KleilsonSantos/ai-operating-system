@@ -4,19 +4,21 @@ Contrato para qualquer agente de IA neste repositório.
 
 ## Missão
 
-Construir uma **plataforma de governança para IA no SDLC** — não um portfólio e não um dump de prompts.
+Construir o **AIOS**: plataforma de governança para IA no SDLC — produto único, não um dump de prompts.
 
 ## Fontes de verdade
 
 1. Código em `engines/` · `packages/` · `apps/`
-2. `docs/VISION.md` · `docs/architecture/` · ADRs
+2. `docs/FOUNDATION.md` (pedra base) · `docs/VISION.md` · `docs/architecture/` · ADRs
 3. `docs/ROADMAP.md` · `CHANGELOG.md`
+
+Em conflito entre resumo e `FOUNDATION.md`, a pedra base vence até ADR explícita.
 
 **Wiki GitHub:** só mapa de links (não fonte canônica).
 
 ## Regras
 
-1. AIOS ≠ portfólio — portfólio é cliente (ADR-0001).
+1. AIOS é produto standalone (ADR-0001).
 2. Fluxo Git: Issue → `feature/*` from `sandbox` → PR → `sandbox` → PR → `main`.
 3. Commits: `type: <gitmoji> …` · autoria `Kleilson Santos <kdsddesign1@gmail.com>` · sem co-autoria de IDE.
 4. Agentes são **plugins** — não expor chamada direta no UX principal.

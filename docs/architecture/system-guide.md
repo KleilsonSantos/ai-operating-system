@@ -26,7 +26,7 @@ flowchart TD
 
 | Porta | Quem fala | O quê |
 | --- | --- | --- |
-| CLI / API | Portfólio ou humano | Intent + escopo (path do repo) |
+| CLI / API | Humano ou integrador | Intent + escopo (path do repo) |
 | Engine API | Interno | Eventos tipados entre engines |
 | Plugin API | Agentes | Input de contexto + policies → artefato |
 
