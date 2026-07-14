@@ -1,6 +1,6 @@
 # Guia de Fluxo Git — Branches, PRs e Releases
 
-Fluxo oficial do repositório `ai-operating-system` (espelha o padrão enterprise do portfólio).
+Fluxo oficial do repositório `ai-operating-system`.
 
 ## Visão geral
 
