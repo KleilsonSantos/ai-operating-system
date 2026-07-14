@@ -1,6 +1,6 @@
 /**
  * @aios/pipeline — porta estável do núcleo (CLI / integradores).
- * Issue #9 · ADR-0003
+ * Issue #9 · ADR-0003 · workspace resolve #43
  */
 import { resolve } from 'node:path'
 import { resolveIntent } from '@aios/intent'
@@ -8,6 +8,7 @@ import { loadPolicies, applyPolicies } from '@aios/policy'
 import { gatherContext } from '@aios/context'
 import { runWorkflow } from '@aios/orchestration'
 import { evaluateQuality } from '@aios/quality-gate'
+import { resolveWorkspace } from '@aios/workspace'
 import {
   PIPELINE_CONTRACT_VERSION,
   type PipelineRequest,
@@ -18,14 +19,35 @@ export { PIPELINE_CONTRACT_VERSION }
 export type { PipelineRequest, PipelineResponse }
 
 /**
- * Executa o fluxo Fase 1: Intent → Policy → Context → Workflow → Quality Gate.
+ * Executa o fluxo núcleo: Intent → Policy → Context → Workflow → Quality Gate.
  * Integradores devem depender deste pacote (+ `@aios/shared`), não dos engines.
  */
 export async function runPipeline(
   request: PipelineRequest,
 ): Promise<PipelineResponse> {
   const input = request.input?.trim() || 'Analise meu projeto.'
-  const repoPath = resolve(request.repoPath ?? process.cwd())
+
+  let repoPath: string
+  let workspaceMeta: PipelineResponse['workspace']
+
+  if (request.repoPath) {
+    repoPath = resolve(request.repoPath)
+  } else {
+    const ws = resolveWorkspace(request.workspaceId, {
+      cwd: process.env.AIOS_HOME || process.cwd(),
+      configPath: request.workspacesPath,
+    })
+    if (ws) {
+      repoPath = ws.repoPath
+      workspaceMeta = {
+        id: ws.entry.id,
+        name: ws.entry.name,
+        registryPath: ws.registryPath,
+      }
+    } else {
+      repoPath = resolve(process.cwd())
+    }
+  }
 
   const intent = resolveIntent(input)
   const policyBundle = loadPolicies({
@@ -63,6 +85,7 @@ export async function runPipeline(
       paths: context.snippets.map((s) => s.path),
       signals: context.signals,
     },
+    ...(workspaceMeta ? { workspace: workspaceMeta } : {}),
     workflow: {
       ran: [...workflow.ran],
       skipped: [...workflow.skipped],

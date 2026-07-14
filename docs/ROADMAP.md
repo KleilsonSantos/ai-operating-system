@@ -26,7 +26,7 @@ Validar arquitetura e fluxos do AIOS.
 ## Fase 2 — Multi-repositório (`v0.y.0`)
 
 - [x] Contratos de integração estáveis — ADR-0003 / `@aios/pipeline` (#9); MCP Nível 2 (#38)
-- [ ] Onboarding de múltiplos repositórios
+- [x] Onboarding de múltiplos repositórios — `@aios/workspace` + ADR-0004 (#43)
 - [ ] Knowledge Graph básico (relações Projeto → API → Banco → …)
 - [ ] Memory Engine (sessão / projeto)
 

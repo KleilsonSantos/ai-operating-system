@@ -1,11 +1,11 @@
 {
-  "name": "@aios/pipeline",
+  "name": "@aios/workspace",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
-  "description": "Contrato estável do núcleo AIOS — runPipeline para CLI/integradores.",
+  "description": "Registry e resolução de workspaces multi-repositório (Fase 2).",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -13,13 +13,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@aios/shared": "workspace:*",
-    "@aios/intent": "workspace:*",
-    "@aios/policy": "workspace:*",
-    "@aios/context": "workspace:*",
-    "@aios/orchestration": "workspace:*",
-    "@aios/quality-gate": "workspace:*",
-    "@aios/workspace": "workspace:*"
+    "@aios/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

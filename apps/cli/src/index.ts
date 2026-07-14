@@ -4,10 +4,12 @@ function parseArgs(argv: string[]): {
   input: string
   scope?: string
   repoPath?: string
+  workspaceId?: string
   policiesPath?: string
 } {
   let scope: string | undefined
   let repoPath: string | undefined
+  let workspaceId: string | undefined
   let policiesPath: string | undefined
   const parts: string[] = []
 
@@ -29,6 +31,14 @@ function parseArgs(argv: string[]): {
       repoPath = a.slice('--repo='.length)
       continue
     }
+    if (a === '--workspace') {
+      workspaceId = argv[++i]
+      continue
+    }
+    if (a.startsWith('--workspace=')) {
+      workspaceId = a.slice('--workspace='.length)
+      continue
+    }
     if (a === '--policies') {
       policiesPath = argv[++i]
       continue
@@ -48,6 +58,7 @@ function parseArgs(argv: string[]): {
     input: parts.join(' ').trim() || 'Analise meu projeto.',
     scope: scope || process.env.AIOS_SCOPE,
     repoPath: repoPath || process.env.AIOS_REPO,
+    workspaceId: workspaceId || process.env.AIOS_WORKSPACE,
     policiesPath: policiesPath || process.env.AIOS_POLICIES_PATH,
   }
 }
@@ -57,6 +68,7 @@ async function main(): Promise<void> {
   const response = await runPipeline({
     input: args.input,
     repoPath: args.repoPath,
+    workspaceId: args.workspaceId,
     scope: args.scope,
     policiesPath: args.policiesPath,
   })
