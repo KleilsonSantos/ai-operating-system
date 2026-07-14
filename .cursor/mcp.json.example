@@ -2,14 +2,8 @@
   "mcpServers": {
     "aios": {
       "command": "pnpm",
-      "args": [
-        "--filter",
-        "@aios/mcp",
-        "exec",
-        "node",
-        "--experimental-strip-types",
-        "apps/mcp/src/index.ts"
-      ]
+      "args": ["--filter", "@aios/mcp", "dev"],
+      "cwd": "/ABS/PATH/TO/ai-operating-system"
     }
   }
 }
