@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- ✨ Policy Engine: carga JSON + defaults, `applyPolicies` e injeção no workflow (#6)
+
 ## [0.2.0] - 2026-07-14
 
 ### Added

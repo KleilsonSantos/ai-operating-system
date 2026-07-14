@@ -15,7 +15,7 @@
 Validar arquitetura e fluxos do AIOS.
 
 - [x] Intent Engine (interpretar pedido) — #5
-- [ ] Policy Engine (regras fixas da plataforma)
+- [x] Policy Engine (regras fixas da plataforma) — #6
 - [ ] Context Engine (repo + docs)
 - [ ] Orchestration + Workflow (escolher agentes)
 - [ ] Agentes plugin: Architecture, AppSec, Docs, QA
