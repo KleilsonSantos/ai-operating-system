@@ -38,6 +38,16 @@ Kinds Fase 1: `analyze.project` · `explain.code` · `review.change` · `unknown
 
 Classificação heurística (sem LLM). Detalhe: [`engines/intent/README.md`](../../engines/intent/README.md).
 
+### Policy Engine (`@aios/policy`) — issue #6
+
+`loadPolicies()` → `{ rules, source, path? }` · `applyPolicies(rules)` → `{ constraints, mustIds }`.
+
+Arquivo opcional: `policies/aios.policies.json` (ou `AIOS_POLICIES_PATH` / `configPath`).
+
+Injeção Fase 1: `runWorkflow(intent, { policies })` anexa `policy:<id>` e `policies.injected` nos resultados dos plugins.
+
+Detalhe: [`engines/policy/README.md`](../../engines/policy/README.md).
+
 ## O que Fase 1 NÃO inclui
 
 - UI completa

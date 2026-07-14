@@ -15,6 +15,7 @@
   "dependencies": {
     "@aios/shared": "workspace:*",
     "@aios/core": "workspace:*",
+    "@aios/policy": "workspace:*",
     "@aios/decision": "workspace:*",
     "@aios/agent-architecture": "workspace:*",
     "@aios/agent-appsec": "workspace:*",
@@ -22,6 +23,7 @@
     "@aios/agent-qa": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "^26.1.1",
     "typescript": "^5.9.2"
   }
 }
