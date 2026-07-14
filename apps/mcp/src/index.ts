@@ -10,11 +10,12 @@ import { z } from 'zod'
 import { runPipeline, PIPELINE_CONTRACT_VERSION } from '@aios/pipeline'
 import { loadPolicies, applyPolicies } from '@aios/policy'
 import { loadWorkspaces, resolveWorkspace } from '@aios/workspace'
+import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge'
 import { resolve } from 'node:path'
 
 const server = new McpServer({
   name: 'aios',
-  version: '0.8.0',
+  version: '0.9.0',
 })
 
 server.registerTool(
@@ -88,6 +89,45 @@ server.registerTool(
           ),
         },
       ],
+    }
+  },
+)
+
+server.registerTool(
+  'aios_build_knowledge',
+  {
+    title: 'Build AIOS knowledge graph',
+    description:
+      'Builds a heuristic Knowledge Graph for a repo (project → packages/engines → docs → infra). No embeddings. Fase 2 · #47.',
+    inputSchema: {
+      repoPath: z
+        .string()
+        .optional()
+        .describe('Repo root (default: AIOS_REPO / cwd)'),
+      workspaceId: z
+        .string()
+        .optional()
+        .describe('Workspace id (resolves repoPath)'),
+      full: z
+        .boolean()
+        .optional()
+        .describe('If true, return full nodes/edges; else summary only'),
+    },
+  },
+  async ({ repoPath, workspaceId, full }) => {
+    let root = resolve(repoPath || process.env.AIOS_REPO || process.cwd())
+    if (!repoPath && workspaceId) {
+      const ws = resolveWorkspace(workspaceId, {
+        cwd: process.env.AIOS_HOME || process.cwd(),
+      })
+      if (ws) root = ws.repoPath
+    }
+    const graph = buildKnowledgeGraph({ repoPath: root })
+    const payload = full
+      ? graph
+      : { ...summarizeKnowledge(graph), repoPath: graph.repoPath }
+    return {
+      content: [{ type: 'text', text: JSON.stringify(payload, null, 2) }],
     }
   },
 )

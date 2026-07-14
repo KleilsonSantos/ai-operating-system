@@ -33,6 +33,9 @@ importers:
 
   apps/mcp:
     dependencies:
+      '@aios/knowledge':
+        specifier: workspace:*
+        version: link:../../engines/knowledge
       '@aios/pipeline':
         specifier: workspace:*
         version: link:../../packages/pipeline
@@ -150,6 +153,22 @@ importers:
         specifier: ^3.2.4
         version: 3.2.7(@types/node@26.1.1)
 
+  engines/knowledge:
+    dependencies:
+      '@aios/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+    devDependencies:
+      '@types/node':
+        specifier: ^26.1.1
+        version: 26.1.1
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@26.1.1)
+
   engines/orchestration:
     dependencies:
       '@aios/agent-appsec':
@@ -256,6 +275,9 @@ importers:
       '@aios/intent':
         specifier: workspace:*
         version: link:../../engines/intent
+      '@aios/knowledge':
+        specifier: workspace:*
+        version: link:../../engines/knowledge
       '@aios/orchestration':
         specifier: workspace:*
         version: link:../../engines/orchestration
