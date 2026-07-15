@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@aios/pipeline": "workspace:*",
+    "@aios/prompt": "workspace:*",
     "@aios/shared": "workspace:*"
   },
   "devDependencies": {
