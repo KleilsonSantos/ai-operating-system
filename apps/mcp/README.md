@@ -8,6 +8,8 @@ Liga o **Agent do Cursor** ao runtime AIOS (`runPipeline`, policies, workspaces)
 | --- | --- |
 | `aios_contract_version` | Versão do contrato (`1`) |
 | `aios_list_workspaces` | Registry multi-repo (#43) |
+| `aios_workspace_upsert` / `remove` / `validate` | Multi-repo genérico (#55) |
+| `aios_run_across_workspaces` | Pipeline em lote (#55) |
 | `aios_build_knowledge` | Knowledge Graph (#47) |
 | `aios_memory_remember` / `aios_memory_recall` / `aios_memory_clear` | Memory (#51) |
 | `aios_load_policies` | Carrega policies + constraints |
