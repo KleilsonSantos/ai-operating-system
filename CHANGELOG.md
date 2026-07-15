@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-07-15
+
 ### Added
 
 - 📝 Prompt Engine: `@aios/prompt` (`compilePrompt`), MCP `aios_compile_prompt`, CLI `--compile-prompt`, ADR-0008 (#59)
