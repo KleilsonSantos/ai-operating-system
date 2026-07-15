@@ -19,11 +19,12 @@ import {
 } from '@aios/workspace'
 import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge'
 import { remember, recall, clearMemory, listMemoryWorkspaces } from '@aios/memory'
+import { compilePrompt } from '@aios/prompt'
 import { resolve } from 'node:path'
 
 const server = new McpServer({
   name: 'aios',
-  version: '0.11.0',
+  version: '0.12.0',
 })
 
 server.registerTool(
@@ -41,6 +42,55 @@ server.registerTool(
       },
     ],
   }),
+)
+
+server.registerTool(
+  'aios_compile_prompt',
+  {
+    title: 'Compile AIOS brief',
+    description:
+      'Turns a short user intent into a governed markdown brief (policies + memory + KG). Use this instead of pasting long sermons into chat — saves tokens (#59).',
+    inputSchema: {
+      input: z.string().describe('Short intent, e.g. "Crie um hook de auth"'),
+      workspaceId: z.string().optional(),
+      repoPath: z.string().optional(),
+      memoryLimit: z.number().optional(),
+    },
+  },
+  async ({ input, workspaceId, repoPath, memoryLimit }) => {
+    try {
+      const compiled = compilePrompt({
+        input,
+        workspaceId: workspaceId || process.env.AIOS_WORKSPACE,
+        repoPath: repoPath || process.env.AIOS_REPO,
+        memoryLimit,
+      })
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                stats: compiled.stats,
+                intent: compiled.intent,
+                workspaceId: compiled.workspaceId,
+                repoPath: compiled.repoPath,
+                brief: compiled.brief,
+              },
+              null,
+              2,
+            ),
+          },
+        ],
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return {
+        content: [{ type: 'text', text: `aios_compile_prompt failed: ${message}` }],
+        isError: true,
+      }
+    }
+  },
 )
 
 server.registerTool(

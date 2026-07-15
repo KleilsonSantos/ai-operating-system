@@ -89,6 +89,10 @@ Registry `workspaces/aios.workspaces.json` · resolve por `workspaceId` · upser
 
 Store local `.aios/memory/{workspaceId}.json` · `remember`/`recall` · MCP `aios_memory_*` · [ADR-0006](../adr/0006-memory-engine-session.md).
 
+### Prompt Engine (`@aios/prompt`) — issue #59
+
+`compilePrompt` → brief markdown (policies + memory + KG) · MCP `aios_compile_prompt` · CLI `--compile-prompt` · [ADR-0008](../adr/0008-prompt-engine-brief.md).
+
 ## O que Fase 1 NÃO inclui
 
 - UI completa

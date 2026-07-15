@@ -18,6 +18,7 @@ Exceções que **não** forçam bump sozinhas: `chore`, `docs`, `ci`, `test`, `s
 
 | Tag | Descrição |
 | --- | --- |
+| `v0.12.0` | Prompt Engine `@aios/prompt` + ADR-0008 (#59) |
 | `v0.11.0` | Multi-repo genérico (ops + `runAcrossWorkspaces`) + ADR-0007 (#55) |
 | `v0.10.0` | Memory Engine `@aios/memory` + ADR-0006 (#51) — Fase 2 completa |
 | `v0.9.0` | Knowledge Graph `@aios/knowledge` + ADR-0005 (#47) |

@@ -132,6 +132,30 @@ export type MemoryStore = {
   entries: MemoryEntry[]
 }
 
+/** Prompt Engine — brief governado (#59). */
+export type CompilePromptRequest = {
+  input: string
+  workspaceId?: string
+  repoPath?: string
+  policiesPath?: string
+  memoryLimit?: number
+}
+
+export type CompiledPrompt = {
+  input: string
+  intent: Intent
+  workspaceId?: string
+  repoPath: string
+  /** Texto pronto para o Agent (markdown curto) */
+  brief: string
+  stats: {
+    mustPolicyCount: number
+    memoryCount: number
+    knowledgeNodes: number
+    briefChars: number
+  }
+}
+
 /** Pedido do integrador → núcleo AIOS. */
 export type PipelineRequest = {
   /** Texto livre do usuário (intent raw) */
