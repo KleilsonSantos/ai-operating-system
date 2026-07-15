@@ -8,7 +8,7 @@ import { loadPolicies, applyPolicies } from '@aios/policy'
 import { gatherContext } from '@aios/context'
 import { runWorkflow } from '@aios/orchestration'
 import { evaluateQuality } from '@aios/quality-gate'
-import { resolveWorkspace } from '@aios/workspace'
+import { resolveWorkspace, loadWorkspaces } from '@aios/workspace'
 import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge'
 import { recall } from '@aios/memory'
 import {
@@ -19,6 +19,78 @@ import {
 
 export { PIPELINE_CONTRACT_VERSION }
 export type { PipelineRequest, PipelineResponse }
+
+export type RunAcrossResult = {
+  contractVersion: typeof PIPELINE_CONTRACT_VERSION
+  input: string
+  results: Array<{
+    workspaceId: string
+    repoPath: string
+    verdictPassed: boolean
+    intentKind: string
+    knowledgeNodes?: number
+    memoryCount?: number
+    error?: string
+  }>
+}
+
+/**
+ * Executa o pipeline em vários workspaces (multi-repo genérico · #55).
+ */
+export async function runAcrossWorkspaces(options: {
+  input: string
+  /** Ids a incluir; default = todos do registry */
+  workspaceIds?: string[]
+  workspacesPath?: string
+  homePath?: string
+  scope?: string
+  policiesPath?: string
+}): Promise<RunAcrossResult> {
+  const home = options.homePath || process.env.AIOS_HOME || process.cwd()
+  const bundle = loadWorkspaces({
+    cwd: home,
+    configPath: options.workspacesPath,
+  })
+  const targets = options.workspaceIds?.length
+    ? bundle.workspaces.filter((w) => options.workspaceIds!.includes(w.id))
+    : bundle.workspaces
+
+  const results: RunAcrossResult['results'] = []
+  for (const w of targets) {
+    try {
+      const res = await runPipeline({
+        input: options.input,
+        workspaceId: w.id,
+        workspacesPath: options.workspacesPath || bundle.path,
+        scope: options.scope,
+        policiesPath: options.policiesPath,
+      })
+      results.push({
+        workspaceId: w.id,
+        repoPath: res.context.repoPath,
+        verdictPassed: res.verdict.passed,
+        intentKind: res.intent.kind,
+        knowledgeNodes: res.knowledge?.nodeCount,
+        memoryCount: res.memory?.count,
+      })
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      results.push({
+        workspaceId: w.id,
+        repoPath: '',
+        verdictPassed: false,
+        intentKind: 'unknown',
+        error: message,
+      })
+    }
+  }
+
+  return {
+    contractVersion: PIPELINE_CONTRACT_VERSION,
+    input: options.input,
+    results,
+  }
+}
 
 /**
  * Executa o fluxo núcleo: Intent → Policy → Context → Workflow → Quality Gate.

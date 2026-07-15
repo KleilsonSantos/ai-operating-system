@@ -2,7 +2,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { afterEach, describe, expect, it } from 'vitest'
-import { runPipeline, PIPELINE_CONTRACT_VERSION } from '../src/index.ts'
+import { runPipeline, runAcrossWorkspaces, PIPELINE_CONTRACT_VERSION } from '../src/index.ts'
 
 const temps: string[] = []
 
@@ -45,6 +45,34 @@ describe('runPipeline', () => {
     expect(res.intent.kind).toBe('unknown')
     expect(res.workflow.ran).toEqual([])
     expect(res.verdict.passed).toBe(true)
+  })
+
+  it('runAcrossWorkspaces resume N workspaces', async () => {
+    const home = mkdtempSync(join(tmpdir(), 'aios-pipe-across-'))
+    temps.push(home)
+    const target = join(home, 'target')
+    mkdirSync(target)
+    mkdirSync(join(target, '.git'))
+    writeFileSync(join(target, 'README.md'), '# Target\n')
+    writeFileSync(
+      join(target, 'package.json'),
+      JSON.stringify({ name: 'ws-target', private: true }),
+    )
+    mkdirSync(join(home, 'workspaces'))
+    writeFileSync(
+      join(home, 'workspaces', 'aios.workspaces.json'),
+      JSON.stringify({
+        workspaces: [{ id: 'target', path: 'target', default: true }],
+      }),
+    )
+    const res = await runAcrossWorkspaces({
+      input: 'Analise meu projeto.',
+      homePath: home,
+      workspaceIds: ['target'],
+    })
+    expect(res.results).toHaveLength(1)
+    expect(res.results[0]!.workspaceId).toBe('target')
+    expect(res.results[0]!.verdictPassed).toBe(true)
   })
 
   it('resolve workspaceId do registry', async () => {

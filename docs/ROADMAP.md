@@ -32,7 +32,7 @@ Validar arquitetura e fluxos do AIOS.
 
 ## Fase 3 — Plataforma completa (`v1.0.0` aspiracional)
 
-- [ ] Multi-repo genérico
+- [x] Multi-repo genérico — ops registry + `runAcrossWorkspaces` (#55 / ADR-0007)
 - [ ] Multi-provider (ChatGPT, Claude, Gemini, Copilot, …)
 - [x] Integrations / MCP orchestration — MVP stdio `@aios/mcp` (#38; expansão futura)
 - [ ] UI de governança

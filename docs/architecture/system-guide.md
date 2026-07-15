@@ -77,9 +77,9 @@ Pedido curto no chat; policies injetadas sem CLI. Guia: [`docs/guides/cursor-cha
 
 CLI (`@aios/cli`) é cliente fino desse contrato (`--workspace`). Integradores dependem de `@aios/pipeline` + `@aios/shared` — [ADR-0003](../adr/0003-pipeline-integration-contract.md).
 
-### Multi-repo (`@aios/workspace`) — issue #43
+### Multi-repo (`@aios/workspace`) — issue #43 / #55
 
-Registry `workspaces/aios.workspaces.json` · resolve por `workspaceId` · [ADR-0004](../adr/0004-multi-repo-workspace-registry.md).
+Registry `workspaces/aios.workspaces.json` · resolve por `workspaceId` · upsert/validate · `runAcrossWorkspaces` · [ADR-0004](../adr/0004-multi-repo-workspace-registry.md) · [ADR-0007](../adr/0007-multi-repo-generic-ops.md).
 
 ### Knowledge Graph (`@aios/knowledge`) — issue #47
 

@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🌐 Multi-repo genérico: upsert/validate/remove workspaces, `runAcrossWorkspaces`, MCP tools, ADR-0007 (#55)
+
 ## [0.10.0] - 2026-07-14
 
 ### Added

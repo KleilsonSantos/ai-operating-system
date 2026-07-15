@@ -64,7 +64,7 @@ export const PIPELINE_CONTRACT_VERSION = '1' as const
 
 export type PipelineContractVersion = typeof PIPELINE_CONTRACT_VERSION
 
-/** Entrada do registry multi-repo (Fase 2 · #43). */
+/** Entrada do registry multi-repo (Fase 2 · #43 · Fase 3 · #55). */
 export type WorkspaceEntry = {
   /** Identificador estável (ex.: `aios`, `portfolio`) */
   id: string
@@ -74,6 +74,8 @@ export type WorkspaceEntry = {
   name?: string
   /** Se true, usado quando workspaceId omitido */
   default?: boolean
+  /** Tags livres (ex.: `frontend`, `java`) */
+  tags?: string[]
 }
 
 export type WorkspaceRegistry = {
