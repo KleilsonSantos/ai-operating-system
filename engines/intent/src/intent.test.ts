@@ -21,6 +21,28 @@ describe('resolveIntent', () => {
     expect(intent.confidence).toBeGreaterThanOrEqual(0.35)
   })
 
+  it('classifica implement.feature (pt)', () => {
+    const intent = resolveIntent('Crie um endpoint de health.')
+    expect(intent.kind).toBe('implement.feature')
+    expect(intent.confidence).toBeGreaterThanOrEqual(0.35)
+  })
+
+  it('classifica implement.feature (en)', () => {
+    const intent = resolveIntent('Implement a React auth hook')
+    expect(intent.kind).toBe('implement.feature')
+  })
+
+  it('classifica fix.bug (pt)', () => {
+    const intent = resolveIntent('Corrigir o bug no login')
+    expect(intent.kind).toBe('fix.bug')
+    expect(intent.confidence).toBeGreaterThanOrEqual(0.35)
+  })
+
+  it('classifica fix.bug (en)', () => {
+    const intent = resolveIntent('Fix the CI error in the pipeline')
+    expect(intent.kind).toBe('fix.bug')
+  })
+
   it('retorna unknown para input vazio', () => {
     const intent = resolveIntent('   ')
     expect(intent.kind).toBe('unknown')
@@ -42,6 +64,8 @@ describe('resolveIntent', () => {
     expect(INTENT_KINDS).toContain('analyze.project')
     expect(INTENT_KINDS).toContain('explain.code')
     expect(INTENT_KINDS).toContain('review.change')
+    expect(INTENT_KINDS).toContain('implement.feature')
+    expect(INTENT_KINDS).toContain('fix.bug')
     expect(INTENT_KINDS).toContain('unknown')
   })
 })
