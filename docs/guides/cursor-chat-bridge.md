@@ -26,6 +26,7 @@ Ligação **viva** com o runtime: o Agent chama tools.
 | Tool | Papel |
 | --- | --- |
 | `aios_contract_version` | `contractVersion` |
+| `aios_compile_prompt` | Brief governado (policies + memory + KG) — **economia de tokens** (#59) |
 | `aios_list_workspaces` | Registry multi-repo (Fase 2 · #43) |
 | `aios_workspace_upsert` / `remove` / `validate` | Multi-repo genérico (#55) |
 | `aios_run_across_workspaces` | Pipeline em N workspaces (#55) |
@@ -49,5 +50,9 @@ Detalhe: [`apps/mcp/README.md`](../../apps/mcp/README.md) · contrato [ADR-0003]
 ## Smoke CLI
 
 ```bash
+# Brief governado (cola no Agent / economiza tokens)
+pnpm --filter @aios/cli dev -- --compile-prompt --brief-only --workspace=aios "Crie um endpoint de health."
+
+# Pipeline completo
 pnpm --filter @aios/cli dev -- --workspace=aios "Analise meu projeto."
 ```

@@ -1,0 +1,28 @@
+{
+  "name": "@aios/prompt",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "description": "Prompt Engine — compila brief governado a partir de intent curto (#59).",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "node -e \"process.exit(0)\"",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aios/shared": "workspace:*",
+    "@aios/intent": "workspace:*",
+    "@aios/policy": "workspace:*",
+    "@aios/workspace": "workspace:*",
+    "@aios/knowledge": "workspace:*",
+    "@aios/memory": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

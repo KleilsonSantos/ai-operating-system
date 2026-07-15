@@ -20,6 +20,9 @@ importers:
       '@aios/pipeline':
         specifier: workspace:*
         version: link:../../packages/pipeline
+      '@aios/prompt':
+        specifier: workspace:*
+        version: link:../../engines/prompt
       '@aios/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -45,6 +48,9 @@ importers:
       '@aios/policy':
         specifier: workspace:*
         version: link:../../engines/policy
+      '@aios/prompt':
+        specifier: workspace:*
+        version: link:../../engines/prompt
       '@aios/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -230,6 +236,37 @@ importers:
       '@aios/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+    devDependencies:
+      '@types/node':
+        specifier: ^26.1.1
+        version: 26.1.1
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@26.1.1)
+
+  engines/prompt:
+    dependencies:
+      '@aios/intent':
+        specifier: workspace:*
+        version: link:../intent
+      '@aios/knowledge':
+        specifier: workspace:*
+        version: link:../knowledge
+      '@aios/memory':
+        specifier: workspace:*
+        version: link:../memory
+      '@aios/policy':
+        specifier: workspace:*
+        version: link:../policy
+      '@aios/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@aios/workspace':
+        specifier: workspace:*
+        version: link:../workspace
     devDependencies:
       '@types/node':
         specifier: ^26.1.1
