@@ -28,4 +28,19 @@ describe('shouldRunAgent', () => {
     expect(agentsForIntent('unknown')).toEqual([])
     expect(shouldRunAgent('architecture', 'unknown')).toBe(false)
   })
+
+  it('implement.feature agenda os quatro', () => {
+    expect(agentsForIntent('implement.feature')).toEqual([
+      'architecture',
+      'appsec',
+      'docs',
+      'qa',
+    ])
+  })
+
+  it('fix.bug pula docs', () => {
+    expect(shouldRunAgent('docs', 'fix.bug')).toBe(false)
+    expect(shouldRunAgent('appsec', 'fix.bug')).toBe(true)
+    expect(shouldRunAgent('qa', 'fix.bug')).toBe(true)
+  })
 })

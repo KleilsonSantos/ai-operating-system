@@ -34,6 +34,7 @@ Validar arquitetura e fluxos do AIOS.
 
 - [x] Multi-repo genérico — ops registry + `runAcrossWorkspaces` (#55 / ADR-0007)
 - [x] Prompt Engine — brief governado / economia de tokens (#59 / ADR-0008)
+- [x] Intent Engine v2 — `implement.feature` · `fix.bug` (#63)
 - [ ] Multi-provider (ChatGPT, Claude, Gemini, Copilot, Ollama, …)
 - [x] Integrations / MCP orchestration — MVP stdio `@aios/mcp` (#38; expansão futura)
 - [ ] UI de governança
