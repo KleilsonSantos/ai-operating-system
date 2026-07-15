@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-07-15
+
 ### Added
 
 - 🎯 Intent Engine v2: kinds `implement.feature` · `fix.bug` + decision matrix (#63)
