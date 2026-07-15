@@ -16,9 +16,9 @@ Você escreve *"Analise meu projeto."* — policies, contexto, agentes e quality
 
 | Item | Valor |
 | --- | --- |
-| Fase | Fase 2 completa · `v0.10.0` |
+| Fase | Fase 3 (multi-repo genérico) · `v0.11.0` |
 | Produção | `main` + tag SemVer |
-| Última release | [`v0.10.0`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.10.0) |
+| Última release | [`v0.11.0`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.11.0) |
 | Monorepo | pnpm workspaces + Turborepo (stubs) |
 | Integração | `sandbox` → `main` · [`@aios/pipeline`](./packages/pipeline/README.md) · [Cursor chat](./docs/guides/cursor-chat-bridge.md) |
 | Pedra base | [`docs/FOUNDATION.md`](./docs/FOUNDATION.md) |
