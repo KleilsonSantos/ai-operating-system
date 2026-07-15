@@ -2,20 +2,22 @@
 
 Decide quais plugins participam do workflow, por `IntentKind`.
 
-## Matriz Fase 1 (#8)
+## Matriz (#8 · v2 #63)
 
 | Intent | Agents |
 | --- | --- |
 | `analyze.project` | architecture · appsec · docs · qa |
+| `implement.feature` | architecture · appsec · docs · qa |
 | `explain.code` | architecture · docs |
 | `review.change` | architecture · appsec · qa |
+| `fix.bug` | architecture · appsec · qa |
 | `unknown` | _(nenhum)_ |
 
 ```ts
 import { shouldRunAgent, agentsForIntent } from '@aios/decision'
 
 shouldRunAgent('appsec', 'explain.code') // false
-agentsForIntent('review.change') // ['architecture','appsec','qa']
+agentsForIntent('fix.bug') // ['architecture','appsec','qa']
 ```
 
 ```bash

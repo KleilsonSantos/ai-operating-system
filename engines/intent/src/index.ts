@@ -1,6 +1,6 @@
 /**
  * Intent Engine — interpreta o pedido do usuário em Intent tipado.
- * Fase 1: classificação heurística (regras). LLM entra depois via prompt-engine.
+ * Fase 1 + v2 (#63): classificação heurística (regras). LLM entra depois.
  */
 import type { Intent, IntentKind } from '@aios/shared'
 
@@ -14,6 +14,43 @@ type Rule = {
 }
 
 const RULES: Rule[] = [
+  // --- implement.feature (antes de analyze genérico) ---
+  {
+    kind: 'implement.feature',
+    weight: 0.5,
+    signal: 'verb:criar|create|implement|add|adicionar',
+    test: (t) =>
+      /\b(cri[ae]|crie|create|implement[ae]?|implemen?te|adicion[ae]|adicione|add|build|gera|gerar|scaffold)\w*\b/.test(
+        t,
+      ),
+  },
+  {
+    kind: 'implement.feature',
+    weight: 0.35,
+    signal: 'object:endpoint|feature|component|api|hook|rota',
+    test: (t) =>
+      /\b(endpoint|feature|funcionalidade|component[e]?|api|hook|rota|route|handler|service|modulo|módulo)\b/.test(
+        t,
+      ),
+  },
+  // --- fix.bug ---
+  {
+    kind: 'fix.bug',
+    weight: 0.5,
+    signal: 'verb:corrigir|fix|reparar|resolver',
+    test: (t) =>
+      /\b(corrig[ie]|corrija|fix|repar[ae]|resolv[ae]|debug|patch)\w*\b/.test(t),
+  },
+  {
+    kind: 'fix.bug',
+    weight: 0.35,
+    signal: 'object:bug|erro|error|falha|quebr',
+    test: (t) =>
+      /\b(bug|erro|error|exception|falha|quebr|broken|regression|ci\s*fail)\w*\b/.test(
+        t,
+      ),
+  },
+  // --- analyze.project ---
   {
     kind: 'analyze.project',
     weight: 0.45,
@@ -28,6 +65,7 @@ const RULES: Rule[] = [
     test: (t) =>
       /\b(projeto|project|reposit[oó]rio|repo|codebase|arquitetura)\b/.test(t),
   },
+  // --- explain.code ---
   {
     kind: 'explain.code',
     weight: 0.45,
@@ -44,6 +82,7 @@ const RULES: Rule[] = [
         t,
       ),
   },
+  // --- review.change ---
   {
     kind: 'review.change',
     weight: 0.45,
@@ -119,7 +158,6 @@ export function resolveIntent(raw: string): Intent {
     }
   }
 
-  // Cap em 1.0; exigir mínimo para não chutar forte
   const confidence = Math.min(1, Math.round(bestScore * 100) / 100)
 
   if (confidence < 0.35) {
@@ -143,5 +181,7 @@ export const INTENT_KINDS: IntentKind[] = [
   'analyze.project',
   'explain.code',
   'review.change',
+  'implement.feature',
+  'fix.bug',
   'unknown',
 ]

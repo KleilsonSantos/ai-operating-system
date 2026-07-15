@@ -1,10 +1,12 @@
 /** Tipos compartilhados entre engines e apps (Fase 1). */
 
-/** Intents canônicas do núcleo (issue #5). */
+/** Intents canônicas do núcleo (#5 · v2 #63). */
 export type IntentKind =
   | 'analyze.project'
   | 'explain.code'
   | 'review.change'
+  | 'implement.feature'
+  | 'fix.bug'
   | 'unknown'
 
 export type Intent = {
