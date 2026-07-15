@@ -20,11 +20,12 @@ import {
 import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge'
 import { remember, recall, clearMemory, listMemoryWorkspaces } from '@aios/memory'
 import { compilePrompt } from '@aios/prompt'
+import { getProvider, listProviderIds } from '@aios/provider'
 import { resolve } from 'node:path'
 
 const server = new McpServer({
   name: 'aios',
-  version: '0.12.0',
+  version: '0.14.0',
 })
 
 server.registerTool(
@@ -457,6 +458,113 @@ server.registerTool(
           ),
         },
       ],
+    }
+  },
+)
+
+server.registerTool(
+  'aios_provider_health',
+  {
+    title: 'Provider health',
+    description:
+      'Checks a local/aux LLM provider (default ollama). Does not replace the IDE model (#67).',
+    inputSchema: {
+      provider: z
+        .string()
+        .optional()
+        .describe(`Provider id (default ollama). Available: ${listProviderIds().join(', ')}`),
+      baseUrl: z
+        .string()
+        .optional()
+        .describe('Override base URL (default AIOS_OLLAMA_URL / localhost:11434)'),
+    },
+  },
+  async ({ provider, baseUrl }) => {
+    try {
+      const p = getProvider(provider || 'ollama', { baseUrl })
+      const health = await p.health()
+      return {
+        content: [{ type: 'text', text: JSON.stringify(health, null, 2) }],
+        isError: !health.ok,
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return {
+        content: [{ type: 'text', text: `aios_provider_health failed: ${message}` }],
+        isError: true,
+      }
+    }
+  },
+)
+
+server.registerTool(
+  'aios_provider_models',
+  {
+    title: 'List provider models',
+    description: 'Lists models from the provider (Ollama /api/tags) (#67).',
+    inputSchema: {
+      provider: z.string().optional(),
+      baseUrl: z.string().optional(),
+    },
+  },
+  async ({ provider, baseUrl }) => {
+    try {
+      const p = getProvider(provider || 'ollama', { baseUrl })
+      const models = await p.models()
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              { provider: p.id, count: models.length, models },
+              null,
+              2,
+            ),
+          },
+        ],
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return {
+        content: [{ type: 'text', text: `aios_provider_models failed: ${message}` }],
+        isError: true,
+      }
+    }
+  },
+)
+
+server.registerTool(
+  'aios_provider_chat',
+  {
+    title: 'Provider chat (aux)',
+    description:
+      'Cheap/local chat via AIProvider (default Ollama). Use for drafts/summaries — coding stays in Cursor (#67).',
+    inputSchema: {
+      message: z.string().describe('User message'),
+      provider: z.string().optional().describe('Provider id (default ollama)'),
+      model: z.string().optional().describe('Model name (default AIOS_OLLAMA_MODEL)'),
+      system: z.string().optional().describe('Optional system prompt'),
+      baseUrl: z.string().optional(),
+      temperature: z.number().optional(),
+    },
+  },
+  async ({ message, provider, model, system, baseUrl, temperature }) => {
+    try {
+      const p = getProvider(provider || 'ollama', { baseUrl })
+      const messages = [
+        ...(system ? [{ role: 'system' as const, content: system }] : []),
+        { role: 'user' as const, content: message },
+      ]
+      const out = await p.chat({ model, messages, temperature })
+      return {
+        content: [{ type: 'text', text: JSON.stringify(out, null, 2) }],
+      }
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : String(err)
+      return {
+        content: [{ type: 'text', text: `aios_provider_chat failed: ${errMsg}` }],
+        isError: true,
+      }
     }
   },
 )

@@ -1,5 +1,6 @@
 import { runPipeline, PIPELINE_CONTRACT_VERSION } from '@aios/pipeline'
 import { compilePrompt } from '@aios/prompt'
+import { getProvider } from '@aios/provider'
 
 function parseArgs(argv: string[]): {
   input: string
@@ -9,6 +10,10 @@ function parseArgs(argv: string[]): {
   policiesPath?: string
   compilePromptOnly: boolean
   briefOnly: boolean
+  providerHealth: boolean
+  providerChat: boolean
+  providerId: string
+  model?: string
 } {
   let scope: string | undefined
   let repoPath: string | undefined
@@ -16,6 +21,10 @@ function parseArgs(argv: string[]): {
   let policiesPath: string | undefined
   let compilePromptOnly = false
   let briefOnly = false
+  let providerHealth = false
+  let providerChat = false
+  let providerId = 'ollama'
+  let model: string | undefined
   const parts: string[] = []
 
   for (let i = 0; i < argv.length; i++) {
@@ -60,6 +69,30 @@ function parseArgs(argv: string[]): {
       briefOnly = true
       continue
     }
+    if (a === '--provider-health') {
+      providerHealth = true
+      continue
+    }
+    if (a === '--provider-chat') {
+      providerChat = true
+      continue
+    }
+    if (a === '--provider') {
+      providerId = argv[++i] || 'ollama'
+      continue
+    }
+    if (a.startsWith('--provider=')) {
+      providerId = a.slice('--provider='.length) || 'ollama'
+      continue
+    }
+    if (a === '--model') {
+      model = argv[++i]
+      continue
+    }
+    if (a.startsWith('--model=')) {
+      model = a.slice('--model='.length)
+      continue
+    }
     if (a === '--contract-version') {
       console.log(PIPELINE_CONTRACT_VERSION)
       process.exit(0)
@@ -75,11 +108,31 @@ function parseArgs(argv: string[]): {
     policiesPath: policiesPath || process.env.AIOS_POLICIES_PATH,
     compilePromptOnly,
     briefOnly,
+    providerHealth,
+    providerChat,
+    providerId,
+    model,
   }
 }
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2))
+
+  if (args.providerHealth) {
+    const health = await getProvider(args.providerId).health()
+    console.log(JSON.stringify(health, null, 2))
+    if (!health.ok) process.exitCode = 1
+    return
+  }
+
+  if (args.providerChat) {
+    const out = await getProvider(args.providerId).chat({
+      model: args.model,
+      messages: [{ role: 'user', content: args.input }],
+    })
+    console.log(JSON.stringify(out, null, 2))
+    return
+  }
 
   if (args.compilePromptOnly) {
     const compiled = compilePrompt({

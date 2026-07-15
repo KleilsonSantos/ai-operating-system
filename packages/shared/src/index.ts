@@ -158,6 +158,43 @@ export type CompiledPrompt = {
   }
 }
 
+/** Multi-provider MVP (#67) — LLM auxiliar (não substitui a IDE). */
+export type ProviderId = 'ollama'
+
+export type ChatRole = 'system' | 'user' | 'assistant'
+
+export type ChatMessage = {
+  role: ChatRole
+  content: string
+}
+
+export type ChatRequest = {
+  model?: string
+  messages: ChatMessage[]
+  temperature?: number
+}
+
+export type ChatResponse = {
+  provider: string
+  model: string
+  message: ChatMessage
+}
+
+export type ProviderModelInfo = {
+  name: string
+  size?: number
+  modifiedAt?: string
+}
+
+export type ProviderHealth = {
+  provider: string
+  ok: boolean
+  baseUrl: string
+  models?: string[]
+  error?: string
+  latencyMs?: number
+}
+
 /** Pedido do integrador → núcleo AIOS. */
 export type PipelineRequest = {
   /** Texto livre do usuário (intent raw) */
