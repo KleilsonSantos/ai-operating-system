@@ -16,7 +16,7 @@ Você escreve *"Analise meu projeto."* — policies, contexto, agentes e quality
 
 | Item | Valor |
 | --- | --- |
-| Fase | Fase 3 (intent v2) · `v0.13.0` |
+| Fase | Fase 3 (multi-provider MVP) · `v0.13.0` + Unreleased |
 | Produção | `main` + tag SemVer |
 | Última release | [`v0.13.0`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.13.0) |
 | Monorepo | pnpm workspaces + Turborepo (stubs) |

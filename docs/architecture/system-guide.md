@@ -93,10 +93,14 @@ Store local `.aios/memory/{workspaceId}.json` · `remember`/`recall` · MCP `aio
 
 `compilePrompt` → brief markdown (policies + memory + KG) · MCP `aios_compile_prompt` · CLI `--compile-prompt` · [ADR-0008](../adr/0008-prompt-engine-brief.md).
 
+### Multi-provider (`@aios/provider`) — issue #67
+
+`AIProvider` + `OllamaProvider` (aux local) · MCP `aios_provider_health` / `aios_provider_models` / `aios_provider_chat` · CLI `--provider-health` · [ADR-0009](../adr/0009-multi-provider-ollama.md). Não substitui o LLM da IDE.
+
 ## O que Fase 1 NÃO inclui
 
 - UI completa
-- Multi-provider LLM genérico
+- Providers cloud (Claude/OpenAI/Gemini) — stub Ollama só (#67)
 - Knowledge Graph completo (embeddings / store)
 - Memory distribuída multi-máquina
 

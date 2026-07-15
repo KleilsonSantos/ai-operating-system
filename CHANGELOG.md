@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🔌 Multi-provider MVP: `@aios/provider` (Ollama), MCP `aios_provider_*`, CLI `--provider-health` / `--provider-chat`, ADR-0009 (#67)
+
 ## [0.13.0] - 2026-07-15
 
 ### Added
