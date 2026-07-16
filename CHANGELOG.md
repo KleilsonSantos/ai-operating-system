@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Changed
+
+- 🔗 ROADMAP / guia: kickoff [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) (#90)
+
 ## [0.18.0] - 2026-07-16
 
 ### Added
