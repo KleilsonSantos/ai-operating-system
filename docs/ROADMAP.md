@@ -38,7 +38,7 @@ Validar arquitetura e fluxos do AIOS.
 - [x] Multi-provider MVP — `@aios/provider` + Ollama (`health`/`chat`) (#67 / ADR-0009); providers cloud depois
 - [x] Integrations / MCP orchestration — MVP stdio `@aios/mcp` (#38; expansão futura)
 - [x] UI de governança — console Health + Attention + Try it (`@aios/console` / `@aios/status`, #71 / #76 / ADR-0010 / ADR-0012); Grafana/consumo depois
-- [ ] Documentation / Governance engines completos
+- [x] Documentation / Governance engines — MVP heurístico (#80 / ADR-0013)
 
 ## Fora de escopo (de propósito)
 

@@ -8,6 +8,8 @@ import { loadPolicies, applyPolicies } from '@aios/policy'
 import { compilePrompt } from '@aios/prompt'
 import { getProvider } from '@aios/provider'
 import { remember, recall } from '@aios/memory'
+import { auditDocumentation } from '@aios/documentation'
+import { auditGovernance } from '@aios/governance'
 
 export const SAFE_ACTIONS = [
   'contract',
@@ -17,6 +19,8 @@ export const SAFE_ACTIONS = [
   'provider_ping',
   'memory_recall',
   'memory_remember',
+  'audit_docs',
+  'governance_audit',
 ] as const
 
 export type SafeActionId = (typeof SAFE_ACTIONS)[number]
@@ -139,6 +143,20 @@ export async function runSafeAction(
         break
       }
 
+      case 'audit_docs': {
+        result = auditDocumentation({ repoPath: homePath })
+        break
+      }
+
+      case 'governance_audit': {
+        result = auditGovernance({
+          homePath,
+          repoPath: homePath,
+          includeDocumentation: true,
+        })
+        break
+      }
+
       default: {
         const _exhaustive: never = action
         throw new Error(`Unhandled action: ${_exhaustive}`)
@@ -152,8 +170,10 @@ export async function runSafeAction(
         : action === 'validate_workspaces'
           ? ((result as { workspaces: Array<{ ok: boolean }> }).workspaces.every(
               (w) => w.ok,
-           ) ?? false)
-          : true
+            ) ?? false)
+          : action === 'audit_docs' || action === 'governance_audit'
+            ? Boolean((result as { ok?: boolean }).ok)
+            : true
 
     return { ok, action, latencyMs, result }
   } catch (err) {

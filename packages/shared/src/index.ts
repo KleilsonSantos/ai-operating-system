@@ -239,6 +239,58 @@ export type GovernanceStatus = {
   }
 }
 
+/** Documentation Engine — drift heurístico (#80). */
+export type DocFindingSeverity = 'error' | 'warn' | 'info'
+
+export type DocFinding = {
+  id: string
+  severity: DocFindingSeverity
+  title: string
+  detail: string
+  path?: string
+}
+
+export type DocumentationAudit = {
+  generatedAt: string
+  repoPath: string
+  present: string[]
+  missing: string[]
+  findings: DocFinding[]
+  ok: boolean
+}
+
+/** Governance Engine — auditoria leve (#80). */
+export type GovernanceDecision = {
+  id: string
+  at: string
+  kind: string
+  summary: string
+  policyIds?: string[]
+  verdict?: 'pass' | 'fail' | 'info'
+  source?: string
+}
+
+export type GovernanceAudit = {
+  generatedAt: string
+  homePath: string
+  repoPath: string
+  policies: {
+    mustIds: string[]
+    count: number
+  }
+  decisions: {
+    path: string
+    count: number
+    recent: GovernanceDecision[]
+  }
+  documentation?: {
+    ok: boolean
+    findingCount: number
+  }
+  findings: AttentionItem[]
+  ok: boolean
+}
+
 /** Pedido do integrador → núcleo AIOS. */
 export type PipelineRequest = {
   /** Texto livre do usuário (intent raw) */

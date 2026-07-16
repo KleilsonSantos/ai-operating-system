@@ -18,6 +18,9 @@
     "@aios/prompt": "workspace:*",
     "@aios/provider": "workspace:*",
     "@aios/status": "workspace:*",
+    "@aios/documentation": "workspace:*",
+    "@aios/governance": "workspace:*",
+    "@aios/workspace": "workspace:*",
     "@aios/shared": "workspace:*"
   },
   "devDependencies": {
