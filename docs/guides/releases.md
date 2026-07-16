@@ -18,6 +18,7 @@ Exceções que **não** forçam bump sozinhas: `chore`, `docs`, `ci`, `test`, `s
 
 | Tag | Descrição |
 | --- | --- |
+| `v0.15.0` | Console de governança `@aios/console` + `@aios/status` + ADR-0010 (#71) |
 | `v0.14.0` | Multi-provider MVP `@aios/provider` + Ollama + ADR-0009 (#67) |
 | `v0.13.0` | Intent Engine v2 (`implement.feature` · `fix.bug`) (#63) |
 | `v0.12.0` | Prompt Engine `@aios/prompt` + ADR-0008 (#59) |
