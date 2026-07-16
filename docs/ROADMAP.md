@@ -37,7 +37,7 @@ Validar arquitetura e fluxos do AIOS.
 - [x] Intent Engine v2 — `implement.feature` · `fix.bug` (#63)
 - [x] Multi-provider MVP — `@aios/provider` + Ollama (`health`/`chat`) (#67 / ADR-0009); providers cloud depois
 - [x] Integrations / MCP orchestration — MVP stdio `@aios/mcp` (#38; expansão futura)
-- [ ] UI de governança
+- [x] UI de governança — console Health + Attention (`@aios/console` / `@aios/status`, #71 / ADR-0010); Grafana/consumo depois
 - [ ] Documentation / Governance engines completos
 
 ## Fora de escopo (de propósito)

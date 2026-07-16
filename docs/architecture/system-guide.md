@@ -97,9 +97,13 @@ Store local `.aios/memory/{workspaceId}.json` · `remember`/`recall` · MCP `aio
 
 `AIProvider` + `OllamaProvider` (aux local) · MCP `aios_provider_health` / `aios_provider_models` / `aios_provider_chat` · CLI `--provider-health` · [ADR-0009](../adr/0009-multi-provider-ollama.md). Não substitui o LLM da IDE.
 
+### Console de governança (`@aios/console` / `@aios/status`) — issue #71
+
+Health + Needs attention · API `/api/status` · [ADR-0010](../adr/0010-governance-console.md). Grafana/consumo = camada 2 (métricas JSONL stub).
+
 ## O que Fase 1 NÃO inclui
 
-- UI completa
+- UI completa (Grafana / multi-tenant SaaS)
 - Providers cloud (Claude/OpenAI/Gemini) — stub Ollama só (#67)
 - Knowledge Graph completo (embeddings / store)
 - Memory distribuída multi-máquina
