@@ -42,9 +42,27 @@ importers:
 
   apps/console:
     dependencies:
+      '@aios/memory':
+        specifier: workspace:*
+        version: link:../../engines/memory
+      '@aios/policy':
+        specifier: workspace:*
+        version: link:../../engines/policy
+      '@aios/prompt':
+        specifier: workspace:*
+        version: link:../../engines/prompt
+      '@aios/provider':
+        specifier: workspace:*
+        version: link:../../engines/provider
+      '@aios/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@aios/status':
         specifier: workspace:*
         version: link:../../engines/status
+      '@aios/workspace':
+        specifier: workspace:*
+        version: link:../../engines/workspace
       react:
         specifier: ^19.1.0
         version: 19.2.7
@@ -73,6 +91,9 @@ importers:
       vite:
         specifier: ^7.0.4
         version: 7.3.6(@types/node@26.1.1)
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@26.1.1)
 
   apps/mcp:
     dependencies:

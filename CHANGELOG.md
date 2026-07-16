@@ -6,6 +6,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Added
 
+- 🕹️ Console **Try it**: safe actions (`POST /api/action`) — contract, workspaces, policies, brief, provider ping, memory · ADR-0012 (#76)
 - 🔋 Política canónica Resource-Aware (macOS): `docs/policies/resource-aware-macos.md`, policies `resource-*`, ADR-0011
 
 ### Changed
