@@ -17,6 +17,12 @@ importers:
 
   apps/cli:
     dependencies:
+      '@aios/documentation':
+        specifier: workspace:*
+        version: link:../../engines/documentation
+      '@aios/governance':
+        specifier: workspace:*
+        version: link:../../engines/governance
       '@aios/pipeline':
         specifier: workspace:*
         version: link:../../packages/pipeline
@@ -32,6 +38,9 @@ importers:
       '@aios/status':
         specifier: workspace:*
         version: link:../../engines/status
+      '@aios/workspace':
+        specifier: workspace:*
+        version: link:../../engines/workspace
     devDependencies:
       '@types/node':
         specifier: ^26.1.1
@@ -42,6 +51,12 @@ importers:
 
   apps/console:
     dependencies:
+      '@aios/documentation':
+        specifier: workspace:*
+        version: link:../../engines/documentation
+      '@aios/governance':
+        specifier: workspace:*
+        version: link:../../engines/governance
       '@aios/memory':
         specifier: workspace:*
         version: link:../../engines/memory
@@ -97,6 +112,12 @@ importers:
 
   apps/mcp:
     dependencies:
+      '@aios/documentation':
+        specifier: workspace:*
+        version: link:../../engines/documentation
+      '@aios/governance':
+        specifier: workspace:*
+        version: link:../../engines/governance
       '@aios/knowledge':
         specifier: workspace:*
         version: link:../../engines/knowledge
@@ -206,6 +227,44 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared
     devDependencies:
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@26.1.1)
+
+  engines/documentation:
+    dependencies:
+      '@aios/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+    devDependencies:
+      '@types/node':
+        specifier: ^26.1.1
+        version: 26.1.1
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@26.1.1)
+
+  engines/governance:
+    dependencies:
+      '@aios/documentation':
+        specifier: workspace:*
+        version: link:../documentation
+      '@aios/policy':
+        specifier: workspace:*
+        version: link:../policy
+      '@aios/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+    devDependencies:
+      '@types/node':
+        specifier: ^26.1.1
+        version: 26.1.1
       typescript:
         specifier: ^5.9.2
         version: 5.9.3

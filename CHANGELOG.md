@@ -4,6 +4,12 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-07-15
+
+### Added
+
+- 📚 Documentation + Governance engines: `@aios/documentation` · `@aios/governance`, MCP/CLI/console Try it, ADR-0013 (#80)
+
 ## [0.16.0] - 2026-07-15
 
 ### Added
