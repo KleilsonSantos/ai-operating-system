@@ -44,9 +44,9 @@ Validar arquitetura e fluxos do AIOS.
 
 Fronteira: [ADR-0014](./adr/0014-control-plane-companion.md) · [guia](./guides/control-plane-companion.md).
 
-- [ ] Operational State MVP no AIOS (estado unificado leve; sem voz / sem controlar IDE)
+- [x] Operational State MVP no AIOS (estado unificado leve; sem voz / sem controlar IDE)
 - [ ] Repo Companion (cliente MCP/pipeline) — Conversation Manager; voz depois
-- [ ] Event hooks Resource-Aware (sem polling agressivo)
+- [x] Event hooks Resource-Aware (sem polling agressivo) — `recordOperationalEvent` on-demand (#84 / ADR-0015)
 - [ ] Capability adapters (Git/GitHub/…) atrás de contratos — sem duplicar engines AIOS
 
 ## Fora de escopo (de propósito)

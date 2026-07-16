@@ -20,7 +20,7 @@ Regenerar: `pnpm sync:cursor-rules`
 - **no-deprecated-apis** (must): Não introduzir APIs/libs depreciadas; preferir alternativas suportadas
 - **short-user-prompt** (must): Não pedir ao usuário para repetir best practices no chat — já estão nestas policies
 - **git-flow-sandbox** (must): Fluxo Git: Issue → feature/* from sandbox → PR → sandbox → PR → main
-- **conventional-commits** (must): Commits: type: <gitmoji> … · autoria Kleilson Santos · sem Co-authored-by de IDE
+- **conventional-commits** (must): Commits: type: <gitmoji> … · merges via gh: sempre --subject/scripts/merge-pr.sh → merge: 🔀 PR #<n> — <branch> (proibido 'Merge pull request…') · autoria Kleilson Santos · sem Co-authored-by de IDE
 - **agents-as-plugins** (must): Agentes são plugins — não expor chamada direta de agente no UX principal
 - **resource-first** (must): Resource First (macOS): minimizar CPU/RAM/disco/I/O/bateria/processos/containers; eficiência é requisito — ver docs/policies/resource-aware-macos.md
 - **inspect-before-install** (must): Antes de instalar/iniciar: verificar se já existe instalado, configurado, em execução, container/serviço equivalente ou reutilizável

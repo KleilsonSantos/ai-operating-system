@@ -42,7 +42,7 @@
     },
     {
       "id": "conventional-commits",
-      "description": "Commits: type: <gitmoji> … · autoria Kleilson Santos · sem Co-authored-by de IDE",
+      "description": "Commits: type: <gitmoji> … · merges via gh: sempre --subject/scripts/merge-pr.sh → merge: 🔀 PR #<n> — <branch> (proibido 'Merge pull request…') · autoria Kleilson Santos · sem Co-authored-by de IDE",
       "severity": "must"
     },
     {

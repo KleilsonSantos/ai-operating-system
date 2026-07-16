@@ -32,13 +32,23 @@ feature/* | fix/* | docs/* | chore/* | ci/*
 
 Autoria: `Kleilson Santos <kdsddesign1@gmail.com>` — sem `Co-authored-by: Cursor` / trailers de IDE.
 
-Merges: `merge: 🔀 PR #<n> — <branch>`
+### Merges (obrigatório)
+
+```bash
+bash scripts/merge-pr.sh <n>
+# equivalente:
+gh pr merge <n> --merge --subject "merge: 🔀 PR #<n> — <branch>"
+```
+
+Proibido o subject default do GitHub (`Merge pull request #N from …`).  
+CI: `scripts/check-commit-messages.sh` (PR) + `scripts/check-merge-tip.sh` (push em `sandbox`/`main`, tip).
 
 ## O que NÃO fazer
 
 - Commit direto em `main` / `sandbox`
 - PR `feature/*` direto para `main`
 - Commits sem gitmoji
+- `gh pr merge` sem `--subject` / `-t`
 
 ## Relacionados
 

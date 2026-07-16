@@ -58,6 +58,11 @@ const ACTIONS: ActionDef[] = [
     label: 'Governance audit',
     hint: 'Policies + decisões + docs',
   },
+  {
+    id: 'operational_state',
+    label: 'Operational state',
+    hint: 'Snapshot unificado (#84) — sem voz/IDE',
+  },
 ]
 
 type ActionResult = {

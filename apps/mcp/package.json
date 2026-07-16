@@ -26,6 +26,7 @@
     "@aios/status": "workspace:*",
     "@aios/documentation": "workspace:*",
     "@aios/governance": "workspace:*",
+    "@aios/operational-state": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^3.25.0"
   },

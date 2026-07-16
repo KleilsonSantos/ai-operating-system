@@ -36,6 +36,7 @@ export const MCP_TOOL_CATALOG = [
   'aios_audit_docs',
   'aios_governance_audit',
   'aios_governance_record',
+  'aios_operational_state',
 ] as const
 
 export type GetGovernanceStatusOptions = {
