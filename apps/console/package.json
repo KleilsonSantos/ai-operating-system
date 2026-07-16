@@ -1,0 +1,31 @@
+{
+  "name": "@aios/console",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "UI de governança — Health + Attention (#71).",
+  "scripts": {
+    "dev": "concurrently -k -n api,ui -c teal,cyan \"pnpm api\" \"pnpm ui\"",
+    "api": "node --experimental-strip-types ./src/server.ts",
+    "ui": "vite",
+    "build": "vite build",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.server.json --noEmit",
+    "lint": "node -e \"process.exit(0)\"",
+    "test": "node -e \"process.exit(0)\"",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@aios/status": "workspace:*",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "concurrently": "^9.2.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.0.4"
+  }
+}

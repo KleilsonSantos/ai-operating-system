@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📊 Console de governança: `@aios/status` + `@aios/console` (Health + Attention), MCP `aios_governance_status`, CLI `--governance-status`, ADR-0010 (#71)
+
 ## [0.14.0] - 2026-07-15
 
 ### Added
