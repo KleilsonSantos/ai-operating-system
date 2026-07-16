@@ -89,11 +89,11 @@ function buildAttention(parts: {
   if (!parts.provider.ok) {
     items.push({
       id: 'provider-down',
-      severity: 'error',
-      title: `Provider ${parts.provider.provider} inativo`,
+      severity: 'warn',
+      title: `Provider ${parts.provider.provider} inativo (opcional)`,
       detail:
         parts.provider.error ||
-        `Sem resposta em ${parts.provider.baseUrl}. Ollama local é auxiliar — IDE continua a funcionar.`,
+        `Sem resposta em ${parts.provider.baseUrl}. Auxiliar local — não instalar só para o console ficar verde (resource-aware). IDE/MCP AIOS continuam ok.`,
     })
   }
 

@@ -22,6 +22,14 @@ Regenerar: `pnpm sync:cursor-rules`
 - **git-flow-sandbox** (must): Fluxo Git: Issue → feature/* from sandbox → PR → sandbox → PR → main
 - **conventional-commits** (must): Commits: type: <gitmoji> … · autoria Kleilson Santos · sem Co-authored-by de IDE
 - **agents-as-plugins** (must): Agentes são plugins — não expor chamada direta de agente no UX principal
+- **resource-first** (must): Resource First (macOS): minimizar CPU/RAM/disco/I/O/bateria/processos/containers; eficiência é requisito — ver docs/policies/resource-aware-macos.md
+- **inspect-before-install** (must): Antes de instalar/iniciar: verificar se já existe instalado, configurado, em execução, container/serviço equivalente ou reutilizável
+- **reuse-before-create** (must): Preferir reutilizar serviços/containers/DBs/redes/volumes/configs; evitar duplicidade (ex. Ollama local + Ollama Docker)
+- **ai-provider-reuse** (must): AI providers: reutilizar provider/Ollama/MCP/API já ativos; só criar serviço novo após inspeção; Ollama é auxiliar opcional (não instalar só para verde no console)
+
+## SHOULD
+
+- **justify-resource-impact** (should): Sugestões de infra devem declarar porquê, alternativas e impacto em hardware/manutenção/consumo
 
 ## Comportamento no chat
 
