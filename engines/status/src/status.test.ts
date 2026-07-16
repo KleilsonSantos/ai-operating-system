@@ -48,6 +48,9 @@ describe('getGovernanceStatus', () => {
     expect(status.workspaces[0]?.ok).toBe(true)
     expect(status.policies.mustIds).toContain('official-docs')
     expect(status.attention.some((a) => a.id === 'provider-down')).toBe(true)
+    expect(status.attention.find((a) => a.id === 'provider-down')?.severity).toBe(
+      'warn',
+    )
     expect(status.attention.some((a) => a.id === 'metrics-stub')).toBe(true)
     expect(status.exposed.mcpTools.length).toBeGreaterThan(5)
   })

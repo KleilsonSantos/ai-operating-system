@@ -99,7 +99,11 @@ Store local `.aios/memory/{workspaceId}.json` · `remember`/`recall` · MCP `aio
 
 ### Console de governança (`@aios/console` / `@aios/status`) — issue #71
 
-Health + Needs attention · API `/api/status` · [ADR-0010](../adr/0010-governance-console.md). Grafana/consumo = camada 2 (métricas JSONL stub).
+Health + Needs attention · API `/api/status` · [ADR-0010](../adr/0010-governance-console.md). Grafana/consumo = camada 2 (métricas JSONL stub). Provider auxiliar inativo = warn ([ADR-0011](../adr/0011-resource-aware-macos.md)).
+
+### Resource-Aware (macOS) — ADR-0011
+
+Inspecionar antes de instalar · reutilizar · minimizar hardware · [política](../policies/resource-aware-macos.md).
 
 ## O que Fase 1 NÃO inclui
 
