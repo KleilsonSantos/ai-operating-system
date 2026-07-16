@@ -18,6 +18,7 @@ Exceções que **não** forçam bump sozinhas: `chore`, `docs`, `ci`, `test`, `s
 
 | Tag | Descrição |
 | --- | --- |
+| `v0.17.0` | Documentation + Governance engines · ADR-0013 (#80) |
 | `v0.16.0` | Console Try it + Resource-Aware · ADR-0011 / ADR-0012 (#75/#76) |
 | `v0.15.0` | Console de governança `@aios/console` + `@aios/status` + ADR-0010 (#71) |
 | `v0.14.0` | Multi-provider MVP `@aios/provider` + Ollama + ADR-0009 (#67) |
