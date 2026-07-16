@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🧭 ADR-0014 — AIOS control plane · Companion experiência (MCP/pipeline); Fase 4 no ROADMAP
+
 ## [0.17.0] - 2026-07-15
 
 ### Added

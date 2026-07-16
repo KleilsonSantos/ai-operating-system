@@ -109,6 +109,10 @@ Inspecionar antes de instalar · reutilizar · minimizar hardware · [política]
 
 `auditDocumentation` · `auditGovernance` / `recordDecision` · MCP `aios_audit_docs` / `aios_governance_*` · [ADR-0013](../adr/0013-documentation-governance-engines.md).
 
+### Control plane · Companion — ADR-0014
+
+AIOS governa; Companion (voz/UX/ambiente) consome via MCP/pipeline — [guia](../guides/control-plane-companion.md). Não duplicar engines.
+
 ## O que Fase 1 NÃO inclui
 
 - UI completa (Grafana / multi-tenant SaaS)
