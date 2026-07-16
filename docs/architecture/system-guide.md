@@ -111,7 +111,7 @@ Inspecionar antes de instalar · reutilizar · minimizar hardware · [política]
 
 ### Control plane · Companion — ADR-0014
 
-AIOS governa; Companion (voz/UX/ambiente) consome via MCP/pipeline — [guia](../guides/control-plane-companion.md). Não duplicar engines.
+AIOS governa; Companion (voz/UX/ambiente) consome via MCP/pipeline — [guia](../guides/control-plane-companion.md). Repo: [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) (#90). Não duplicar engines.
 
 ### Operational State (#84)
 

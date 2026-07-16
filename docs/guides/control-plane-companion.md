@@ -28,7 +28,7 @@ Companion **não** importa internals de `engines/*` como API pública estável; 
 ## Ordem de entrega sugerida
 
 1. **No AIOS:** Operational State / eventos leves — `@aios/operational-state` (`getOperationalState`, `aios_operational_state`) — [ADR-0015](../adr/0015-operational-state.md).
-2. **Repo companion:** Conversation Manager + consumo MCP (chat primeiro; voz depois).
+2. **Repo companion:** [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) — Conversation Manager + consumo CLI/MCP (chat primeiro; voz depois) · tracking [#90](https://github.com/KleilsonSantos/ai-operating-system/issues/90).
 3. Capabilities/watchers sob Resource-Aware — inspecionar antes de instalar; um runtime só.
 
 ## Contrato Companion (mínimo)
