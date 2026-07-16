@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-07-15
+
 ### Added
 
 - 🕹️ Console **Try it**: safe actions (`POST /api/action`) — contract, workspaces, policies, brief, provider ping, memory · ADR-0012 (#76)
