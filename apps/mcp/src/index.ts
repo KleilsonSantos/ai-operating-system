@@ -29,7 +29,7 @@ import { resolve } from 'node:path'
 
 const server = new McpServer({
   name: 'aios',
-  version: '0.17.0',
+  version: '0.18.0',
 })
 
 server.registerTool(
