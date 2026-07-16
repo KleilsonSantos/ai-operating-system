@@ -291,6 +291,52 @@ export type GovernanceAudit = {
   ok: boolean
 }
 
+/** Operational State — estado unificado leve do control plane (#84 / ADR-0015). */
+export type OperationalGitSnapshot = {
+  available: boolean
+  branch?: string
+  head?: string
+  dirty?: boolean
+  error?: string
+}
+
+export type OperationalState = {
+  generatedAt: string
+  contractVersion: PipelineContractVersion
+  homePath: string
+  /** Sempre on-demand no MVP — sem watchers / polling. */
+  mode: 'on-demand'
+  summary: string
+  git: OperationalGitSnapshot
+  focus?: {
+    workspaceId: string
+    name?: string
+    repoPath: string
+    ok: boolean
+  }
+  health: {
+    attention: AttentionItem[]
+    errorCount: number
+    warnCount: number
+    providerOk: boolean
+    workspaceCount: number
+    policiesMust: number
+  }
+  memory: {
+    workspaceIds: string[]
+  }
+  governance: {
+    decisionCount: number
+    path: string
+  }
+  /** Fronteiras explícitas (Companion / ADR-0014). */
+  boundaries: {
+    voice: false
+    ideControl: false
+    dockerControl: false
+  }
+}
+
 /** Pedido do integrador → núcleo AIOS. */
 export type PipelineRequest = {
   /** Texto livre do usuário (intent raw) */

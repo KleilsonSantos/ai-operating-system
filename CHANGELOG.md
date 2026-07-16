@@ -4,9 +4,17 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.18.0] - 2026-07-16
+
 ### Added
 
+- 📡 Operational State MVP: `@aios/operational-state`, MCP `aios_operational_state`, CLI `--operational-state`, console Try it, ADR-0015 (#84)
 - 🧭 ADR-0014 — AIOS control plane · Companion experiência (MCP/pipeline); Fase 4 no ROADMAP
+- 🔀 Gate canónico de merge subject: `scripts/merge-pr.sh` + CI `merge-tip` (`check-merge-tip.sh`) — proíbe `Merge pull request…`
+
+### Changed
+
+- Policy `conventional-commits` + `AGENTS.md` / guias: merges obrigam `--subject` / `merge-pr.sh`
 
 ## [0.17.0] - 2026-07-15
 

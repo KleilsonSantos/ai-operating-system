@@ -27,9 +27,20 @@ Companion **não** importa internals de `engines/*` como API pública estável; 
 
 ## Ordem de entrega sugerida
 
-1. **No AIOS:** Operational State / eventos leves (estado unificado para status/memory) — ainda control plane.
+1. **No AIOS:** Operational State / eventos leves — `@aios/operational-state` (`getOperationalState`, `aios_operational_state`) — [ADR-0015](../adr/0015-operational-state.md).
 2. **Repo companion:** Conversation Manager + consumo MCP (chat primeiro; voz depois).
 3. Capabilities/watchers sob Resource-Aware — inspecionar antes de instalar; um runtime só.
+
+## Contrato Companion (mínimo)
+
+| Tool / API | Uso |
+| --- | --- |
+| `aios_operational_state` | Snapshot: focus, git, health, memory/governance |
+| `aios_governance_status` | Health + attention detalhado |
+| `aios_memory_*` / `aios_governance_*` | Memória e decisões |
+| `runPipeline` / `contractVersion` | Workflow governado |
+
+Não importar `engines/*` como API pública.
 
 ## Anti-padrões
 

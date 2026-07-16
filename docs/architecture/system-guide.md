@@ -113,6 +113,10 @@ Inspecionar antes de instalar · reutilizar · minimizar hardware · [política]
 
 AIOS governa; Companion (voz/UX/ambiente) consome via MCP/pipeline — [guia](../guides/control-plane-companion.md). Não duplicar engines.
 
+### Operational State (#84)
+
+`getOperationalState` · MCP `aios_operational_state` · CLI `--operational-state` · [ADR-0015](../adr/0015-operational-state.md). On-demand; sem voz/IDE.
+
 ## O que Fase 1 NÃO inclui
 
 - UI completa (Grafana / multi-tenant SaaS)

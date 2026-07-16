@@ -20,6 +20,17 @@ jobs:
           HEAD="${{ github.event.pull_request.head.sha }}"
           bash scripts/check-commit-messages.sh "$BASE" "$HEAD"
 
+  # Fecha buraco: merge commit default do GitHub nasce fora do range do PR
+  merge-tip:
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/sandbox')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 10
+      - name: Reject default GitHub merge subject on tip
+        run: bash scripts/check-merge-tip.sh 1
+
   quality:
     runs-on: ubuntu-latest
     steps:

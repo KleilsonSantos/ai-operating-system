@@ -24,11 +24,12 @@ import { getProvider, listProviderIds } from '@aios/provider'
 import { getGovernanceStatus } from '@aios/status'
 import { auditDocumentation } from '@aios/documentation'
 import { auditGovernance, recordDecision } from '@aios/governance'
+import { getOperationalState } from '@aios/operational-state'
 import { resolve } from 'node:path'
 
 const server = new McpServer({
   name: 'aios',
-  version: '0.17.0',
+  version: '0.18.0',
 })
 
 server.registerTool(
@@ -602,6 +603,41 @@ server.registerTool(
       return {
         content: [
           { type: 'text', text: `aios_governance_record failed: ${message}` },
+        ],
+        isError: true,
+      }
+    }
+  },
+)
+
+server.registerTool(
+  'aios_operational_state',
+  {
+    title: 'Operational state',
+    description:
+      'Unified light control-plane snapshot: workspace focus, git (on-demand), health/attention, memory/governance bridges. No voice / no IDE control (#84 / ADR-0015).',
+    inputSchema: {
+      homePath: z.string().optional(),
+      workspaceId: z.string().optional(),
+      provider: z.string().optional().describe('Provider id for health check'),
+    },
+  },
+  async ({ homePath, workspaceId, provider }) => {
+    try {
+      const state = await getOperationalState({
+        homePath: homePath || process.env.AIOS_HOME || process.cwd(),
+        workspaceId,
+        providerId: provider,
+      })
+      return {
+        content: [{ type: 'text', text: JSON.stringify(state, null, 2) }],
+        isError: state.health.errorCount > 0,
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return {
+        content: [
+          { type: 'text', text: `aios_operational_state failed: ${message}` },
         ],
         isError: true,
       }

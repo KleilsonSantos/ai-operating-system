@@ -24,6 +24,7 @@
     "@aios/memory": "workspace:*",
     "@aios/documentation": "workspace:*",
     "@aios/governance": "workspace:*",
+    "@aios/operational-state": "workspace:*",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
