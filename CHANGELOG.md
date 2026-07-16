@@ -4,6 +4,17 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-07-15
+
+### Added
+
+- 🕹️ Console **Try it**: safe actions (`POST /api/action`) — contract, workspaces, policies, brief, provider ping, memory · ADR-0012 (#76)
+- 🔋 Política canónica Resource-Aware (macOS): `docs/policies/resource-aware-macos.md`, policies `resource-*`, ADR-0011
+
+### Changed
+
+- 📊 Console/status: provider Ollama inativo passa a **warn** (auxiliar opcional), não erro de produto
+
 ## [0.15.0] - 2026-07-15
 
 ### Added

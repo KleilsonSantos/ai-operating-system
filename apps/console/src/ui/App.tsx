@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { GovernanceStatus } from './types'
+import { TryItPanel } from './TryItPanel'
 
 function severityLabel(s: string): string {
   if (s === 'error') return 'Atenção'
@@ -35,6 +36,10 @@ export function App() {
 
   const errors = status?.attention.filter((a) => a.severity === 'error').length ?? 0
   const warns = status?.attention.filter((a) => a.severity === 'warn').length ?? 0
+  const workspaceId =
+    status?.workspaces.find((w) => w.ok)?.id ||
+    status?.workspaces[0]?.id ||
+    'aios'
 
   return (
     <div className="shell">
@@ -42,8 +47,8 @@ export function App() {
         <p className="brand">AIOS</p>
         <h1>Console de governança</h1>
         <p className="lede">
-          Visibilidade do que está ativo, disponibilizado e a precisar de atenção —
-          sem substituir a IDE.
+          Estado, atenção e ações seguras que provam o runtime — sem substituir a
+          IDE nem chamar agentes no UX.
         </p>
         <div className="actions">
           <button type="button" onClick={() => void refresh()} disabled={loading}>
@@ -98,7 +103,12 @@ export function App() {
             </div>
           </section>
 
-          <div className="grid">
+          <div className="grid grid-3">
+            <TryItPanel
+              workspaceId={workspaceId}
+              onAfterAction={() => void refresh()}
+            />
+
             <section className="panel attention" aria-labelledby="att-h">
               <h2 id="att-h">Needs attention</h2>
               {status.attention.length === 0 ? (

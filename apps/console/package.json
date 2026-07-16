@@ -11,11 +11,17 @@
     "build": "vite build",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.server.json --noEmit",
     "lint": "node -e \"process.exit(0)\"",
-    "test": "node -e \"process.exit(0)\"",
+    "test": "vitest run",
     "preview": "vite preview"
   },
   "dependencies": {
     "@aios/status": "workspace:*",
+    "@aios/shared": "workspace:*",
+    "@aios/workspace": "workspace:*",
+    "@aios/policy": "workspace:*",
+    "@aios/prompt": "workspace:*",
+    "@aios/provider": "workspace:*",
+    "@aios/memory": "workspace:*",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
@@ -26,6 +32,7 @@
     "@vitejs/plugin-react": "^4.6.0",
     "concurrently": "^9.2.0",
     "typescript": "^5.9.2",
-    "vite": "^7.0.4"
+    "vite": "^7.0.4",
+    "vitest": "^3.2.4"
   }
 }

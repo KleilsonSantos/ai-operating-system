@@ -49,6 +49,31 @@
       "id": "agents-as-plugins",
       "description": "Agentes são plugins — não expor chamada direta de agente no UX principal",
       "severity": "must"
+    },
+    {
+      "id": "resource-first",
+      "description": "Resource First (macOS): minimizar CPU/RAM/disco/I/O/bateria/processos/containers; eficiência é requisito — ver docs/policies/resource-aware-macos.md",
+      "severity": "must"
+    },
+    {
+      "id": "inspect-before-install",
+      "description": "Antes de instalar/iniciar: verificar se já existe instalado, configurado, em execução, container/serviço equivalente ou reutilizável",
+      "severity": "must"
+    },
+    {
+      "id": "reuse-before-create",
+      "description": "Preferir reutilizar serviços/containers/DBs/redes/volumes/configs; evitar duplicidade (ex. Ollama local + Ollama Docker)",
+      "severity": "must"
+    },
+    {
+      "id": "ai-provider-reuse",
+      "description": "AI providers: reutilizar provider/Ollama/MCP/API já ativos; só criar serviço novo após inspeção; Ollama é auxiliar opcional (não instalar só para verde no console)",
+      "severity": "must"
+    },
+    {
+      "id": "justify-resource-impact",
+      "description": "Sugestões de infra devem declarar porquê, alternativas e impacto em hardware/manutenção/consumo",
+      "severity": "should"
     }
   ]
 }
