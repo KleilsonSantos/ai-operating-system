@@ -7,6 +7,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 ### Changed
 
 - 🔗 ROADMAP / guia: kickoff [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) (#90)
+- 🧹 Higiene GitHub: `.github/agents` (Copilot) + Wiki Home atualizada (mapa de links)
 
 ## [0.18.0] - 2026-07-16
 
