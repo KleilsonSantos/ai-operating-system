@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.18.0] - 2026-07-16
+
 ### Added
 
 - 📡 Operational State MVP: `@aios/operational-state`, MCP `aios_operational_state`, CLI `--operational-state`, console Try it, ADR-0015 (#84)
