@@ -10,6 +10,7 @@ import { getProvider } from '@aios/provider'
 import { remember, recall } from '@aios/memory'
 import { auditDocumentation } from '@aios/documentation'
 import { auditGovernance } from '@aios/governance'
+import { getOperationalState } from '@aios/operational-state'
 
 export const SAFE_ACTIONS = [
   'contract',
@@ -21,6 +22,7 @@ export const SAFE_ACTIONS = [
   'memory_remember',
   'audit_docs',
   'governance_audit',
+  'operational_state',
 ] as const
 
 export type SafeActionId = (typeof SAFE_ACTIONS)[number]
@@ -157,6 +159,14 @@ export async function runSafeAction(
         break
       }
 
+      case 'operational_state': {
+        result = await getOperationalState({
+          homePath,
+          workspaceId,
+        })
+        break
+      }
+
       default: {
         const _exhaustive: never = action
         throw new Error(`Unhandled action: ${_exhaustive}`)
@@ -173,7 +183,10 @@ export async function runSafeAction(
             ) ?? false)
           : action === 'audit_docs' || action === 'governance_audit'
             ? Boolean((result as { ok?: boolean }).ok)
-            : true
+            : action === 'operational_state'
+              ? ((result as { health?: { errorCount?: number } }).health
+                  ?.errorCount ?? 0) === 0
+              : true
 
     return { ok, action, latencyMs, result }
   } catch (err) {

@@ -6,6 +6,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Added
 
+- 📡 Operational State MVP: `@aios/operational-state`, MCP `aios_operational_state`, CLI `--operational-state`, console Try it, ADR-0015 (#84)
 - 🧭 ADR-0014 — AIOS control plane · Companion experiência (MCP/pipeline); Fase 4 no ROADMAP
 
 ## [0.17.0] - 2026-07-15

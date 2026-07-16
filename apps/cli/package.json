@@ -20,6 +20,7 @@
     "@aios/status": "workspace:*",
     "@aios/documentation": "workspace:*",
     "@aios/governance": "workspace:*",
+    "@aios/operational-state": "workspace:*",
     "@aios/workspace": "workspace:*",
     "@aios/shared": "workspace:*"
   },

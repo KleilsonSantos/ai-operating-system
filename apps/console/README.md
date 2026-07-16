@@ -24,7 +24,7 @@ pnpm --filter @aios/console dev
 | `POST /api/action` | `{ action, input?, workspaceId? }` → resultado + latência |
 | `GET /api/health` | Liveness da API |
 
-Safe actions: `contract` · `validate_workspaces` · `load_policies` · `compile_brief` · `provider_ping` · `memory_recall` · `memory_remember`.
+Safe actions: `contract` · `validate_workspaces` · `load_policies` · `compile_brief` · `provider_ping` · `memory_recall` · `memory_remember` · `audit_docs` · `governance_audit` · `operational_state`.
 
 ## Nota de produto
 

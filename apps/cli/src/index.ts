@@ -4,6 +4,7 @@ import { getProvider } from '@aios/provider'
 import { getGovernanceStatus } from '@aios/status'
 import { auditDocumentation } from '@aios/documentation'
 import { auditGovernance } from '@aios/governance'
+import { getOperationalState } from '@aios/operational-state'
 import { resolveWorkspace } from '@aios/workspace'
 
 function parseArgs(argv: string[]): {
@@ -19,6 +20,7 @@ function parseArgs(argv: string[]): {
   governanceStatus: boolean
   auditDocs: boolean
   governanceAudit: boolean
+  operationalState: boolean
   providerId: string
   model?: string
 } {
@@ -33,6 +35,7 @@ function parseArgs(argv: string[]): {
   let governanceStatus = false
   let auditDocs = false
   let governanceAudit = false
+  let operationalState = false
   let providerId = 'ollama'
   let model: string | undefined
   const parts: string[] = []
@@ -99,6 +102,10 @@ function parseArgs(argv: string[]): {
       governanceAudit = true
       continue
     }
+    if (a === '--operational-state') {
+      operationalState = true
+      continue
+    }
     if (a === '--provider') {
       providerId = argv[++i] || 'ollama'
       continue
@@ -135,6 +142,7 @@ function parseArgs(argv: string[]): {
     governanceStatus,
     auditDocs,
     governanceAudit,
+    operationalState,
     providerId,
     model,
   }
@@ -182,6 +190,17 @@ async function main(): Promise<void> {
     if (status.attention.some((a) => a.severity === 'error')) {
       process.exitCode = 1
     }
+    return
+  }
+
+  if (args.operationalState) {
+    const state = await getOperationalState({
+      homePath: process.env.AIOS_HOME || process.cwd(),
+      workspaceId: args.workspaceId,
+      providerId: args.providerId,
+    })
+    console.log(JSON.stringify(state, null, 2))
+    if (state.health.errorCount > 0) process.exitCode = 1
     return
   }
 
