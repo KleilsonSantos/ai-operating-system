@@ -13,6 +13,12 @@ gh issue comment <N> --repo KleilsonSantos/ai-operating-system \
 
 Antes do push: typecheck/lint/testes da área tocada.
 
-PR sempre para `sandbox`. Subject de merge: `merge: 🔀 PR #<n> — <branch>`.
+PR sempre para `sandbox`. Merge **só** via:
+
+```bash
+bash scripts/merge-pr.sh <N>
+```
+
+Subject: `merge: 🔀 PR #<n> — <branch>` (nunca o default do GitHub).
 
 Detalhes: [git-workflow.md](./git-workflow.md).

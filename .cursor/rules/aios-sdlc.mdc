@@ -18,6 +18,7 @@ Espelha `AGENTS.md` + policies de fluxo. Aplicar em todo Agent chat neste worksp
 - Formato: `type: <gitmoji> …`
 - Author: Kleilson Santos `<kdsddesign1@gmail.com>`
 - Sem `Co-authored-by: Cursor` / trailers de IDE
+- **Merges:** `bash scripts/merge-pr.sh <n>` (obrigatório subject `merge: 🔀 PR #<n> — <branch>`). Nunca `gh pr merge` sem `--subject` / `-t`.
 
 ## Produto
 
