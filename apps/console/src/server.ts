@@ -1,19 +1,50 @@
 /**
- * API local do console — GET /api/status (Health + Attention).
+ * API local do console — status + safe actions (#71 · #76).
  * Porta: AIOS_CONSOLE_PORT ou 8787.
  */
 import { createServer } from 'node:http'
 import { getGovernanceStatus } from '@aios/status'
+import { runSafeAction, SAFE_ACTIONS } from './actions.ts'
 
 const port = Number(process.env.AIOS_CONSOLE_PORT || 8787)
 const homePath = process.env.AIOS_HOME || process.cwd()
 
+function sendJson(
+  res: import('node:http').ServerResponse,
+  status: number,
+  body: unknown,
+): void {
+  res.writeHead(status, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Cache-Control': 'no-store',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  })
+  res.end(JSON.stringify(body, null, 2))
+}
+
+async function readJsonBody(
+  req: import('node:http').IncomingMessage,
+): Promise<unknown> {
+  const chunks: Buffer[] = []
+  for await (const chunk of req) {
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
+  }
+  const raw = Buffer.concat(chunks).toString('utf8').trim()
+  if (!raw) return {}
+  return JSON.parse(raw) as unknown
+}
+
 const server = createServer(async (req, res) => {
   const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`)
 
-  res.setHeader('Access-Control-Allow-Origin', '*')
   if (req.method === 'OPTIONS') {
-    res.writeHead(204)
+    res.writeHead(204, {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    })
     res.end()
     return
   }
@@ -21,28 +52,51 @@ const server = createServer(async (req, res) => {
   if (req.method === 'GET' && url.pathname === '/api/status') {
     try {
       const status = await getGovernanceStatus({ homePath })
-      const body = JSON.stringify(status, null, 2)
-      res.writeHead(200, {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': 'no-store',
-      })
-      res.end(body)
+      sendJson(res, 200, status)
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
-      res.writeHead(500, { 'Content-Type': 'application/json' })
-      res.end(JSON.stringify({ error: message }))
+      sendJson(res, 500, { error: message })
     }
     return
   }
 
   if (req.method === 'GET' && url.pathname === '/api/health') {
-    res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ ok: true, service: 'aios-console-api' }))
+    sendJson(res, 200, { ok: true, service: 'aios-console-api' })
     return
   }
 
-  res.writeHead(404, { 'Content-Type': 'application/json' })
-  res.end(JSON.stringify({ error: 'not found' }))
+  if (req.method === 'GET' && url.pathname === '/api/actions') {
+    sendJson(res, 200, { actions: SAFE_ACTIONS })
+    return
+  }
+
+  if (req.method === 'POST' && url.pathname === '/api/action') {
+    try {
+      const body = (await readJsonBody(req)) as {
+        action?: string
+        input?: string
+        workspaceId?: string
+      }
+      if (!body.action || typeof body.action !== 'string') {
+        sendJson(res, 400, { error: 'body.action required' })
+        return
+      }
+      const out = await runSafeAction({
+        action: body.action,
+        input: body.input,
+        workspaceId: body.workspaceId,
+        homePath,
+      })
+      const statusCode = out.error && !out.result ? 400 : 200
+      sendJson(res, statusCode, out)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      sendJson(res, 500, { error: message })
+    }
+    return
+  }
+
+  sendJson(res, 404, { error: 'not found' })
 })
 
 server.listen(port, '127.0.0.1', () => {

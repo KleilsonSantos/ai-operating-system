@@ -99,7 +99,7 @@ Store local `.aios/memory/{workspaceId}.json` · `remember`/`recall` · MCP `aio
 
 ### Console de governança (`@aios/console` / `@aios/status`) — issue #71
 
-Health + Needs attention · API `/api/status` · [ADR-0010](../adr/0010-governance-console.md). Grafana/consumo = camada 2 (métricas JSONL stub). Provider auxiliar inativo = warn ([ADR-0011](../adr/0011-resource-aware-macos.md)).
+Health + Needs attention + **Try it** (safe actions) · API `/api/status` · `POST /api/action` · [ADR-0010](../adr/0010-governance-console.md) · [ADR-0012](../adr/0012-console-safe-actions.md). Provider auxiliar inativo = warn ([ADR-0011](../adr/0011-resource-aware-macos.md)).
 
 ### Resource-Aware (macOS) — ADR-0011
 
