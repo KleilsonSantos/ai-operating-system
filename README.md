@@ -41,6 +41,7 @@ engines/
   intent/ policy/ context/ decision/
   orchestration/ quality-gate/
   workspace/ knowledge/ memory/ prompt/ provider/ status/
+  documentation/ governance/
   agent-architecture/ agent-appsec/ agent-docs/ agent-qa/   # plugins
 docs/
   FOUNDATION.md VISION.md ROADMAP.md adr/ architecture/

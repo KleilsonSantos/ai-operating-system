@@ -2,6 +2,9 @@ import { runPipeline, PIPELINE_CONTRACT_VERSION } from '@aios/pipeline'
 import { compilePrompt } from '@aios/prompt'
 import { getProvider } from '@aios/provider'
 import { getGovernanceStatus } from '@aios/status'
+import { auditDocumentation } from '@aios/documentation'
+import { auditGovernance } from '@aios/governance'
+import { resolveWorkspace } from '@aios/workspace'
 
 function parseArgs(argv: string[]): {
   input: string
@@ -14,6 +17,8 @@ function parseArgs(argv: string[]): {
   providerHealth: boolean
   providerChat: boolean
   governanceStatus: boolean
+  auditDocs: boolean
+  governanceAudit: boolean
   providerId: string
   model?: string
 } {
@@ -26,6 +31,8 @@ function parseArgs(argv: string[]): {
   let providerHealth = false
   let providerChat = false
   let governanceStatus = false
+  let auditDocs = false
+  let governanceAudit = false
   let providerId = 'ollama'
   let model: string | undefined
   const parts: string[] = []
@@ -84,6 +91,14 @@ function parseArgs(argv: string[]): {
       governanceStatus = true
       continue
     }
+    if (a === '--audit-docs') {
+      auditDocs = true
+      continue
+    }
+    if (a === '--governance-audit') {
+      governanceAudit = true
+      continue
+    }
     if (a === '--provider') {
       providerId = argv[++i] || 'ollama'
       continue
@@ -118,13 +133,45 @@ function parseArgs(argv: string[]): {
     providerHealth,
     providerChat,
     governanceStatus,
+    auditDocs,
+    governanceAudit,
     providerId,
     model,
   }
 }
 
+function resolveRepo(args: {
+  repoPath?: string
+  workspaceId?: string
+}): string {
+  if (args.repoPath) return args.repoPath
+  const ws = resolveWorkspace(args.workspaceId, {
+    cwd: process.env.AIOS_HOME || process.cwd(),
+  })
+  if (ws) return ws.repoPath
+  return process.cwd()
+}
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2))
+
+  if (args.auditDocs) {
+    const audit = auditDocumentation({ repoPath: resolveRepo(args) })
+    console.log(JSON.stringify(audit, null, 2))
+    if (!audit.ok) process.exitCode = 1
+    return
+  }
+
+  if (args.governanceAudit) {
+    const home = process.env.AIOS_HOME || process.cwd()
+    const audit = auditGovernance({
+      homePath: home,
+      repoPath: resolveRepo(args),
+    })
+    console.log(JSON.stringify(audit, null, 2))
+    if (!audit.ok) process.exitCode = 1
+    return
+  }
 
   if (args.governanceStatus) {
     const status = await getGovernanceStatus({

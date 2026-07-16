@@ -48,6 +48,16 @@ const ACTIONS: ActionDef[] = [
     needsInput: true,
     placeholder: 'Nota opcional…',
   },
+  {
+    id: 'audit_docs',
+    label: 'Audit docs',
+    hint: 'Documentation Engine — drift canónico',
+  },
+  {
+    id: 'governance_audit',
+    label: 'Governance audit',
+    hint: 'Policies + decisões + docs',
+  },
 ]
 
 type ActionResult = {

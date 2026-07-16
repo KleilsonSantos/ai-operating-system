@@ -22,6 +22,8 @@
     "@aios/prompt": "workspace:*",
     "@aios/provider": "workspace:*",
     "@aios/memory": "workspace:*",
+    "@aios/documentation": "workspace:*",
+    "@aios/governance": "workspace:*",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },

@@ -105,6 +105,10 @@ Health + Needs attention + **Try it** (safe actions) · API `/api/status` · `PO
 
 Inspecionar antes de instalar · reutilizar · minimizar hardware · [política](../policies/resource-aware-macos.md).
 
+### Documentation + Governance (#80)
+
+`auditDocumentation` · `auditGovernance` / `recordDecision` · MCP `aios_audit_docs` / `aios_governance_*` · [ADR-0013](../adr/0013-documentation-governance-engines.md).
+
 ## O que Fase 1 NÃO inclui
 
 - UI completa (Grafana / multi-tenant SaaS)

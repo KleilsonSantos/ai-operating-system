@@ -22,6 +22,8 @@ import { remember, recall, clearMemory, listMemoryWorkspaces } from '@aios/memor
 import { compilePrompt } from '@aios/prompt'
 import { getProvider, listProviderIds } from '@aios/provider'
 import { getGovernanceStatus } from '@aios/status'
+import { auditDocumentation } from '@aios/documentation'
+import { auditGovernance, recordDecision } from '@aios/governance'
 import { resolve } from 'node:path'
 
 const server = new McpServer({
@@ -489,6 +491,117 @@ server.registerTool(
       return {
         content: [
           { type: 'text', text: `aios_governance_status failed: ${message}` },
+        ],
+        isError: true,
+      }
+    }
+  },
+)
+
+server.registerTool(
+  'aios_audit_docs',
+  {
+    title: 'Audit documentation',
+    description:
+      'Heuristic documentation inventory/drift (canonical paths, ADRs, policies). Documentation Engine (#80).',
+    inputSchema: {
+      repoPath: z.string().optional(),
+      workspaceId: z.string().optional(),
+    },
+  },
+  async ({ repoPath, workspaceId }) => {
+    try {
+      let root = resolve(repoPath || process.env.AIOS_REPO || process.cwd())
+      if (!repoPath && workspaceId) {
+        const ws = resolveWorkspace(workspaceId, {
+          cwd: process.env.AIOS_HOME || process.cwd(),
+        })
+        if (ws) root = ws.repoPath
+      }
+      const audit = auditDocumentation({ repoPath: root })
+      return {
+        content: [{ type: 'text', text: JSON.stringify(audit, null, 2) }],
+        isError: !audit.ok,
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return {
+        content: [{ type: 'text', text: `aios_audit_docs failed: ${message}` }],
+        isError: true,
+      }
+    }
+  },
+)
+
+server.registerTool(
+  'aios_governance_audit',
+  {
+    title: 'Governance audit',
+    description:
+      'Light governance audit: must policies + decision log + optional docs drift (#80).',
+    inputSchema: {
+      homePath: z.string().optional(),
+      repoPath: z.string().optional(),
+      includeDocumentation: z.boolean().optional(),
+    },
+  },
+  async ({ homePath, repoPath, includeDocumentation }) => {
+    try {
+      const audit = auditGovernance({
+        homePath: homePath || process.env.AIOS_HOME || process.cwd(),
+        repoPath: repoPath || process.env.AIOS_REPO,
+        includeDocumentation,
+      })
+      return {
+        content: [{ type: 'text', text: JSON.stringify(audit, null, 2) }],
+        isError: !audit.ok,
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return {
+        content: [
+          { type: 'text', text: `aios_governance_audit failed: ${message}` },
+        ],
+        isError: true,
+      }
+    }
+  },
+)
+
+server.registerTool(
+  'aios_governance_record',
+  {
+    title: 'Record governance decision',
+    description:
+      'Append a light decision to .aios/governance/decisions.jsonl (#80).',
+    inputSchema: {
+      summary: z.string().describe('Short decision summary'),
+      kind: z.string().optional().describe('e.g. policy, release, exception'),
+      verdict: z.enum(['pass', 'fail', 'info']).optional(),
+      policyIds: z.array(z.string()).optional(),
+      homePath: z.string().optional(),
+    },
+  },
+  async ({ summary, kind, verdict, policyIds, homePath }) => {
+    try {
+      const entry = recordDecision(
+        {
+          summary,
+          kind: kind || 'note',
+          verdict,
+          policyIds,
+          source: 'mcp',
+        },
+        { homePath: homePath || process.env.AIOS_HOME || process.cwd() },
+      )
+      return {
+        content: [{ type: 'text', text: JSON.stringify({ ok: true, entry }, null, 2) }],
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return {
+        content: [
+          { type: 'text', text: `aios_governance_record failed: ${message}` },
         ],
         isError: true,
       }

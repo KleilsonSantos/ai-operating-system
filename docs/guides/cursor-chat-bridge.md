@@ -36,6 +36,8 @@ Ligação **viva** com o runtime: o Agent chama tools.
 | `aios_run_pipeline` | Núcleo completo (`PipelineResponse`; aceita `workspaceId`) |
 | `aios_provider_health` / `models` / `chat` | Multi-provider auxiliar Ollama (#67) |
 | `aios_governance_status` | Health + Attention do console (#71) |
+| `aios_audit_docs` | Inventário/drift de docs canónicas (#80) |
+| `aios_governance_audit` / `aios_governance_record` | Auditoria leve + log de decisões (#80) |
 
 Exemplo de config: [`.cursor/mcp.json.example`](../../.cursor/mcp.json.example) — use **caminho absoluto do `node`** (Cursor GUI frequentemente não tem `pnpm`/`nvm` no PATH).
 
