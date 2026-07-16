@@ -16,9 +16,9 @@ Você escreve *"Analise meu projeto."* — policies, contexto, agentes e quality
 
 | Item | Valor |
 | --- | --- |
-| Fase | Fase 3 (multi-provider MVP) · `v0.14.0` |
+| Fase | Fase 3 (console governança MVP) · `v0.15.0` |
 | Produção | `main` + tag SemVer |
-| Última release | [`v0.14.0`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.14.0) |
+| Última release | [`v0.15.0`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.15.0) |
 | Monorepo | pnpm workspaces + Turborepo (stubs) |
 | Integração | `sandbox` → `main` · [`@aios/pipeline`](./packages/pipeline/README.md) · [Cursor chat](./docs/guides/cursor-chat-bridge.md) |
 | Pedra base | [`docs/FOUNDATION.md`](./docs/FOUNDATION.md) |
@@ -32,6 +32,7 @@ Você escreve *"Analise meu projeto."* — policies, contexto, agentes e quality
 ```text
 apps/cli/                 # Cliente fino → @aios/pipeline
 apps/mcp/                 # MCP stdio → Cursor Agent (#38)
+apps/console/             # UI governança Health+Attention (#71)
 packages/
   shared/                 # Tipos + PipelineRequest/Response
   core/                   # ai-core (eventos)
@@ -39,6 +40,7 @@ packages/
 engines/
   intent/ policy/ context/ decision/
   orchestration/ quality-gate/
+  workspace/ knowledge/ memory/ prompt/ provider/ status/
   agent-architecture/ agent-appsec/ agent-docs/ agent-qa/   # plugins
 docs/
   FOUNDATION.md VISION.md ROADMAP.md adr/ architecture/
@@ -50,6 +52,7 @@ docs/
 pnpm install
 pnpm sync:cursor-rules   # policies → .cursor/rules (chat do Cursor)
 pnpm --filter @aios/cli dev -- "Analise meu projeto."
+# console: AIOS_HOME=$PWD pnpm --filter @aios/console dev
 ```
 
 No Cursor Agent deste workspace, as policies já entram sozinhas (Project Rules). Guia: [cursor-chat-bridge](./docs/guides/cursor-chat-bridge.md).

@@ -195,6 +195,50 @@ export type ProviderHealth = {
   latencyMs?: number
 }
 
+/** Console de governança — status + attention (#71). */
+export type AttentionSeverity = 'error' | 'warn' | 'info'
+
+export type AttentionItem = {
+  id: string
+  severity: AttentionSeverity
+  title: string
+  detail: string
+}
+
+export type GovernanceStatus = {
+  generatedAt: string
+  contractVersion: PipelineContractVersion
+  homePath: string
+  workspaces: Array<{
+    id: string
+    name?: string
+    repoPath: string
+    ok: boolean
+    signals: string[]
+  }>
+  policies: {
+    source: string
+    path?: string
+    count: number
+    mustIds: string[]
+  }
+  provider: ProviderHealth
+  memory: {
+    workspaceIds: string[]
+  }
+  exposed: {
+    mcpTools: string[]
+    providers: string[]
+  }
+  attention: AttentionItem[]
+  metrics: {
+    available: boolean
+    note: string
+    eventCount?: number
+    path?: string
+  }
+}
+
 /** Pedido do integrador → núcleo AIOS. */
 export type PipelineRequest = {
   /** Texto livre do usuário (intent raw) */

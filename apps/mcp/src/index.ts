@@ -21,11 +21,12 @@ import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge'
 import { remember, recall, clearMemory, listMemoryWorkspaces } from '@aios/memory'
 import { compilePrompt } from '@aios/prompt'
 import { getProvider, listProviderIds } from '@aios/provider'
+import { getGovernanceStatus } from '@aios/status'
 import { resolve } from 'node:path'
 
 const server = new McpServer({
   name: 'aios',
-  version: '0.14.0',
+  version: '0.15.0',
 })
 
 server.registerTool(
@@ -458,6 +459,39 @@ server.registerTool(
           ),
         },
       ],
+    }
+  },
+)
+
+server.registerTool(
+  'aios_governance_status',
+  {
+    title: 'Governance status',
+    description:
+      'Health + Needs attention for the AIOS console (#71): workspaces, policies, provider, MCP catalog. Not a Grafana metrics dump.',
+    inputSchema: {
+      homePath: z.string().optional(),
+      provider: z.string().optional().describe('Provider id for health check'),
+    },
+  },
+  async ({ homePath, provider }) => {
+    try {
+      const status = await getGovernanceStatus({
+        homePath: homePath || process.env.AIOS_HOME || process.cwd(),
+        providerId: provider,
+      })
+      return {
+        content: [{ type: 'text', text: JSON.stringify(status, null, 2) }],
+        isError: status.attention.some((a) => a.severity === 'error'),
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return {
+        content: [
+          { type: 'text', text: `aios_governance_status failed: ${message}` },
+        ],
+        isError: true,
+      }
     }
   },
 )

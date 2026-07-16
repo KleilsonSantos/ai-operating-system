@@ -1,6 +1,7 @@
 import { runPipeline, PIPELINE_CONTRACT_VERSION } from '@aios/pipeline'
 import { compilePrompt } from '@aios/prompt'
 import { getProvider } from '@aios/provider'
+import { getGovernanceStatus } from '@aios/status'
 
 function parseArgs(argv: string[]): {
   input: string
@@ -12,6 +13,7 @@ function parseArgs(argv: string[]): {
   briefOnly: boolean
   providerHealth: boolean
   providerChat: boolean
+  governanceStatus: boolean
   providerId: string
   model?: string
 } {
@@ -23,6 +25,7 @@ function parseArgs(argv: string[]): {
   let briefOnly = false
   let providerHealth = false
   let providerChat = false
+  let governanceStatus = false
   let providerId = 'ollama'
   let model: string | undefined
   const parts: string[] = []
@@ -77,6 +80,10 @@ function parseArgs(argv: string[]): {
       providerChat = true
       continue
     }
+    if (a === '--governance-status') {
+      governanceStatus = true
+      continue
+    }
     if (a === '--provider') {
       providerId = argv[++i] || 'ollama'
       continue
@@ -110,6 +117,7 @@ function parseArgs(argv: string[]): {
     briefOnly,
     providerHealth,
     providerChat,
+    governanceStatus,
     providerId,
     model,
   }
@@ -117,6 +125,18 @@ function parseArgs(argv: string[]): {
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2))
+
+  if (args.governanceStatus) {
+    const status = await getGovernanceStatus({
+      homePath: process.env.AIOS_HOME || process.cwd(),
+      providerId: args.providerId,
+    })
+    console.log(JSON.stringify(status, null, 2))
+    if (status.attention.some((a) => a.severity === 'error')) {
+      process.exitCode = 1
+    }
+    return
+  }
 
   if (args.providerHealth) {
     const health = await getProvider(args.providerId).health()
