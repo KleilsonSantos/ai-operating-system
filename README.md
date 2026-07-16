@@ -24,7 +24,7 @@ Você escreve *"Analise meu projeto."* — policies, contexto, agentes e quality
 | Pedra base | [`docs/FOUNDATION.md`](./docs/FOUNDATION.md) |
 | Visão (resumo) | [`docs/VISION.md`](./docs/VISION.md) |
 | Roadmap | [`docs/ROADMAP.md`](./docs/ROADMAP.md) |
-| ADR | [ADR-0001](./docs/adr/0001-standalone-platform.md) · [ADR-0003 pipeline](./docs/adr/0003-pipeline-integration-contract.md) |
+| ADR | [ADR-0001](./docs/adr/0001-standalone-platform.md) · [ADR-0003 pipeline](./docs/adr/0003-pipeline-integration-contract.md) · [ADR-0014 companion](./docs/adr/0014-control-plane-companion.md) |
 | Arquitetura | [`docs/architecture/overview.md`](./docs/architecture/overview.md) |
 
 ## Estrutura (Fase 1)
