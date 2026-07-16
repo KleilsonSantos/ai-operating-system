@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Publica docs/wiki/Home.md → GitHub Wiki (mapa de links).
-# Se o remoto .wiki.git ainda não existir (404), cria a 1ª página
-# uma vez na UI: Repo → Wiki → "Create the first page" → Save,
-# depois volta a correr este script.
+# Bootstrap da 1ª página (se remoto ainda não existir):
+#   python3 scripts/bootstrap-wiki-chrome.py
+#   (Chrome logado no GitHub + Ver → Programador → JS dos Eventos da Apple)
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SRC="$ROOT/docs/wiki/Home.md"
