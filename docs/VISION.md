@@ -32,6 +32,7 @@ O AIOS foca no que falta como produto único: **policies, quality gates, decisio
 | --- | --- |
 | **1** | Núcleo — intent, policy, context, orchestration, plugins, quality gate |
 | **2** | Multi-repositório · Knowledge Graph · memory |
-| **3** | Multi-tool (ChatGPT, Claude, Gemini, Copilot) · MCP · UI de governança |
+| **3** | Multi-tool · MCP · UI de governança · docs/governance |
+| **4** | Control plane maduro · Companion (experiência) — [ADR-0014](./adr/0014-control-plane-companion.md) |
 
-Detalhe: [`ROADMAP.md`](./ROADMAP.md) · [`architecture/overview.md`](./architecture/overview.md) · [ADR-0001](./adr/0001-standalone-platform.md).
+Detalhe: [`ROADMAP.md`](./ROADMAP.md) · [`architecture/overview.md`](./architecture/overview.md) · [ADR-0001](./adr/0001-standalone-platform.md) · [ADR-0014](./adr/0014-control-plane-companion.md).

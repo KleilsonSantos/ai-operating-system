@@ -40,7 +40,18 @@ Validar arquitetura e fluxos do AIOS.
 - [x] UI de governança — console Health + Attention + Try it (`@aios/console` / `@aios/status`, #71 / #76 / ADR-0010 / ADR-0012); Grafana/consumo depois
 - [x] Documentation / Governance engines — MVP heurístico (#80 / ADR-0013)
 
+## Fase 4 — Control plane maduro · Companion (experiência)
+
+Fronteira: [ADR-0014](./adr/0014-control-plane-companion.md) · [guia](./guides/control-plane-companion.md).
+
+- [ ] Operational State MVP no AIOS (estado unificado leve; sem voz / sem controlar IDE)
+- [ ] Repo Companion (cliente MCP/pipeline) — Conversation Manager; voz depois
+- [ ] Event hooks Resource-Aware (sem polling agressivo)
+- [ ] Capability adapters (Git/GitHub/…) atrás de contratos — sem duplicar engines AIOS
+
 ## Fora de escopo (de propósito)
 
 - Substituir IDEs ou Copilot como editor — o AIOS governa e orquestra, não compete como autocomplete
+- Fundir experiência “Jarvis” e control plane num único monólito de release
 - Construir todos os engines target na Fase 1
+- Embutir AIOS como pasta de outro monorepo (ADR-0001)
