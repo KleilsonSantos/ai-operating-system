@@ -1,7 +1,7 @@
 import { runPipeline, PIPELINE_CONTRACT_VERSION } from '@aios/pipeline'
 import { compilePrompt } from '@aios/prompt'
 import { getProvider } from '@aios/provider'
-import { getGovernanceStatus } from '@aios/status'
+import { getGovernanceStatus, chatWithMetrics } from '@aios/status'
 import { auditDocumentation } from '@aios/documentation'
 import { auditGovernance } from '@aios/governance'
 import { getOperationalState } from '@aios/operational-state'
@@ -212,9 +212,13 @@ async function main(): Promise<void> {
   }
 
   if (args.providerChat) {
-    const out = await getProvider(args.providerId).chat({
-      model: args.model,
-      messages: [{ role: 'user', content: args.input }],
+    const out = await chatWithMetrics({
+      providerId: args.providerId,
+      request: {
+        model: args.model,
+        messages: [{ role: 'user', content: args.input }],
+      },
+      source: 'cli',
     })
     console.log(JSON.stringify(out, null, 2))
     return

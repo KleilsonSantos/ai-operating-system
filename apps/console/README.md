@@ -2,7 +2,7 @@
 
 UI de governança — **Health + Needs attention + Try it** (#71 · #76 · ADR-0010 · ADR-0012).
 
-Não é Grafana. Grafana/séries de consumo vêm depois via `.aios/metrics/events.jsonl`.
+Not Grafana. Provider chat appends `.aios/metrics/events.jsonl` (`provider.chat`, ADR-0019). Prometheus/Grafana export comes later (ADR-0010 layer 2).
 
 ## Dev
 

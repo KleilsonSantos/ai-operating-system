@@ -1,12 +1,15 @@
 /**
- * Status Engine — visão de saúde + “needs attention” para o console (#71).
- * Não é Grafana; agrega estado determinístico dos engines. Métricas de consumo = stub.
+ * Status Engine — health + needs attention for the console (#71).
+ * Provider chat consumption: local JSONL metrics (#115 / ADR-0019). Not Grafana.
  */
 import { existsSync, mkdirSync, appendFileSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import {
   PIPELINE_CONTRACT_VERSION,
   type AttentionItem,
+  type ChatRequest,
+  type ChatResponse,
+  type ChatUsage,
   type GovernanceStatus,
 } from '@aios/shared'
 import { listValidatedWorkspaces } from '@aios/workspace'
@@ -14,7 +17,7 @@ import { loadPolicies, applyPolicies } from '@aios/policy'
 import { listMemoryWorkspaces } from '@aios/memory'
 import { getProvider, listProviderIds } from '@aios/provider'
 
-/** Tools expostas pelo `@aios/mcp` (lista canónica do MVP). */
+/** Tools exposed by `@aios/mcp` (canonical MVP list). */
 export const MCP_TOOL_CATALOG = [
   'aios_contract_version',
   'aios_compile_prompt',
@@ -46,6 +49,16 @@ export type GetGovernanceStatusOptions = {
   providerHealth?: GovernanceStatus['provider']
 }
 
+export type ProviderChatMetricInput = {
+  provider: string
+  model?: string
+  ok: boolean
+  latencyMs?: number
+  usage?: ChatUsage
+  error?: string
+  source?: string
+}
+
 function metricsPath(homePath: string): string {
   return join(homePath, '.aios', 'metrics', 'events.jsonl')
 }
@@ -65,7 +78,48 @@ function countMetricEvents(homePath: string): {
   }
 }
 
-/** Gancho futuro Grafana/Prometheus — append JSONL local. */
+type ProviderChatSummary = NonNullable<
+  GovernanceStatus['metrics']['providerChat']
+>
+
+function summarizeProviderChat(homePath: string): ProviderChatSummary | undefined {
+  const path = metricsPath(homePath)
+  if (!existsSync(path)) return undefined
+  let count = 0
+  let errorCount = 0
+  let promptTokens = 0
+  let completionTokens = 0
+  let totalTokens = 0
+  try {
+    const raw = readFileSync(path, 'utf8')
+    for (const line of raw.split('\n')) {
+      if (!line.trim()) continue
+      let ev: Record<string, unknown>
+      try {
+        ev = JSON.parse(line) as Record<string, unknown>
+      } catch {
+        continue
+      }
+      if (ev.kind !== 'provider.chat') continue
+      count += 1
+      if (ev.ok === false) errorCount += 1
+      const usage = ev.usage as ChatUsage | undefined
+      if (usage?.promptTokens) promptTokens += usage.promptTokens
+      if (usage?.completionTokens) completionTokens += usage.completionTokens
+      if (usage?.totalTokens) {
+        totalTokens += usage.totalTokens
+      } else if (usage?.promptTokens || usage?.completionTokens) {
+        totalTokens += (usage.promptTokens || 0) + (usage.completionTokens || 0)
+      }
+    }
+  } catch {
+    return undefined
+  }
+  if (count === 0) return undefined
+  return { count, errorCount, promptTokens, completionTokens, totalTokens }
+}
+
+/** Append JSONL metric (Grafana/Prometheus export later — ADR-0010 layer 2). */
 export function recordMetricEvent(
   event: Record<string, unknown>,
   options: { homePath?: string } = {},
@@ -81,12 +135,78 @@ export function recordMetricEvent(
   return file
 }
 
+/** Record a single provider chat attempt (`kind: provider.chat`). */
+export function recordProviderChatMetric(
+  input: ProviderChatMetricInput,
+  options: { homePath?: string } = {},
+): string {
+  return recordMetricEvent(
+    {
+      kind: 'provider.chat',
+      provider: input.provider,
+      model: input.model || undefined,
+      ok: input.ok,
+      latencyMs: input.latencyMs,
+      usage: input.usage,
+      error: input.error,
+      source: input.source,
+    },
+    options,
+  )
+}
+
+/**
+ * Chat via AIProvider and append a consumption event (MCP/CLI entrypoint).
+ */
+export async function chatWithMetrics(options: {
+  providerId?: string
+  baseUrl?: string
+  request: ChatRequest
+  homePath?: string
+  source?: string
+}): Promise<ChatResponse> {
+  const providerId = options.providerId || 'ollama'
+  const started = Date.now()
+  const p = getProvider(providerId, { baseUrl: options.baseUrl })
+  try {
+    const out = await p.chat(options.request)
+    const latencyMs = out.latencyMs ?? Date.now() - started
+    recordProviderChatMetric(
+      {
+        provider: out.provider,
+        model: out.model,
+        ok: true,
+        latencyMs,
+        usage: out.usage,
+        source: options.source,
+      },
+      { homePath: options.homePath },
+    )
+    return { ...out, latencyMs }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    recordProviderChatMetric(
+      {
+        provider: providerId,
+        model: options.request.model,
+        ok: false,
+        latencyMs: Date.now() - started,
+        error: message.slice(0, 200),
+        source: options.source,
+      },
+      { homePath: options.homePath },
+    )
+    throw err
+  }
+}
+
 function buildAttention(parts: {
   workspaces: GovernanceStatus['workspaces']
   policies: GovernanceStatus['policies']
   provider: GovernanceStatus['provider']
   memoryIds: string[]
-  metricsAvailable: boolean
+  providerChat?: ProviderChatSummary
+  eventCount: number
 }): AttentionItem[] {
   const items: AttentionItem[] = []
 
@@ -94,10 +214,10 @@ function buildAttention(parts: {
     items.push({
       id: 'provider-down',
       severity: 'warn',
-      title: `Provider ${parts.provider.provider} inativo (opcional)`,
+      title: `Provider ${parts.provider.provider} inactive (optional)`,
       detail:
         parts.provider.error ||
-        `Sem resposta em ${parts.provider.baseUrl}. Auxiliar local — não instalar só para o console ficar verde (resource-aware). IDE/MCP AIOS continuam ok.`,
+        `No response at ${parts.provider.baseUrl}. Optional local helper — do not install only to turn the console green (resource-aware). IDE/MCP AIOS still work.`,
     })
   }
 
@@ -105,8 +225,8 @@ function buildAttention(parts: {
     items.push({
       id: 'no-workspaces',
       severity: 'warn',
-      title: 'Nenhum workspace registado',
-      detail: 'Cria entradas em workspaces/aios.workspaces.json.',
+      title: 'No workspaces registered',
+      detail: 'Add entries in workspaces/aios.workspaces.json.',
     })
   }
 
@@ -115,7 +235,7 @@ function buildAttention(parts: {
       items.push({
         id: `workspace-bad-${w.id}`,
         severity: 'error',
-        title: `Workspace \`${w.id}\` inválido`,
+        title: `Workspace \`${w.id}\` invalid`,
         detail: w.signals.join('; ') || w.repoPath,
       })
     }
@@ -125,8 +245,8 @@ function buildAttention(parts: {
     items.push({
       id: 'no-must-policies',
       severity: 'warn',
-      title: 'Sem policies must',
-      detail: 'Carrega policies/aios.policies.json ou defaults da plataforma.',
+      title: 'No must policies',
+      detail: 'Load policies/aios.policies.json or platform defaults.',
     })
   }
 
@@ -136,18 +256,25 @@ function buildAttention(parts: {
     items.push({
       id: 'no-memory',
       severity: 'info',
-      title: 'Memória vazia nos workspaces',
-      detail: 'Nada em .aios/memory — normal em ambiente fresco.',
+      title: 'Empty memory on workspaces',
+      detail: 'Nothing in .aios/memory — normal on a fresh environment.',
     })
   }
 
-  if (!parts.metricsAvailable) {
+  if (!parts.providerChat) {
     items.push({
       id: 'metrics-stub',
       severity: 'info',
-      title: 'Consumo (tokens) ainda não instrumentado',
+      title: 'No provider.chat consumption events yet',
       detail:
-        'Gancho .aios/metrics/events.jsonl existe; Grafana / séries temporais vêm depois.',
+        'Run aios_provider_chat or CLI --provider-chat to append .aios/metrics/events.jsonl. Grafana/Prometheus export comes later (ADR-0010 layer 2).',
+    })
+  } else if (parts.providerChat.errorCount > 0) {
+    items.push({
+      id: 'provider-chat-errors',
+      severity: 'warn',
+      title: `Provider chat errors (${parts.providerChat.errorCount}/${parts.providerChat.count})`,
+      detail: `See ${parts.eventCount} metric event(s) in .aios/metrics/events.jsonl.`,
     })
   }
 
@@ -186,15 +313,27 @@ export async function getGovernanceStatus(
 
   const memoryIds = listMemoryWorkspaces({ homePath })
   const metrics = countMetricEvents(homePath)
-  const metricsAvailable = metrics.eventCount > 0
+  const providerChat = summarizeProviderChat(homePath)
+  const metricsAvailable = Boolean(providerChat) || metrics.eventCount > 0
 
   const attention = buildAttention({
     workspaces,
     policies,
     provider,
     memoryIds,
-    metricsAvailable,
+    providerChat,
+    eventCount: metrics.eventCount,
   })
+
+  let note: string
+  if (providerChat) {
+    note = `provider.chat: ${providerChat.count} call(s), ~${providerChat.totalTokens} tokens (local JSONL; no Prometheus yet).`
+  } else if (metrics.eventCount > 0) {
+    note = 'Local JSONL events present; no provider.chat rows yet.'
+  } else {
+    note =
+      'No consumption events — use chatWithMetrics / aios_provider_chat (ADR-0019).'
+  }
 
   return {
     generatedAt: new Date().toISOString(),
@@ -211,11 +350,10 @@ export async function getGovernanceStatus(
     attention,
     metrics: {
       available: metricsAvailable,
-      note: metricsAvailable
-        ? 'Eventos locais em JSONL (ainda sem export Prometheus).'
-        : 'Stub — use recordMetricEvent() ou instrumentação futura para Grafana.',
+      note,
       eventCount: metrics.eventCount,
       path: metrics.path,
+      providerChat,
     },
   }
 }
