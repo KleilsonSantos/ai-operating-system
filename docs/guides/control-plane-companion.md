@@ -29,7 +29,7 @@ Companion **não** importa internals de `engines/*` como API pública estável; 
 
 1. **No AIOS:** Operational State / eventos leves — `@aios/operational-state` (`getOperationalState`, `aios_operational_state`) — [ADR-0015](../adr/0015-operational-state.md).
 2. **Repo companion:** [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) — Conversation Manager + consumo CLI/MCP (chat + provider) · tracking [#90](https://github.com/KleilsonSantos/ai-operating-system/issues/90).
-3. **Capabilities** no Companion — `companion caps` (git / github via CLI on-demand; sem watchers; sem duplicar engines).
+3. **Capabilities** no Companion — `companion caps` (git / github via CLI on-demand; sem watchers; sem duplicar engines) ✅
 4. Watchers IDE/Docker / voz — só com Resource-Aware e inspect-before-install.
 
 ## Contrato Companion (mínimo)
