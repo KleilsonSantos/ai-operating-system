@@ -1,8 +1,8 @@
 # AIOS Console (`@aios/console`)
 
-UI de governança — **Health + Needs attention + Try it** (#71 · #76 · ADR-0010 · ADR-0012).
+UI de governança — **Health + Needs attention + Try it** (#71 · #76 · ADR-0010 · ADR-0012) · **Consumption** (`providerChat`, #118).
 
-Not Grafana. Provider chat appends `.aios/metrics/events.jsonl` (`provider.chat`, ADR-0019). Prometheus/Grafana export comes later (ADR-0010 layer 2).
+Not Grafana. Provider chat appends `.aios/metrics/events.jsonl` (`provider.chat`, ADR-0019). The Health strip and Estado panel show call/token totals. Prometheus/Grafana export comes later (ADR-0010 layer 2).
 
 ## Dev
 

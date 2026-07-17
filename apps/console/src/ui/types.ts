@@ -41,5 +41,12 @@ export type GovernanceStatus = {
     note: string
     eventCount?: number
     path?: string
+    providerChat?: {
+      count: number
+      errorCount: number
+      promptTokens: number
+      completionTokens: number
+      totalTokens: number
+    }
   }
 }
