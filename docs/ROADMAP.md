@@ -35,7 +35,7 @@ Validar arquitetura e fluxos do AIOS.
 - [x] Multi-repo genérico — ops registry + `runAcrossWorkspaces` (#55 / ADR-0007)
 - [x] Prompt Engine — brief governado / economia de tokens (#59 / ADR-0008)
 - [x] Intent Engine v2 — `implement.feature` · `fix.bug` (#63)
-- [x] Multi-provider MVP — `@aios/provider` + Ollama (`health`/`chat`) (#67 / ADR-0009); OpenAI-compatible cloud (#105 / ADR-0016); Anthropic nativo depois
+- [x] Multi-provider MVP — `@aios/provider` + Ollama (#67 / ADR-0009); OpenAI-compatible (#105 / ADR-0016); Anthropic Messages (#109 / ADR-0017)
 - [x] Integrations / MCP orchestration — MVP stdio `@aios/mcp` (#38; expansão futura)
 - [x] UI de governança — console Health + Attention + Try it (`@aios/console` / `@aios/status`, #71 / #76 / ADR-0010 / ADR-0012); Grafana/consumo depois
 - [x] Documentation / Governance engines — MVP heurístico (#80 / ADR-0013)

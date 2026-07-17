@@ -650,7 +650,7 @@ server.registerTool(
   {
     title: 'Provider health',
     description:
-      'Checks a local/aux LLM provider (default ollama; also openai). Does not replace the IDE model (#67 / #105).',
+      'Checks a local/aux LLM provider (default ollama; also openai, anthropic). Does not replace the IDE model (#67 / #105 / #109).',
     inputSchema: {
       provider: z
         .string()
