@@ -4,6 +4,16 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.23.0] - 2026-07-17
+
+### Added
+
+- ⚖️ Governance audit v2 — core must coverage, fail verdicts, unknown policy refs · Attention merge · ADR-0020 (#121)
+
+### Changed
+
+- `recordDecision` normalizes kinds; operational state exposes `governance.ok` / `findingCount`
+
 ## [0.22.0] - 2026-07-17
 
 ### Added

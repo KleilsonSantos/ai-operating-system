@@ -475,6 +475,9 @@ importers:
 
   engines/status:
     dependencies:
+      '@aios/governance':
+        specifier: workspace:*
+        version: link:../governance
       '@aios/memory':
         specifier: workspace:*
         version: link:../memory
