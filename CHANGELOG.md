@@ -4,6 +4,16 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.20.0] - 2026-07-17
+
+### Added
+
+- 🟣 Anthropic Messages provider (`anthropic`) em `@aios/provider` — `AIOS_ANTHROPIC_API_KEY` / `AIOS_ANTHROPIC_BASE_URL` / `AIOS_ANTHROPIC_MODEL` · ADR-0017 (#109)
+
+### Changed
+
+- `ProviderId` inclui `anthropic`
+
 ## [0.19.0] - 2026-07-17
 
 ### Added

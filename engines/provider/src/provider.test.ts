@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   OllamaProvider,
   OpenAICompatibleProvider,
+  AnthropicProvider,
   getProvider,
   listProviderIds,
 } from './index.ts'
@@ -11,16 +12,18 @@ afterEach(() => {
 })
 
 describe('listProviderIds / getProvider', () => {
-  it('lista ollama e openai', () => {
+  it('lista ollama, openai e anthropic', () => {
     expect(listProviderIds()).toContain('ollama')
     expect(listProviderIds()).toContain('openai')
+    expect(listProviderIds()).toContain('anthropic')
     const p = getProvider('ollama', { baseUrl: 'http://example.test' })
     expect(p.id).toBe('ollama')
     expect(getProvider('openai').id).toBe('openai')
+    expect(getProvider('anthropic').id).toBe('anthropic')
   })
 
   it('rejeita provider desconhecido', () => {
-    expect(() => getProvider('anthropic')).toThrow(/Unknown provider/)
+    expect(() => getProvider('cohere')).toThrow(/Unknown provider/)
   })
 })
 
@@ -137,6 +140,68 @@ describe('OpenAICompatibleProvider', () => {
       messages: [{ role: 'user', content: 'hi' }],
     })
     expect(out.provider).toBe('openai')
+    expect(out.message.content).toBe('hello')
+  })
+})
+
+describe('AnthropicProvider', () => {
+  it('health DOWN sem API key', async () => {
+    const p = new AnthropicProvider({
+      apiKey: '',
+      fetch: vi.fn() as unknown as typeof fetch,
+    })
+    const h = await p.health()
+    expect(h.ok).toBe(false)
+    expect(h.error).toMatch(/API key missing/)
+  })
+
+  it('health ok com /v1/models', async () => {
+    const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
+      expect(String(url)).toMatch(/\/v1\/models$/)
+      const headers = init?.headers as Record<string, string>
+      expect(headers['x-api-key']).toBe('sk-ant-test')
+      expect(headers['anthropic-version']).toBe('2023-06-01')
+      return Response.json({
+        data: [{ id: 'claude-haiku-4-5' }, { id: 'claude-sonnet-4-6' }],
+      })
+    })
+    const p = new AnthropicProvider({
+      apiKey: 'sk-ant-test',
+      fetch: fetchMock as typeof fetch,
+    })
+    const h = await p.health()
+    expect(h.ok).toBe(true)
+    expect(h.models).toEqual(['claude-haiku-4-5', 'claude-sonnet-4-6'])
+  })
+
+  it('chat POST /v1/messages com system separado', async () => {
+    const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
+      expect(String(url)).toMatch(/\/v1\/messages$/)
+      const body = JSON.parse(String(init?.body)) as {
+        model: string
+        max_tokens: number
+        system?: string
+        messages: Array<{ role: string; content: string }>
+      }
+      expect(body.max_tokens).toBe(1024)
+      expect(body.system).toBe('be brief')
+      expect(body.messages).toEqual([{ role: 'user', content: 'hi' }])
+      return Response.json({
+        model: 'claude-haiku-4-5',
+        content: [{ type: 'text', text: 'hello' }],
+      })
+    })
+    const p = new AnthropicProvider({
+      apiKey: 'sk-ant-test',
+      fetch: fetchMock as typeof fetch,
+    })
+    const out = await p.chat({
+      messages: [
+        { role: 'system', content: 'be brief' },
+        { role: 'user', content: 'hi' },
+      ],
+    })
+    expect(out.provider).toBe('anthropic')
     expect(out.message.content).toBe('hello')
   })
 })
