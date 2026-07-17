@@ -107,7 +107,7 @@ Inspecionar antes de instalar · reutilizar · minimizar hardware · [política]
 
 ### Documentation + Governance (#80)
 
-`auditDocumentation` · `auditGovernance` / `recordDecision` · MCP `aios_audit_docs` / `aios_governance_*` · [ADR-0013](../adr/0013-documentation-governance-engines.md).
+`auditDocumentation` · `auditGovernance` / `recordDecision` (v2 signals) · MCP `aios_audit_docs` / `aios_governance_*` · [ADR-0013](../adr/0013-documentation-governance-engines.md) · [ADR-0020](../adr/0020-governance-audit-v2.md).
 
 ### Control plane · Companion — ADR-0014
 

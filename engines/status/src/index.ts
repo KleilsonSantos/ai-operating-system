@@ -16,6 +16,7 @@ import { listValidatedWorkspaces } from '@aios/workspace'
 import { loadPolicies, applyPolicies } from '@aios/policy'
 import { listMemoryWorkspaces } from '@aios/memory'
 import { getProvider, listProviderIds } from '@aios/provider'
+import { auditGovernance } from '@aios/governance'
 
 /** Tools exposed by `@aios/mcp` (canonical MVP list). */
 export const MCP_TOOL_CATALOG = [
@@ -207,6 +208,7 @@ function buildAttention(parts: {
   memoryIds: string[]
   providerChat?: ProviderChatSummary
   eventCount: number
+  governanceFindings?: AttentionItem[]
 }): AttentionItem[] {
   const items: AttentionItem[] = []
 
@@ -278,6 +280,14 @@ function buildAttention(parts: {
     })
   }
 
+  // Governance v2 signals (#121) — skip duplicates already covered above
+  const skipGov = new Set(['gov-no-must', 'gov-no-decisions'])
+  for (const f of parts.governanceFindings || []) {
+    if (skipGov.has(f.id)) continue
+    if (f.severity === 'info' && f.id === 'gov-unknown-kind') continue
+    items.push(f)
+  }
+
   const rank = { error: 0, warn: 1, info: 2 } as const
   return items.sort((a, b) => rank[a.severity] - rank[b.severity])
 }
@@ -316,6 +326,14 @@ export async function getGovernanceStatus(
   const providerChat = summarizeProviderChat(homePath)
   const metricsAvailable = Boolean(providerChat) || metrics.eventCount > 0
 
+  // Quick governance audit (no docs walk) — Resource-Aware (#121)
+  const govAudit = auditGovernance({
+    homePath,
+    repoPath: homePath,
+    includeDocumentation: false,
+    decisionLimit: 20,
+  })
+
   const attention = buildAttention({
     workspaces,
     policies,
@@ -323,6 +341,7 @@ export async function getGovernanceStatus(
     memoryIds,
     providerChat,
     eventCount: metrics.eventCount,
+    governanceFindings: govAudit.findings,
   })
 
   let note: string
