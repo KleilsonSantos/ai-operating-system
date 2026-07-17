@@ -11,7 +11,7 @@ import type {
 } from '@aios/shared'
 import { getGovernanceStatus } from '@aios/status'
 import { resolveWorkspace } from '@aios/workspace'
-import { listDecisions } from '@aios/governance'
+import { listDecisions, auditGovernance } from '@aios/governance'
 
 export type GetOperationalStateOptions = {
   homePath?: string
@@ -135,6 +135,12 @@ export async function getOperationalState(
   const git = probeGit(gitCwd)
   const listed = listDecisions({ homePath, limit: 10_000 })
   const decisionCount = listed.decisions.length
+  const govQuick = auditGovernance({
+    homePath,
+    repoPath: homePath,
+    includeDocumentation: false,
+    decisionLimit: 20,
+  })
   const errorCount = status.attention.filter((a) => a.severity === 'error').length
   const warnCount = status.attention.filter((a) => a.severity === 'warn').length
 
@@ -166,6 +172,8 @@ export async function getOperationalState(
     governance: {
       decisionCount,
       path: listed.path,
+      ok: govQuick.ok,
+      findingCount: govQuick.findings.length,
     },
     boundaries: {
       voice: false,

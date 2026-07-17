@@ -294,11 +294,15 @@ export type GovernanceAudit = {
   policies: {
     mustIds: string[]
     count: number
+    /** Platform core must ids missing from the loaded set (#121). */
+    missingCoreMustIds?: string[]
   }
   decisions: {
     path: string
     count: number
     recent: GovernanceDecision[]
+    failCount?: number
+    unknownPolicyIds?: string[]
   }
   documentation?: {
     ok: boolean
@@ -345,6 +349,9 @@ export type OperationalState = {
   governance: {
     decisionCount: number
     path: string
+    /** Present when a quick governance audit ran (#121). */
+    ok?: boolean
+    findingCount?: number
   }
   /** Fronteiras explícitas (Companion / ADR-0014). */
   boundaries: {
