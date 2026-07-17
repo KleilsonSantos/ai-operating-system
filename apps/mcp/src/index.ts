@@ -21,7 +21,7 @@ import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge'
 import { remember, recall, clearMemory, listMemoryWorkspaces } from '@aios/memory'
 import { compilePrompt } from '@aios/prompt'
 import { getProvider, listProviderIds } from '@aios/provider'
-import { getGovernanceStatus } from '@aios/status'
+import { getGovernanceStatus, chatWithMetrics } from '@aios/status'
 import { auditDocumentation } from '@aios/documentation'
 import { auditGovernance, recordDecision } from '@aios/governance'
 import { getOperationalState } from '@aios/operational-state'
@@ -733,12 +733,16 @@ server.registerTool(
   },
   async ({ message, provider, model, system, baseUrl, temperature }) => {
     try {
-      const p = getProvider(provider || 'ollama', { baseUrl })
       const messages = [
         ...(system ? [{ role: 'system' as const, content: system }] : []),
         { role: 'user' as const, content: message },
       ]
-      const out = await p.chat({ model, messages, temperature })
+      const out = await chatWithMetrics({
+        providerId: provider || 'ollama',
+        baseUrl,
+        request: { model, messages, temperature },
+        source: 'mcp',
+      })
       return {
         content: [{ type: 'text', text: JSON.stringify(out, null, 2) }],
       }

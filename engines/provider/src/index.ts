@@ -6,12 +6,21 @@ import type {
   ChatMessage,
   ChatRequest,
   ChatResponse,
+  ChatUsage,
   ProviderHealth,
   ProviderId,
   ProviderModelInfo,
 } from '@aios/shared'
 
-export type { ChatMessage, ChatRequest, ChatResponse, ProviderHealth, ProviderId, ProviderModelInfo }
+export type {
+  ChatMessage,
+  ChatRequest,
+  ChatResponse,
+  ChatUsage,
+  ProviderHealth,
+  ProviderId,
+  ProviderModelInfo,
+}
 
 export type FetchLike = typeof fetch
 
@@ -126,6 +135,7 @@ export class OllamaProvider implements AIProvider {
   }
 
   async chat(request: ChatRequest): Promise<ChatResponse> {
+    const started = Date.now()
     const model = request.model || this.defaultModel
     if (!request.messages?.length) {
       throw new Error('chat: messages required')
@@ -152,13 +162,30 @@ export class OllamaProvider implements AIProvider {
     const body = (await res.json()) as {
       model?: string
       message?: { role?: string; content?: string }
+      prompt_eval_count?: number
+      eval_count?: number
     }
     const content = body.message?.content ?? ''
     const role = (body.message?.role as ChatMessage['role']) || 'assistant'
+    const promptTokens = body.prompt_eval_count
+    const completionTokens = body.eval_count
+    const usage: ChatUsage | undefined =
+      promptTokens !== undefined || completionTokens !== undefined
+        ? {
+            promptTokens,
+            completionTokens,
+            totalTokens:
+              promptTokens !== undefined && completionTokens !== undefined
+                ? promptTokens + completionTokens
+                : undefined,
+          }
+        : undefined
     return {
       provider: this.id,
       model: body.model || model,
       message: { role, content },
+      usage,
+      latencyMs: Date.now() - started,
     }
   }
 }
@@ -269,6 +296,7 @@ export class OpenAICompatibleProvider implements AIProvider {
   }
 
   async chat(request: ChatRequest): Promise<ChatResponse> {
+    const started = Date.now()
     const model = request.model || this.defaultModel
     if (!request.messages?.length) {
       throw new Error('chat: messages required')
@@ -293,17 +321,33 @@ export class OpenAICompatibleProvider implements AIProvider {
         `OpenAI /chat/completions HTTP ${res.status}: ${text.slice(0, 200)}`,
       )
     }
+    // Official: usage.prompt_tokens / completion_tokens / total_tokens
+    // https://developers.openai.com/api/reference/resources/chat
     const body = (await res.json()) as {
       model?: string
       choices?: Array<{ message?: { role?: string; content?: string | null } }>
+      usage?: {
+        prompt_tokens?: number
+        completion_tokens?: number
+        total_tokens?: number
+      }
     }
     const msg = body.choices?.[0]?.message
     const content = msg?.content ?? ''
     const role = (msg?.role as ChatMessage['role']) || 'assistant'
+    const usage: ChatUsage | undefined = body.usage
+      ? {
+          promptTokens: body.usage.prompt_tokens,
+          completionTokens: body.usage.completion_tokens,
+          totalTokens: body.usage.total_tokens,
+        }
+      : undefined
     return {
       provider: this.id,
       model: body.model || model,
       message: { role, content },
+      usage,
+      latencyMs: Date.now() - started,
     }
   }
 }
@@ -417,6 +461,7 @@ export class AnthropicProvider implements AIProvider {
   }
 
   async chat(request: ChatRequest): Promise<ChatResponse> {
+    const started = Date.now()
     const model = request.model || this.defaultModel
     if (!request.messages?.length) {
       throw new Error('chat: messages required')
@@ -454,18 +499,36 @@ export class AnthropicProvider implements AIProvider {
         `Anthropic /v1/messages HTTP ${res.status}: ${text.slice(0, 200)}`,
       )
     }
+    // Official Messages usage: input_tokens / output_tokens
+    // https://docs.anthropic.com/en/api/messages
     const body = (await res.json()) as {
       model?: string
       content?: Array<{ type?: string; text?: string }>
+      usage?: { input_tokens?: number; output_tokens?: number }
     }
     const content = (body.content || [])
       .filter((b) => b.type === 'text' && b.text)
       .map((b) => b.text!)
       .join('\n')
+    const promptTokens = body.usage?.input_tokens
+    const completionTokens = body.usage?.output_tokens
+    const usage: ChatUsage | undefined =
+      promptTokens !== undefined || completionTokens !== undefined
+        ? {
+            promptTokens,
+            completionTokens,
+            totalTokens:
+              promptTokens !== undefined && completionTokens !== undefined
+                ? promptTokens + completionTokens
+                : undefined,
+          }
+        : undefined
     return {
       provider: this.id,
       model: body.model || model,
       message: { role: 'assistant', content },
+      usage,
+      latencyMs: Date.now() - started,
     }
   }
 }

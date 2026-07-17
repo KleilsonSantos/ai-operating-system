@@ -174,10 +174,19 @@ export type ChatRequest = {
   temperature?: number
 }
 
+/** Normalized token usage from provider APIs (#115). */
+export type ChatUsage = {
+  promptTokens?: number
+  completionTokens?: number
+  totalTokens?: number
+}
+
 export type ChatResponse = {
   provider: string
   model: string
   message: ChatMessage
+  usage?: ChatUsage
+  latencyMs?: number
 }
 
 export type ProviderModelInfo = {
@@ -236,6 +245,14 @@ export type GovernanceStatus = {
     note: string
     eventCount?: number
     path?: string
+    /** Aggregated `provider.chat` JSONL events (#115). */
+    providerChat?: {
+      count: number
+      errorCount: number
+      promptTokens: number
+      completionTokens: number
+      totalTokens: number
+    }
   }
 }
 
