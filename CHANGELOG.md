@@ -4,6 +4,16 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.22.0] - 2026-07-17
+
+### Added
+
+- 🖥️ Console Health **Consumption** surface — strip chip + `providerChat` totals (#118)
+
+### Changed
+
+- Console types include `metrics.providerChat` from governance status (ADR-0019)
+
 ## [0.21.0] - 2026-07-17
 
 ### Added

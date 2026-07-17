@@ -270,6 +270,43 @@ button:disabled {
   word-break: break-all;
 }
 
+.metric-stats {
+  list-style: none;
+  margin: 0.35rem 0 0.75rem;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.metric-stats li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+  font-size: 0.88rem;
+}
+
+.metric-k {
+  color: rgba(15, 28, 26, 0.55);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.metric-v {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-weight: 600;
+  color: var(--teal-deep);
+}
+
+.metric-note {
+  margin: 0 0 1rem;
+  font-size: 0.8rem;
+}
+
 .plain li {
   display: flex;
   flex-wrap: wrap;
