@@ -27,8 +27,8 @@ Precisamos de visibilidade palatável: o que está ativo, disponibilizado e a pr
 
 ### Negativas / trade-offs
 
-- Consumo de tokens ainda stub
-- Console local (não SaaS multi-tenant)
+- Token consumption was stub until ADR-0019 (`provider.chat` JSONL)
+- Console is local (not multi-tenant SaaS)
 
 ## Alternativas rejeitadas
 

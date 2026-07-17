@@ -130,6 +130,11 @@ describe('OpenAICompatibleProvider', () => {
         choices: [
           { message: { role: 'assistant', content: 'hello' } },
         ],
+        usage: {
+          prompt_tokens: 2,
+          completion_tokens: 1,
+          total_tokens: 3,
+        },
       })
     })
     const p = new OpenAICompatibleProvider({
@@ -141,6 +146,12 @@ describe('OpenAICompatibleProvider', () => {
     })
     expect(out.provider).toBe('openai')
     expect(out.message.content).toBe('hello')
+    expect(out.usage).toEqual({
+      promptTokens: 2,
+      completionTokens: 1,
+      totalTokens: 3,
+    })
+    expect(out.latencyMs).toBeTypeOf('number')
   })
 })
 
@@ -189,6 +200,7 @@ describe('AnthropicProvider', () => {
       return Response.json({
         model: 'claude-haiku-4-5',
         content: [{ type: 'text', text: 'hello' }],
+        usage: { input_tokens: 8, output_tokens: 2 },
       })
     })
     const p = new AnthropicProvider({
@@ -203,5 +215,10 @@ describe('AnthropicProvider', () => {
     })
     expect(out.provider).toBe('anthropic')
     expect(out.message.content).toBe('hello')
+    expect(out.usage).toEqual({
+      promptTokens: 8,
+      completionTokens: 2,
+      totalTokens: 10,
+    })
   })
 })

@@ -4,13 +4,16 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.21.0] - 2026-07-17
+
 ### Added
 
-- 📝 Canonical product docs language: **US English** — ADR-0018, `docs/guides/documentation-language.md`, policy `docs-language-en` (#112)
+- 📊 Provider chat consumption metrics — `ChatResponse.usage`, `chatWithMetrics` / `recordProviderChatMetric`, governance `metrics.providerChat` · ADR-0019 (#115)
 
 ### Changed
 
-- `AGENTS.md` rewritten in US English; FOUNDATION Language section + policy sync
+- MCP `aios_provider_chat` and CLI `--provider-chat` record `.aios/metrics/events.jsonl` (`kind: provider.chat`)
+- Canonical product docs language: **US English** — ADR-0018 / policy `docs-language-en` (#112)
 
 ## [0.20.0] - 2026-07-17
 
