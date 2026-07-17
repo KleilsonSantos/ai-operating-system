@@ -31,3 +31,4 @@ Espelha `AGENTS.md` + policies de fluxo. Aplicar em todo Agent chat neste worksp
 - Alinhado à fase do ROADMAP?
 - ADR se decisão arquitetural?
 - Policies (não prompts longos) para regras permanentes?
+- Docs novas/editadas em US English (ADR-0018)?

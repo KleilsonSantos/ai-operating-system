@@ -58,6 +58,7 @@ ${should.length ? `\n## SHOULD\n\n${bullets(should)}\n` : ''}${may.length ? `\n#
 2. Não peça ao usuário para colar "siga boas práticas / commits / sem depreciação".
 3. Se uma policy conflitar com o pedido, diga o trade-off e proponha o caminho alinhado.
 4. Fonte canônica de produto: \`docs/FOUNDATION.md\` > resumos.
+5. Docs de produto novas/editadas em **US English** (\`docs-language-en\` / ADR-0018); chat com o owner pode ser PT.
 `
 
 const sdlcRule = `---
@@ -93,6 +94,7 @@ Espelha \`AGENTS.md\` + policies de fluxo. Aplicar em todo Agent chat neste work
 - Alinhado à fase do ROADMAP?
 - ADR se decisão arquitetural?
 - Policies (não prompts longos) para regras permanentes?
+- Docs novas/editadas em US English (ADR-0018)?
 `
 
 writeFileSync(join(outDir, 'aios-policies.mdc'), policiesRule)

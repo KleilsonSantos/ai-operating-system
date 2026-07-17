@@ -26,6 +26,7 @@ Regenerar: `pnpm sync:cursor-rules`
 - **inspect-before-install** (must): Antes de instalar/iniciar: verificar se já existe instalado, configurado, em execução, container/serviço equivalente ou reutilizável
 - **reuse-before-create** (must): Preferir reutilizar serviços/containers/DBs/redes/volumes/configs; evitar duplicidade (ex. Ollama local + Ollama Docker)
 - **ai-provider-reuse** (must): AI providers: reutilizar provider/Ollama/MCP/API já ativos; só criar serviço novo após inspeção; Ollama é auxiliar opcional (não instalar só para verde no console)
+- **docs-language-en** (must): Product docs (docs/**, ADRs, README, AGENTS, CHANGELOG prose) must be US English — ADR-0018 / docs/guides/documentation-language.md; chat with the owner may stay PT; migrate legacy PT when editing
 
 ## SHOULD
 
@@ -37,3 +38,4 @@ Regenerar: `pnpm sync:cursor-rules`
 2. Não peça ao usuário para colar "siga boas práticas / commits / sem depreciação".
 3. Se uma policy conflitar com o pedido, diga o trade-off e proponha o caminho alinhado.
 4. Fonte canônica de produto: `docs/FOUNDATION.md` > resumos.
+5. Docs de produto novas/editadas em **US English** (`docs-language-en` / ADR-0018); chat com o owner pode ser PT.
