@@ -4,6 +4,16 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.19.0] - 2026-07-17
+
+### Added
+
+- ☁️ OpenAI-compatible cloud provider (`openai`) em `@aios/provider` — `AIOS_OPENAI_API_KEY` / `AIOS_OPENAI_BASE_URL` / `AIOS_OPENAI_MODEL` · ADR-0016 (#105)
+
+### Changed
+
+- `ProviderId` inclui `openai`; MCP/CLI listam via `listProviderIds()`
+
 ## [0.18.1] - 2026-07-17
 
 ### Fixed

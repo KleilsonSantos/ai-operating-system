@@ -159,7 +159,7 @@ export type CompiledPrompt = {
 }
 
 /** Multi-provider MVP (#67) — LLM auxiliar (não substitui a IDE). */
-export type ProviderId = 'ollama'
+export type ProviderId = 'ollama' | 'openai'
 
 export type ChatRole = 'system' | 'user' | 'assistant'
 

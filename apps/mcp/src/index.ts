@@ -650,7 +650,7 @@ server.registerTool(
   {
     title: 'Provider health',
     description:
-      'Checks a local/aux LLM provider (default ollama). Does not replace the IDE model (#67).',
+      'Checks a local/aux LLM provider (default ollama; also openai). Does not replace the IDE model (#67 / #105).',
     inputSchema: {
       provider: z
         .string()
@@ -659,7 +659,7 @@ server.registerTool(
       baseUrl: z
         .string()
         .optional()
-        .describe('Override base URL (default AIOS_OLLAMA_URL / localhost:11434)'),
+        .describe('Override base URL (Ollama or OpenAI-compatible)'),
     },
   },
   async ({ provider, baseUrl }) => {

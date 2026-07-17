@@ -95,7 +95,7 @@ Store local `.aios/memory/{workspaceId}.json` · `remember`/`recall` · MCP `aio
 
 ### Multi-provider (`@aios/provider`) — issue #67
 
-`AIProvider` + `OllamaProvider` (aux local) · MCP `aios_provider_health` / `aios_provider_models` / `aios_provider_chat` · CLI `--provider-health` · [ADR-0009](../adr/0009-multi-provider-ollama.md). Não substitui o LLM da IDE.
+`AIProvider` + `OllamaProvider` + `OpenAICompatibleProvider` · MCP `aios_provider_*` · CLI `--provider-health` · [ADR-0009](../adr/0009-multi-provider-ollama.md) · [ADR-0016](../adr/0016-openai-compatible-provider.md). Não substitui o LLM da IDE.
 
 ### Console de governança (`@aios/console` / `@aios/status`) — issue #71
 
