@@ -1,10 +1,12 @@
 # AI Operating System (AIOS)
 
-> Plataforma de governança para IA aplicada ao desenvolvimento de software.
+> Governance platform for AI applied to software development.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge)](./LICENSE)
 
 [Repo](https://github.com/KleilsonSantos/ai-operating-system) · [Issues](https://github.com/KleilsonSantos/ai-operating-system/issues) · [Project board](https://github.com/users/KleilsonSantos/projects/7) · [Wiki](https://github.com/KleilsonSantos/ai-operating-system/wiki)
+
+**Docs language:** US English ([ADR-0018](./docs/adr/0018-documentation-language.md) · [guide](./docs/guides/documentation-language.md)). Legacy Portuguese pages migrate when edited.
 
 ---
 

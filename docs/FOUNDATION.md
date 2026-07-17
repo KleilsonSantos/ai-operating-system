@@ -4,6 +4,14 @@
 > Resumos operacionais: [`VISION.md`](./VISION.md) · [`ROADMAP.md`](./ROADMAP.md) · [`architecture/overview.md`](./architecture/overview.md) · [ADR-0001](./adr/0001-standalone-platform.md).  
 > Em conflito entre resumo e este arquivo, **este documento vence** até nova ADR explicitamente alterar a decisão.
 
+## Language (canonical)
+
+**Product documentation is written in US English** ([ADR-0018](./adr/0018-documentation-language.md), guide: [`documentation-language.md`](./guides/documentation-language.md)).
+
+References: [Google developer docs — global audience](https://developers.google.com/style/translation) · [Kubernetes style guide](https://kubernetes.io/docs/contribute/style/style-guide/) · [Docker STYLE.md](https://github.com/docker/docs/blob/main/STYLE.md).
+
+This FOUNDATION body is still largely Portuguese (legacy). New edits and sibling docs must follow US English; migrate sections when touched. Chat with the product owner may remain Portuguese — that is not product documentation.
+
 ---
 
 # O que é o AIOS

@@ -1,35 +1,40 @@
 # AGENTS.md — AI Operating System
 
-Contrato para qualquer agente de IA neste repositório.
+Contract for any AI agent working in this repository.
 
-## Missão
+## Mission
 
-Construir o **AIOS**: plataforma de governança para IA no SDLC — produto único, não um dump de prompts.
+Build **AIOS**: a governance platform for AI in the SDLC — one product, not a dump of prompts.
 
-## Fontes de verdade
+## Sources of truth
 
-1. Código em `engines/` · `packages/` · `apps/`
-2. `docs/FOUNDATION.md` (pedra base) · `docs/VISION.md` · `docs/architecture/` · ADRs
+1. Code under `engines/` · `packages/` · `apps/`
+2. `docs/FOUNDATION.md` (foundation) · `docs/VISION.md` · `docs/architecture/` · ADRs
 3. `docs/ROADMAP.md` · `CHANGELOG.md`
 
-Em conflito entre resumo e `FOUNDATION.md`, a pedra base vence até ADR explícita.
+If a summary conflicts with `FOUNDATION.md`, the foundation wins until an ADR explicitly changes it.
 
-**Wiki GitHub:** só mapa de links (não fonte canônica).
+**GitHub Wiki:** link map only (not canonical).
 
-## Regras
+## Documentation language
 
-1. AIOS é produto standalone (ADR-0001).
-2. Fluxo Git: Issue → `feature/*` from `sandbox` → PR → `sandbox` → PR → `main`.
-3. Commits: `type: <gitmoji> …` · autoria `Kleilson Santos <kdsddesign1@gmail.com>` · sem co-autoria de IDE.
-   Merges: **sempre** `bash scripts/merge-pr.sh <n>` (ou `gh pr merge <n> --merge --subject "merge: 🔀 PR #<n> — <branch>"`). Proibido deixar o default `Merge pull request…`.
-4. Agentes são **plugins** — não expor chamada direta no UX principal.
-5. Policies > prompts longos.
-6. Não implementar todos os engines de uma vez — seguir ROADMAP (Fase 1 = núcleo).
-7. Commits só quando o humano pedir (exceto bootstrap autorizado).
+Product docs (`docs/**`, ADRs, README, this file, CHANGELOG prose) are **US English** — [ADR-0018](./docs/adr/0018-documentation-language.md) · [guide](./docs/guides/documentation-language.md). Chat with the product owner may stay Portuguese.
+
+## Rules
+
+1. AIOS is a standalone product (ADR-0001).
+2. Git flow: Issue → `feature/*` from `sandbox` → PR → `sandbox` → PR → `main`.
+3. Commits: `type: <gitmoji> …` · author `Kleilson Santos <kdsddesign1@gmail.com>` · no IDE co-authorship.
+   Merges: **always** `bash scripts/merge-pr.sh <n>` (or `gh pr merge <n> --merge --subject "merge: 🔀 PR #<n> — <branch>"`). Never leave the default `Merge pull request…`.
+4. Agents are **plugins** — do not expose direct agent calls in the primary UX.
+5. Policies over long prompts.
+6. Do not implement every engine at once — follow the ROADMAP (Phase 1 = core).
+7. Commit only when the human asks (except authorized bootstrap).
 
 ## Checklist
 
-- [ ] Mudança alinhada à fase do ROADMAP?
-- [ ] Docs/ADR se decisão arquitetural?
-- [ ] CHANGELOG `[Unreleased]` se notável?
-- [ ] PR para `sandbox`?
+- [ ] Change aligned with the ROADMAP phase?
+- [ ] Docs/ADR if architectural?
+- [ ] CHANGELOG `[Unreleased]` if notable?
+- [ ] New/edited product docs in US English?
+- [ ] PR targeting `sandbox`?

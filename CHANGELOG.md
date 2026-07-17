@@ -4,6 +4,14 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📝 Canonical product docs language: **US English** — ADR-0018, `docs/guides/documentation-language.md`, policy `docs-language-en` (#112)
+
+### Changed
+
+- `AGENTS.md` rewritten in US English; FOUNDATION Language section + policy sync
+
 ## [0.20.0] - 2026-07-17
 
 ### Added
