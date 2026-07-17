@@ -71,6 +71,11 @@
       "severity": "must"
     },
     {
+      "id": "docs-language-en",
+      "description": "Product docs (docs/**, ADRs, README, AGENTS, CHANGELOG prose) must be US English — ADR-0018 / docs/guides/documentation-language.md; chat with the owner may stay PT; migrate legacy PT when editing",
+      "severity": "must"
+    },
+    {
       "id": "justify-resource-impact",
       "description": "Sugestões de infra devem declarar porquê, alternativas e impacto em hardware/manutenção/consumo",
       "severity": "should"
