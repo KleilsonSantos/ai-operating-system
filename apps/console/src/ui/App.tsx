@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { GovernanceStatus } from './types'
 import { TryItPanel } from './TryItPanel'
-
-function severityLabel(s: string): string {
-  if (s === 'error') return 'Atenção'
-  if (s === 'warn') return 'Aviso'
-  return 'Info'
-}
+import { formatConsumptionChip } from './consumption'
 
 export function App() {
   const [status, setStatus] = useState<GovernanceStatus | null>(null)
@@ -40,6 +35,9 @@ export function App() {
     status?.workspaces.find((w) => w.ok)?.id ||
     status?.workspaces[0]?.id ||
     'aios'
+  const consumption = status
+    ? formatConsumptionChip(status.metrics)
+    : null
 
   return (
     <div className="shell">
@@ -85,6 +83,10 @@ export function App() {
                 {status.provider.provider}{' '}
                 {status.provider.ok ? 'ativo' : 'inativo'}
               </span>
+            </div>
+            <div className={`chip ${consumption?.tone || ''}`}>
+              <span className="chip-k">Consumption</span>
+              <span className="chip-v">{consumption?.label}</span>
             </div>
             <div className="chip">
               <span className="chip-k">Workspaces</span>
@@ -152,14 +154,61 @@ export function App() {
                     ? status.memory.workspaceIds.join(', ')
                     : 'nenhuma'}
                 </dd>
-                <dt>Consumo</dt>
-                <dd>
-                  {status.metrics.available
-                    ? `${status.metrics.eventCount ?? 0} eventos`
-                    : 'stub'}{' '}
-                  — {status.metrics.note}
-                </dd>
               </dl>
+
+              <h3 id="consumption-h">Consumption</h3>
+              {status.metrics.providerChat ? (
+                <ul className="metric-stats" aria-labelledby="consumption-h">
+                  <li>
+                    <span className="metric-k">provider.chat calls</span>
+                    <span className="metric-v">
+                      {status.metrics.providerChat.count}
+                    </span>
+                  </li>
+                  <li>
+                    <span className="metric-k">Errors</span>
+                    <span className="metric-v">
+                      {status.metrics.providerChat.errorCount}
+                    </span>
+                  </li>
+                  <li>
+                    <span className="metric-k">Prompt tokens</span>
+                    <span className="metric-v">
+                      {status.metrics.providerChat.promptTokens}
+                    </span>
+                  </li>
+                  <li>
+                    <span className="metric-k">Completion tokens</span>
+                    <span className="metric-v">
+                      {status.metrics.providerChat.completionTokens}
+                    </span>
+                  </li>
+                  <li>
+                    <span className="metric-k">Total tokens</span>
+                    <span className="metric-v">
+                      ~{status.metrics.providerChat.totalTokens}
+                    </span>
+                  </li>
+                </ul>
+              ) : (
+                <p className="quiet">
+                  No <code>provider.chat</code> events yet. Run{' '}
+                  <code>aios_provider_chat</code> or CLI{' '}
+                  <code>--provider-chat</code>.
+                </p>
+              )}
+              <p className="quiet metric-note">
+                {status.metrics.eventCount ?? 0} JSONL event
+                {(status.metrics.eventCount ?? 0) === 1 ? '' : 's'}
+                {status.metrics.path ? (
+                  <>
+                    {' '}
+                    · <code>{status.metrics.path}</code>
+                  </>
+                ) : null}
+                <br />
+                {status.metrics.note}
+              </p>
 
               <h3>Workspaces</h3>
               <ul className="plain">
@@ -184,4 +233,10 @@ export function App() {
       )}
     </div>
   )
+}
+
+function severityLabel(s: string): string {
+  if (s === 'error') return 'Atenção'
+  if (s === 'warn') return 'Aviso'
+  return 'Info'
 }

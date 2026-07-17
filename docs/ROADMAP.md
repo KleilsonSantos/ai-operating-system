@@ -37,7 +37,7 @@ Validar arquitetura e fluxos do AIOS.
 - [x] Intent Engine v2 — `implement.feature` · `fix.bug` (#63)
 - [x] Multi-provider MVP — `@aios/provider` + Ollama (#67 / ADR-0009); OpenAI-compatible (#105 / ADR-0016); Anthropic Messages (#109 / ADR-0017)
 - [x] Integrations / MCP orchestration — MVP stdio `@aios/mcp` (#38; expansão futura)
-- [x] UI de governança — console Health + Attention + Try it (`@aios/console` / `@aios/status`, #71 / #76 / ADR-0010 / ADR-0012); provider.chat JSONL metrics (#115 / ADR-0019); Grafana/Prometheus export later
+- [x] UI de governança — console Health + Attention + Try it + Consumption (`providerChat`, #118) (`@aios/console` / `@aios/status`, #71 / #76 / ADR-0010 / ADR-0012); provider.chat JSONL metrics (#115 / ADR-0019); Grafana/Prometheus export later
 - [x] Documentation / Governance engines — MVP heurístico (#80 / ADR-0013)
 
 ## Fase 4 — Control plane maduro · Companion (experiência)
