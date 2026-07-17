@@ -4,11 +4,16 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
-### Changed
+## [0.18.1] - 2026-07-17
+
+### Fixed
 
 - 🔇 MCP stdio: respeitar `AIOS_MCP_QUIET=1` (omite banner stderr; Companion #34 / #100)
-- 🔗 ROADMAP / guia: kickoff [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) (#90)
-- 🧹 Higiene GitHub: `.github/agents` (Copilot) + Wiki Home publicada + `scripts/bootstrap-wiki-chrome.py`
+
+### Changed
+
+- 🔗 ROADMAP / guia: Companion kickoff + capability adapters ✅ (#90 / #96–#99)
+- 🧹 Higiene GitHub: `.github/agents` + Wiki Home + scripts wiki (#92–#94)
 
 ## [0.18.0] - 2026-07-16
 
