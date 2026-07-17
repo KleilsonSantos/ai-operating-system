@@ -6,6 +6,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Changed
 
+- 🔇 MCP stdio: respeitar `AIOS_MCP_QUIET=1` (omite banner stderr; Companion #34 / #100)
 - 🔗 ROADMAP / guia: kickoff [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) (#90)
 - 🧹 Higiene GitHub: `.github/agents` (Copilot) + Wiki Home publicada + `scripts/bootstrap-wiki-chrome.py`
 

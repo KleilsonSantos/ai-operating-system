@@ -808,7 +808,10 @@ server.registerTool(
 async function main(): Promise<void> {
   const transport = new StdioServerTransport()
   await server.connect(transport)
-  console.error('aios MCP server running on stdio (contract v1)')
+  // stderr banner: útil em TTY manual; silenciar quando cliente pede (Companion #34)
+  if (process.env.AIOS_MCP_QUIET !== '1') {
+    console.error('aios MCP server running on stdio (contract v1)')
+  }
 }
 
 main().catch((err) => {
