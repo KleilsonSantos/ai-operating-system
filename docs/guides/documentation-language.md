@@ -31,6 +31,6 @@ These are the same references used in ADR-0018. Prefer them over inventing a hou
 
 ## Related
 
-- Pedra base: [`FOUNDATION.md`](../FOUNDATION.md) (Language section)
+- Foundation: [`FOUNDATION.md`](../FOUNDATION.md) (US English)
 - Agent contract: [`AGENTS.md`](../../AGENTS.md)
 - Policies: `policies/aios.policies.json` → `pnpm sync:cursor-rules`

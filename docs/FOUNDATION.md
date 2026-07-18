@@ -1,8 +1,8 @@
-# FOUNDATION — Pedra base do AIOS
+# FOUNDATION — AIOS foundation
 
-> **Fonte canônica de origem** deste produto.  
-> Resumos operacionais: [`VISION.md`](./VISION.md) · [`ROADMAP.md`](./ROADMAP.md) · [`architecture/overview.md`](./architecture/overview.md) · [ADR-0001](./adr/0001-standalone-platform.md).  
-> Em conflito entre resumo e este arquivo, **este documento vence** até nova ADR explicitamente alterar a decisão.
+> **Canonical origin** for this product.  
+> Operational summaries: [`VISION.md`](./VISION.md) · [`ROADMAP.md`](./ROADMAP.md) · [`architecture/overview.md`](./architecture/overview.md) · [ADR-0001](./adr/0001-standalone-platform.md).  
+> If a summary conflicts with this file, **this document wins** until an ADR explicitly changes the decision.
 
 ## Language (canonical)
 
@@ -10,39 +10,39 @@
 
 References: [Google developer docs — global audience](https://developers.google.com/style/translation) · [Kubernetes style guide](https://kubernetes.io/docs/contribute/style/style-guide/) · [Docker STYLE.md](https://github.com/docker/docs/blob/main/STYLE.md).
 
-This FOUNDATION body is still largely Portuguese (legacy). New edits and sibling docs must follow US English; migrate sections when touched. Chat with the product owner may remain Portuguese — that is not product documentation.
+This FOUNDATION body is US English (migrated #124). New edits and sibling docs must follow US English; migrate remaining legacy Portuguese pages when touched. Chat with the product owner may remain Portuguese — that is not product documentation.
 
 ---
 
-# O que é o AIOS
+# What AIOS is
 
-O **AI Operating System (AIOS)** é um produto próprio: uma **plataforma de governança para IA aplicada ao desenvolvimento de software**.
+The **AI Operating System (AIOS)** is a standalone product: a **governance platform for AI applied to software development**.
 
-Não é um conjunto de prompts. Não é um wrapper de um único LLM. É o sistema que gerencia como a inteligência artificial opera no ciclo de engenharia.
+It is not a pile of prompts. It is not a wrapper around a single LLM. It is the system that manages how artificial intelligence operates in the engineering lifecycle.
 
-## Objetivo
+## Goal
 
 ```text
-Gerenciar agentes.
+Manage agents.
 
-Gerenciar prompts.
+Manage prompts.
 
-Gerenciar contexto.
+Manage context.
 
-Gerenciar documentação.
+Manage documentation.
 
-Gerenciar conhecimento.
+Manage knowledge.
 
-Orquestrar MCPs.
+Orchestrate MCPs.
 
-Executar workflows.
+Run workflows.
 ```
 
 ---
 
-# Posicionamento
+# Positioning
 
-Hoje existem projetos como:
+Projects today include:
 
 - LangChain
 - CrewAI
@@ -51,13 +51,13 @@ Hoje existem projetos como:
 - Semantic Kernel
 - OpenAI Agents SDK
 
-Todos fazem uma parte disso.
+Each covers part of the space.
 
-Nenhum resolve exatamente o problema que o AIOS cobre: **governança de IA voltada para engenharia de software** — políticas, qualidade, decisão, contexto de repositório e agentes como plugins.
+None solves exactly what AIOS covers: **AI governance for software engineering** — policies, quality, decision, repository context, and agents as plugins.
 
 ---
 
-# Arquitetura
+# Architecture
 
 ```text
 AIOS
@@ -95,18 +95,18 @@ AIOS
 └── ui
 ```
 
-Os agentes passam a ser apenas **plugins**.
+Agents become **plugins** only.
 
 ---
 
-# Fluxo principal
+# Main flow
 
-Os agentes deixam de conversar com você.
+Agents stop talking to you.
 
-Eles conversam entre si.
+They talk to each other.
 
 ```text
-Usuário
+User
 
 ↓
 
@@ -138,31 +138,31 @@ QA Agent
 
 ↓
 
-Resposta Final
+Final response
 ```
 
-Você nunca chama um agente diretamente.
+You never call an agent directly.
 
 ---
 
-# Intent automática
+# Automatic intent
 
-Hoje você escreve:
+Today you write:
 
-> Analise meu projeto.
+> Analyze my project.
 
-O AIOS responde internamente:
+AIOS responds internally:
 
 ```text
 Intent
 
 ↓
 
-Projeto
+Project
 
 ↓
 
-Código
+Code
 
 ↓
 
@@ -178,11 +178,11 @@ Java
 
 ↓
 
-Arquitetura
+Architecture
 
 ↓
 
-Acionar
+Trigger
 
 Architecture
 
@@ -203,24 +203,24 @@ Docs
 QA
 ```
 
-Tudo automático.
+All automatic.
 
 ---
 
 # Knowledge Graph
 
-Em vez de apenas arquivos, o AIOS cria relações:
+Instead of files alone, AIOS builds relationships:
 
 ```text
-Projeto
+Project
 
 ↓
 
-Arquitetura
+Architecture
 
 ↓
 
-Microsserviço
+Microservice
 
 ↓
 
@@ -228,7 +228,7 @@ API
 
 ↓
 
-Banco
+Database
 
 ↓
 
@@ -236,115 +236,115 @@ Docker
 
 ↓
 
-Observabilidade
+Observability
 
 ↓
 
-Segurança
+Security
 ```
 
-Isso melhora a recuperação de contexto.
+That improves context retrieval.
 
 ---
 
 # Decision Engine
 
 ```text
-Esse agente realmente precisa participar?
+Does this agent really need to participate?
 
 ↓
 
-Não
+No
 
 ↓
 
-Não execute.
+Do not run it.
 ```
 
 ---
 
 # Quality Gate
 
-Antes da resposta sair:
+Before the response leaves:
 
 ```text
-Arquitetura OK
+Architecture OK
 
 ↓
 
-Segurança OK
+Security OK
 
 ↓
 
-Documentação OK
+Documentation OK
 
 ↓
 
-Referências OK
+References OK
 
 ↓
 
-Consistência OK
+Consistency OK
 
 ↓
 
-Enviar resposta
+Send response
 ```
 
 ---
 
 # Policy Engine
 
-Você define as regras **uma vez**.
+You define the rules **once**.
 
-Exemplo:
+Example:
 
 ```text
-Nunca usar biblioteca abandonada.
+Never use an abandoned library.
 
-Sempre consultar documentação oficial.
+Always consult official documentation.
 
-Sempre indicar trade-offs.
+Always state trade-offs.
 
-Sempre evitar overengineering.
+Always avoid overengineering.
 
-Sempre justificar decisões.
+Always justify decisions.
 ```
 
-Nunca mais precisa reescrevê-las em cada prompt.
+You never need to rewrite them in every prompt.
 
 ---
 
-# Policies no lugar de prompts longos
+# Policies instead of long prompts
 
-Hoje:
-
-```text
-Analise meu projeto
-
-seguindo boas práticas
-
-sem alucinação
-
-sem redundância
-
-com documentação oficial...
-```
-
-No AIOS:
+Today:
 
 ```text
-Analise meu projeto.
+Analyze my project
+
+following best practices
+
+without hallucination
+
+without redundancy
+
+with official documentation...
 ```
 
-Porque essas regras já estão registradas como políticas da plataforma.
+With AIOS:
+
+```text
+Analyze my project.
+```
+
+Because those rules are already registered as platform policies.
 
 ---
 
-# Evolução em fases
+# Phased evolution
 
-* **Fase 1:** núcleo do AIOS — intent, policy, context, orchestration, plugins e quality gate — validando arquitetura e fluxos.
-* **Fase 2:** plataforma reutilizável multi-repositório, com Knowledge Graph e memória de projeto.
-* **Fase 3:** independência operacional completa — multi-tool (ChatGPT, Claude, Gemini, GitHub Copilot etc.), provedores de contexto, integrations/MCP e UI de governança.
+* **Phase 1:** AIOS core — intent, policy, context, orchestration, plugins, and quality gate — validating architecture and flows.
+* **Phase 2:** reusable multi-repository platform, with Knowledge Graph and project memory.
+* **Phase 3:** full operational independence — multi-tool (ChatGPT, Claude, Gemini, GitHub Copilot, etc.), context providers, integrations/MCP, and governance UI.
 
-O AIOS é único: uma plataforma de governança de IA para o SDLC — arquitetura, automação, políticas e qualidade compondo o produto.
+AIOS is unique: an AI governance platform for the SDLC — architecture, automation, policies, and quality composing the product.

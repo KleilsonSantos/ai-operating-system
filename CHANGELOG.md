@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Changed
+
+- 📝 `FOUNDATION.md` + `VISION.md` migrated to US English (ADR-0018 / #124)
+
 ## [0.23.0] - 2026-07-17
 
 ### Added

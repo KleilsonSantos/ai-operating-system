@@ -1,38 +1,38 @@
-# Visão de Produto — AIOS
+# Product vision — AIOS
 
-> Resumo operacional. **Pedra base:** [`FOUNDATION.md`](./FOUNDATION.md).
+> Operational summary. **Foundation:** [`FOUNDATION.md`](./FOUNDATION.md).
 
-## Resposta curta
+## Short answer
 
-O AIOS é uma **plataforma de governança para IA aplicada ao desenvolvimento de software**.
+AIOS is a **governance platform for AI applied to software development**.
 
-## Objetivo
+## Goal
 
 ```text
-Gerenciar agentes · prompts · contexto · documentação · conhecimento
-Orquestrar MCPs · executar workflows
+Manage agents · prompts · context · documentation · knowledge
+Orchestrate MCPs · run workflows
 ```
 
-## Posicionamento
+## Positioning
 
-Existem pedaços do problema em LangChain, CrewAI, AutoGen, OpenHands, Semantic Kernel, OpenAI Agents SDK.
+Pieces of the problem exist in LangChain, CrewAI, AutoGen, OpenHands, Semantic Kernel, and the OpenAI Agents SDK.
 
-O AIOS foca no que falta como produto único: **policies, quality gates, decision, contexto de repositório e agentes como plugins** — voltado à engenharia de software.
+AIOS focuses on what is missing as a single product: **policies, quality gates, decision, repository context, and agents as plugins** — aimed at software engineering.
 
-## Ideia central
+## Core idea
 
-- Você **não** chama agentes diretamente.
-- Você envia uma intenção (ex.: *"Analise meu projeto."*).
-- Intent → workflow → agentes (plugins) → quality gate → resposta.
-- Regras longas viram **Policies** (uma vez); prompts do usuário ficam curtos.
+- You do **not** call agents directly.
+- You send an intent (e.g. *"Analyze my project."*).
+- Intent → workflow → agents (plugins) → quality gate → response.
+- Long rules become **Policies** (once); user prompts stay short.
 
-## Evolução
+## Evolution
 
-| Fase | Meta |
+| Phase | Goal |
 | --- | --- |
-| **1** | Núcleo — intent, policy, context, orchestration, plugins, quality gate |
-| **2** | Multi-repositório · Knowledge Graph · memory |
-| **3** | Multi-tool · MCP · UI de governança · docs/governance |
-| **4** | Control plane maduro · Companion (experiência) — [ADR-0014](./adr/0014-control-plane-companion.md) |
+| **1** | Core — intent, policy, context, orchestration, plugins, quality gate |
+| **2** | Multi-repository · Knowledge Graph · memory |
+| **3** | Multi-tool · MCP · governance UI · docs/governance |
+| **4** | Mature control plane · Companion (experience) — [ADR-0014](./adr/0014-control-plane-companion.md) |
 
-Detalhe: [`ROADMAP.md`](./ROADMAP.md) · [`architecture/overview.md`](./architecture/overview.md) · [ADR-0001](./adr/0001-standalone-platform.md) · [ADR-0014](./adr/0014-control-plane-companion.md).
+Details: [`ROADMAP.md`](./ROADMAP.md) · [`architecture/overview.md`](./architecture/overview.md) · [ADR-0001](./adr/0001-standalone-platform.md) · [ADR-0014](./adr/0014-control-plane-companion.md).
