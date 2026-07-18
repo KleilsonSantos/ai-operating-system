@@ -13,7 +13,7 @@ Precisamos de visibilidade palatável: o que está ativo, disponibilizado e a pr
 
 1. **Camada 1 (MVP):** `apps/console` (Vite + React) + API local + engine `@aios/status` (`getGovernanceStatus`).
 2. Primeiro ecran: resumo de saúde + lista **Needs attention** (não wall de gráficos).
-3. **Camada 2 (depois):** export Prometheus / Grafana a partir de `.aios/metrics/events.jsonl` (`recordMetricEvent`).
+3. **Camada 2:** export Prometheus text from `.aios/metrics/events.jsonl` — `GET /metrics` + `aios --metrics-prometheus` ([ADR-0021](./0021-prometheus-metrics-export.md)). Grafana remains optional / user-owned.
 4. Stack: Vite + React (leve, local). Sem chamar agentes no UX principal.
 5. MCP `aios_governance_status` · CLI `--governance-status`.
 

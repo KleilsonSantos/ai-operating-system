@@ -1,9 +1,13 @@
 /**
- * API local do console — status + safe actions (#71 · #76).
+ * API local do console — status + safe actions (#71 · #76) + Prometheus (#130).
  * Porta: AIOS_CONSOLE_PORT ou 8787.
  */
 import { createServer } from 'node:http'
-import { getGovernanceStatus } from '@aios/status'
+import {
+  getGovernanceStatus,
+  renderPrometheusMetrics,
+  PROMETHEUS_CONTENT_TYPE,
+} from '@aios/status'
 import { runSafeAction, SAFE_ACTIONS } from './actions.ts'
 
 const port = Number(process.env.AIOS_CONSOLE_PORT || 8787)
@@ -22,6 +26,18 @@ function sendJson(
     'Access-Control-Allow-Headers': 'Content-Type',
   })
   res.end(JSON.stringify(body, null, 2))
+}
+
+function sendPrometheus(
+  res: import('node:http').ServerResponse,
+  body: string,
+): void {
+  res.writeHead(200, {
+    'Content-Type': PROMETHEUS_CONTENT_TYPE,
+    'Cache-Control': 'no-store',
+    'Access-Control-Allow-Origin': '*',
+  })
+  res.end(body)
 }
 
 async function readJsonBody(
@@ -46,6 +62,19 @@ const server = createServer(async (req, res) => {
       'Access-Control-Allow-Headers': 'Content-Type',
     })
     res.end()
+    return
+  }
+
+  if (
+    req.method === 'GET' &&
+    (url.pathname === '/metrics' || url.pathname === '/api/metrics')
+  ) {
+    try {
+      sendPrometheus(res, renderPrometheusMetrics({ homePath }))
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      sendJson(res, 500, { error: message })
+    }
     return
   }
 
@@ -100,5 +129,7 @@ const server = createServer(async (req, res) => {
 })
 
 server.listen(port, '127.0.0.1', () => {
-  console.error(`aios console api http://127.0.0.1:${port} (home=${homePath})`)
+  console.error(
+    `aios console api http://127.0.0.1:${port} (home=${homePath}; metrics=/metrics)`,
+  )
 })
