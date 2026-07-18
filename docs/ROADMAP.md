@@ -48,7 +48,7 @@ Fronteira: [ADR-0014](./adr/0014-control-plane-companion.md) · [guia](./guides/
 - [x] Repo Companion (cliente MCP/pipeline) — Conversation Manager; voz depois → [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) (kickoff #90)
 - [x] Event hooks Resource-Aware (sem polling agressivo) — `recordOperationalEvent` on-demand (#84 / ADR-0015)
 - [x] Capability adapters (Git/GitHub/…) atrás de contratos — sem duplicar engines AIOS → [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) `companion caps`
-- [x] Canonical product docs language: **US English** — ADR-0018 / [#112](https://github.com/KleilsonSantos/ai-operating-system/issues/112)
+- [x] Canonical product docs language: **US English** — ADR-0018 / [#112](https://github.com/KleilsonSantos/ai-operating-system/issues/112); FOUNDATION + VISION migrated (#124)
 
 ## Fora de escopo (de propósito)
 
