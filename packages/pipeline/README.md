@@ -1,6 +1,6 @@
-# @aios/pipeline — contrato do núcleo
+# @aios/pipeline — core contract
 
-Porta estável para CLI e integradores (`runPipeline`).
+Stable port for CLI and integrators (`runPipeline`).
 
 ```ts
 import { runPipeline } from '@aios/pipeline'
@@ -8,13 +8,13 @@ import { runPipeline } from '@aios/pipeline'
 const response = await runPipeline({
   input: 'Analise meu projeto.',
   repoPath: process.cwd(),
-  scope: 'engines/policy', // opcional
+  scope: 'engines/policy', // optional
 })
 // response.contractVersion === '1'
 ```
 
-- Tipos: `PipelineRequest` / `PipelineResponse` em `@aios/shared`
-- Não embutir engines em outros monorepos — use este pacote ([ADR-0003](../../docs/adr/0003-pipeline-integration-contract.md))
+- Types: `PipelineRequest` / `PipelineResponse` in `@aios/shared`
+- Do not embed engines in other monorepos — use this package ([ADR-0003](../../docs/adr/0003-pipeline-integration-contract.md))
 
 ```bash
 pnpm --filter @aios/pipeline test

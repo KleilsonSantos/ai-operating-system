@@ -1,48 +1,48 @@
-# ADR-0003: Contrato de integração via `@aios/pipeline`
+# ADR-0003: Integration contract via `@aios/pipeline`
 
-- **Status:** Aceito
-- **Data:** 2026-07-14
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-14
+- **Deciders:** Kleilson dos Santos
 - **Issue:** #9
 
-## Contexto
+## Context
 
-Integradores (CLI, futuros HTTP/MCP, outros produtos) precisam consumir o núcleo AIOS sem copiar engines para dentro de outros monorepos e sem acoplar ao layout interno do workspace.
+Integrators (CLI, future HTTP/MCP, other products) need to consume the AIOS core without copying engines into other monorepos and without coupling to the internal workspace layout.
 
-## Decisão
+## Decision
 
-1. **Contrato tipado** `PipelineRequest` / `PipelineResponse` em `@aios/shared`, versão `contractVersion: "1"`.
-2. **Runtime de integração** `runPipeline()` em `@aios/pipeline` — único entrypoint suportado para o fluxo Fase 1.
-3. **`@aios/cli`** é um cliente fino: parse de argv → `runPipeline` → JSON stdout; exit `1` se `!verdict.passed`.
-4. HTTP/MCP podem encapsular o mesmo `runPipeline` depois; não muda o contrato v1.
+1. **Typed contract** `PipelineRequest` / `PipelineResponse` in `@aios/shared`, version `contractVersion: "1"`.
+2. **Integration runtime** `runPipeline()` in `@aios/pipeline` — the only supported entrypoint for the Phase 1 flow.
+3. **`@aios/cli`** is a thin client: argv parse → `runPipeline` → JSON stdout; exit `1` if `!verdict.passed`.
+4. HTTP/MCP can wrap the same `runPipeline` later; that does not change the v1 contract.
 
 ```text
-Integrador  →  @aios/pipeline.runPipeline  →  engines (intent…quality-gate)
+Integrator  →  @aios/pipeline.runPipeline  →  engines (intent…quality-gate)
 ```
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Fronteira clara para produto standalone (ADR-0001)
-- Smoke e docs alinhados a um shape JSON estável
-- Evita “vender” engines internos como API pública
+- Clear boundary for the standalone product (ADR-0001)
+- Smoke tests and docs aligned to a stable JSON shape
+- Avoids “selling” internal engines as a public API
 
-### Negativas / trade-offs
+### Trade-offs
 
-- Mais um pacote workspace (`@aios/pipeline`)
-- Evolução do contrato exige bump de `contractVersion` (sem quebrar silenciosamente)
+- One more workspace package (`@aios/pipeline`)
+- Contract evolution requires a `contractVersion` bump (no silent breakage)
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| Integrador importa engines direto | API instável; acoplamento ao monorepo |
-| Só documentação sem `runPipeline` | Sem smoke programático / regressão |
-| Colocar `runPipeline` em `@aios/core` | Ciclo de dependência com engines que já dependem de core |
+| Integrator imports engines directly | Unstable API; monorepo coupling |
+| Docs only, no `runPipeline` | No programmatic smoke / regression |
+| Put `runPipeline` in `@aios/core` | Dependency cycle with engines that already depend on core |
 
-## Referências
+## References
 
 - [`docs/FOUNDATION.md`](../FOUNDATION.md)
 - [`packages/pipeline/README.md`](../../packages/pipeline/README.md)
-- [`docs/guides/cursor-chat-bridge.md`](../guides/cursor-chat-bridge.md) — Nível 1 chat (Rules), complementar ao pipeline
+- [`docs/guides/cursor-chat-bridge.md`](../guides/cursor-chat-bridge.md) — Level 1 chat (Rules), complementary to the pipeline

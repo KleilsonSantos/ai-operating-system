@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Changed
+
+- 📝 Finish US English migration for AIOS product docs (ADRs, guides, READMEs, policies prose) — ADR-0018 / #142
+
 ### Added
 
 - 📚 External references catalog — `docs/references/` (legal/official URLs only) · DESIGN + `catalog.yaml` (#133)

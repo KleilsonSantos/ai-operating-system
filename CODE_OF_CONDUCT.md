@@ -1,20 +1,20 @@
 # Code of Conduct
 
-## Compromisso
+## Commitment
 
-Esperamos um ambiente respeitoso, inclusivo e profissional para todas as pessoas contribuidoras.
+We expect a respectful, inclusive, and professional environment for all contributors.
 
-## Comportamentos esperados
+## Expected behavior
 
-- Respeito e comunicação construtiva
-- Feedback técnico objetivo
-- Colaboração transparente
+- Respect and constructive communication
+- Objective technical feedback
+- Transparent collaboration
 
-## Comportamentos inaceitáveis
+## Unacceptable behavior
 
-- Assédio, discriminação ou linguagem ofensiva
-- Publicação de informações privadas sem consentimento
+- Harassment, discrimination, or offensive language
+- Publishing private information without consent
 
-## Aplicação
+## Enforcement
 
-Violações podem ser reportadas via e-mail: **kleilson@icloud.com**.
+Violations may be reported by email: **kleilson@icloud.com**.

@@ -1,14 +1,14 @@
 # @aios/policy — Policy Engine
 
-Regras fixas da plataforma — **policies > prompts longos**.
+Fixed platform rules — **policies > long prompts**.
 
-## Fase 1
+## Phase 1
 
-| API | Papel |
+| API | Role |
 | --- | --- |
-| `loadPolicies(options?)` | Defaults + JSON opcional (`policies/aios.policies.json`, `AIOS_POLICIES_PATH` ou `configPath`) |
-| `applyPolicies(rules)` | Constraints + `mustIds` para injeção no workflow |
-| `mergePolicies(base, overlay)` | Overlay por `id` |
+| `loadPolicies(options?)` | Defaults + optional JSON (`policies/aios.policies.json`, `AIOS_POLICIES_PATH`, or `configPath`) |
+| `applyPolicies(rules)` | Constraints + `mustIds` for workflow injection |
+| `mergePolicies(base, overlay)` | Overlay by `id` |
 
 ```ts
 import { loadPolicies, applyPolicies } from '@aios/policy'
@@ -17,12 +17,12 @@ import { runWorkflow } from '@aios/orchestration'
 const bundle = loadPolicies()
 const applied = applyPolicies(bundle.rules)
 await runWorkflow(intent, { policies: bundle.rules })
-// agents recebem refs `policy:<id>` + finding `policies.injected`
+// agents receive `policy:<id>` refs + finding `policies.injected`
 ```
 
-Defaults embutidos espelham a pedra base (`official-docs`, `trade-offs`, `no-overengineering`, `justify-decisions`, `no-abandoned-libs`).
+Built-in defaults mirror the foundation (`official-docs`, `trade-offs`, `no-overengineering`, `justify-decisions`, `no-abandoned-libs`).
 
-Formato do arquivo:
+File format:
 
 ```json
 {
@@ -32,10 +32,10 @@ Formato do arquivo:
 }
 ```
 
-## Testes
+## Tests
 
 ```bash
 pnpm --filter @aios/policy test
 ```
 
-Fluxo: [system-guide](../../docs/architecture/system-guide.md).
+Flow: [system-guide](../../docs/architecture/system-guide.md).

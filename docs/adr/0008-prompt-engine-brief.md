@@ -1,45 +1,45 @@
-# ADR-0008: Prompt Engine — brief governado (`@aios/prompt`)
+# ADR-0008: Prompt Engine — governed brief (`@aios/prompt`)
 
-- **Status:** Aceito
-- **Data:** 2026-07-15
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-15
+- **Deciders:** Kleilson dos Santos
 - **Issue:** #59
 
-## Contexto
+## Context
 
-O custo dominante no Cursor/Claude/Copilot hoje é **repetir** policies, preferências e contexto do repo a cada chat. A missão do AIOS é governança — não substituir o LLM da IDE. Precisamos de um artefato compacto que o Agent consuma em vez do “sermão”.
+The dominant cost in Cursor/Claude/Copilot today is **repeating** policies, preferences, and repo context on every chat. AIOS’s mission is governance — not replacing the IDE’s LLM. We need a compact artifact the Agent consumes instead of a long “sermon.”
 
-## Decisão
+## Decision
 
-1. Engine **`@aios/prompt`** com `compilePrompt({ input, workspaceId?, repoPath? })`.
-2. O brief inclui: pedido · intent · repo/workspace · resumo KG · must policies · constraints · memory · instruções curtas ao Agent.
-3. **Não** chama LLM — só monta texto/estrutura determinística.
-4. MCP `aios_compile_prompt` · CLI `--compile-prompt` (`--brief-only` imprime só o markdown).
-5. `contractVersion` do pipeline permanece `"1"` (tool aditiva no MCP).
+1. Engine **`@aios/prompt`** with `compilePrompt({ input, workspaceId?, repoPath? })`.
+2. The brief includes: request · intent · repo/workspace · KG summary · must policies · constraints · memory · short instructions to the Agent.
+3. **Does not** call an LLM — only builds deterministic text/structure.
+4. MCP `aios_compile_prompt` · CLI `--compile-prompt` (`--brief-only` prints markdown only).
+5. Pipeline `contractVersion` stays `"1"` (additive MCP tool).
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Economia de tokens: input curto do usuário + brief gerado
-- Alinha a policies > prompts longos (FOUNDATION)
-- Prepara Router multi-provider (o brief é independente do modelo)
+- Token savings: short user input + generated brief
+- Aligns with policies > long prompts (FOUNDATION)
+- Prepares multi-provider Router (the brief is model-independent)
 
-### Negativas / trade-offs
+### Trade-offs
 
-- Brief ainda heurístico (sem re-ranking LLM)
-- Memória só entra se `workspaceId` presente
+- Brief is still heuristic (no LLM re-ranking)
+- Memory only enters when `workspaceId` is present
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| Extensão IDE → Ollama primeiro | Substitui IDE; fora do escopo |
-| Só Rules Cursor sem MCP | Já existe; insuficiente para memory/KG vivos |
-| Gerar brief com LLM | Custo + não-determinismo na Fase 1 deste vertical |
+| IDE extension → Ollama first | Replaces the IDE; out of scope |
+| Cursor Rules only, no MCP | Already exists; insufficient for live memory/KG |
+| Generate brief with LLM | Cost + non-determinism in Phase 1 of this vertical |
 
-## Referências
+## References
 
 - [cursor-chat-bridge](../guides/cursor-chat-bridge.md)
-- [ROADMAP Fase 3](../ROADMAP.md)
+- [ROADMAP Phase 3](../ROADMAP.md)
 - [ADR-0006](./0006-memory-engine-session.md)

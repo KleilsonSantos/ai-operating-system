@@ -1,37 +1,37 @@
-# ADR-0002: Estratégia de Branches, Sandbox e Versionamento SemVer
+# ADR-0002: Branch strategy, sandbox, and SemVer versioning
 
-- **Status:** Aceito
-- **Data:** 2026-07-13
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-13
+- **Deciders:** Kleilson dos Santos
 
-## Contexto
+## Context
 
-O AIOS adota desde o início um fluxo Git enterprise: branch de integração `sandbox`, branches semânticas e releases SemVer — para rastreabilidade e disciplina de produto.
+AIOS adopts an enterprise Git flow from day one: an integration branch `sandbox`, semantic branches, and SemVer releases — for traceability and product discipline.
 
-## Decisão
+## Decision
 
 ```text
 feature/* | fix/* | docs/* | chore/* | ci/* | ...
                     │
                     ▼
-                 sandbox          ← integração + CI
+                 sandbox          ← integration + CI
                     │
               Pull Request
                     │
                     ▼
-                  main            ← produção / releases tagueadas
+                  main            ← production / tagged releases
 ```
 
-### Regras
+### Rules
 
-1. Sem commit direto em `main` ou `sandbox` (após este ADR).
-2. Dois PRs por entrega: `branch → sandbox` e `sandbox → main`.
+1. No direct commits to `main` or `sandbox` (after this ADR).
+2. Two PRs per delivery: `branch → sandbox` and `sandbox → main`.
 3. Commits: Conventional Commits + Gitmoji.
-4. Releases: tags anotadas `vX.Y.Z` + GitHub Release + CHANGELOG.
+4. Releases: annotated tags `vX.Y.Z` + GitHub Release + CHANGELOG.
 
-Bootstrap inicial em `main` até `v0.1.0` é a exceção documentada.
+Initial bootstrap on `main` through `v0.1.0` is the documented exception.
 
-## Referências
+## References
 
 - [Semantic Versioning](https://semver.org/)
 - [Conventional Commits](https://www.conventionalcommits.org/)

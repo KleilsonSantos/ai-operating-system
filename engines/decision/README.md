@@ -1,8 +1,8 @@
 # @aios/decision — Decision Engine
 
-Decide quais plugins participam do workflow, por `IntentKind`.
+Decides which plugins participate in the workflow, by `IntentKind`.
 
-## Matriz (#8 · v2 #63)
+## Matrix (#8 · v2 #63)
 
 | Intent | Agents |
 | --- | --- |
@@ -11,7 +11,7 @@ Decide quais plugins participam do workflow, por `IntentKind`.
 | `explain.code` | architecture · docs |
 | `review.change` | architecture · appsec · qa |
 | `fix.bug` | architecture · appsec · qa |
-| `unknown` | _(nenhum)_ |
+| `unknown` | _(none)_ |
 
 ```ts
 import { shouldRunAgent, agentsForIntent } from '@aios/decision'

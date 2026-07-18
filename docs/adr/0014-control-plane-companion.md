@@ -1,66 +1,66 @@
-# ADR-0014: AIOS como control plane · Companion como experiência separada
+# ADR-0014: AIOS as control plane · Companion as a separate experience
 
-- **Status:** Aceito
-- **Data:** 2026-07-16
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-16
+- **Deciders:** Kleilson dos Santos
 
-## Contexto
+## Context
 
-A visão “Jarvis Dev” (voz, estado vivo do ambiente, abrir IDE/Docker) é maior que a missão atual do AIOS: **governança de IA no SDLC**. Misturar os dois no mesmo produto/release gera:
+The “Jarvis Dev” vision (voice, live environment state, open IDE/Docker) is larger than AIOS’s current mission: **AI governance in the SDLC**. Mixing both in the same product/release causes:
 
-- duplicidade de engines (memory/policy/knowledge);
-- colisão com “não substituir IDE” (ROADMAP / FOUNDATION);
-- pressão Resource-Aware (watchers + voz + containers no Mac 16GB);
-- ciclos de release acoplados sem necessidade.
+- duplicated engines (memory/policy/knowledge);
+- collision with “do not replace the IDE” (ROADMAP / FOUNDATION);
+- Resource-Aware pressure (watchers + voice + containers on a 16GB Mac);
+- coupled release cycles without need.
 
-Padrões de indústria relevantes: **control plane vs data/execution plane** (Hashicorp Well-Architected e equivalentes); **MCP host ↔ múltiplos servers** ([arquitetura oficial MCP](https://modelcontextprotocol.io/docs/learn/architecture)); fronteira de repo alinhada a acoplamento/release (prática monorepo/polyrepo híbrida).
+Relevant industry patterns: **control plane vs data/execution plane** (Hashicorp Well-Architected and equivalents); **MCP host ↔ multiple servers** ([official MCP architecture](https://modelcontextprotocol.io/docs/learn/architecture)); repo boundary aligned with coupling/release (hybrid monorepo/polyrepo practice).
 
-## Decisão
+## Decision
 
-1. **AIOS (`ai-operating-system`)** permanece o **control plane**: policies, intent, context on-demand, memory/KG, prompt brief, governance/docs audit, quality, MCP `aios_*`, console de governança.
-2. **Companion / experiência cognitiva** (voz, Conversation Manager, watchers IDE/Docker/Git, UX “Jarvis”) é um **produto cliente** — consome AIOS via contratos estáveis (`@aios/pipeline`, `@aios/mcp`, CLI). **Não** reimplementa Policy/Memory/Knowledge/Prompt.
-3. **Curto prazo:** evoluções de *Operational State* / eventos leves que fortalecem o control plane podem viver no monorepo AIOS (`engines/` / `apps/`), sem voz e sem controlar a IDE.
-4. **Médio prazo:** quando a experiência Companion tiver lifecycle próprio (voz, watchers, automação de desktop), criar **repositório separado** (nome a definir: ex. `aios-companion`) que fala com AIOS — **não** embutir AIOS como pasta noutro monorepo (reafirma ADR-0001).
-5. Integrações externas (GitHub, filesystem, etc.) preferem **MCP mesh** no host Companion ou servers dedicados — AIOS não precisa absorver todas as tools.
+1. **AIOS (`ai-operating-system`)** remains the **control plane**: policies, intent, on-demand context, memory/KG, prompt brief, governance/docs audit, quality, MCP `aios_*`, governance console.
+2. **Companion / cognitive experience** (voice, Conversation Manager, IDE/Docker/Git watchers, “Jarvis” UX) is a **client product** — it consumes AIOS via stable contracts (`@aios/pipeline`, `@aios/mcp`, CLI). It does **not** reimplement Policy/Memory/Knowledge/Prompt.
+3. **Short term:** Operational State / light event evolutions that strengthen the control plane may live in the AIOS monorepo (`engines/` / `apps/`), without voice and without controlling the IDE.
+4. **Medium term:** when the Companion experience has its own lifecycle (voice, watchers, desktop automation), create a **separate repository** (name TBD: e.g. `aios-companion`) that talks to AIOS — do **not** embed AIOS as a folder in another monorepo (reaffirms ADR-0001).
+5. External integrations (GitHub, filesystem, etc.) prefer an **MCP mesh** on the Companion host or dedicated servers — AIOS does not need to absorb every tool.
 
 ```text
 Companion (UX / events / voice)
         │  MCP + pipeline contract
         ▼
-AIOS control plane (governança)
+AIOS control plane (governance)
         │
         ▼
-Capabilities / outros MCP servers (IDE, Git, …)
+Capabilities / other MCP servers (IDE, Git, …)
 ```
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Missão AIOS clara e estável (ADR-0001)
-- Escalabilidade: companion escala/release independente
-- Agilidade: AIOS continua a entregar governança sem bloquear UX
-- Desempenho / Resource-Aware: menos processos no núcleo
-- Zero duplicidade de engines
+- Clear, stable AIOS mission (ADR-0001)
+- Scalability: companion scales/releases independently
+- Agility: AIOS keeps shipping governance without blocking UX
+- Performance / Resource-Aware: fewer processes in the core
+- Zero engine duplication
 
-### Negativas / trade-offs
+### Trade-offs
 
-- Dois artefatos a coordenar quando o companion existir
-- Exige disciplina de contrato (`contractVersion`, tools versionadas)
+- Two artifacts to coordinate once the companion exists
+- Requires contract discipline (`contractVersion`, versioned tools)
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| Fundir Jarvis + AIOS num único produto monolítico | Confunde missão; viola fora-de-escopo IDE; Resource-Aware |
-| Embutir AIOS como pasta do companion | Rejeitado por ADR-0001 |
-| Duplicar Memory/Policy no companion | Redundância e drift de verdade |
-| Só prompts longos no Cursor sem plataforma | Já rejeitado na génese do AIOS |
+| Merge Jarvis + AIOS into one monolithic product | Confuses mission; violates IDE out-of-scope; Resource-Aware |
+| Embed AIOS as a companion folder | Rejected by ADR-0001 |
+| Duplicate Memory/Policy in the companion | Redundancy and truth drift |
+| Long Cursor prompts only, no platform | Already rejected at AIOS genesis |
 
-## Referências
+## References
 
 - [ADR-0001](./0001-standalone-platform.md)
 - [ADR-0011](./0011-resource-aware-macos.md)
 - [FOUNDATION](../FOUNDATION.md)
 - [MCP Architecture](https://modelcontextprotocol.io/docs/learn/architecture)
-- Guia: [`docs/guides/control-plane-companion.md`](../guides/control-plane-companion.md)
+- Guide: [`docs/guides/control-plane-companion.md`](../guides/control-plane-companion.md)

@@ -1,58 +1,58 @@
-# Releases e Tags
+# Releases and Tags
 
-SemVer `vMAJOR.MINOR.PATCH` com **tags anotadas**.
+SemVer `vMAJOR.MINOR.PATCH` with **annotated tags**.
 
-## Política (issue #15)
+## Policy (issue #15)
 
-| Camada | Regra |
+| Layer | Rule |
 | --- | --- |
-| Todo commit | Mensagem Conventional Commits + Gitmoji (hook + CI) |
-| Toda release | Bump `package.json` + seção CHANGELOG + tag anotada |
-| Gate | `scripts/check-semver-alignment.sh` — falha se `main` tiver commits **releaseable** (`feat`/`fix`/…) após a última tag sem bump de versão |
+| Every commit | Conventional Commits + Gitmoji message (hook + CI) |
+| Every release | Bump `package.json` + CHANGELOG section + annotated tag |
+| Gate | `scripts/check-semver-alignment.sh` — fails if `main` has **releaseable** commits (`feat`/`fix`/…) after the last tag without a version bump |
 
-Não bumpar SemVer a cada commit de feature branch. Agregar na release.
+Do not bump SemVer on every feature-branch commit. Aggregate at release time.
 
-Exceções que **não** forçam bump sozinhas: `chore`, `docs`, `ci`, `test`, `style`, `build`, `merge`.
+Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `test`, `style`, `build`, `merge`.
 
-## Histórico
+## History
 
-| Tag | Descrição |
+| Tag | Description |
 | --- | --- |
-| `v0.18.1` | AIOS_MCP_QUIET + ROADMAP Companion/caps · higiene GitHub |
+| `v0.18.1` | AIOS_MCP_QUIET + ROADMAP Companion/caps · GitHub hygiene |
 | `v0.18.0` | Operational State MVP · ADR-0015 (#84) · merge-subject gate · ADR-0014 |
 | `v0.17.0` | Documentation + Governance engines · ADR-0013 (#80) |
 | `v0.16.0` | Console Try it + Resource-Aware · ADR-0011 / ADR-0012 (#75/#76) |
-| `v0.15.0` | Console de governança `@aios/console` + `@aios/status` + ADR-0010 (#71) |
+| `v0.15.0` | Governance console `@aios/console` + `@aios/status` + ADR-0010 (#71) |
 | `v0.14.0` | Multi-provider MVP `@aios/provider` + Ollama + ADR-0009 (#67) |
 | `v0.13.0` | Intent Engine v2 (`implement.feature` · `fix.bug`) (#63) |
 | `v0.12.0` | Prompt Engine `@aios/prompt` + ADR-0008 (#59) |
-| `v0.11.0` | Multi-repo genérico (ops + `runAcrossWorkspaces`) + ADR-0007 (#55) |
-| `v0.10.0` | Memory Engine `@aios/memory` + ADR-0006 (#51) — Fase 2 completa |
+| `v0.11.0` | Generic multi-repo (ops + `runAcrossWorkspaces`) + ADR-0007 (#55) |
+| `v0.10.0` | Memory Engine `@aios/memory` + ADR-0006 (#51) — Phase 2 complete |
 | `v0.9.0` | Knowledge Graph `@aios/knowledge` + ADR-0005 (#47) |
 | `v0.8.0` | Multi-repo onboarding `@aios/workspace` + ADR-0004 (#43) |
-| `v0.7.0` | MCP server `@aios/mcp` (stdio) + Cursor bridge Nível 2 (#38) |
-| `v0.6.0` | Contrato CLI/API `@aios/pipeline` + ADR-0003 (#9) |
+| `v0.7.0` | MCP server `@aios/mcp` (stdio) + Cursor bridge Level 2 (#38) |
+| `v0.6.0` | CLI/API contract `@aios/pipeline` + ADR-0003 (#9) |
 | `v0.5.0` | Orchestration + Decision + plugins + Quality Gate (#8) |
-| `v0.4.0` | Context Engine (#7) + ponte Cursor Chat (policies → Project Rules) |
-| `v0.3.0` | Policy Engine — carga JSON + injeção no workflow (#6) |
-| `v0.2.0` | Intent Engine — classificação heurística (#5) |
-| `v0.1.1` | Gate SemVer anti-drift (#15) + bump GitHub Actions |
-| `v0.1.0` | Bootstrap + FOUNDATION + scaffold Fase 1 + Git enterprise + CI |
+| `v0.4.0` | Context Engine (#7) + Cursor Chat bridge (policies → Project Rules) |
+| `v0.3.0` | Policy Engine — JSON load + workflow injection (#6) |
+| `v0.2.0` | Intent Engine — heuristic classification (#5) |
+| `v0.1.1` | SemVer anti-drift gate (#15) + GitHub Actions bump |
+| `v0.1.0` | Bootstrap + FOUNDATION + Phase 1 scaffold + enterprise Git + CI |
 
-## Criar release
+## Create a release
 
 ```bash
 git checkout main && git pull origin main
-# CHANGELOG [X.Y.Z] + package.json version alinhados
-git tag -a vX.Y.Z -m "vX.Y.Z — resumo"
+# CHANGELOG [X.Y.Z] + package.json version aligned
+git tag -a vX.Y.Z -m "vX.Y.Z — summary"
 git push origin vX.Y.Z
-gh release create vX.Y.Z --title "vX.Y.Z — título" --notes "Ver CHANGELOG [X.Y.Z]."
+gh release create vX.Y.Z --title "vX.Y.Z — title" --notes "See CHANGELOG [X.Y.Z]."
 ```
 
-Verificação local:
+Local check:
 
 ```bash
 bash scripts/check-semver-alignment.sh
 ```
 
-Guia geral: [git-workflow.md](./git-workflow.md).
+General guide: [git-workflow.md](./git-workflow.md).

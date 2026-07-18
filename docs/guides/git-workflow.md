@@ -1,8 +1,8 @@
-# Guia de Fluxo Git — Branches, PRs e Releases
+# Git Workflow Guide — Branches, PRs, and Releases
 
-Fluxo oficial do repositório `ai-operating-system`.
+Official flow for the `ai-operating-system` repository.
 
-## Visão geral
+## Overview
 
 ```text
 feature/* | fix/* | docs/* | chore/* | ci/*
@@ -11,46 +11,46 @@ feature/* | fix/* | docs/* | chore/* | ci/*
            sandbox
               │
               ▼  PR #2
-            main  →  tag anotada vX.Y.Z
+            main  →  annotated tag vX.Y.Z
 ```
 
-## Branches permanentes
+## Permanent branches
 
-| Branch | Papel |
+| Branch | Role |
 | --- | --- |
-| `main` | Produção / releases |
-| `sandbox` | Integração contínua |
+| `main` | Production / releases |
+| `sandbox` | Continuous integration |
 
-## Kickoff canônico
+## Canonical kickoff
 
 1. Issue → Project **In Progress**
 2. `git checkout sandbox && git pull`
 3. `git checkout -b feature/<slug>`
-4. Comentar na issue com a branch
-5. Commits: `type: <gitmoji> descrição`
-6. QA local → PR → `sandbox` → PR → `main` → tag se releaseable
+4. Comment on the issue with the branch name
+5. Commits: `type: <gitmoji> description`
+6. Local QA → PR → `sandbox` → PR → `main` → tag if releaseable
 
-Autoria: `Kleilson Santos <kdsddesign1@gmail.com>` — sem `Co-authored-by: Cursor` / trailers de IDE.
+Author: `Kleilson Santos <kdsddesign1@gmail.com>` — no `Co-authored-by: Cursor` / IDE trailers.
 
-### Merges (obrigatório)
+### Merges (required)
 
 ```bash
 bash scripts/merge-pr.sh <n>
-# equivalente:
+# equivalent:
 gh pr merge <n> --merge --subject "merge: 🔀 PR #<n> — <branch>"
 ```
 
-Proibido o subject default do GitHub (`Merge pull request #N from …`).  
-CI: `scripts/check-commit-messages.sh` (PR) + `scripts/check-merge-tip.sh` (push em `sandbox`/`main`, tip).
+The default GitHub subject (`Merge pull request #N from …`) is forbidden.  
+CI: `scripts/check-commit-messages.sh` (PR) + `scripts/check-merge-tip.sh` (push to `sandbox`/`main`, tip).
 
-## O que NÃO fazer
+## What NOT to do
 
-- Commit direto em `main` / `sandbox`
-- PR `feature/*` direto para `main`
-- Commits sem gitmoji
-- `gh pr merge` sem `--subject` / `-t`
+- Commit directly on `main` / `sandbox`
+- PR `feature/*` straight to `main`
+- Commits without gitmoji
+- `gh pr merge` without `--subject` / `-t`
 
-## Relacionados
+## Related
 
 - [task-kickoff.md](./task-kickoff.md)
 - [releases.md](./releases.md)

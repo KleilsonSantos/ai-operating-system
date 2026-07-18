@@ -1,15 +1,15 @@
-# Ponte Cursor Chat ↔ AIOS
+# Cursor Chat ↔ AIOS Bridge
 
-O Agent do Cursor **não** descobre o AIOS sozinho. Duas camadas:
+The Cursor Agent does **not** discover AIOS on its own. Two layers:
 
-## Nível 1 — Project Rules (sempre ligado neste repo)
+## Level 1 — Project Rules (always on in this repo)
 
 ```text
-Você digita no chat (pedido curto)
+You type in chat (short request)
         ↓
-Cursor Agent carrega .cursor/rules/*.mdc (alwaysApply)
+Cursor Agent loads .cursor/rules/*.mdc (alwaysApply)
         ↓
-Conteúdo gerado a partir de policies/aios.policies.json
+Content generated from policies/aios.policies.json
 ```
 
 ```bash
@@ -19,29 +19,29 @@ pnpm sync:cursor-rules
 - `.cursor/rules/aios-policies.mdc`
 - `.cursor/rules/aios-sdlc.mdc`
 
-## Nível 2 — MCP server (`@aios/mcp`) — issue #38
+## Level 2 — MCP server (`@aios/mcp`) — issue #38
 
-Ligação **viva** com o runtime: o Agent chama tools.
+**Live** link to the runtime: the Agent calls tools.
 
-| Tool | Papel |
+| Tool | Role |
 | --- | --- |
 | `aios_contract_version` | `contractVersion` |
-| `aios_compile_prompt` | Brief governado (policies + memory + KG) — **economia de tokens** (#59) |
-| `aios_list_workspaces` | Registry multi-repo (Fase 2 · #43) |
-| `aios_workspace_upsert` / `remove` / `validate` | Multi-repo genérico (#55) |
-| `aios_run_across_workspaces` | Pipeline em N workspaces (#55) |
-| `aios_build_knowledge` | Knowledge Graph heurístico (#47; `full: true` = nós/arestas) |
-| `aios_memory_remember` / `recall` / `clear` | Memória sessão/projeto (#51) |
+| `aios_compile_prompt` | Governed brief (policies + memory + KG) — **token savings** (#59) |
+| `aios_list_workspaces` | Multi-repo registry (Phase 2 · #43) |
+| `aios_workspace_upsert` / `remove` / `validate` | Generic multi-repo (#55) |
+| `aios_run_across_workspaces` | Pipeline across N workspaces (#55) |
+| `aios_build_knowledge` | Heuristic Knowledge Graph (#47; `full: true` = nodes/edges) |
+| `aios_memory_remember` / `recall` / `clear` | Session/project memory (#51) |
 | `aios_load_policies` | Policies + constraints |
-| `aios_run_pipeline` | Núcleo completo (`PipelineResponse`; aceita `workspaceId`) |
-| `aios_provider_health` / `models` / `chat` | Multi-provider auxiliar Ollama (#67) |
-| `aios_governance_status` | Health + Attention do console (#71) |
-| `aios_audit_docs` | Inventário/drift de docs canónicas (#80) |
-| `aios_governance_audit` / `aios_governance_record` | Auditoria leve + log de decisões (#80) |
+| `aios_run_pipeline` | Full core (`PipelineResponse`; accepts `workspaceId`) |
+| `aios_provider_health` / `models` / `chat` | Multi-provider with optional Ollama (#67) |
+| `aios_governance_status` | Console Health + Attention (#71) |
+| `aios_audit_docs` | Canonical docs inventory/drift (#80) |
+| `aios_governance_audit` / `aios_governance_record` | Light audit + decision log (#80) |
 
-Exemplo de config: [`.cursor/mcp.json.example`](../../.cursor/mcp.json.example) — use **caminho absoluto do `node`** (Cursor GUI frequentemente não tem `pnpm`/`nvm` no PATH).
+Config example: [`.cursor/mcp.json.example`](../../.cursor/mcp.json.example) — use an **absolute `node` path** (Cursor GUI often lacks `pnpm`/`nvm` on PATH).
 
-Se o Agent **não listar** as tools `aios_*` (só vê MCPs de `~/.cursor/mcp.json`), copie o bloco `aios` também para o MCP **user-level** (`~/.cursor/mcp.json`), defina `AIOS_HOME`, e faça Settings → MCP → Refresh / Reload Window → **chat Agent novo**.
+If the Agent does **not list** `aios_*` tools (only sees MCPs from `~/.cursor/mcp.json`), also copy the `aios` block into the **user-level** MCP file (`~/.cursor/mcp.json`), set `AIOS_HOME`, then Settings → MCP → Refresh / Reload Window → **new Agent chat**.
 
 ```bash
 pnpm --filter @aios/mcp dev
@@ -49,14 +49,14 @@ pnpm --filter @aios/mcp dev
 
 Workspaces: [`workspaces/aios.workspaces.json`](../../workspaces/aios.workspaces.json) · [ADR-0004](../adr/0004-multi-repo-workspace-registry.md).
 
-Detalhe: [`apps/mcp/README.md`](../../apps/mcp/README.md) · contrato [ADR-0003](../adr/0003-pipeline-integration-contract.md).
+Details: [`apps/mcp/README.md`](../../apps/mcp/README.md) · contract [ADR-0003](../adr/0003-pipeline-integration-contract.md).
 
-## Smoke CLI
+## CLI smoke
 
 ```bash
-# Brief governado (cola no Agent / economiza tokens)
+# Governed brief (paste into Agent / saves tokens)
 pnpm --filter @aios/cli dev -- --compile-prompt --brief-only --workspace=aios "Crie um endpoint de health."
 
-# Pipeline completo
+# Full pipeline
 pnpm --filter @aios/cli dev -- --workspace=aios "Analise meu projeto."
 ```

@@ -1,45 +1,45 @@
 # ADR-0015: Operational State MVP (control plane)
 
-- **Status:** Aceito
-- **Data:** 2026-07-16
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-16
+- **Deciders:** Kleilson dos Santos
 - **Issue:** #84
 
-## Contexto
+## Context
 
-O Companion (ADR-0014) precisa de um **estado operacional estável** no control plane — sem voz, sem watchers agressivos, sem controlar IDE/Docker. `@aios/status` cobre Health/Attention; falta um snapshot unificado (git leve + focus workspace + ponte memory/governance) consumível por MCP/CLI/console.
+The Companion (ADR-0014) needs a **stable operational state** on the control plane — without voice, without aggressive watchers, without controlling IDE/Docker. `@aios/status` covers Health/Attention; a unified snapshot is still missing (light git + focus workspace + memory/governance bridge) consumable by MCP/CLI/console.
 
-## Decisão
+## Decision
 
-1. **`@aios/operational-state`**: `getOperationalState({ homePath, workspaceId? })` — agrega `getGovernanceStatus`, `probeGit` (on-demand, timeout curto), `listDecisions`, focus de workspace; `mode: 'on-demand'`; `boundaries` explícitas (`voice`/`ideControl`/`dockerControl` = false).
-2. **Event hook barato:** `recordOperationalEvent` → `.aios/state/events.jsonl` (append on-demand; sem polling).
+1. **`@aios/operational-state`**: `getOperationalState({ homePath, workspaceId? })` — aggregates `getGovernanceStatus`, `probeGit` (on-demand, short timeout), `listDecisions`, workspace focus; `mode: 'on-demand'`; explicit `boundaries` (`voice`/`ideControl`/`dockerControl` = false).
+2. **Cheap event hook:** `recordOperationalEvent` → `.aios/state/events.jsonl` (append on-demand; no polling).
 3. MCP: `aios_operational_state`. CLI: `--operational-state`. Console Try it: `operational_state`.
-4. Distinto do Companion: este engine **não** abre IDE, não sobe Docker, não faz voz.
+4. Distinct from Companion: this engine does **not** open the IDE, start Docker, or do voice.
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Contrato claro para o futuro Companion
-- Reutiliza Status/Governance; zero serviços novos
-- Alinhado Resource-Aware (ADR-0011)
+- Clear contract for the future Companion
+- Reuses Status/Governance; zero new services
+- Aligned with Resource-Aware (ADR-0011)
 
-### Negativas / trade-offs
+### Trade-offs
 
-- Git via `git` CLI local (ausente → `available: false`)
-- Snapshot pontual — não “estado vivo” contínuo (isso fica no Companion)
+- Git via local `git` CLI (absent → `available: false`)
+- Point-in-time snapshot — not continuous “live state” (that stays in Companion)
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| Watchers Git/IDE no AIOS | Resource-Aware + fora de missão (ADR-0014) |
-| Expandir só `@aios/status` sem engine | Mistura consola de saúde com contrato Companion |
-| Embutir voz no state | Escopo Companion |
+| Git/IDE watchers in AIOS | Resource-Aware + outside mission (ADR-0014) |
+| Expand only `@aios/status` without an engine | Mixes health console with Companion contract |
+| Embed voice in state | Companion scope |
 
-## Referências
+## References
 
 - [ADR-0014](./0014-control-plane-companion.md)
 - [ADR-0010](./0010-governance-console.md)
 - [ADR-0011](./0011-resource-aware-macos.md)
-- Guia: [`docs/guides/control-plane-companion.md`](../guides/control-plane-companion.md)
+- Guide: [`docs/guides/control-plane-companion.md`](../guides/control-plane-companion.md)

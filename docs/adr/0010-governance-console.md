@@ -1,45 +1,45 @@
-# ADR-0010: Console de governança (Health + Attention) — não Grafana-first
+# ADR-0010: Governance console (Health + Attention) — not Grafana-first
 
-- **Status:** Aceito
-- **Data:** 2026-07-15
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-15
+- **Deciders:** Kleilson dos Santos
 - **Issue:** #71
 
-## Contexto
+## Context
 
-Precisamos de visibilidade palatável: o que está ativo, disponibilizado e a precisar de atenção. Grafana é excelente para séries temporais, mas o domínio AIOS (workspaces, policies, providers, MCP) ainda não tem instrumentação rica de consumo.
+We need palatable visibility: what is active, available, and needs attention. Grafana is excellent for time series, but the AIOS domain (workspaces, policies, providers, MCP) still lacks rich consumption instrumentation.
 
-## Decisão
+## Decision
 
-1. **Camada 1 (MVP):** `apps/console` (Vite + React) + API local + engine `@aios/status` (`getGovernanceStatus`).
-2. Primeiro ecran: resumo de saúde + lista **Needs attention** (não wall de gráficos).
-3. **Camada 2:** export Prometheus text from `.aios/metrics/events.jsonl` — `GET /metrics` + `aios --metrics-prometheus` ([ADR-0021](./0021-prometheus-metrics-export.md)). Grafana remains optional / user-owned.
-4. Stack: Vite + React (leve, local). Sem chamar agentes no UX principal.
+1. **Layer 1 (MVP):** `apps/console` (Vite + React) + local API + `@aios/status` engine (`getGovernanceStatus`).
+2. First screen: health summary + **Needs attention** list (not a wall of charts).
+3. **Layer 2:** export Prometheus text from `.aios/metrics/events.jsonl` — `GET /metrics` + `aios --metrics-prometheus` ([ADR-0021](./0021-prometheus-metrics-export.md)). Grafana remains optional / user-owned.
+4. Stack: Vite + React (light, local). No agent calls in the primary UX.
 5. MCP `aios_governance_status` · CLI `--governance-status`.
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Valor imediato sem depender de Ollama/Prometheus
-- Separação produto (console) vs ops (Grafana)
-- Attention rules versionadas no código
+- Immediate value without depending on Ollama/Prometheus
+- Product (console) vs ops (Grafana) separation
+- Attention rules versioned in code
 
-### Negativas / trade-offs
+### Trade-offs
 
 - Token consumption was stub until ADR-0019 (`provider.chat` JSONL)
 - Console is local (not multi-tenant SaaS)
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| Grafana-first | Sem séries úteis; fraco no domínio AIOS |
-| Next.js já | Overkill para MVP local |
-| Dashboard só de agentes | Viola “plugins, não UX de chamada direta” |
+| Grafana-first | No useful series yet; weak fit for the AIOS domain |
+| Next.js already | Overkill for a local MVP |
+| Agents-only dashboard | Violates “plugins, not direct-call UX” |
 
-## Referências
+## References
 
-- [ROADMAP Fase 3](../ROADMAP.md)
+- [ROADMAP Phase 3](../ROADMAP.md)
 - [ADR-0009](./0009-multi-provider-ollama.md)
 - [`apps/console/README.md`](../../apps/console/README.md)

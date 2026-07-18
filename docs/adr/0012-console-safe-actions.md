@@ -1,50 +1,50 @@
-# ADR-0012: Console safe actions — Try it (provar runtime)
+# ADR-0012: Console safe actions — Try it (prove the runtime)
 
-- **Status:** Aceito
-- **Data:** 2026-07-15
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-15
+- **Deciders:** Kleilson dos Santos
 - **Issue:** #76
 
-## Contexto
+## Context
 
-O MVP Health+Attention (ADR-0010) mostra estado, mas não prova valor: falta o loop **ver → agir → ver resultado**. O utilizador pediu um console mais interativo e palatável, sem virar IDE nem chamar agentes no UX.
+The Health+Attention MVP (ADR-0010) shows state but does not prove value: the **see → act → see result** loop is missing. The user asked for a more interactive, palatable console — without becoming an IDE or calling agents in the UX.
 
-## Decisão
+## Decision
 
-1. Coluna **Try it** no `@aios/console` com ações **seguras** que chamam engines já existentes.
-2. API local `POST /api/action` `{ action, input?, workspaceId? }` → `{ ok, latencyMs, result }`.
-3. Ações MVP:
+1. **Try it** column in `@aios/console` with **safe** actions that call existing engines.
+2. Local API `POST /api/action` `{ action, input?, workspaceId? }` → `{ ok, latencyMs, result }`.
+3. MVP actions:
    - `contract` — `PIPELINE_CONTRACT_VERSION`
    - `validate_workspaces` — `listValidatedWorkspaces`
    - `load_policies` — `loadPolicies` + mustIds
-   - `compile_brief` — `compilePrompt` (brief truncado se muito longo)
-   - `provider_ping` — `getProvider().health()` (Ollama opcional)
+   - `compile_brief` — `compilePrompt` (brief truncated if too long)
+   - `provider_ping` — `getProvider().health()` (Ollama optional)
    - `memory_recall` / `memory_remember` — `@aios/memory`
-4. **Fora:** executar agentes plugins, chat Copilot-like, Grafana, novos serviços (Resource-Aware / ADR-0011).
-5. Agentes continuam plugins — não aparecem como botões de “run agent”.
+4. **Out of scope:** running agent plugins, Copilot-like chat, Grafana, new services (Resource-Aware / ADR-0011).
+5. Agents remain plugins — they do not appear as “run agent” buttons.
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Prova funcional sem Ollama obrigatório (várias ações não dependem dele)
-- Reutiliza engines/MCP contract; zero stack nova
-- Alinha a policies > sermões (brief gerado no sítio)
+- Functional proof without mandatory Ollama (several actions do not depend on it)
+- Reuses engines/MCP contract; zero new stack
+- Aligns with policies > sermons (brief generated in place)
 
-### Negativas / trade-offs
+### Trade-offs
 
-- API só localhost (não auth SaaS)
-- Output JSON/markdown simples (não editor rico)
+- Localhost-only API (no SaaS auth)
+- Simple JSON/markdown output (not a rich editor)
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| Só refresh de status | Não prova engines |
-| Botões de agentes | Viola AGENTS.md / FOUNDATION |
-| Proxy para Cursor Agent | Fora de escopo do console |
+| Status refresh only | Does not prove engines |
+| Agent buttons | Violates AGENTS.md / FOUNDATION |
+| Proxy to Cursor Agent | Out of console scope |
 
-## Referências
+## References
 
 - [ADR-0010](./0010-governance-console.md)
 - [ADR-0011](./0011-resource-aware-macos.md)
