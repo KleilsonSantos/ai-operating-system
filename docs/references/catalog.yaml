@@ -1,0 +1,166 @@
+# External references catalog (MVP)
+# Legal / official URLs only. Update reviewedAt on review. See README.md.
+
+version: 1
+updated_at: 2026-07-18
+review_cadence: quarterly
+root: docs/references
+
+areas:
+  - architecture
+  - security
+  - devops-sre
+  - observability
+  - ai-engineering
+  - quality
+  - data
+  - frontend
+  - standards
+
+entries:
+  - id: ref.architecture.adr-thoughtworks
+    title: Architecture Decision Records (ADR)
+    area: architecture
+    url: https://www.thoughtworks.com/insights/radar/techniques/lightweight-architecture-decision-records
+    publisher: ThoughtWorks
+    reviewedAt: 2026-07-18
+    status: active
+    notes: Lightweight ADR technique; product ADRs live under docs/adr/
+
+  - id: ref.architecture.semver
+    title: Semantic Versioning 2.0.0
+    area: standards
+    url: https://semver.org/
+    publisher: SemVer
+    reviewedAt: 2026-07-18
+    status: active
+
+  - id: ref.standards.conventional-commits
+    title: Conventional Commits
+    area: standards
+    url: https://www.conventionalcommits.org/
+    publisher: Conventional Commits
+    reviewedAt: 2026-07-18
+    status: active
+
+  - id: ref.standards.keep-a-changelog
+    title: Keep a Changelog
+    area: standards
+    url: https://keepachangelog.com/
+    publisher: Keep a Changelog
+    reviewedAt: 2026-07-18
+    status: active
+
+  - id: ref.standards.rfc2119
+    title: RFC 2119 — Key words for use in RFCs
+    area: standards
+    url: https://www.rfc-editor.org/rfc/rfc2119
+    publisher: IETF
+    reviewedAt: 2026-07-18
+    status: active
+
+  - id: ref.security.owasp-top10
+    title: OWASP Top Ten
+    area: security
+    url: https://owasp.org/www-project-top-ten/
+    publisher: OWASP
+    reviewedAt: 2026-07-18
+    status: active
+
+  - id: ref.security.owasp-asvs
+    title: OWASP Application Security Verification Standard
+    area: security
+    url: https://owasp.org/www-project-application-security-verification-standard/
+    publisher: OWASP
+    reviewedAt: 2026-07-18
+    status: active
+
+  - id: ref.security.nist-csf
+    title: NIST Cybersecurity Framework
+    area: security
+    url: https://www.nist.gov/cyberframework
+    publisher: NIST
+    reviewedAt: 2026-07-18
+    status: active
+
+  - id: ref.devops.cncf
+    title: Cloud Native Computing Foundation
+    area: devops-sre
+    url: https://www.cncf.io/
+    publisher: CNCF
+    reviewedAt: 2026-07-18
+    status: active
+
+  - id: ref.devops.sre-book
+    title: Site Reliability Engineering (Google SRE book)
+    area: devops-sre
+    url: https://sre.google/books/
+    publisher: Google
+    reviewedAt: 2026-07-18
+    status: active
+    notes: Official free HTML books at sre.google — not third-party PDF mirrors
+
+  - id: ref.observability.prometheus-exposition
+    title: Prometheus exposition formats
+    area: observability
+    url: https://prometheus.io/docs/instrumenting/exposition_formats/
+    publisher: Prometheus
+    reviewedAt: 2026-07-18
+    status: active
+    notes: Used by AIOS GET /metrics (ADR-0021)
+
+  - id: ref.ai.mcp-spec
+    title: Model Context Protocol specification
+    area: ai-engineering
+    url: https://modelcontextprotocol.io/specification
+    publisher: Anthropic / MCP
+    reviewedAt: 2026-07-18
+    status: active
+
+  - id: ref.ai.mcp-typescript-sdk
+    title: MCP TypeScript SDK
+    area: ai-engineering
+    url: https://github.com/modelcontextprotocol/typescript-sdk
+    publisher: modelcontextprotocol
+    reviewedAt: 2026-07-18
+    status: active
+
+  - id: ref.ai.ollama-docs
+    title: Ollama documentation
+    area: ai-engineering
+    url: https://github.com/ollama/ollama
+    publisher: Ollama
+    reviewedAt: 2026-07-18
+    status: active
+
+  - id: ref.quality.nodejs-docs
+    title: Node.js documentation
+    area: quality
+    url: https://nodejs.org/docs/latest/api/
+    publisher: OpenJS Foundation
+    reviewedAt: 2026-07-18
+    status: active
+
+  - id: ref.quality.typescript-handbook
+    title: TypeScript Handbook
+    area: quality
+    url: https://www.typescriptlang.org/docs/handbook/intro.html
+    publisher: Microsoft
+    reviewedAt: 2026-07-18
+    status: active
+
+  - id: ref.frontend.w3c-aria
+    title: WAI-ARIA Overview
+    area: frontend
+    url: https://www.w3.org/WAI/ARIA/apg/
+    publisher: W3C
+    reviewedAt: 2026-07-18
+    status: active
+
+  - id: ref.data.json-schema
+    title: JSON Schema
+    area: data
+    url: https://json-schema.org/
+    publisher: JSON Schema
+    reviewedAt: 2026-07-18
+    status: active
