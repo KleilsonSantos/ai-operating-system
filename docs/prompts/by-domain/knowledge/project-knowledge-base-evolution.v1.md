@@ -14,8 +14,8 @@ language: pt-BR
 ai_ready: true
 related_docs:
   - docs/FOUNDATION.md
-  - docs/adr/0005-knowledge-graph-mvp.md
-  - docs/adr/0006-memory-engine-mvp.md
+  - docs/adr/0005-knowledge-graph-heuristic.md
+  - docs/adr/0006-memory-engine-session.md
 related_prompts:
   - prompt.ai-engineering.prompt-knowledge-base-proposal
 created_at: 2026-07-18
