@@ -4,6 +4,16 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.25.0] - 2026-07-18
+
+### Added
+
+- 🌐 MCP Streamable HTTP transport (opt-in) — `AIOS_MCP_HTTP=1` / `--http`, port `8791`, ADR-0022 (#137)
+
+### Notes
+
+- Stdio remains the default (Cursor unchanged). HTTP is stateless MVP on `127.0.0.1`.
+
 ## [0.24.1] - 2026-07-18
 
 ### Added
