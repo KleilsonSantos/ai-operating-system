@@ -36,7 +36,7 @@ Validate AIOS architecture and flows.
 - [x] Prompt Engine — governed brief / token economy (#59 / ADR-0008)
 - [x] Intent Engine v2 — `implement.feature` · `fix.bug` (#63)
 - [x] Multi-provider MVP — `@aios/provider` + Ollama (#67 / ADR-0009); OpenAI-compatible (#105 / ADR-0016); Anthropic Messages (#109 / ADR-0017)
-- [x] Integrations / MCP orchestration — stdio MVP `@aios/mcp` (#38; future expansion)
+- [x] Integrations / MCP orchestration — stdio MVP `@aios/mcp` (#38); Streamable HTTP opt-in (#137 / ADR-0022)
 - [x] Governance UI — console Health + Attention + Try it + Consumption (`providerChat`, #118) (`@aios/console` / `@aios/status`, #71 / #76 / ADR-0010 / ADR-0012); provider.chat JSONL metrics (#115 / ADR-0019); Prometheus text export (`GET /metrics` / `--metrics-prometheus`, #130 / ADR-0021) — Grafana optional / user-owned
 - [x] Documentation / Governance engines — heuristic MVP (#80 / ADR-0013); audit v2 signals (#121 / ADR-0020)
 
