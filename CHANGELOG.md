@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🧠 Prompt Knowledge Base (PKB) Docs-as-Code catalog under `docs/prompts/` — README, VISION, `index.yaml`, migrated assets (#134)
+
 ## [0.24.0] - 2026-07-18
 
 ### Added
