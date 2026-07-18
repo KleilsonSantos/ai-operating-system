@@ -1,0 +1,31 @@
+# PKB catalog index (MVP)
+# Machine-readable; keep in sync with by-domain/**/*.md frontmatter.
+
+version: 1
+updated_at: 2026-07-18
+root: docs/prompts
+
+prompts:
+  - id: prompt.documentation.readme-docs-architecture-audit
+    path: by-domain/documentation/readme-docs-architecture-audit.v1.md
+    domain: documentation
+    version: 1
+    status: active
+    language: pt-BR
+    tags: [documentation, readme, architecture-audit, docs-as-code]
+
+  - id: prompt.knowledge.project-knowledge-base-evolution
+    path: by-domain/knowledge/project-knowledge-base-evolution.v1.md
+    domain: knowledge
+    version: 1
+    status: active
+    language: pt-BR
+    tags: [knowledge, architecture, issue-proposal, references]
+
+  - id: prompt.ai-engineering.prompt-knowledge-base-proposal
+    path: by-domain/ai-engineering/prompt-knowledge-base-proposal.v1.md
+    domain: ai-engineering
+    version: 1
+    status: active
+    language: pt-BR
+    tags: [prompt-engineering, pkb, catalog, docs-as-code]

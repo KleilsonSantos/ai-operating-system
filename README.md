@@ -24,6 +24,7 @@ Você escreve *"Analise meu projeto."* — policies, contexto, agentes e quality
 | Monorepo | pnpm workspaces + Turborepo (stubs) |
 | Integração | `sandbox` → `main` · [`@aios/pipeline`](./packages/pipeline/README.md) · [Cursor chat](./docs/guides/cursor-chat-bridge.md) |
 | Pedra base | [`docs/FOUNDATION.md`](./docs/FOUNDATION.md) |
+| Prompt Knowledge Base | [`docs/prompts/`](./docs/prompts/) |
 | Visão (resumo) | [`docs/VISION.md`](./docs/VISION.md) |
 | Roadmap | [`docs/ROADMAP.md`](./docs/ROADMAP.md) |
 | ADR | [ADR-0001](./docs/adr/0001-standalone-platform.md) · [ADR-0003 pipeline](./docs/adr/0003-pipeline-integration-contract.md) · [ADR-0014 companion](./docs/adr/0014-control-plane-companion.md) · repo [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) |
