@@ -6,31 +6,34 @@
   "bin": {
     "aios-mcp": "./src/index.ts"
   },
-  "description": "MCP stdio server — ponte viva Cursor ↔ AIOS pipeline (#38).",
+  "description": "MCP server \u2014 stdio default; Streamable HTTP opt-in (#38 / #137).",
   "scripts": {
     "dev": "node --experimental-strip-types ./src/index.ts",
-    "build": "tsc -p tsconfig.json",
+    "dev:http": "AIOS_MCP_HTTP=1 node --experimental-strip-types ./src/index.ts --http",
+    "build": "tsc -p tsconfig.json --noEmit",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "node -e \"process.exit(0)\"",
-    "test": "node -e \"process.exit(0)\""
+    "test": "node --experimental-strip-types --test ./src/**/*.test.ts"
   },
   "dependencies": {
-    "@aios/pipeline": "workspace:*",
-    "@aios/policy": "workspace:*",
-    "@aios/shared": "workspace:*",
-    "@aios/workspace": "workspace:*",
-    "@aios/knowledge": "workspace:*",
-    "@aios/memory": "workspace:*",
-    "@aios/prompt": "workspace:*",
-    "@aios/provider": "workspace:*",
-    "@aios/status": "workspace:*",
     "@aios/documentation": "workspace:*",
     "@aios/governance": "workspace:*",
+    "@aios/knowledge": "workspace:*",
+    "@aios/memory": "workspace:*",
     "@aios/operational-state": "workspace:*",
+    "@aios/pipeline": "workspace:*",
+    "@aios/policy": "workspace:*",
+    "@aios/prompt": "workspace:*",
+    "@aios/provider": "workspace:*",
+    "@aios/shared": "workspace:*",
+    "@aios/status": "workspace:*",
+    "@aios/workspace": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.29.0",
+    "express": "^5.2.1",
     "zod": "^3.25.0"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/node": "^26.1.1",
     "typescript": "^5.9.2"
   }

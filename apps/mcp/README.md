@@ -1,27 +1,48 @@
-# @aios/mcp — MCP server (Nível 2)
+# @aios/mcp — MCP server
 
-Liga o **Agent do Cursor** ao runtime AIOS (`runPipeline`, policies, workspaces).
+Bridges Cursor / Companion / HTTP clients to the AIOS runtime (`runPipeline`, policies, workspaces, …).
+
+**Default transport:** stdio. **Opt-in:** Streamable HTTP (ADR-0022 / #137).
 
 ## Tools
 
-| Tool | Papel |
+| Tool | Role |
 | --- | --- |
-| `aios_contract_version` | Versão do contrato (`1`) |
-| `aios_compile_prompt` | Brief governado (#59) |
-| `aios_list_workspaces` | Registry multi-repo (#43) |
-| `aios_workspace_upsert` / `remove` / `validate` | Multi-repo genérico (#55) |
-| `aios_run_across_workspaces` | Pipeline em lote (#55) |
+| `aios_contract_version` | Pipeline contract version |
+| `aios_compile_prompt` | Governed brief (#59) |
+| `aios_list_workspaces` | Multi-repo registry (#43) |
+| `aios_workspace_upsert` / `remove` / `validate` | Workspace ops (#55) |
+| `aios_run_across_workspaces` | Batch pipeline (#55) |
 | `aios_build_knowledge` | Knowledge Graph (#47) |
-| `aios_memory_remember` / `aios_memory_recall` / `aios_memory_clear` | Memory (#51) |
-| `aios_load_policies` | Carrega policies + constraints |
-| `aios_run_pipeline` | Núcleo completo → `PipelineResponse` |
+| `aios_memory_remember` / `recall` / `clear` | Memory (#51) |
+| `aios_load_policies` | Policies + constraints |
+| `aios_governance_*` / `aios_audit_docs` / `aios_operational_state` | Governance + docs + ops |
+| `aios_provider_*` | Provider health / models / chat |
+| `aios_run_pipeline` | Full core → `PipelineResponse` |
 
-## Cursor / MCP config
+## Stdio (default)
 
-Preferir **caminho absoluto do `node`** (GUI do Cursor costuma não herdar `nvm`/`pnpm`):
+```bash
+pnpm --filter @aios/mcp dev
+# or Cursor via .cursor/mcp.json.example
+```
 
-Ver [`.cursor/mcp.json.example`](../../.cursor/mcp.json.example). Defina `AIOS_HOME` para o monorepo AIOS.
+Prefer an **absolute `node` path** (Cursor GUI often lacks `nvm`/`pnpm`). Set `AIOS_HOME` to this monorepo.
 
-Variáveis: `AIOS_HOME`, `AIOS_REPO`, `AIOS_WORKSPACE`, `AIOS_SCOPE`, `AIOS_POLICIES_PATH`, `AIOS_WORKSPACES_PATH`.
+Env: `AIOS_HOME`, `AIOS_REPO`, `AIOS_WORKSPACE`, `AIOS_SCOPE`, `AIOS_POLICIES_PATH`, `AIOS_WORKSPACES_PATH`, `AIOS_MCP_QUIET=1`.
 
-Issue #38 · #43 · guia [cursor-chat-bridge](../../docs/guides/cursor-chat-bridge.md) · ADR-0003 · ADR-0004.
+## Streamable HTTP (opt-in)
+
+Off by default (Resource-Aware). Loopback only unless `AIOS_MCP_HOST` is set.
+
+```bash
+pnpm --filter @aios/mcp dev:http
+# equivalent:
+AIOS_MCP_HTTP=1 node --experimental-strip-types apps/mcp/src/index.ts --http --port 8791
+```
+
+- Endpoint: `POST http://127.0.0.1:8791/mcp` (stateless)
+- Health: `GET http://127.0.0.1:8791/health`
+- Port: `AIOS_MCP_PORT` / `--port` (default **8791**)
+
+Issue #38 · #43 · #137 · [cursor-chat-bridge](../../docs/guides/cursor-chat-bridge.md) · ADR-0003 · ADR-0004 · ADR-0022.

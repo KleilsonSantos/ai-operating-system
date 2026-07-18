@@ -1,11 +1,13 @@
 /**
- * @aios/mcp — MCP stdio server (Cursor Agent ↔ AIOS pipeline).
- * Issue #38 · #43 (workspaces)
+ * @aios/mcp — MCP server (stdio default; Streamable HTTP opt-in).
+ * Issue #38 · #43 (workspaces) · #137 (HTTP)
  *
  * stdout = JSON-RPC MCP — use console.error for logs.
  */
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
+import { listenStreamableHttp } from './http.ts'
+import { parseMcpLaunchOptions } from './launch-options.ts'
 import { z } from 'zod'
 import { runPipeline, runAcrossWorkspaces, PIPELINE_CONTRACT_VERSION } from '@aios/pipeline'
 import { loadPolicies, applyPolicies } from '@aios/policy'
@@ -27,10 +29,11 @@ import { auditGovernance, recordDecision } from '@aios/governance'
 import { getOperationalState } from '@aios/operational-state'
 import { resolve } from 'node:path'
 
-const server = new McpServer({
-  name: 'aios',
-  version: '0.18.0',
-})
+export function createAiosMcpServer(): McpServer {
+  const server = new McpServer({
+    name: 'aios',
+    version: '0.25.0',
+  })
 
 server.registerTool(
   'aios_contract_version',
@@ -809,7 +812,20 @@ server.registerTool(
   },
 )
 
+  return server
+}
+
 async function main(): Promise<void> {
+  const opts = parseMcpLaunchOptions(process.argv.slice(2), process.env)
+  if (opts.http) {
+    await listenStreamableHttp({
+      ...opts,
+      createServer: createAiosMcpServer,
+    })
+    return
+  }
+
+  const server = createAiosMcpServer()
   const transport = new StdioServerTransport()
   await server.connect(transport)
   // stderr banner: útil em TTY manual; silenciar quando cliente pede (Companion #34)
