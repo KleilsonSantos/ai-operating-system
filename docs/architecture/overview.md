@@ -1,13 +1,13 @@
-# Arquitetura — Visão Geral (target)
+# Architecture — Overview (target)
 
-Fonte de verdade da forma do produto. Implementação chega por fase ([ROADMAP](../ROADMAP.md)); este doc descreve o **alvo**.
+Source of truth for the product shape. Implementation arrives by phase ([ROADMAP](../ROADMAP.md)); this doc describes the **target**.
 
-## Princípio
+## Principle
 
-Agentes são **plugins**. O usuário fala com o AIOS; o AIOS orquestra.
+Agents are **plugins**. The user talks to AIOS; AIOS orchestrates.
 
 ```text
-Usuário
+User
    │
    ▼
  AIOS
@@ -27,10 +27,10 @@ Usuário
  Quality Gate
    │
    ▼
- Resposta final
+ Final response
 ```
 
-## Mapa de engines (target)
+## Engine map (target)
 
 ```text
 AIOS
@@ -53,92 +53,92 @@ AIOS
 └── ui
 ```
 
-| Engine | Papel |
+| Engine | Role |
 | --- | --- |
-| **ai-core** | Runtime compartilhado (tipos, eventos, execução) |
-| **intent** | Interpreta o pedido do usuário |
-| **policy** | Regras globais (docs oficiais, trade-offs, anti-overengineering) |
-| **context** | Recupera código/docs relevantes do repo |
-| **workflow** | Define o pipeline da intenção |
-| **orchestration** | Agenda e coordena plugins |
-| **prompt** | Templates internos (não substituem policies) |
-| **knowledge** | Knowledge Graph (relações, não só arquivos) |
-| **memory** | Memória de sessão / projeto |
-| **documentation** | Geração/validação de docs |
-| **governance** | Auditoria, rastreio de decisões |
-| **quality** | Quality Gate pré-resposta |
-| **appsec / architecture / repository** | Domínios especializados (também plugins/agentes) |
-| **decision** | “Este agente precisa participar?” — senão, não executa |
-| **integrations** | MCPs, IDEs, provedores LLM |
-| **ui** | Superfície de governança (Fase 3+) |
+| **ai-core** | Shared runtime (types, events, execution) |
+| **intent** | Interprets the user request |
+| **policy** | Global rules (official docs, trade-offs, anti-overengineering) |
+| **context** | Retrieves relevant code/docs from the repo |
+| **workflow** | Defines the pipeline for the intent |
+| **orchestration** | Schedules and coordinates plugins |
+| **prompt** | Internal templates (do not replace policies) |
+| **knowledge** | Knowledge Graph (relations, not just files) |
+| **memory** | Session / project memory |
+| **documentation** | Doc generation/validation |
+| **governance** | Audit, decision tracking |
+| **quality** | Pre-response Quality Gate |
+| **appsec / architecture / repository** | Specialized domains (also plugins/agents) |
+| **decision** | “Does this agent need to participate?” — if not, do not run |
+| **integrations** | MCPs, IDEs, LLM providers |
+| **ui** | Governance surface (Phase 3+) |
 
-## Policies no lugar de prompts longos
+## Policies instead of long prompts
 
-Hoje (sem AIOS):
-
-```text
-Analise meu projeto seguindo boas práticas, sem alucinação,
-sem redundância, com documentação oficial...
-```
-
-Com AIOS:
+Today (without AIOS):
 
 ```text
-Analise meu projeto.
+Analyze my project following best practices, without hallucination,
+without redundancy, with official documentation...
 ```
 
-As regras ficam registradas uma vez no **Policy Engine**, por exemplo:
-
-- Nunca usar biblioteca abandonada
-- Sempre consultar documentação oficial
-- Sempre indicar trade-offs
-- Sempre evitar overengineering
-- Sempre justificar decisões
-
-## Intent → decomposição automática
-
-Pedido: *Analise meu projeto.*
+With AIOS:
 
 ```text
-Intent → Projeto → Código → Backend → Spring Boot → Java → Arquitetura
-         → acionar Architecture / Security / Performance / Docs / QA
+Analyze my project.
 ```
 
-Tudo via workflow — sem o usuário escolher agente.
+Rules are registered once in the **Policy Engine**, for example:
 
-## Knowledge Graph (conceito)
+- Never use an abandoned library
+- Always consult official documentation
+- Always state trade-offs
+- Always avoid overengineering
+- Always justify decisions
 
-Em vez de só arquivos soltos:
+## Intent → automatic decomposition
+
+Request: *Analyze my project.*
 
 ```text
-Projeto → Arquitetura → Microsserviço → API → Banco
-       → Docker → Observabilidade → Segurança
+Intent → Project → Code → Backend → Spring Boot → Java → Architecture
+         → trigger Architecture / Security / Performance / Docs / QA
 ```
 
-Melhora recuperação de contexto ([knowledge-engine](./system-guide.md)).
+All via workflow — the user does not pick an agent.
+
+## Knowledge Graph (concept)
+
+Instead of only loose files:
+
+```text
+Project → Architecture → Microservice → API → Database
+       → Docker → Observability → Security
+```
+
+Improves context retrieval ([knowledge-engine](./system-guide.md)).
 
 ## Decision + Quality Gate
 
 **Decision Engine**
 
 ```text
-Esse agente realmente precisa participar?  →  Não  →  não executa
+Does this agent really need to participate?  →  No  →  do not run
 ```
 
-**Quality Gate** (antes de sair)
+**Quality Gate** (before output)
 
 ```text
-Arquitetura OK → Segurança OK → Docs OK → Referências OK → Consistência OK → enviar
+Architecture OK → Security OK → Docs OK → References OK → Consistency OK → send
 ```
 
-## Fase 1 (implementável primeiro)
+## Phase 1 (implement first)
 
-Não construir os 15+ engines de uma vez. Núcleo mínimo:
+Do not build 15+ engines at once. Minimum core:
 
 ```text
 intent · policy · context · orchestration/workflow · decision · quality-gate
 + plugins: architecture, appsec, docs, qa
-+ cli (cliente)
++ cli (client)
 ```
 
-Ver [system-guide.md](./system-guide.md).
+See [system-guide.md](./system-guide.md).

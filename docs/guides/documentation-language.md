@@ -13,7 +13,7 @@
 | Code identifiers, APIs, env vars, package names | English (always) |
 | Chat with the product owner | Portuguese OK (not product docs) |
 
-**New and edited** product docs must be US English. Legacy Portuguese pages migrate when touched — no big-bang rewrite required.
+**New and edited** product docs must be US English. AIOS product-doc migration to US English is **completed** under [issue #142](https://github.com/KleilsonSantos/ai-operating-system/issues/142). PKB `pt-BR` bodies and owner chat may remain Portuguese.
 
 ## Why (concrete references)
 

@@ -1,44 +1,44 @@
-# ADR-0013: Documentation + Governance engines (MVP heurístico)
+# ADR-0013: Documentation + Governance engines (heuristic MVP)
 
-- **Status:** Aceito
-- **Data:** 2026-07-15
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-15
+- **Deciders:** Kleilson dos Santos
 - **Issue:** #80
 
-## Contexto
+## Context
 
-FOUNDATION lista `documentation-engine` e `governance-engine`. O plugin `agent-docs` só olha snippets do Context Engine. Falta inventário/drift de docs canónicas e um rasto leve de decisões — sem LLM, sem Grafana, Resource-Aware.
+FOUNDATION lists `documentation-engine` and `governance-engine`. The `agent-docs` plugin only looks at Context Engine snippets. Canonical docs inventory/drift and a light decision trail are still missing — without an LLM, without Grafana, Resource-Aware.
 
-## Decisão
+## Decision
 
-1. **`@aios/documentation`**: `auditDocumentation({ repoPath })` — paths canónicos (FOUNDATION, ROADMAP, ADRs, policies…) + findings.
-2. **`@aios/governance`**: `recordDecision` / `listDecisions` (`.aios/governance/decisions.jsonl`) + `auditGovernance` (policies must + decisões + opcional docs audit).
+1. **`@aios/documentation`**: `auditDocumentation({ repoPath })` — canonical paths (FOUNDATION, ROADMAP, ADRs, policies…) + findings.
+2. **`@aios/governance`**: `recordDecision` / `listDecisions` (`.aios/governance/decisions.jsonl`) + `auditGovernance` (must policies + decisions + optional docs audit).
 3. MCP: `aios_audit_docs` · `aios_governance_audit` · `aios_governance_record`.
 4. CLI: `--audit-docs` · `--governance-audit`.
 5. Console Try it: `audit_docs` · `governance_audit`.
-6. Distinto do **Documentation Agent** (plugin): engine = inventário; agent = findings no workflow.
+6. Distinct from the **Documentation Agent** (plugin): engine = inventory; agent = findings in the workflow.
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Fecha o último gap explícito da Fase 3 no ROADMAP (MVP)
-- Reutiliza filesystem + policies; zero serviços novos
-- Audit trail local alinhado a memory/metrics
+- Closes the last explicit Phase 3 gap in the ROADMAP (MVP)
+- Reuses filesystem + policies; zero new services
+- Local audit trail aligned with memory/metrics
 
-### Negativas / trade-offs
+### Trade-offs
 
-- Heurístico (não NLP / embeddings)
-- Governance store local, não multi-tenant
+- Heuristic (not NLP / embeddings)
+- Local governance store, not multi-tenant
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| Só expandir agent-docs | Não cobre inventário de paths canónicos |
-| Grafana/audit SaaS | Fora de Resource-Aware / Fase 3 MVP |
+| Only expand agent-docs | Does not cover canonical path inventory |
+| Grafana/SaaS audit | Outside Resource-Aware / Phase 3 MVP |
 
-## Referências
+## References
 
 - [FOUNDATION](../FOUNDATION.md)
 - [ADR-0010](./0010-governance-console.md)

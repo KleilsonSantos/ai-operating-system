@@ -1,6 +1,6 @@
 # @aios/orchestration — Orchestration Engine
 
-Coordena Decision → plugins → injeção de policies/context.
+Coordinates Decision → plugins → policies/context injection.
 
 ```ts
 const { results, ran, skipped } = await runWorkflow(intent, {
@@ -9,6 +9,6 @@ const { results, ran, skipped } = await runWorkflow(intent, {
 })
 ```
 
-Plugins são **plugins** — o usuário não os escolhe; a matriz do Decision agenda.
+Plugins are **plugins** — the user does not choose them; the Decision matrix schedules them.
 
 Issue #8 · [system-guide](../../docs/architecture/system-guide.md)

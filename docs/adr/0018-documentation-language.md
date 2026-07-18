@@ -17,7 +17,7 @@ Industry developer-documentation practice is clear: **write the source documenta
 2. **In scope:** `docs/**` (including ADRs and architecture), root `README.md`, `AGENTS.md`, and CHANGELOG *prose* (Keep a Changelog section headers remain English by that standard).
 3. **Code and identifiers** stay English (`ProviderId`, env vars, package names, HTTP paths) — unchanged.
 4. **Chat with the product owner** may remain Portuguese; that is conversation UX, not product documentation.
-5. **Migration:** new and edited docs must be US English; legacy Portuguese pages migrate incrementally (no big-bang rewrite required to accept this ADR).
+5. **Migration:** AIOS product documentation migration to US English completed under [#142](https://github.com/KleilsonSantos/ai-operating-system/issues/142). New docs must stay US English. Optional PT localization may be added later without changing the canon.
 6. **Policy:** `docs-language-en` in `policies/aios.policies.json` (must).
 
 ## Consequences
@@ -30,8 +30,9 @@ Industry developer-documentation practice is clear: **write the source documenta
 
 ### Trade-offs
 
-- Founder and early docs are Portuguese — temporary bilingual repo until migration completes
-- Chat (PT) vs docs (EN) is intentional; agents must not treat chat language as the docs canon
+- Owner chat may remain Portuguese (intentional; not product docs)
+- PKB prompt bodies may keep `language: pt-BR` when that is the working language of the asset
+- Companion repo docs may still need a follow-up migration
 
 ## References
 

@@ -1,45 +1,45 @@
-# ADR-0006: Memory Engine de sessão/projeto (`@aios/memory`)
+# ADR-0006: Session/project Memory Engine (`@aios/memory`)
 
-- **Status:** Aceito
-- **Data:** 2026-07-14
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-14
+- **Deciders:** Kleilson dos Santos
 - **Issue:** #51
 
-## Contexto
+## Context
 
-Fase 2 pede Memory Engine (sessão / projeto). Persistência precisa ser simples, local e alinhada a `workspaceId` (ADR-0004) — sem vector DB nesta fase.
+Phase 2 calls for a Memory Engine (session / project). Persistence must be simple, local, and aligned with `workspaceId` (ADR-0004) — no vector DB in this phase.
 
-## Decisão
+## Decision
 
 1. Engine **`@aios/memory`**: `remember` · `recall` · `clearMemory` · `listMemoryWorkspaces`.
-2. Store em disco: `{AIOS_HOME}/.aios/memory/{workspaceId}.json` (cap FIFO, default 50 entradas).
-3. `.aios/` no `.gitignore` (estado local da máquina).
-4. `PipelineResponse.memory` = recall curto quando há `workspaceId` (desligável com `includeMemory: false`).
+2. On-disk store: `{AIOS_HOME}/.aios/memory/{workspaceId}.json` (FIFO cap, default 50 entries).
+3. `.aios/` in `.gitignore` (local machine state).
+4. `PipelineResponse.memory` = short recall when `workspaceId` is present (disable with `includeMemory: false`).
 5. MCP: `aios_memory_remember` · `aios_memory_recall` · `aios_memory_clear`.
-6. `contractVersion` permanece `"1"`.
+6. `contractVersion` stays `"1"`.
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Preferências / decisões do projeto ficam explícitas entre chats
-- Mesma chave `workspaceId` do registry
+- Project preferences / decisions stay explicit across chats
+- Same `workspaceId` key as the registry
 
-### Negativas / trade-offs
+### Trade-offs
 
-- Sem sync multi-máquina
-- Sem embeddings (busca = substring / tag)
+- No multi-machine sync
+- No embeddings (search = substring / tag)
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| Só memória em RAM | Perde entre restarts do MCP |
-| SQLite/Postgres já | Escopo Fase 3 |
-| Vector store | Overengineering nesta fase |
+| RAM-only memory | Lost across MCP restarts |
+| SQLite/Postgres already | Phase 3 scope |
+| Vector store | Overengineering in this phase |
 
-## Referências
+## References
 
-- [ROADMAP Fase 2](../ROADMAP.md)
+- [ROADMAP Phase 2](../ROADMAP.md)
 - [`engines/memory`](../../engines/memory/)
 - [ADR-0004](./0004-multi-repo-workspace-registry.md) · [ADR-0005](./0005-knowledge-graph-heuristic.md)

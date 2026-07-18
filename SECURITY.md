@@ -1,17 +1,17 @@
 # Security Policy
 
-## Versões suportadas
+## Supported versions
 
-| Versão | Suportada |
+| Version | Supported |
 | --- | --- |
-| 0.x (pré-release) | ✅ |
+| 0.x (pre-release) | ✅ |
 
-## Reportar vulnerabilidade
+## Reporting a vulnerability
 
-**Não abra issues públicas para vulnerabilidades de segurança.**
+**Do not open public issues for security vulnerabilities.**
 
-Envie detalhes para: **kleilson@icloud.com**
+Send details to: **kleilson@icloud.com**
 
-Inclua descrição, reprodução, impacto e mitigação sugerida (se houver).
+Include a description, reproduction steps, impact, and suggested mitigation (if any).
 
-Responderemos em até 5 dias úteis.
+We aim to respond within 5 business days.

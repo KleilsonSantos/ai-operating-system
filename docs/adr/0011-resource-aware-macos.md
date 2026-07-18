@@ -1,41 +1,41 @@
-# ADR-0011: Resource-Aware Development (macOS) como política canónica
+# ADR-0011: Resource-Aware Development (macOS) as canonical policy
 
-- **Status:** Aceito
-- **Data:** 2026-07-15
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-15
+- **Deciders:** Kleilson dos Santos
 
-## Contexto
+## Context
 
-O MacBook de desenvolvimento (16GB, IDEs, browser, console AIOS) não aguenta bem “instalar por default” (Ollama + modelos, Docker Desktop, K8s local). Sem política explícita, agentes sugerem stack pesada e duplicada.
+The development MacBook (16GB, IDEs, browser, AIOS console) does not handle “install by default” well (Ollama + models, Docker Desktop, local K8s). Without an explicit policy, agents suggest heavy and duplicated stacks.
 
-## Decisão
+## Decision
 
-1. Documento canónico: [`docs/policies/resource-aware-macos.md`](../policies/resource-aware-macos.md).
-2. Policies operacionais em `policies/aios.policies.json` (`resource-first`, `inspect-before-install`, `reuse-before-create`, `ai-provider-reuse`) — sincronizadas para Cursor via `pnpm sync:cursor-rules`.
-3. Provider Ollama auxiliar permanece **opcional**; console trata inatividade como **warn**, não como falha do produto.
-4. Antes de instalar Ollama/Gemini/DeepSeek local: inspecionar ambiente; preferir reutilizar API/MCP já disponíveis se cobrirem o caso.
+1. Canonical document: [`docs/policies/resource-aware-macos.md`](../policies/resource-aware-macos.md).
+2. Operational policies in `policies/aios.policies.json` (`resource-first`, `inspect-before-install`, `reuse-before-create`, `ai-provider-reuse`) — synced to Cursor via `pnpm sync:cursor-rules`.
+3. Auxiliary Ollama provider remains **optional**; the console treats inactivity as **warn**, not a product failure.
+4. Before installing local Ollama/Gemini/DeepSeek: inspect the environment; prefer reusing an already available API/MCP if it covers the case.
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Menos pressão para instalar software pesado só para “ficar verde”
-- Alinha agents a inspecionar antes de agir
-- Compatível com economia de tokens (FOUNDATION)
+- Less pressure to install heavy software just to “go green”
+- Aligns agents to inspect before acting
+- Compatible with token economy (FOUNDATION)
 
-### Negativas / trade-offs
+### Trade-offs
 
-- Auxiliar local (Ollama) exige decisão consciente + RAM
-- Free tiers cloud (Gemini) podem ser preferíveis ao modelo local em Mac 16GB
+- Local auxiliary (Ollama) requires a conscious decision + RAM
+- Cloud free tiers (Gemini) may be preferable to a local model on a 16GB Mac
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| Só prompt longo no chat | Viola `short-user-prompt` / policies > sermões |
-| Ollama obrigatório no health | Força instalação e RAM sem necessidade de governança |
+| Long chat-only prompt | Violates `short-user-prompt` / policies > sermons |
+| Ollama required for health | Forces install and RAM without a governance need |
 
-## Referências
+## References
 
 - [FOUNDATION](../FOUNDATION.md)
 - [ADR-0009](./0009-multi-provider-ollama.md)

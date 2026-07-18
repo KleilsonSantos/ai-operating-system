@@ -1,21 +1,21 @@
 # @aios/quality-gate — Quality Gate
 
-Valida o pacote de resultados **antes** de considerar a resposta OK.
+Validates the results package **before** treating the response as OK.
 
 ## Checks (#8)
 
-Com `evaluateQuality(results, { intent, context })`:
+With `evaluateQuality(results, { intent, context })`:
 
-| Check | Falha quando |
+| Check | Fails when |
 | --- | --- |
-| `agentsOk` | algum `ok: false` |
-| `agentsScheduled` | falta agent da matriz do intent |
-| `nonEmptyRun` | intent conhecido sem results |
-| `contextPresent` | `analyze.project` sem snippets |
-| `policiesInjected` | falta `policies.injected` nos findings |
-| `hasDomainFindings` | só meta-findings (policies/context) |
+| `agentsOk` | any `ok: false` |
+| `agentsScheduled` | missing agent from the intent matrix |
+| `nonEmptyRun` | known intent with no results |
+| `contextPresent` | `analyze.project` with no snippets |
+| `policiesInjected` | missing `policies.injected` in findings |
+| `hasDomainFindings` | only meta-findings (policies/context) |
 
-CLI: `process.exitCode = 1` se `!verdict.passed`.
+CLI: `process.exitCode = 1` if `!verdict.passed`.
 
 ```bash
 pnpm --filter @aios/quality-gate test

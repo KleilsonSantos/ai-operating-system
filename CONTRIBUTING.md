@@ -1,8 +1,8 @@
 # Contributing
 
-Obrigado por considerar contribuir com o **AI Operating System**.
+Thanks for considering a contribution to the **AI Operating System**.
 
-## Fluxo Git (obrigatório)
+## Git flow (required)
 
 [`docs/guides/git-workflow.md`](./docs/guides/git-workflow.md) · [`docs/guides/task-kickoff.md`](./docs/guides/task-kickoff.md)
 
@@ -13,34 +13,34 @@ flowchart LR
   M --> T["tag vX.Y.Z"]
 ```
 
-**Nunca** commit direto em `main` ou `sandbox`.
+**Never** commit directly to `main` or `sandbox`.
 
-## Hooks Git (obrigatório)
+## Git hooks (required)
 
 ```bash
 git config core.hooksPath .githooks
 ```
 
-- `commit-msg` — Conventional Commits + Gitmoji; remove trailers de IDE
-- `pre-push` — bloqueia push para `main` com drift SemVer (issue #15)
+- `commit-msg` — Conventional Commits + Gitmoji; strips IDE trailers
+- `pre-push` — blocks push to `main` with SemVer drift (issue #15)
 
-CI revalida mensagens e alinhamento SemVer (não use `--no-verify`).
+CI re-validates messages and SemVer alignment (do not use `--no-verify`).
 
-## Como contribuir
+## How to contribute
 
-1. Issue → In Progress no Project
-2. Branch a partir de `sandbox`
-3. Ativar hooks (`core.hooksPath`)
+1. Issue → In Progress on the Project
+2. Branch from `sandbox`
+3. Enable hooks (`core.hooksPath`)
 4. Commits: Conventional Commits + Gitmoji
-5. Autoria: `Kleilson Santos <kdsddesign1@gmail.com>` — sem co-autoria de IDE
-6. PR → `sandbox` → depois `sandbox` → `main`
-7. Entrega releaseable em `main` exige bump SemVer + CHANGELOG + tag ([releases.md](./docs/guides/releases.md))
-8. Docs no mesmo PR se mudar build/uso/arquitetura
+5. Author: `Kleilson Santos <kdsddesign1@gmail.com>` — no IDE co-authorship
+6. PR → `sandbox`, then `sandbox` → `main`
+7. Releaseable delivery on `main` requires SemVer bump + CHANGELOG + tag ([releases.md](./docs/guides/releases.md))
+8. Include docs in the same PR if build/usage/architecture changes
 
-## Prefixos de branch
+## Branch prefixes
 
 `feature/` · `fix/` · `docs/` · `chore/` · `ci/` · `refactor/` · `test/` · `build/` · `perf/`
 
-## Código de conduta
+## Code of conduct
 
 [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)

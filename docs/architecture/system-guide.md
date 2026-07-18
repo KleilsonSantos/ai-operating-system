@@ -1,12 +1,12 @@
-# System Guide — AIOS (Fase 1)
+# System Guide — AIOS (Phase 1)
 
-Guia operacional do núcleo que será implementado primeiro. O mapa completo está em [overview.md](./overview.md).
+Operational guide for the core implemented first. The full map is in [overview.md](./overview.md).
 
-## Fluxo ponta a ponta (Fase 1)
+## End-to-end flow (Phase 1)
 
 ```mermaid
 flowchart TD
-  U[Usuário / Cliente] --> I[Intent Engine]
+  U[User / Client] --> I[Intent Engine]
   I --> P[Policy Engine]
   P --> C[Context Engine]
   C --> D[Decision Engine]
@@ -19,91 +19,91 @@ flowchart TD
   A2 --> Q
   A3 --> Q
   A4 --> Q
-  Q --> R[Resposta final]
+  Q --> R[Final response]
 ```
 
-## Contratos (esboço)
+## Contracts (sketch)
 
-| Porta | Quem fala | O quê |
+| Port | Who talks | What |
 | --- | --- | --- |
-| CLI / API | Humano ou integrador | `PipelineRequest` → `runPipeline` → `PipelineResponse` (`contractVersion: "1"`) |
-| Engine API | Interno | Eventos tipados entre engines |
-| Plugin API | Agentes | Input de contexto + policies → artefato |
+| CLI / API | Human or integrator | `PipelineRequest` → `runPipeline` → `PipelineResponse` (`contractVersion: "1"`) |
+| Engine API | Internal | Typed events between engines |
+| Plugin API | Agents | Context + policies input → artifact |
 
 ### Intent Engine (`@aios/intent`) — issue #5
 
 `resolveIntent(raw)` → `{ raw, kind, confidence, signals }`.
 
-Kinds Fase 1: `analyze.project` · `explain.code` · `review.change` · `unknown`.
+Phase 1 kinds: `analyze.project` · `explain.code` · `review.change` · `unknown`.
 
-Classificação heurística (sem LLM). Detalhe: [`engines/intent/README.md`](../../engines/intent/README.md).
+Heuristic classification (no LLM). Details: [`engines/intent/README.md`](../../engines/intent/README.md).
 
 ### Policy Engine (`@aios/policy`) — issue #6
 
 `loadPolicies()` → `{ rules, source, path? }` · `applyPolicies(rules)` → `{ constraints, mustIds }`.
 
-Arquivo opcional: `policies/aios.policies.json` (ou `AIOS_POLICIES_PATH` / `configPath`).
+Optional file: `policies/aios.policies.json` (or `AIOS_POLICIES_PATH` / `configPath`).
 
-Injeção Fase 1: `runWorkflow(intent, { policies })` anexa `policy:<id>` e `policies.injected` nos resultados dos plugins.
+Phase 1 injection: `runWorkflow(intent, { policies })` appends `policy:<id>` and `policies.injected` to plugin results.
 
-Detalhe: [`engines/policy/README.md`](../../engines/policy/README.md).
+Details: [`engines/policy/README.md`](../../engines/policy/README.md).
 
 ### Context Engine (`@aios/context`) — issue #7
 
 `gatherContext({ repoPath, scope? })` → `{ repoPath, scope, snippets[], signals[] }`.
 
-Snippets tipados: `doc` · `code` · `manifest` (conteúdo truncado). Escopo por path relativo à raiz do repo.
+Typed snippets: `doc` · `code` · `manifest` (truncated content). Scope is a path relative to the repo root.
 
-Injeção: `runWorkflow(intent, { context })` anexa `context:<path>` e `context.injected:N`.
+Injection: `runWorkflow(intent, { context })` appends `context:<path>` and `context.injected:N`.
 
-Detalhe: [`engines/context/README.md`](../../engines/context/README.md).
+Details: [`engines/context/README.md`](../../engines/context/README.md).
 
-### Ponte Cursor Chat (Nível 1)
+### Cursor Chat bridge (Level 1)
 
-`pnpm sync:cursor-rules` → `.cursor/rules/aios-*.mdc` (`alwaysApply`) a partir de `policies/aios.policies.json`.
+`pnpm sync:cursor-rules` → `.cursor/rules/aios-*.mdc` (`alwaysApply`) from `policies/aios.policies.json`.
 
-Pedido curto no chat; policies injetadas sem CLI. Guia: [`docs/guides/cursor-chat-bridge.md`](../guides/cursor-chat-bridge.md).
+Short request in chat; policies injected without the CLI. Guide: [`docs/guides/cursor-chat-bridge.md`](../guides/cursor-chat-bridge.md).
 
 ### Decision · Orchestration · Quality Gate — issue #8
 
-- `shouldRunAgent` / `agentsForIntent` — matriz por `IntentKind` (unknown = nenhum).
-- `runWorkflow` → `{ results, ran, skipped }` com injeção de policies + context.
-- Plugins (architecture / appsec / docs / qa): findings heurísticos sobre o bundle.
-- `evaluateQuality(results, { intent, context })` bloqueia pacote inconsistente; CLI exit `1` se falhar.
+- `shouldRunAgent` / `agentsForIntent` — matrix by `IntentKind` (unknown = none).
+- `runWorkflow` → `{ results, ran, skipped }` with policies + context injection.
+- Plugins (architecture / appsec / docs / qa): heuristic findings over the bundle.
+- `evaluateQuality(results, { intent, context })` blocks an inconsistent package; CLI exit `1` on failure.
 
-### Contrato CLI/API (`@aios/pipeline`) — issue #9
+### CLI/API contract (`@aios/pipeline`) — issue #9
 
-`runPipeline({ input, repoPath?, workspaceId?, scope?, policiesPath? })` → `PipelineResponse` com `contractVersion: "1"`.
+`runPipeline({ input, repoPath?, workspaceId?, scope?, policiesPath? })` → `PipelineResponse` with `contractVersion: "1"`.
 
-CLI (`@aios/cli`) é cliente fino desse contrato (`--workspace`). Integradores dependem de `@aios/pipeline` + `@aios/shared` — [ADR-0003](../adr/0003-pipeline-integration-contract.md).
+CLI (`@aios/cli`) is a thin client of this contract (`--workspace`). Integrators depend on `@aios/pipeline` + `@aios/shared` — [ADR-0003](../adr/0003-pipeline-integration-contract.md).
 
 ### Multi-repo (`@aios/workspace`) — issue #43 / #55
 
-Registry `workspaces/aios.workspaces.json` · resolve por `workspaceId` · upsert/validate · `runAcrossWorkspaces` · [ADR-0004](../adr/0004-multi-repo-workspace-registry.md) · [ADR-0007](../adr/0007-multi-repo-generic-ops.md).
+Registry `workspaces/aios.workspaces.json` · resolve by `workspaceId` · upsert/validate · `runAcrossWorkspaces` · [ADR-0004](../adr/0004-multi-repo-workspace-registry.md) · [ADR-0007](../adr/0007-multi-repo-generic-ops.md).
 
 ### Knowledge Graph (`@aios/knowledge`) — issue #47
 
-`buildKnowledgeGraph` heurístico · resumo em `PipelineResponse.knowledge` · MCP `aios_build_knowledge` · [ADR-0005](../adr/0005-knowledge-graph-heuristic.md).
+Heuristic `buildKnowledgeGraph` · summary in `PipelineResponse.knowledge` · MCP `aios_build_knowledge` · [ADR-0005](../adr/0005-knowledge-graph-heuristic.md).
 
 ### Memory (`@aios/memory`) — issue #51
 
-Store local `.aios/memory/{workspaceId}.json` · `remember`/`recall` · MCP `aios_memory_*` · [ADR-0006](../adr/0006-memory-engine-session.md).
+Local store `.aios/memory/{workspaceId}.json` · `remember`/`recall` · MCP `aios_memory_*` · [ADR-0006](../adr/0006-memory-engine-session.md).
 
 ### Prompt Engine (`@aios/prompt`) — issue #59
 
-`compilePrompt` → brief markdown (policies + memory + KG) · MCP `aios_compile_prompt` · CLI `--compile-prompt` · [ADR-0008](../adr/0008-prompt-engine-brief.md).
+`compilePrompt` → markdown brief (policies + memory + KG) · MCP `aios_compile_prompt` · CLI `--compile-prompt` · [ADR-0008](../adr/0008-prompt-engine-brief.md).
 
 ### Multi-provider (`@aios/provider`) — issue #67
 
 `AIProvider` + Ollama + OpenAI-compatible + Anthropic · MCP `aios_provider_*` · chat usage → `.aios/metrics/events.jsonl` (`chatWithMetrics`, ADR-0019) · Prometheus text scrape (`GET /metrics` / `--metrics-prometheus`, ADR-0021) · [ADR-0009](../adr/0009-multi-provider-ollama.md) · [ADR-0016](../adr/0016-openai-compatible-provider.md) · [ADR-0017](../adr/0017-anthropic-provider.md). Does not replace the IDE LLM.
 
-### Console de governança (`@aios/console` / `@aios/status`) — issue #71
+### Governance console (`@aios/console` / `@aios/status`) — issue #71
 
-Health + Needs attention + **Try it** (safe actions) · API `/api/status` · `POST /api/action` · [ADR-0010](../adr/0010-governance-console.md) · [ADR-0012](../adr/0012-console-safe-actions.md). Provider auxiliar inativo = warn ([ADR-0011](../adr/0011-resource-aware-macos.md)).
+Health + Needs attention + **Try it** (safe actions) · API `/api/status` · `POST /api/action` · [ADR-0010](../adr/0010-governance-console.md) · [ADR-0012](../adr/0012-console-safe-actions.md). Inactive optional provider = warn ([ADR-0011](../adr/0011-resource-aware-macos.md)).
 
 ### Resource-Aware (macOS) — ADR-0011
 
-Inspecionar antes de instalar · reutilizar · minimizar hardware · [política](../policies/resource-aware-macos.md).
+Inspect before install · reuse · minimize hardware · [policy](../policies/resource-aware-macos.md).
 
 ### Documentation + Governance (#80)
 
@@ -111,17 +111,17 @@ Inspecionar antes de instalar · reutilizar · minimizar hardware · [política]
 
 ### Control plane · Companion — ADR-0014
 
-AIOS governa; Companion (voz/UX/ambiente) consome via MCP/pipeline — [guia](../guides/control-plane-companion.md). Repo: [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) (#90). Não duplicar engines.
+AIOS governs; Companion (voice/UX/environment) consumes via MCP/pipeline — [guide](../guides/control-plane-companion.md). Repo: [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) (#90). Do not duplicate engines.
 
 ### Operational State (#84)
 
-`getOperationalState` · MCP `aios_operational_state` · CLI `--operational-state` · [ADR-0015](../adr/0015-operational-state.md). On-demand; sem voz/IDE.
+`getOperationalState` · MCP `aios_operational_state` · CLI `--operational-state` · [ADR-0015](../adr/0015-operational-state.md). On-demand; no voice/IDE.
 
-## O que Fase 1 NÃO inclui
+## What Phase 1 does NOT include
 
-- UI completa (Grafana / multi-tenant SaaS)
-- Providers cloud (Claude/OpenAI/Gemini) — stub Ollama só (#67)
-- Knowledge Graph completo (embeddings / store)
-- Memory distribuída multi-máquina
+- Full UI (Grafana / multi-tenant SaaS)
+- Cloud providers (Claude/OpenAI/Gemini) — Ollama stub only (#67)
+- Full Knowledge Graph (embeddings / store)
+- Distributed multi-machine memory
 
-Esses itens entram nas Fases 2–3 ([ROADMAP](../ROADMAP.md)).
+Those land in Phases 2–3 ([ROADMAP](../ROADMAP.md)).

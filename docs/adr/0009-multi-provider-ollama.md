@@ -1,47 +1,47 @@
 # ADR-0009: Multi-provider MVP — AIProvider + Ollama
 
-- **Status:** Aceito
-- **Data:** 2026-07-15
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-15
+- **Deciders:** Kleilson dos Santos
 - **Issue:** #67
 
-## Contexto
+## Context
 
-Fase 3 pede multi-provider. O objetivo imediato é **economizar tokens/API** com tarefas baratas/locais — não substituir o LLM da IDE nem construir extensão VS Code. Ollama local é o primeiro backend concreto atrás de uma abstração estável.
+Phase 3 calls for multi-provider support. The immediate goal is to **save tokens/API cost** with cheap/local tasks — not to replace the IDE LLM or build a VS Code extension. Local Ollama is the first concrete backend behind a stable abstraction.
 
-## Decisão
+## Decision
 
-1. Engine **`@aios/provider`** com interface `AIProvider` (`health` · `models` · `chat`).
-2. Implementação **`OllamaProvider`** via HTTP (`AIOS_OLLAMA_URL`, default `http://127.0.0.1:11434`; modelo `AIOS_OLLAMA_MODEL`).
-3. Router stub `getProvider(id)` — só seleção por nome neste MVP.
+1. Engine **`@aios/provider`** with `AIProvider` interface (`health` · `models` · `chat`).
+2. **`OllamaProvider`** implementation over HTTP (`AIOS_OLLAMA_URL`, default `http://127.0.0.1:11434`; model `AIOS_OLLAMA_MODEL`).
+3. Router stub `getProvider(id)` — name-based selection only in this MVP.
 4. MCP: `aios_provider_health` · `aios_provider_models` · `aios_provider_chat`.
 5. CLI: `--provider-health` · `--provider-chat` · `--provider=` · `--model=`.
-6. Coding / review pesado continua no Cursor Agent; Ollama = auxiliar.
+6. Heavy coding / review stays in Cursor Agent; Ollama = auxiliary.
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Ponto único para plugar Claude/OpenAI/Gemini depois
-- Health barato sem acoplar ao pipeline `contractVersion`
-- Alinha a “não substituir IDE” (FOUNDATION / ADR-0001)
+- Single plug point for Claude/OpenAI/Gemini later
+- Cheap health checks without coupling to the `contractVersion` pipeline
+- Aligns with “do not replace the IDE” (FOUNDATION / ADR-0001)
 
-### Negativas / trade-offs
+### Trade-offs
 
-- Só Ollama no MVP; outros providers são stubs futuros
-- Sem streaming / embeddings / tool-calling neste vertical
-- Depende de Ollama instalado e a correr no host
+- Ollama only in the MVP; other providers are future stubs
+- No streaming / embeddings / tool-calling in this vertical
+- Depends on Ollama installed and running on the host
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| Extensão IDE → Ollama | Fora de escopo; compete com a IDE |
-| Colar Ollama no Prompt Engine | Prompt Engine só monta brief determinístico (ADR-0008) |
-| SDKs OpenAI/Anthropic já | Escopo; depois de Ollama validado |
+| IDE extension → Ollama | Out of scope; competes with the IDE |
+| Wire Ollama into the Prompt Engine | Prompt Engine only builds a deterministic brief (ADR-0008) |
+| OpenAI/Anthropic SDKs already | Scope; after Ollama is validated |
 
-## Referências
+## References
 
-- [ROADMAP Fase 3](../ROADMAP.md)
+- [ROADMAP Phase 3](../ROADMAP.md)
 - [ADR-0008](./0008-prompt-engine-brief.md)
 - [Ollama API](https://docs.ollama.com/api)

@@ -1,17 +1,17 @@
-# ADR-0004: Registry multi-repositório (`@aios/workspace`)
+# ADR-0004: Multi-repository registry (`@aios/workspace`)
 
-- **Status:** Aceito
-- **Data:** 2026-07-14
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-14
+- **Deciders:** Kleilson dos Santos
 - **Issue:** #43
 
-## Contexto
+## Context
 
-A Fase 2 pede onboarding de múltiplos repositórios. O núcleo já aceita `repoPath`, mas integradores (MCP, CLI) precisam de **ids estáveis** e um arquivo de registro versionável — sem hardcodar paths absolutos em cada chamada.
+Phase 2 calls for onboarding multiple repositories. The core already accepts `repoPath`, but integrators (MCP, CLI) need **stable ids** and a versionable registry file — without hardcoding absolute paths on every call.
 
-## Decisão
+## Decision
 
-1. **Arquivo canônico** `workspaces/aios.workspaces.json` (ou `aios.workspaces.json` na raiz / walk-up), shape:
+1. **Canonical file** `workspaces/aios.workspaces.json` (or `aios.workspaces.json` at the root / walk-up), shape:
 
 ```json
 {
@@ -22,35 +22,35 @@ A Fase 2 pede onboarding de múltiplos repositórios. O núcleo já aceita `repo
 ```
 
 2. **Engine** `@aios/workspace`: `loadWorkspaces` / `resolveWorkspace(id?)`.
-3. **`PipelineRequest.workspaceId`** (opcional). Prioridade: `repoPath` explícito > workspace resolve > `cwd`.
-4. **MCP** `aios_list_workspaces` + `workspaceId` em `aios_run_pipeline` / `aios_load_policies`.
-5. `contractVersion` permanece `"1"` (campo opcional aditivo; não quebra clientes).
+3. **`PipelineRequest.workspaceId`** (optional). Priority: explicit `repoPath` > workspace resolve > `cwd`.
+4. **MCP** `aios_list_workspaces` + `workspaceId` on `aios_run_pipeline` / `aios_load_policies`.
+5. `contractVersion` stays `"1"` (additive optional field; does not break clients).
 
-Paths relativos no registry sob `workspaces/` resolvem contra a **raiz do monorepo AIOS** (parent de `workspaces/`).
+Relative paths in the registry under `workspaces/` resolve against the **AIOS monorepo root** (parent of `workspaces/`).
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Onboarding: acrescentar um id + path no JSON
-- MCP/CLI usam o mesmo resolve
-- Prepara Knowledge Graph / Memory por `workspaceId`
+- Onboarding: add an id + path in the JSON
+- MCP/CLI share the same resolve
+- Prepares Knowledge Graph / Memory per `workspaceId`
 
-### Negativas / trade-offs
+### Trade-offs
 
-- Mais um engine no monorepo
-- Paths absolutos de máquina ainda podem aparecer no registry (documentados como ok para clone local)
+- One more engine in the monorepo
+- Machine-absolute paths may still appear in the registry (documented as OK for a local clone)
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| Só env `AIOS_REPO` | Sem catálogo / multi-alvo |
-| Discover automático por `~/Projects/*` | Ruído; sem intents explícitos |
-| Bump `contractVersion` para 2 | Desnecessário para campo opcional |
+| Env `AIOS_REPO` only | No catalog / multi-target |
+| Automatic discover under `~/Projects/*` | Noise; no explicit intents |
+| Bump `contractVersion` to 2 | Unnecessary for an optional field |
 
-## Referências
+## References
 
-- [ROADMAP Fase 2](../ROADMAP.md)
+- [ROADMAP Phase 2](../ROADMAP.md)
 - [`engines/workspace`](../../engines/workspace/)
 - [ADR-0003](./0003-pipeline-integration-contract.md)
