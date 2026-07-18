@@ -1,13 +1,13 @@
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
+import { mkdtempSync, writeFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { afterEach, describe, expect, it } from 'vitest'
 import {
   escapePromLabel,
   loadMetricsSnapshot,
+  recordProviderChatMetric,
   renderPrometheusMetrics,
-} from './prometheus.ts'
-import { recordProviderChatMetric } from './index.ts'
+} from './index.ts'
 
 const temps: string[] = []
 
