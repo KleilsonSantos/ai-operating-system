@@ -15,7 +15,7 @@ Related engines (do **not** duplicate here):
 | Governed brief builder (`compilePrompt`) | `@aios/prompt` · ADR-0008 |
 | Session / project memory | `@aios/memory` · ADR-0006 |
 | Heuristic knowledge graph | `@aios/knowledge` · ADR-0005 |
-| External official references | parked [#133](https://github.com/KleilsonSantos/ai-operating-system/issues/133) → `docs/references/` |
+| External official references | [`docs/references/`](../references/) (#133) |
 
 Long-term evolution: [`VISION.md`](./VISION.md).
 

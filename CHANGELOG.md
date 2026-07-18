@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📚 External references catalog — `docs/references/` (legal/official URLs only) · DESIGN + `catalog.yaml` (#133)
+
 ## [0.25.0] - 2026-07-18
 
 ### Added
