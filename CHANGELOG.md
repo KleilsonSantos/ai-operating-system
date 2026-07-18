@@ -4,10 +4,16 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.24.0] - 2026-07-18
+
+### Added
+
+- 📈 Prometheus text export from `.aios/metrics/events.jsonl` — `GET /metrics` · `aios --metrics-prometheus` · ADR-0021 (#130)
+
 ### Changed
 
-- 📝 `FOUNDATION.md` + `VISION.md` migrated to US English (ADR-0018 / #124)
-- 📝 `ROADMAP.md` migrated to US English (#127)
+- Governance Attention stub points at scrape/CLI; status note mentions `/metrics`
+- ROADMAP Phase 3: Prometheus export done (Grafana optional / user-owned)
 
 ## [0.23.0] - 2026-07-17
 
@@ -18,6 +24,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 ### Changed
 
 - `recordDecision` normalizes kinds; operational state exposes `governance.ok` / `findingCount`
+- 📝 `FOUNDATION.md` + `VISION.md` migrated to US English (ADR-0018 / #124)
+- 📝 `ROADMAP.md` migrated to US English (#127)
 
 ## [0.22.0] - 2026-07-17
 

@@ -1,8 +1,9 @@
 /**
  * Status Engine — health + needs attention for the console (#71).
- * Provider chat consumption: local JSONL metrics (#115 / ADR-0019). Not Grafana.
+ * Provider chat consumption: local JSONL metrics (#115 / ADR-0019).
+ * Prometheus text export: #130 / ADR-0021 (ADR-0010 layer 2).
  */
-import { existsSync, mkdirSync, appendFileSync, readFileSync } from 'node:fs'
+import { mkdirSync, appendFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import {
   PIPELINE_CONTRACT_VERSION,
@@ -17,6 +18,17 @@ import { loadPolicies, applyPolicies } from '@aios/policy'
 import { listMemoryWorkspaces } from '@aios/memory'
 import { getProvider, listProviderIds } from '@aios/provider'
 import { auditGovernance } from '@aios/governance'
+import { loadMetricsSnapshot } from './prometheus.ts'
+
+export {
+  escapePromLabel,
+  loadMetricsSnapshot,
+  renderPrometheusMetrics,
+  PROMETHEUS_CONTENT_TYPE,
+  type MetricsSnapshot,
+  type ProviderChatByProvider,
+  type ProviderChatTotals,
+} from './prometheus.ts'
 
 /** Tools exposed by `@aios/mcp` (canonical MVP list). */
 export const MCP_TOOL_CATALOG = [
@@ -64,63 +76,11 @@ function metricsPath(homePath: string): string {
   return join(homePath, '.aios', 'metrics', 'events.jsonl')
 }
 
-function countMetricEvents(homePath: string): {
-  eventCount: number
-  path: string
-} {
-  const path = metricsPath(homePath)
-  if (!existsSync(path)) return { eventCount: 0, path }
-  try {
-    const raw = readFileSync(path, 'utf8')
-    const lines = raw.split('\n').filter((l) => l.trim())
-    return { eventCount: lines.length, path }
-  } catch {
-    return { eventCount: 0, path }
-  }
-}
-
 type ProviderChatSummary = NonNullable<
   GovernanceStatus['metrics']['providerChat']
 >
 
-function summarizeProviderChat(homePath: string): ProviderChatSummary | undefined {
-  const path = metricsPath(homePath)
-  if (!existsSync(path)) return undefined
-  let count = 0
-  let errorCount = 0
-  let promptTokens = 0
-  let completionTokens = 0
-  let totalTokens = 0
-  try {
-    const raw = readFileSync(path, 'utf8')
-    for (const line of raw.split('\n')) {
-      if (!line.trim()) continue
-      let ev: Record<string, unknown>
-      try {
-        ev = JSON.parse(line) as Record<string, unknown>
-      } catch {
-        continue
-      }
-      if (ev.kind !== 'provider.chat') continue
-      count += 1
-      if (ev.ok === false) errorCount += 1
-      const usage = ev.usage as ChatUsage | undefined
-      if (usage?.promptTokens) promptTokens += usage.promptTokens
-      if (usage?.completionTokens) completionTokens += usage.completionTokens
-      if (usage?.totalTokens) {
-        totalTokens += usage.totalTokens
-      } else if (usage?.promptTokens || usage?.completionTokens) {
-        totalTokens += (usage.promptTokens || 0) + (usage.completionTokens || 0)
-      }
-    }
-  } catch {
-    return undefined
-  }
-  if (count === 0) return undefined
-  return { count, errorCount, promptTokens, completionTokens, totalTokens }
-}
-
-/** Append JSONL metric (Grafana/Prometheus export later — ADR-0010 layer 2). */
+/** Append JSONL metric (Prometheus scrape via renderPrometheusMetrics — ADR-0021). */
 export function recordMetricEvent(
   event: Record<string, unknown>,
   options: { homePath?: string } = {},
@@ -269,7 +229,7 @@ function buildAttention(parts: {
       severity: 'info',
       title: 'No provider.chat consumption events yet',
       detail:
-        'Run aios_provider_chat or CLI --provider-chat to append .aios/metrics/events.jsonl. Grafana/Prometheus export comes later (ADR-0010 layer 2).',
+        'Run aios_provider_chat or CLI --provider-chat to append .aios/metrics/events.jsonl. Scrape console GET /metrics or `aios --metrics-prometheus` (ADR-0021).',
     })
   } else if (parts.providerChat.errorCount > 0) {
     items.push({
@@ -322,9 +282,9 @@ export async function getGovernanceStatus(
     (await getProvider(options.providerId || 'ollama').health())
 
   const memoryIds = listMemoryWorkspaces({ homePath })
-  const metrics = countMetricEvents(homePath)
-  const providerChat = summarizeProviderChat(homePath)
-  const metricsAvailable = Boolean(providerChat) || metrics.eventCount > 0
+  const metricsSnap = loadMetricsSnapshot({ homePath })
+  const providerChat = metricsSnap.providerChat
+  const metricsAvailable = Boolean(providerChat) || metricsSnap.eventCount > 0
 
   // Quick governance audit (no docs walk) — Resource-Aware (#121)
   const govAudit = auditGovernance({
@@ -340,14 +300,14 @@ export async function getGovernanceStatus(
     provider,
     memoryIds,
     providerChat,
-    eventCount: metrics.eventCount,
+    eventCount: metricsSnap.eventCount,
     governanceFindings: govAudit.findings,
   })
 
   let note: string
   if (providerChat) {
-    note = `provider.chat: ${providerChat.count} call(s), ~${providerChat.totalTokens} tokens (local JSONL; no Prometheus yet).`
-  } else if (metrics.eventCount > 0) {
+    note = `provider.chat: ${providerChat.count} call(s), ~${providerChat.totalTokens} tokens (JSONL; scrape GET /metrics).`
+  } else if (metricsSnap.eventCount > 0) {
     note = 'Local JSONL events present; no provider.chat rows yet.'
   } else {
     note =
@@ -370,8 +330,8 @@ export async function getGovernanceStatus(
     metrics: {
       available: metricsAvailable,
       note,
-      eventCount: metrics.eventCount,
-      path: metrics.path,
+      eventCount: metricsSnap.eventCount,
+      path: metricsSnap.path,
       providerChat,
     },
   }

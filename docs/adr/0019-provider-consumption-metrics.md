@@ -18,7 +18,7 @@
 2. Append `kind: "provider.chat"` rows via `recordProviderChatMetric` / `chatWithMetrics` → `.aios/metrics/events.jsonl`.
 3. Wire MCP + CLI through `chatWithMetrics` (success and failure).
 4. `getGovernanceStatus().metrics.providerChat` aggregates counts/tokens; Attention shows stub until the first `provider.chat` event, and warns on chat errors.
-5. **Still no** Prometheus/Grafana export (ADR-0010 layer 2 remains future).
+5. Prometheus text export is **[ADR-0021](./0021-prometheus-metrics-export.md)** (console `GET /metrics` / CLI `--metrics-prometheus`). Grafana dashboards remain optional.
 
 ## Consequences
 
@@ -26,7 +26,7 @@
 
 - Real consumption signal in the existing console/governance surface
 - Resource-Aware: local append-only JSONL, no new daemons
-- Unblocks Grafana later with domain events already flowing
+- Unblocks scrape-based ops without bundling Grafana
 
 ### Trade-offs
 

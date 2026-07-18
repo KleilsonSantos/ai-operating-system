@@ -1,7 +1,7 @@
 import { runPipeline, PIPELINE_CONTRACT_VERSION } from '@aios/pipeline'
 import { compilePrompt } from '@aios/prompt'
 import { getProvider } from '@aios/provider'
-import { getGovernanceStatus, chatWithMetrics } from '@aios/status'
+import { getGovernanceStatus, chatWithMetrics, renderPrometheusMetrics } from '@aios/status'
 import { auditDocumentation } from '@aios/documentation'
 import { auditGovernance } from '@aios/governance'
 import { getOperationalState } from '@aios/operational-state'
@@ -18,6 +18,7 @@ function parseArgs(argv: string[]): {
   providerHealth: boolean
   providerChat: boolean
   governanceStatus: boolean
+  metricsPrometheus: boolean
   auditDocs: boolean
   governanceAudit: boolean
   operationalState: boolean
@@ -33,6 +34,7 @@ function parseArgs(argv: string[]): {
   let providerHealth = false
   let providerChat = false
   let governanceStatus = false
+  let metricsPrometheus = false
   let auditDocs = false
   let governanceAudit = false
   let operationalState = false
@@ -94,6 +96,10 @@ function parseArgs(argv: string[]): {
       governanceStatus = true
       continue
     }
+    if (a === '--metrics-prometheus' || a === '--prometheus') {
+      metricsPrometheus = true
+      continue
+    }
     if (a === '--audit-docs') {
       auditDocs = true
       continue
@@ -140,6 +146,7 @@ function parseArgs(argv: string[]): {
     providerHealth,
     providerChat,
     governanceStatus,
+    metricsPrometheus,
     auditDocs,
     governanceAudit,
     operationalState,
@@ -178,6 +185,14 @@ async function main(): Promise<void> {
     })
     console.log(JSON.stringify(audit, null, 2))
     if (!audit.ok) process.exitCode = 1
+    return
+  }
+
+  if (args.metricsPrometheus) {
+    const text = renderPrometheusMetrics({
+      homePath: process.env.AIOS_HOME || process.cwd(),
+    })
+    process.stdout.write(text)
     return
   }
 

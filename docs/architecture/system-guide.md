@@ -95,7 +95,7 @@ Store local `.aios/memory/{workspaceId}.json` · `remember`/`recall` · MCP `aio
 
 ### Multi-provider (`@aios/provider`) — issue #67
 
-`AIProvider` + Ollama + OpenAI-compatible + Anthropic · MCP `aios_provider_*` · chat usage → `.aios/metrics/events.jsonl` (`chatWithMetrics`, ADR-0019) · [ADR-0009](../adr/0009-multi-provider-ollama.md) · [ADR-0016](../adr/0016-openai-compatible-provider.md) · [ADR-0017](../adr/0017-anthropic-provider.md). Does not replace the IDE LLM.
+`AIProvider` + Ollama + OpenAI-compatible + Anthropic · MCP `aios_provider_*` · chat usage → `.aios/metrics/events.jsonl` (`chatWithMetrics`, ADR-0019) · Prometheus text scrape (`GET /metrics` / `--metrics-prometheus`, ADR-0021) · [ADR-0009](../adr/0009-multi-provider-ollama.md) · [ADR-0016](../adr/0016-openai-compatible-provider.md) · [ADR-0017](../adr/0017-anthropic-provider.md). Does not replace the IDE LLM.
 
 ### Console de governança (`@aios/console` / `@aios/status`) — issue #71
 
