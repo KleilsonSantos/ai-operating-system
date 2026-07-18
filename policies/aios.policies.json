@@ -2,82 +2,82 @@
   "policies": [
     {
       "id": "official-docs",
-      "description": "Sempre consultar documentação oficial antes de inventar APIs ou contratos",
+      "description": "Always consult official documentation before inventing APIs or contracts",
       "severity": "must"
     },
     {
       "id": "trade-offs",
-      "description": "Sempre indicar trade-offs relevantes nas decisões técnicas",
+      "description": "Always call out relevant trade-offs in technical decisions",
       "severity": "must"
     },
     {
       "id": "no-overengineering",
-      "description": "Sempre evitar overengineering — solução mínima que resolve o pedido",
+      "description": "Always avoid overengineering — minimal solution that solves the request",
       "severity": "must"
     },
     {
       "id": "justify-decisions",
-      "description": "Sempre justificar decisões não óbvias em uma frase",
+      "description": "Always justify non-obvious decisions in one sentence",
       "severity": "must"
     },
     {
       "id": "no-abandoned-libs",
-      "description": "Nunca usar biblioteca abandonada ou sem manutenção clara",
+      "description": "Never use an abandoned library or one without clear maintenance",
       "severity": "must"
     },
     {
       "id": "no-deprecated-apis",
-      "description": "Não introduzir APIs/libs depreciadas; preferir alternativas suportadas",
+      "description": "Do not introduce deprecated APIs/libs; prefer supported alternatives",
       "severity": "must"
     },
     {
       "id": "short-user-prompt",
-      "description": "Não pedir ao usuário para repetir best practices no chat — já estão nestas policies",
+      "description": "Do not ask the user to repeat best practices in chat — they are already in these policies",
       "severity": "must"
     },
     {
       "id": "git-flow-sandbox",
-      "description": "Fluxo Git: Issue → feature/* from sandbox → PR → sandbox → PR → main",
+      "description": "Git flow: Issue → feature/* from sandbox → PR → sandbox → PR → main",
       "severity": "must"
     },
     {
       "id": "conventional-commits",
-      "description": "Commits: type: <gitmoji> … · merges via gh: sempre --subject/scripts/merge-pr.sh → merge: 🔀 PR #<n> — <branch> (proibido 'Merge pull request…') · autoria Kleilson Santos · sem Co-authored-by de IDE",
+      "description": "Commits: type: <gitmoji> … · merges via gh: always --subject/scripts/merge-pr.sh → merge: 🔀 PR #<n> — <branch> (forbid 'Merge pull request…') · author Kleilson Santos · no IDE Co-authored-by",
       "severity": "must"
     },
     {
       "id": "agents-as-plugins",
-      "description": "Agentes são plugins — não expor chamada direta de agente no UX principal",
+      "description": "Agents are plugins — do not expose direct agent calls in the primary UX",
       "severity": "must"
     },
     {
       "id": "resource-first",
-      "description": "Resource First (macOS): minimizar CPU/RAM/disco/I/O/bateria/processos/containers; eficiência é requisito — ver docs/policies/resource-aware-macos.md",
+      "description": "Resource First (macOS): minimize CPU/RAM/disk/I/O/battery/processes/containers; efficiency is a requirement — see docs/policies/resource-aware-macos.md",
       "severity": "must"
     },
     {
       "id": "inspect-before-install",
-      "description": "Antes de instalar/iniciar: verificar se já existe instalado, configurado, em execução, container/serviço equivalente ou reutilizável",
+      "description": "Before installing/starting: check whether something is already installed, configured, running, or an equivalent reusable container/service",
       "severity": "must"
     },
     {
       "id": "reuse-before-create",
-      "description": "Preferir reutilizar serviços/containers/DBs/redes/volumes/configs; evitar duplicidade (ex. Ollama local + Ollama Docker)",
+      "description": "Prefer reusing services/containers/DBs/networks/volumes/configs; avoid duplication (e.g. local Ollama + Ollama Docker)",
       "severity": "must"
     },
     {
       "id": "ai-provider-reuse",
-      "description": "AI providers: reutilizar provider/Ollama/MCP/API já ativos; só criar serviço novo após inspeção; Ollama é auxiliar opcional (não instalar só para verde no console)",
+      "description": "AI providers: reuse already active provider/Ollama/MCP/API; only create a new service after inspection; Ollama is an optional auxiliary (do not install only for a green console)",
       "severity": "must"
     },
     {
       "id": "docs-language-en",
-      "description": "Product docs (docs/**, ADRs, README, AGENTS, CHANGELOG prose) must be US English — ADR-0018 / docs/guides/documentation-language.md; chat with the owner may stay PT; migrate legacy PT when editing",
+      "description": "Product docs (docs/**, ADRs, README, AGENTS, CHANGELOG prose) must be US English — ADR-0018 / docs/guides/documentation-language.md; chat with the owner may stay PT; AIOS product-doc migration completed (#142)",
       "severity": "must"
     },
     {
       "id": "justify-resource-impact",
-      "description": "Sugestões de infra devem declarar porquê, alternativas e impacto em hardware/manutenção/consumo",
+      "description": "Infra suggestions must state why, alternatives, and impact on hardware/maintenance/consumption",
       "severity": "should"
     }
   ]

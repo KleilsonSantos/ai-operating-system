@@ -12,25 +12,25 @@ Regenerar: `pnpm sync:cursor-rules`
 
 ## MUST
 
-- **official-docs** (must): Sempre consultar documentação oficial antes de inventar APIs ou contratos
-- **trade-offs** (must): Sempre indicar trade-offs relevantes nas decisões técnicas
-- **no-overengineering** (must): Sempre evitar overengineering — solução mínima que resolve o pedido
-- **justify-decisions** (must): Sempre justificar decisões não óbvias em uma frase
-- **no-abandoned-libs** (must): Nunca usar biblioteca abandonada ou sem manutenção clara
-- **no-deprecated-apis** (must): Não introduzir APIs/libs depreciadas; preferir alternativas suportadas
-- **short-user-prompt** (must): Não pedir ao usuário para repetir best practices no chat — já estão nestas policies
-- **git-flow-sandbox** (must): Fluxo Git: Issue → feature/* from sandbox → PR → sandbox → PR → main
-- **conventional-commits** (must): Commits: type: <gitmoji> … · merges via gh: sempre --subject/scripts/merge-pr.sh → merge: 🔀 PR #<n> — <branch> (proibido 'Merge pull request…') · autoria Kleilson Santos · sem Co-authored-by de IDE
-- **agents-as-plugins** (must): Agentes são plugins — não expor chamada direta de agente no UX principal
-- **resource-first** (must): Resource First (macOS): minimizar CPU/RAM/disco/I/O/bateria/processos/containers; eficiência é requisito — ver docs/policies/resource-aware-macos.md
-- **inspect-before-install** (must): Antes de instalar/iniciar: verificar se já existe instalado, configurado, em execução, container/serviço equivalente ou reutilizável
-- **reuse-before-create** (must): Preferir reutilizar serviços/containers/DBs/redes/volumes/configs; evitar duplicidade (ex. Ollama local + Ollama Docker)
-- **ai-provider-reuse** (must): AI providers: reutilizar provider/Ollama/MCP/API já ativos; só criar serviço novo após inspeção; Ollama é auxiliar opcional (não instalar só para verde no console)
-- **docs-language-en** (must): Product docs (docs/**, ADRs, README, AGENTS, CHANGELOG prose) must be US English — ADR-0018 / docs/guides/documentation-language.md; chat with the owner may stay PT; migrate legacy PT when editing
+- **official-docs** (must): Always consult official documentation before inventing APIs or contracts
+- **trade-offs** (must): Always call out relevant trade-offs in technical decisions
+- **no-overengineering** (must): Always avoid overengineering — minimal solution that solves the request
+- **justify-decisions** (must): Always justify non-obvious decisions in one sentence
+- **no-abandoned-libs** (must): Never use an abandoned library or one without clear maintenance
+- **no-deprecated-apis** (must): Do not introduce deprecated APIs/libs; prefer supported alternatives
+- **short-user-prompt** (must): Do not ask the user to repeat best practices in chat — they are already in these policies
+- **git-flow-sandbox** (must): Git flow: Issue → feature/* from sandbox → PR → sandbox → PR → main
+- **conventional-commits** (must): Commits: type: <gitmoji> … · merges via gh: always --subject/scripts/merge-pr.sh → merge: 🔀 PR #<n> — <branch> (forbid 'Merge pull request…') · author Kleilson Santos · no IDE Co-authored-by
+- **agents-as-plugins** (must): Agents are plugins — do not expose direct agent calls in the primary UX
+- **resource-first** (must): Resource First (macOS): minimize CPU/RAM/disk/I/O/battery/processes/containers; efficiency is a requirement — see docs/policies/resource-aware-macos.md
+- **inspect-before-install** (must): Before installing/starting: check whether something is already installed, configured, running, or an equivalent reusable container/service
+- **reuse-before-create** (must): Prefer reusing services/containers/DBs/networks/volumes/configs; avoid duplication (e.g. local Ollama + Ollama Docker)
+- **ai-provider-reuse** (must): AI providers: reuse already active provider/Ollama/MCP/API; only create a new service after inspection; Ollama is an optional auxiliary (do not install only for a green console)
+- **docs-language-en** (must): Product docs (docs/**, ADRs, README, AGENTS, CHANGELOG prose) must be US English — ADR-0018 / docs/guides/documentation-language.md; chat with the owner may stay PT; AIOS product-doc migration completed (#142)
 
 ## SHOULD
 
-- **justify-resource-impact** (should): Sugestões de infra devem declarar porquê, alternativas e impacto em hardware/manutenção/consumo
+- **justify-resource-impact** (should): Infra suggestions must state why, alternatives, and impact on hardware/maintenance/consumption
 
 ## Comportamento no chat
 

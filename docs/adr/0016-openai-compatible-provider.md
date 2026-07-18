@@ -1,45 +1,45 @@
 # ADR-0016: OpenAI-compatible cloud provider
 
-- **Status:** Aceito
-- **Data:** 2026-07-17
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-17
+- **Deciders:** Kleilson dos Santos
 - **Issue:** #105
 
-## Contexto
+## Context
 
-ADR-0009 deixou cloud providers como stub futuro. O Companion já expõe `aios_provider_*`; falta um backend remoto atrás do mesmo contrato, sem instalar Ollama só para “ficar vivo” (Resource-Aware).
+ADR-0009 left cloud providers as a future stub. The Companion already exposes `aios_provider_*`; a remote backend behind the same contract is still missing, without installing Ollama just to “stay alive” (Resource-Aware).
 
-## Decisão
+## Decision
 
-1. **`OpenAICompatibleProvider`** (`id: openai`) via `fetch` — Chat Completions + Models ([API oficial](https://developers.openai.com/api/docs/api-reference/chat)).
-2. Env: `AIOS_OPENAI_API_KEY` (ou `OPENAI_API_KEY`) · `AIOS_OPENAI_BASE_URL` (default `https://api.openai.com/v1`) · `AIOS_OPENAI_MODEL` (default `gpt-4o-mini`).
-3. Sem API key → `health.ok=false` (não throw na health; chat falha explícito).
-4. `baseUrl` custom cobre gateways OpenAI-compatible (Groq, proxies, etc.) — **não** Anthropic nativo neste vertical.
-5. Sem SDK OpenAI no monorepo (mínimo; trade-off: sem streaming/tool-calling ainda).
+1. **`OpenAICompatibleProvider`** (`id: openai`) via `fetch` — Chat Completions + Models ([official API](https://developers.openai.com/api/docs/api-reference/chat)).
+2. Env: `AIOS_OPENAI_API_KEY` (or `OPENAI_API_KEY`) · `AIOS_OPENAI_BASE_URL` (default `https://api.openai.com/v1`) · `AIOS_OPENAI_MODEL` (default `gpt-4o-mini`).
+3. Without an API key → `health.ok=false` (no throw on health; chat fails explicitly).
+4. Custom `baseUrl` covers OpenAI-compatible gateways (Groq, proxies, etc.) — **not** native Anthropic in this vertical.
+5. No OpenAI SDK in the monorepo (minimal; trade-off: still no streaming/tool-calling).
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Mesmo MCP/CLI/Companion (`--provider openai`)
-- Zero instalação local obrigatória
-- Gateways compatíveis reutilizam o mesmo código
+- Same MCP/CLI/Companion (`--provider openai`)
+- Zero mandatory local install
+- Compatible gateways reuse the same code
 
-### Negativas / trade-offs
+### Trade-offs
 
-- Anthropic Messages API fica para outro vertical (ou gateway compat)
-- Custo/rede sob demanda — operador gere a key
+- Anthropic Messages API stays in another vertical (or a compatible gateway)
+- On-demand cost/network — operator manages the key
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| SDK `openai` npm | Overkill para health/models/chat mínimo; mais superfície |
-| Anthropic nativo já | Segundo protocolo; adiar |
-| Tornar openai default | Ollama continua default local; cloud opt-in |
+| `openai` npm SDK | Overkill for minimal health/models/chat; larger surface |
+| Native Anthropic already | Second protocol; defer |
+| Make openai the default | Ollama remains the local default; cloud is opt-in |
 
-## Referências
+## References
 
 - [ADR-0009](./0009-multi-provider-ollama.md)
 - [OpenAI Chat Completions](https://developers.openai.com/api/docs/api-reference/chat)
-- [ROADMAP Fase 3](../ROADMAP.md)
+- [ROADMAP Phase 3](../ROADMAP.md)

@@ -1,45 +1,45 @@
-# ADR-0005: Knowledge Graph heurístico (`@aios/knowledge`)
+# ADR-0005: Heuristic Knowledge Graph (`@aios/knowledge`)
 
-- **Status:** Aceito
-- **Data:** 2026-07-14
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-14
+- **Deciders:** Kleilson dos Santos
 - **Issue:** #47
 
-## Contexto
+## Context
 
-A Fase 2 pede Knowledge Graph básico (relações Projeto → …). Embeddings / LLM deixariam o núcleo lento, opaco e dependente de provider — incompatível com a política “engines primeiro, prompts curtos”.
+Phase 2 calls for a basic Knowledge Graph (Project → … relationships). Embeddings / LLM would make the core slow, opaque, and provider-dependent — incompatible with the “engines first, short prompts” policy.
 
-## Decisão
+## Decision
 
-1. Engine **`@aios/knowledge`** com `buildKnowledgeGraph({ repoPath })` determinístico.
-2. Nós: `project` · `module` · `package` · `engine` · `doc` · `policy` · `workspace` · `infra` · `api` · `database`.
-3. Arestas: `contains` · `depends_on` (workspace:*) · `documents`.
-4. Fontes: layout monorepo (`packages`/`engines`/`apps`), docs canônicos, policies, docker/Compose, deps de API/DB no `package.json`.
-5. `PipelineResponse.knowledge` = **resumo** (`nodeCount` / `edgeCount` / `kinds` / `signals`). Grafo completo via MCP `aios_build_knowledge` (`full: true`).
-6. `contractVersion` permanece `"1"` (campo aditivo).
+1. Engine **`@aios/knowledge`** with deterministic `buildKnowledgeGraph({ repoPath })`.
+2. Nodes: `project` · `module` · `package` · `engine` · `doc` · `policy` · `workspace` · `infra` · `api` · `database`.
+3. Edges: `contains` · `depends_on` (workspace:*) · `documents`.
+4. Sources: monorepo layout (`packages`/`engines`/`apps`), canonical docs, policies, docker/Compose, API/DB deps in `package.json`.
+5. `PipelineResponse.knowledge` = **summary** (`nodeCount` / `edgeCount` / `kinds` / `signals`). Full graph via MCP `aios_build_knowledge` (`full: true`).
+6. `contractVersion` stays `"1"` (additive field).
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Auditável, offline, barato
-- Alimenta Context/Memory futuros por `workspaceId` + nós
+- Auditable, offline, cheap
+- Feeds future Context/Memory by `workspaceId` + nodes
 
-### Negativas / trade-offs
+### Trade-offs
 
-- Heurística superficial (sem tipos profundos de código)
-- `depends_on` só via `workspace:*` + hints de deps
+- Shallow heuristic (no deep code typing)
+- `depends_on` only via `workspace:*` + dep hints
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| Embeddings já na MVP | Escopo Fase 3 / custo |
-| Neo4j / store externo | Infra precoce |
-| Só docs markdown sem graph | Pouca utilidade para orquestração |
+| Embeddings already in MVP | Phase 3 scope / cost |
+| Neo4j / external store | Premature infra |
+| Markdown docs only, no graph | Little value for orchestration |
 
-## Referências
+## References
 
-- [ROADMAP Fase 2](../ROADMAP.md)
+- [ROADMAP Phase 2](../ROADMAP.md)
 - [`engines/knowledge`](../../engines/knowledge/)
 - [ADR-0004](./0004-multi-repo-workspace-registry.md)

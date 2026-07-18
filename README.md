@@ -6,41 +6,41 @@
 
 [Repo](https://github.com/KleilsonSantos/ai-operating-system) · [Issues](https://github.com/KleilsonSantos/ai-operating-system/issues) · [Project board](https://github.com/users/KleilsonSantos/projects/7) · [Wiki](https://github.com/KleilsonSantos/ai-operating-system/wiki)
 
-**Docs language:** US English ([ADR-0018](./docs/adr/0018-documentation-language.md) · [guide](./docs/guides/documentation-language.md)). Legacy Portuguese pages migrate when edited.
+**Docs language:** US English ([ADR-0018](./docs/adr/0018-documentation-language.md) · [guide](./docs/guides/documentation-language.md)).
 
 ---
 
-## Em uma frase
+## In one sentence
 
-Você escreve *"Analise meu projeto."* — policies, contexto, agentes e quality gates rodam por baixo. Agentes são **plugins**; você não os chama diretamente.
+You write *"Analyze my project."* — policies, context, agents, and quality gates run underneath. Agents are **plugins**; you do not call them directly.
 
 ## Status
 
-| Item | Valor |
+| Item | Value |
 | --- | --- |
-| Fase | Fase 4 em curso · `v0.18.0` |
-| Produção | `main` + tag SemVer |
-| Última release | [`v0.18.0`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.18.0) |
-| Monorepo | pnpm workspaces + Turborepo (stubs) |
-| Integração | `sandbox` → `main` · [`@aios/pipeline`](./packages/pipeline/README.md) · [Cursor chat](./docs/guides/cursor-chat-bridge.md) |
-| Pedra base | [`docs/FOUNDATION.md`](./docs/FOUNDATION.md) |
+| Phase | Phase 4 mature · Companion + control plane |
+| Production | `main` + SemVer tags |
+| Latest release | [`v0.25.0`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.25.0) |
+| Monorepo | pnpm workspaces + Turborepo |
+| Integration | `sandbox` → `main` · [`@aios/pipeline`](./packages/pipeline/README.md) · [Cursor chat](./docs/guides/cursor-chat-bridge.md) |
+| Foundation | [`docs/FOUNDATION.md`](./docs/FOUNDATION.md) |
 | Prompt Knowledge Base | [`docs/prompts/`](./docs/prompts/) |
 | External references | [`docs/references/`](./docs/references/) |
-| Visão (resumo) | [`docs/VISION.md`](./docs/VISION.md) |
+| Vision (summary) | [`docs/VISION.md`](./docs/VISION.md) |
 | Roadmap | [`docs/ROADMAP.md`](./docs/ROADMAP.md) |
 | ADR | [ADR-0001](./docs/adr/0001-standalone-platform.md) · [ADR-0003 pipeline](./docs/adr/0003-pipeline-integration-contract.md) · [ADR-0014 companion](./docs/adr/0014-control-plane-companion.md) · repo [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) |
-| Arquitetura | [`docs/architecture/overview.md`](./docs/architecture/overview.md) |
+| Architecture | [`docs/architecture/overview.md`](./docs/architecture/overview.md) |
 
-## Estrutura (Fase 1)
+## Layout
 
 ```text
-apps/cli/                 # Cliente fino → @aios/pipeline
-apps/mcp/                 # MCP stdio → Cursor Agent (#38)
-apps/console/             # UI governança Health+Attention (#71)
+apps/cli/                 # Thin client → @aios/pipeline
+apps/mcp/                 # MCP stdio (+ opt-in HTTP) → Cursor / Companion
+apps/console/             # Governance UI Health + Attention (#71)
 packages/
-  shared/                 # Tipos + PipelineRequest/Response
-  core/                   # ai-core (eventos)
-  pipeline/               # runPipeline — contrato estável (#9)
+  shared/                 # Types + PipelineRequest/Response
+  core/                   # ai-core (events)
+  pipeline/               # runPipeline — stable contract (#9)
 engines/
   intent/ policy/ context/ decision/
   orchestration/ quality-gate/
@@ -49,32 +49,33 @@ engines/
   agent-architecture/ agent-appsec/ agent-docs/ agent-qa/   # plugins
 docs/
   FOUNDATION.md VISION.md ROADMAP.md adr/ architecture/
+  prompts/ references/
 ```
 
 ## Quick start
 
 ```bash
 pnpm install
-pnpm sync:cursor-rules   # policies → .cursor/rules (chat do Cursor)
-pnpm --filter @aios/cli dev -- "Analise meu projeto."
+pnpm sync:cursor-rules   # policies → .cursor/rules (Cursor chat)
+pnpm --filter @aios/cli dev -- "Analyze my project."
 # console: AIOS_HOME=$PWD pnpm --filter @aios/console dev
 ```
 
-No Cursor Agent deste workspace, as policies já entram sozinhas (Project Rules). Guia: [cursor-chat-bridge](./docs/guides/cursor-chat-bridge.md).
+In this workspace’s Cursor Agent, policies load automatically (Project Rules). Guide: [cursor-chat-bridge](./docs/guides/cursor-chat-bridge.md).
 
-## Documentação
+## Documentation
 
-| Doc | Para quê |
+| Doc | Purpose |
 | --- | --- |
-| [FOUNDATION](./docs/FOUNDATION.md) | Pedra base — tese integral de origem |
-| [VISION](./docs/VISION.md) | Resumo operacional |
-| [ROADMAP](./docs/ROADMAP.md) | O que entra em cada fase |
-| [ADR-0001](./docs/adr/0001-standalone-platform.md) | Plataforma standalone |
-| [ADR-0003](./docs/adr/0003-pipeline-integration-contract.md) | Contrato `@aios/pipeline` |
-| [Arquitetura](./docs/architecture/overview.md) | Engines, plugins, policies, quality gate |
-| [System guide](./docs/architecture/system-guide.md) | Fluxo Fase 1 |
-| [Cursor chat bridge](./docs/guides/cursor-chat-bridge.md) | Policies no chat sem CLI |
+| [FOUNDATION](./docs/FOUNDATION.md) | Product foundation — origin thesis |
+| [VISION](./docs/VISION.md) | Operational summary |
+| [ROADMAP](./docs/ROADMAP.md) | What lands in each phase |
+| [ADR-0001](./docs/adr/0001-standalone-platform.md) | Standalone platform |
+| [ADR-0003](./docs/adr/0003-pipeline-integration-contract.md) | `@aios/pipeline` contract |
+| [Architecture](./docs/architecture/overview.md) | Engines, plugins, policies, quality gate |
+| [System guide](./docs/architecture/system-guide.md) | Phase 1 flow |
+| [Cursor chat bridge](./docs/guides/cursor-chat-bridge.md) | Policies in chat without CLI |
 
-## Licença
+## License
 
-MIT — veja [LICENSE](./LICENSE).
+MIT — see [LICENSE](./LICENSE).

@@ -1,5 +1,5 @@
 # @aios/agent-architecture — Architecture Agent
 
-Plugin do AIOS. Não é chamado diretamente pelo usuário — a orchestration decide.
+AIOS plugin. Not called directly by the user — orchestration decides.
 
-Ver `docs/architecture/overview.md`.
+See `docs/architecture/overview.md`.

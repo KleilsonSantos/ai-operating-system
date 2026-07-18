@@ -1,44 +1,44 @@
-# ADR-0001: AIOS como plataforma standalone de governança
+# ADR-0001: AIOS as a standalone governance platform
 
-- **Status:** Aceito
-- **Data:** 2026-07-13
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-13
+- **Deciders:** Kleilson dos Santos
 
-## Contexto
+## Context
 
-Há demanda por governança de IA no SDLC (agentes, policies, contexto, quality gates). Empacotar isso apenas como prompts soltos ou como anexo de outro repositório não escala: falta orquestração, decision, quality gate e contratos estáveis.
+There is demand for AI governance in the SDLC (agents, policies, context, quality gates). Packaging that only as loose prompts or as an annex to another repository does not scale: orchestration, decision, quality gate, and stable contracts are missing.
 
-## Decisão
+## Decision
 
-Tratar o **`ai-operating-system` (AIOS)** como produto **único e independente**: plataforma de governança para IA aplicada ao desenvolvimento de software.
+Treat **`ai-operating-system` (AIOS)** as a **single, independent** product: a governance platform for AI applied to software development.
 
 ```text
-Usuário / integradores  →  AIOS (plataforma)  →  engines + plugins
+User / integrators  →  AIOS (platform)  →  engines + plugins
 ```
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Missão clara: governança de IA no SDLC
-- Evolução e releases próprias
-- Agentes como plugins; policies como fonte de verdade
-- Demonstra arquitetura de plataforma, não só prompts
+- Clear mission: AI governance in the SDLC
+- Own evolution and releases
+- Agents as plugins; policies as the source of truth
+- Demonstrates platform architecture, not only prompts
 
-### Negativas / trade-offs
+### Trade-offs
 
-- Escopo maior que um kit de prompts
-- Exige disciplina de ROADMAP por fases (evitar construir todos os engines de uma vez)
+- Larger scope than a prompt kit
+- Requires ROADMAP discipline by phase (avoid building every engine at once)
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| Só prompts / `AGENTS.md` sem runtime | Não cobre orchestration, decision nem quality gate |
-| Embutir o AIOS como pasta de outro monorepo | Acopla ciclos de release e confunde a missão do produto |
+| Prompts / `AGENTS.md` only, no runtime | Does not cover orchestration, decision, or quality gate |
+| Embed AIOS as a folder in another monorepo | Couples release cycles and confuses the product mission |
 
-## Referências
+## References
 
-- [`docs/FOUNDATION.md`](../FOUNDATION.md) — pedra base
+- [`docs/FOUNDATION.md`](../FOUNDATION.md) — foundation
 - [`docs/VISION.md`](../VISION.md)
 - [`docs/ROADMAP.md`](../ROADMAP.md)

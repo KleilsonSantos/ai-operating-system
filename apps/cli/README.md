@@ -1,6 +1,6 @@
 # @aios/cli
 
-Cliente fino do núcleo AIOS. stdout = `PipelineResponse` (`contractVersion: "1"`).
+Thin client for the AIOS core. stdout = `PipelineResponse` (`contractVersion: "1"`).
 
 ```bash
 pnpm --filter @aios/cli dev -- "Analise meu projeto."
@@ -9,13 +9,13 @@ pnpm --filter @aios/cli dev -- --repo=/path/to/project "Review this PR"
 pnpm --filter @aios/cli dev -- --contract-version
 ```
 
-| Flag / env | Papel |
+| Flag / env | Role |
 | --- | --- |
-| `--scope` / `AIOS_SCOPE` | Escopo Context |
-| `--repo` / `AIOS_REPO` | Raiz do repositório alvo |
-| `--policies` / `AIOS_POLICIES_PATH` | JSON de policies |
-| `--contract-version` | Imprime `1` e sai |
+| `--scope` / `AIOS_SCOPE` | Context scope |
+| `--repo` / `AIOS_REPO` | Target repository root |
+| `--policies` / `AIOS_POLICIES_PATH` | Policies JSON |
+| `--contract-version` | Prints `1` and exits |
 
-Exit `1` se `verdict.passed === false`.
+Exit `1` if `verdict.passed === false`.
 
-API programática: `import { runPipeline } from '@aios/pipeline'` — [ADR-0003](../../docs/adr/0003-pipeline-integration-contract.md).
+Programmatic API: `import { runPipeline } from '@aios/pipeline'` — [ADR-0003](../../docs/adr/0003-pipeline-integration-contract.md).

@@ -1,15 +1,15 @@
 # @aios/context — Context Engine
 
-Recupera docs e código relevantes do repositório (heurística por path — Fase 1).
+Retrieves relevant docs and code from the repository (path heuristic — Phase 1).
 
-## Uso
+## Usage
 
 ```ts
 import { gatherContext } from '@aios/context'
 
 const bundle = gatherContext({
   repoPath: process.cwd(),
-  scope: 'engines/policy', // opcional
+  scope: 'engines/policy', // optional
 })
 // { repoPath, scope, snippets: [{ path, kind, content, bytes }], signals }
 ```
@@ -18,20 +18,20 @@ CLI:
 
 ```bash
 pnpm --filter @aios/cli dev -- --scope=engines/policy "Analise meu projeto."
-# ou: AIOS_SCOPE=apps/cli pnpm --filter @aios/cli dev -- "…"
+# or: AIOS_SCOPE=apps/cli pnpm --filter @aios/cli dev -- "…"
 ```
 
-## Contrato
+## Contract
 
-| Campo | Papel |
+| Field | Role |
 | --- | --- |
-| `scope` | Escopo relativo à raiz (aceite #7) |
-| `snippets` | Bundle tipado (`doc` / `code` / `manifest`) |
-| orchestration | `runWorkflow(intent, { context })` injeta `context:<path>` |
+| `scope` | Scope relative to the root (acceptance #7) |
+| `snippets` | Typed bundle (`doc` / `code` / `manifest`) |
+| orchestration | `runWorkflow(intent, { context })` injects `context:<path>` |
 
-Ignora `node_modules`, `dist`, `.git`, etc. Caps: snippets / bytes por arquivo / total.
+Ignores `node_modules`, `dist`, `.git`, etc. Caps: snippets / bytes per file / total.
 
-## Testes
+## Tests
 
 ```bash
 pnpm --filter @aios/context test

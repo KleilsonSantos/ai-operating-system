@@ -1,50 +1,50 @@
-# Control plane (AIOS) · Companion (experiência)
+# Control plane (AIOS) · Companion (experience)
 
-> Canónico: [ADR-0014](../adr/0014-control-plane-companion.md).
+> Canonical: [ADR-0014](../adr/0014-control-plane-companion.md).
 
-## Em uma frase
+## In one sentence
 
-O **AIOS governa**; o **Companion conversa e opera a experiência** — sem copiar engines.
+**AIOS governs**; the **Companion converses and operates the experience** — without copying engines.
 
-## Quem faz o quê
+## Who does what
 
-| Capacidade | AIOS | Companion |
+| Capability | AIOS | Companion |
 | --- | --- | --- |
-| Policies / quality / brief | ✅ | consome |
-| Memory / KG / docs audit | ✅ | consome |
-| Console de governança | ✅ | opcional deep-link |
-| Voz / diálogo contínuo | ❌ | ✅ |
-| Watchers IDE/Docker/Git | ❌ (MVP) | ✅ (quando existir) |
-| Abrir IDE / subir containers | ❌ (fora de escopo) | ✅ com Resource-Aware |
+| Policies / quality / brief | ✅ | consumes |
+| Memory / KG / docs audit | ✅ | consumes |
+| Governance console | ✅ | optional deep-link |
+| Voice / continuous dialogue | ❌ | ✅ |
+| IDE/Docker/Git watchers | ❌ (MVP) | ✅ (when it exists) |
+| Open IDE / start containers | ❌ (out of scope) | ✅ with Resource-Aware |
 
-## Contratos
+## Contracts
 
-1. MCP `@aios/mcp` — tools `aios_*`
+1. MCP `@aios/mcp` — `aios_*` tools
 2. `@aios/pipeline` — `runPipeline` / `contractVersion`
-3. CLI `aios` — smoke e automação
+3. CLI `aios` — smoke and automation
 
-Companion **não** importa internals de `engines/*` como API pública estável; usa os contratos acima.
+The Companion does **not** import `engines/*` internals as a stable public API; it uses the contracts above.
 
-## Ordem de entrega sugerida
+## Suggested delivery order
 
-1. **No AIOS:** Operational State / eventos leves — `@aios/operational-state` (`getOperationalState`, `aios_operational_state`) — [ADR-0015](../adr/0015-operational-state.md).
-2. **Repo companion:** [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) — Conversation Manager + consumo CLI/MCP (chat + provider) · tracking [#90](https://github.com/KleilsonSantos/ai-operating-system/issues/90).
-3. **Capabilities** no Companion — `companion caps` (git / github via CLI on-demand; sem watchers; sem duplicar engines) ✅
-4. Watchers IDE/Docker / voz — só com Resource-Aware e inspect-before-install.
+1. **In AIOS:** Operational State / light events — `@aios/operational-state` (`getOperationalState`, `aios_operational_state`) — [ADR-0015](../adr/0015-operational-state.md).
+2. **Companion repo:** [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) — Conversation Manager + CLI/MCP consumption (chat + provider) · tracking [#90](https://github.com/KleilsonSantos/ai-operating-system/issues/90).
+3. **Capabilities** in the Companion — `companion caps` (git / github via on-demand CLI; no watchers; no duplicated engines) ✅
+4. IDE/Docker watchers / voice — only with Resource-Aware and inspect-before-install.
 
-## Contrato Companion (mínimo)
+## Companion contract (minimum)
 
-| Tool / API | Uso |
+| Tool / API | Use |
 | --- | --- |
 | `aios_operational_state` | Snapshot: focus, git, health, memory/governance |
-| `aios_governance_status` | Health + attention detalhado |
-| `aios_memory_*` / `aios_governance_*` | Memória e decisões |
-| `runPipeline` / `contractVersion` | Workflow governado |
+| `aios_governance_status` | Detailed health + attention |
+| `aios_memory_*` / `aios_governance_*` | Memory and decisions |
+| `runPipeline` / `contractVersion` | Governed workflow |
 
-Não importar `engines/*` como API pública.
+Do not import `engines/*` as a public API.
 
-## Anti-padrões
+## Anti-patterns
 
-- Segundo Policy Engine no companion
-- Polling agressivo de CPU/RAM “para parecer vivo”
-- Gateway MCP que funde centenas de tools sem scoping
+- A second Policy Engine in the companion
+- Aggressive CPU/RAM polling “to look alive”
+- An MCP gateway that merges hundreds of tools without scoping

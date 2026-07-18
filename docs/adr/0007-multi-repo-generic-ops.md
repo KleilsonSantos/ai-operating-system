@@ -1,43 +1,43 @@
-# ADR-0007: Multi-repo genérico (ops sobre o registry)
+# ADR-0007: Generic multi-repo (ops over the registry)
 
-- **Status:** Aceito
-- **Data:** 2026-07-14
-- **Decisores:** Kleilson dos Santos
+- **Status:** Accepted
+- **Date:** 2026-07-14
+- **Deciders:** Kleilson dos Santos
 - **Issue:** #55
 
-## Contexto
+## Context
 
-Fase 2 entregou registry + resolve (ADR-0004). Fase 3 pede **multi-repo genérico**: qualquer workspace registrado deve ser operável pelo mesmo núcleo (CRUD no registry, health-check, pipeline em lote) — sem assumir o monorepo AIOS.
+Phase 2 delivered registry + resolve (ADR-0004). Phase 3 calls for **generic multi-repo**: any registered workspace must be operable by the same core (registry CRUD, health-check, batch pipeline) — without assuming the AIOS monorepo.
 
-## Decisão
+## Decision
 
-1. Estender `@aios/workspace`: `upsertWorkspace` · `removeWorkspace` · `validateWorkspace` · `listValidatedWorkspaces`.
-2. `WorkspaceEntry.tags?` para classificação leve.
-3. `@aios/pipeline.runAcrossWorkspaces({ input, workspaceIds? })` → resumos por workspace.
+1. Extend `@aios/workspace`: `upsertWorkspace` · `removeWorkspace` · `validateWorkspace` · `listValidatedWorkspaces`.
+2. `WorkspaceEntry.tags?` for light classification.
+3. `@aios/pipeline.runAcrossWorkspaces({ input, workspaceIds? })` → per-workspace summaries.
 4. MCP: `aios_workspace_upsert` · `aios_workspace_remove` · `aios_workspace_validate` · `aios_run_across_workspaces`.
-5. Validação “ok” = path existe + diretório + (`.git` **ou** `package.json` **ou** marker de monorepo/docs).
-6. `contractVersion` permanece `"1"`.
+5. Validation “ok” = path exists + is a directory + (`.git` **or** `package.json` **or** monorepo/docs marker).
+6. `contractVersion` stays `"1"`.
 
-## Consequências
+## Consequences
 
-### Positivas
+### Positive
 
-- Onboarding de um segundo repo = upsert + validate
-- Mesma Governança / KG / Memory por `workspaceId`
+- Onboarding a second repo = upsert + validate
+- Same Governance / KG / Memory per `workspaceId`
 
-### Negativas / trade-offs
+### Trade-offs
 
-- Sem clone remoto / auth nesta fatia
-- Batch é sequencial (simplicidade)
+- No remote clone / auth in this slice
+- Batch is sequential (simplicity)
 
-## Alternativas rejeitadas
+## Rejected alternatives
 
-| Opção | Motivo |
+| Option | Reason |
 | --- | --- |
-| Discovery automático `~/Projects/*` | Ruído (já rejeitado na ADR-0004) |
-| Orquestração paralela obrigatória | Complexidade prematura |
+| Automatic discovery `~/Projects/*` | Noise (already rejected in ADR-0004) |
+| Mandatory parallel orchestration | Premature complexity |
 
-## Referências
+## References
 
 - [ADR-0004](./0004-multi-repo-workspace-registry.md)
-- [ROADMAP Fase 3](../ROADMAP.md)
+- [ROADMAP Phase 3](../ROADMAP.md)
