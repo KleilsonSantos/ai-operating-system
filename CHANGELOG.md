@@ -7,6 +7,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 ### Changed
 
 - 📝 `FOUNDATION.md` + `VISION.md` migrated to US English (ADR-0018 / #124)
+- 📝 `ROADMAP.md` migrated to US English (#127)
 
 ## [0.23.0] - 2026-07-17
 

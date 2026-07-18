@@ -1,58 +1,58 @@
 # ROADMAP
 
-## Fase 0 — Bootstrap ✅ (`v0.1.0`)
+## Phase 0 — Bootstrap ✅ (`v0.1.0`)
 
-- [x] Repositório `ai-operating-system` (LICENSE, README, package)
-- [x] Pedra base (`docs/FOUNDATION.md`) + visão operacional
-- [x] ADR-0001 — plataforma standalone
-- [x] Arquitetura target documentada (engines + agents-as-plugins)
-- [x] Scaffold monorepo Fase 1 (engines + plugins + CLI)
-- [x] Fluxo Git enterprise (`sandbox` → `main`, SemVer)
-- [x] Community health (Issues, Project, Wiki mapa, CI/templates)
+- [x] Repository `ai-operating-system` (LICENSE, README, package)
+- [x] Foundation (`docs/FOUNDATION.md`) + operational vision
+- [x] ADR-0001 — standalone platform
+- [x] Target architecture documented (engines + agents-as-plugins)
+- [x] Phase 1 monorepo scaffold (engines + plugins + CLI)
+- [x] Enterprise Git flow (`sandbox` → `main`, SemVer)
+- [x] Community health (Issues, Project, Wiki map, CI/templates)
 
-## Fase 1 — Núcleo (`v0.1.0`+)
+## Phase 1 — Core (`v0.1.0`+)
 
-Validar arquitetura e fluxos do AIOS.
+Validate AIOS architecture and flows.
 
-- [x] Intent Engine (interpretar pedido) — #5
-- [x] Policy Engine (regras fixas da plataforma) — #6
+- [x] Intent Engine (interpret the request) — #5
+- [x] Policy Engine (fixed platform rules) — #6
 - [x] Context Engine (repo + docs) — #7
-- [x] Orchestration + Workflow (escolher agentes) — #8
-- [x] Agentes plugin: Architecture, AppSec, Docs, QA — #8
-- [x] Decision Engine (precisa este agente?) — #8
-- [x] Quality Gate (antes da resposta sair) — #8
-- [x] CLI / API mínima para consumir o núcleo — #9
+- [x] Orchestration + Workflow (choose agents) — #8
+- [x] Agent plugins: Architecture, AppSec, Docs, QA — #8
+- [x] Decision Engine (does this agent need to run?) — #8
+- [x] Quality Gate (before the response leaves) — #8
+- [x] Minimal CLI / API to consume the core — #9
 
-## Fase 2 — Multi-repositório (`v0.y.0`)
+## Phase 2 — Multi-repository (`v0.y.0`)
 
-- [x] Contratos de integração estáveis — ADR-0003 / `@aios/pipeline` (#9); MCP Nível 2 (#38)
-- [x] Onboarding de múltiplos repositórios — `@aios/workspace` + ADR-0004 (#43)
-- [x] Knowledge Graph básico (relações Projeto → packages/engines → docs…) — `#47` / ADR-0005
-- [x] Memory Engine (sessão / projeto) — `#51` / ADR-0006
+- [x] Stable integration contracts — ADR-0003 / `@aios/pipeline` (#9); MCP Level 2 (#38)
+- [x] Multi-repository onboarding — `@aios/workspace` + ADR-0004 (#43)
+- [x] Basic Knowledge Graph (Project → packages/engines → docs…) — `#47` / ADR-0005
+- [x] Memory Engine (session / project) — `#51` / ADR-0006
 
-## Fase 3 — Plataforma completa (`v1.0.0` aspiracional)
+## Phase 3 — Full platform (`v1.0.0` aspirational)
 
-- [x] Multi-repo genérico — ops registry + `runAcrossWorkspaces` (#55 / ADR-0007)
-- [x] Prompt Engine — brief governado / economia de tokens (#59 / ADR-0008)
+- [x] Generic multi-repo — ops registry + `runAcrossWorkspaces` (#55 / ADR-0007)
+- [x] Prompt Engine — governed brief / token economy (#59 / ADR-0008)
 - [x] Intent Engine v2 — `implement.feature` · `fix.bug` (#63)
 - [x] Multi-provider MVP — `@aios/provider` + Ollama (#67 / ADR-0009); OpenAI-compatible (#105 / ADR-0016); Anthropic Messages (#109 / ADR-0017)
-- [x] Integrations / MCP orchestration — MVP stdio `@aios/mcp` (#38; expansão futura)
-- [x] UI de governança — console Health + Attention + Try it + Consumption (`providerChat`, #118) (`@aios/console` / `@aios/status`, #71 / #76 / ADR-0010 / ADR-0012); provider.chat JSONL metrics (#115 / ADR-0019); Grafana/Prometheus export later
-- [x] Documentation / Governance engines — MVP heurístico (#80 / ADR-0013); audit v2 signals (#121 / ADR-0020)
+- [x] Integrations / MCP orchestration — stdio MVP `@aios/mcp` (#38; future expansion)
+- [x] Governance UI — console Health + Attention + Try it + Consumption (`providerChat`, #118) (`@aios/console` / `@aios/status`, #71 / #76 / ADR-0010 / ADR-0012); provider.chat JSONL metrics (#115 / ADR-0019); Grafana/Prometheus export later
+- [x] Documentation / Governance engines — heuristic MVP (#80 / ADR-0013); audit v2 signals (#121 / ADR-0020)
 
-## Fase 4 — Control plane maduro · Companion (experiência)
+## Phase 4 — Mature control plane · Companion (experience)
 
-Fronteira: [ADR-0014](./adr/0014-control-plane-companion.md) · [guia](./guides/control-plane-companion.md).
+Boundary: [ADR-0014](./adr/0014-control-plane-companion.md) · [guide](./guides/control-plane-companion.md).
 
-- [x] Operational State MVP no AIOS (estado unificado leve; sem voz / sem controlar IDE)
-- [x] Repo Companion (cliente MCP/pipeline) — Conversation Manager; voz depois → [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) (kickoff #90)
-- [x] Event hooks Resource-Aware (sem polling agressivo) — `recordOperationalEvent` on-demand (#84 / ADR-0015)
-- [x] Capability adapters (Git/GitHub/…) atrás de contratos — sem duplicar engines AIOS → [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) `companion caps`
-- [x] Canonical product docs language: **US English** — ADR-0018 / [#112](https://github.com/KleilsonSantos/ai-operating-system/issues/112); FOUNDATION + VISION migrated (#124)
+- [x] Operational State MVP in AIOS (light unified state; no voice / no IDE control)
+- [x] Companion repo (MCP/pipeline client) — Conversation Manager; voice later → [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) (kickoff #90)
+- [x] Resource-Aware event hooks (no aggressive polling) — `recordOperationalEvent` on-demand (#84 / ADR-0015)
+- [x] Capability adapters (Git/GitHub/…) behind contracts — without duplicating AIOS engines → [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) `companion caps`
+- [x] Canonical product docs language: **US English** — ADR-0018 / [#112](https://github.com/KleilsonSantos/ai-operating-system/issues/112); FOUNDATION + VISION migrated (#124); ROADMAP migrated (#127)
 
-## Fora de escopo (de propósito)
+## Out of scope (on purpose)
 
-- Substituir IDEs ou Copilot como editor — o AIOS governa e orquestra, não compete como autocomplete
-- Fundir experiência “Jarvis” e control plane num único monólito de release
-- Construir todos os engines target na Fase 1
-- Embutir AIOS como pasta de outro monorepo (ADR-0001)
+- Replacing IDEs or Copilot as an editor — AIOS governs and orchestrates; it does not compete as autocomplete
+- Merging “Jarvis” experience and the control plane into one release monolith
+- Building every target engine in Phase 1
+- Embedding AIOS as a folder inside another monorepo (ADR-0001)
