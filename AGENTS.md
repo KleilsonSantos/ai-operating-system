@@ -6,11 +6,16 @@ Contract for any AI agent working in this repository.
 
 Build **AIOS**: a governance platform for AI in the SDLC — one product, not a dump of prompts.
 
-## Sources of truth
+## Sources of truth (authority order)
 
-1. Code under `engines/` · `packages/` · `apps/`
-2. `docs/FOUNDATION.md` (foundation) · `docs/VISION.md` · `docs/architecture/` · ADRs
-3. `docs/ROADMAP.md` · `CHANGELOG.md`
+Use this order when searching for context. **Do not** stuff the whole product into this file — it is a **pointer**.
+
+1. **Code** under `engines/` · `packages/` · `apps/`
+2. **Foundation & architecture** — `docs/FOUNDATION.md` (wins on conflict) · `docs/VISION.md` · `docs/architecture/` · ADRs under `docs/adr/`
+3. **Policies** — `policies/aios.policies.json` (and synced Cursor rules) — **policies over long prompts**
+4. **Delivery truth** — `docs/ROADMAP.md` · `CHANGELOG.md`
+5. **Prompt Knowledge Base (PKB)** — `docs/prompts/` (`index.yaml` + assets) — reusable prompt patterns; **not** a second product SSOT ([PKB README](./docs/prompts/README.md))
+6. **Optional external agent wikis** (e.g. generated `openwiki/`) — useful for narrative codebase context **only if present**; they **never** override items 1–3. See spike: [`docs/spikes/openwiki-comparison.md`](./docs/spikes/openwiki-comparison.md)
 
 If a summary conflicts with `FOUNDATION.md`, the foundation wins until an ADR explicitly changes it.
 
@@ -30,6 +35,7 @@ Product docs (`docs/**`, ADRs, README, this file, CHANGELOG prose) are **US Engl
 5. Policies over long prompts.
 6. Do not implement every engine at once — follow the ROADMAP (Phase 1 = core).
 7. Commit only when the human asks (except authorized bootstrap).
+8. Do not treat generated agent wikis as canonical product truth (ADR-0001 / spike #148).
 
 ## Checklist
 
