@@ -43,6 +43,24 @@ AIOS_MCP_HTTP=1 node --experimental-strip-types apps/mcp/src/index.ts --http --p
 
 - Endpoint: `POST http://127.0.0.1:8791/mcp` (stateless)
 - Health: `GET http://127.0.0.1:8791/health`
-- Port: `AIOS_MCP_PORT` / `--port` (default **8791**)
+- Port: `AIOS_MCP_PORT` / `--port` (default **8791**) — distinct from console `8787` and Companion surface `8790`
+
+### Health smoke
+
+```bash
+curl -sS http://127.0.0.1:8791/health
+# → {"ok":true,"service":"aios-mcp","transport":"streamable-http"}
+```
+
+### Companion client
+
+Companion stays on **stdio** unless you set (on the Companion side):
+
+```bash
+export AIOS_MCP_URL=http://127.0.0.1:8791/mcp
+companion doctor   # expect: http OK · <url>
+```
+
+Companion does **not** auto-start this server. Live bridge smoke (Companion repo): `pnpm smoke:mcp-http` with `AIOS_HOME` set. Guide: [control-plane-companion](../../docs/guides/control-plane-companion.md).
 
 Issue #38 · #43 · #137 · [cursor-chat-bridge](../../docs/guides/cursor-chat-bridge.md) · ADR-0003 · ADR-0004 · ADR-0022.
