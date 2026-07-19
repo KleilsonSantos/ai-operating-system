@@ -19,11 +19,34 @@
 
 ## Contracts
 
-1. MCP `@aios/mcp` — `aios_*` tools
+1. MCP `@aios/mcp` — `aios_*` tools (stdio **default**; Streamable HTTP **opt-in** — [ADR-0022](../adr/0022-mcp-streamable-http.md))
 2. `@aios/pipeline` — `runPipeline` / `contractVersion`
 3. CLI `aios` — smoke and automation
 
 The Companion does **not** import `engines/*` internals as a stable public API; it uses the contracts above.
+
+## MCP transports (Companion)
+
+| Transport | How | Notes |
+| --- | --- | --- |
+| **stdio** (default) | Companion spawns `$AIOS_HOME/apps/mcp` | Cursor unchanged; Resource-Aware |
+| **Streamable HTTP** (opt-in) | Run AIOS `pnpm --filter @aios/mcp dev:http`, then set Companion `AIOS_MCP_URL=http://127.0.0.1:8791/mcp` | Companion does **not** auto-start HTTP or fall back silently |
+
+**Ports (do not collide):**
+
+| Port | Service |
+| --- | --- |
+| `8787` | AIOS console |
+| `8790` | Companion surface API |
+| `8791` | AIOS MCP HTTP (default) |
+
+**Operator smoke:**
+
+1. AIOS: `pnpm --filter @aios/mcp dev:http` → `curl -sS http://127.0.0.1:8791/health`
+2. Companion: `export AIOS_HOME=…` · `export AIOS_MCP_URL=http://127.0.0.1:8791/mcp` · `companion doctor` (expect `http OK · …`)
+3. Optional live bridge: Companion `pnpm smoke:mcp-http` (spawns ephemeral MCP; requires `AIOS_HOME` ≥ v0.25.0)
+
+Details: [`apps/mcp/README.md`](../../apps/mcp/README.md) · Companion release notes for `AIOS_MCP_URL` / `smoke:mcp-http`.
 
 ## Suggested delivery order
 
