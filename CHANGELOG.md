@@ -7,6 +7,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 ### Changed
 
 - 📝 Finish US English migration for AIOS product docs (ADRs, guides, READMEs, policies prose) — ADR-0018 / #142
+- 📝 Companion MCP HTTP consumption path — ports, `AIOS_MCP_URL`, health/smoke in control-plane guide + `@aios/mcp` README (#145)
 
 ### Added
 
