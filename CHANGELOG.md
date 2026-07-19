@@ -12,6 +12,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 ### Added
 
 - 📚 External references catalog — `docs/references/` (legal/official URLs only) · DESIGN + `catalog.yaml` (#133)
+- 🧪 Spike note: OpenWiki vs AIOS knowledge/docs — enrich as external wiki, reject as second SSOT (`docs/spikes/openwiki-comparison.md`) (#148)
 
 ## [0.25.0] - 2026-07-18
 
