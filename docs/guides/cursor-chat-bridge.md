@@ -37,6 +37,7 @@ pnpm sync:cursor-rules
 | `aios_provider_health` / `models` / `chat` | Multi-provider with optional Ollama (#67) |
 | `aios_governance_status` | Console Health + Attention (#71) |
 | `aios_audit_docs` | Canonical docs inventory/drift (#80) |
+| `aios_search_pkb` | PKB textual / tag search over `docs/prompts/**` (#158) |
 | `aios_governance_audit` / `aios_governance_record` | Light audit + decision log (#80) |
 
 Config example: [`.cursor/mcp.json.example`](../../.cursor/mcp.json.example) — use an **absolute `node` path** (Cursor GUI often lacks `pnpm`/`nvm` on PATH).

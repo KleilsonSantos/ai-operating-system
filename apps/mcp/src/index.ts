@@ -24,7 +24,7 @@ import { remember, recall, clearMemory, listMemoryWorkspaces } from '@aios/memor
 import { compilePrompt } from '@aios/prompt'
 import { getProvider, listProviderIds } from '@aios/provider'
 import { getGovernanceStatus, chatWithMetrics } from '@aios/status'
-import { auditDocumentation } from '@aios/documentation'
+import { auditDocumentation, searchPkb } from '@aios/documentation'
 import { auditGovernance, recordDecision } from '@aios/governance'
 import { getOperationalState } from '@aios/operational-state'
 import { resolve } from 'node:path'
@@ -531,6 +531,50 @@ server.registerTool(
       const message = err instanceof Error ? err.message : String(err)
       return {
         content: [{ type: 'text', text: `aios_audit_docs failed: ${message}` }],
+        isError: true,
+      }
+    }
+  },
+)
+
+server.registerTool(
+  'aios_search_pkb',
+  {
+    title: 'Search Prompt Knowledge Base',
+    description:
+      'Textual / tag search over docs/prompts/** frontmatter + body (PKB ladder step 3). No embeddings. Provide query and/or tags and/or domain.',
+    inputSchema: {
+      query: z.string().optional(),
+      tags: z.array(z.string()).optional(),
+      domain: z.string().optional(),
+      limit: z.number().int().positive().max(100).optional(),
+      repoPath: z.string().optional(),
+      workspaceId: z.string().optional(),
+    },
+  },
+  async ({ query, tags, domain, limit, repoPath, workspaceId }) => {
+    try {
+      let root = resolve(repoPath || process.env.AIOS_REPO || process.cwd())
+      if (!repoPath && workspaceId) {
+        const ws = resolveWorkspace(workspaceId, {
+          cwd: process.env.AIOS_HOME || process.cwd(),
+        })
+        if (ws) root = ws.repoPath
+      }
+      const result = searchPkb({
+        repoPath: root,
+        query,
+        tags,
+        domain,
+        limit,
+      })
+      return {
+        content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return {
+        content: [{ type: 'text', text: `aios_search_pkb failed: ${message}` }],
         isError: true,
       }
     }
