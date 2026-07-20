@@ -4,8 +4,13 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📚 PKB inventory in `aios_audit_docs` / `@aios/documentation` — scaffold + `index.yaml` paths + orphan assets (#154)
+
 ### Changed
 
+- 📝 Owner cadence in `AGENTS.md` — `next` = proposal (briefing + analogy); `ok` = implement; `green` = promote (#154)
 - 📝 Finish US English migration for AIOS product docs (ADRs, guides, READMEs, policies prose) — ADR-0018 / #142
 - 📝 Companion MCP HTTP consumption path — ports, `AIOS_MCP_URL`, health/smoke in control-plane guide + `@aios/mcp` README (#145)
 - 📝 `AGENTS.md` canonical context order (code → FOUNDATION/ADRs → policies → ROADMAP → PKB → optional external wikis) — OpenWiki spike follow-up (#151)
