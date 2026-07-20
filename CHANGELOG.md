@@ -4,6 +4,14 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.28.0] - 2026-07-20
+
+### Added
+
+- 📦 Phase 5: Agent Registry & Reusability (ADR-0023, plan, tasks) (#162)
+- 📦 @aios/agent-registry package (T2, T3, T4): agent.yaml schema, core AgentRegistry with parse/validate/list/save (#165)
+- 📦 @aios/agent-registry metadata resolvers (T5): npm, git, local with 1h caching (#166)
+
 ## [0.27.0] - 2026-07-20
 
 ### Added
