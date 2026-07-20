@@ -6,6 +6,7 @@ import { auditDocumentation, searchPkb } from '@aios/documentation'
 import { auditGovernance } from '@aios/governance'
 import { getOperationalState } from '@aios/operational-state'
 import { resolveWorkspace } from '@aios/workspace'
+import { AgentRegistry } from '@aios/agent-registry'
 
 function parseArgs(argv: string[]): {
   input: string
@@ -26,6 +27,11 @@ function parseArgs(argv: string[]): {
   searchPkbLimit?: number
   governanceAudit: boolean
   operationalState: boolean
+  listAgents: boolean
+  listAgentsTags: string[]
+  listAgentsMaintainer?: string
+  listAgentsName?: string
+  listAgentsJson: boolean
   providerId: string
   model?: string
 } {
@@ -46,6 +52,11 @@ function parseArgs(argv: string[]): {
   let searchPkbLimit: number | undefined
   let governanceAudit = false
   let operationalState = false
+  let listAgentsFlag = false
+  const listAgentsTags: string[] = []
+  let listAgentsMaintainer: string | undefined
+  let listAgentsName: string | undefined
+  let listAgentsJson = false
   let providerId = 'ollama'
   let model: string | undefined
   const parts: string[] = []
@@ -149,6 +160,39 @@ function parseArgs(argv: string[]): {
       operationalState = true
       continue
     }
+    if (a === '--list-agents') {
+      listAgentsFlag = true
+      continue
+    }
+    if (a === '--agent-tag') {
+      const t = argv[++i]
+      if (t) listAgentsTags.push(t)
+      continue
+    }
+    if (a.startsWith('--agent-tag=')) {
+      listAgentsTags.push(a.slice('--agent-tag='.length))
+      continue
+    }
+    if (a === '--agent-maintainer') {
+      listAgentsMaintainer = argv[++i]
+      continue
+    }
+    if (a.startsWith('--agent-maintainer=')) {
+      listAgentsMaintainer = a.slice('--agent-maintainer='.length)
+      continue
+    }
+    if (a === '--agent-name') {
+      listAgentsName = argv[++i]
+      continue
+    }
+    if (a.startsWith('--agent-name=')) {
+      listAgentsName = a.slice('--agent-name='.length)
+      continue
+    }
+    if (a === '--agents-json') {
+      listAgentsJson = true
+      continue
+    }
     if (a === '--provider') {
       providerId = argv[++i] || 'ollama'
       continue
@@ -191,6 +235,11 @@ function parseArgs(argv: string[]): {
     searchPkbLimit,
     governanceAudit,
     operationalState,
+    listAgents: listAgentsFlag,
+    listAgentsTags,
+    listAgentsMaintainer,
+    listAgentsName,
+    listAgentsJson,
     providerId,
     model,
   }
@@ -227,6 +276,33 @@ async function main(): Promise<void> {
       limit: args.searchPkbLimit,
     })
     console.log(JSON.stringify(result, null, 2))
+    return
+  }
+
+  if (args.listAgents) {
+    const registry = new AgentRegistry()
+    const agents = await registry.listAgentsFiltered({
+      tags: args.listAgentsTags.length ? args.listAgentsTags : undefined,
+      maintainer: args.listAgentsMaintainer,
+      name: args.listAgentsName
+    })
+    if (args.listAgentsJson) {
+      console.log(JSON.stringify({ count: agents.length, agents }, null, 2))
+    } else {
+      console.log('Agents disponíveis:')
+      console.log()
+      for (const agent of agents) {
+        console.log(`  ${agent.manifest.displayName || agent.manifest.name} (${agent.manifest.version}) [${agent.source}]`)
+        if (agent.manifest.description) {
+          console.log(`    ${agent.manifest.description}`)
+        }
+        const tags = (agent.manifest.metadata?.tags as string[] || [])
+        if (tags.length) {
+          console.log(`    Tags: ${tags.join(', ')}`)
+        }
+        console.log()
+      }
+    }
     return
   }
 
