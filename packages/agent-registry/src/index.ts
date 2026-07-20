@@ -2,11 +2,13 @@ import fs from 'fs/promises'
 import { readFileSync } from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import Ajv, { type ValidateFunction } from 'ajv'
+import Ajv from 'ajv'
 import yaml from 'js-yaml'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const agentSchema = JSON.parse(readFileSync(path.join(__dirname, '../schema/agent.schema.json'), 'utf-8'))
+const AjvConstructor = Ajv as unknown as new () => any
+type ValidateFunction = (data: any) => boolean
 
 export interface AgentManifest {
   name: string
@@ -32,13 +34,13 @@ export interface ValidationResult {
 }
 
 export class AgentRegistry {
-  private readonly ajv: ReturnType<typeof Ajv.default>
+  private readonly ajv: any
   private readonly validateFn: ValidateFunction
   private builtinAgents: AgentEntry[] = []
   private readonly registryPath: string
 
   constructor(options?: { registryPath?: string }) {
-    this.ajv = new Ajv.default()
+    this.ajv = new AjvConstructor()
     this.validateFn = this.ajv.compile(agentSchema)
     this.registryPath = options?.registryPath || path.join(process.cwd(), '.aios', 'agents.registry.json')
     this.initBuiltinAgents()
@@ -112,7 +114,7 @@ export class AgentRegistry {
     if (valid) {
       return { valid: true, errors: [] }
     }
-    const errors = this.validateFn.errors?.map(e => `${e.instancePath} ${e.message}`) || []
+    const errors = (this.ajv.errors || []).map((e: any) => `${e.instancePath} ${e.message}`)
     return { valid: false, errors }
   }
 
