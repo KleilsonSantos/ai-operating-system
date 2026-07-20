@@ -81,7 +81,14 @@ function resolveRepoRoot(start: string): string {
 
 function normalizeScope(scope: string | undefined): string {
   if (!scope || scope === '.' || scope === './') return '.';
-  return scope.replace(/^\.\/+/, '').replace(/\/+$/, '');
+  let normalized = scope;
+  while (normalized.startsWith('./')) {
+    normalized = normalized.slice(2);
+  }
+  while (normalized.endsWith('/')) {
+    normalized = normalized.slice(0, -1);
+  }
+  return normalized;
 }
 
 function kindFor(fileName: string, relPath: string): ContextSnippetKind | null {

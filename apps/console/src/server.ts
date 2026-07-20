@@ -12,6 +12,7 @@ import { runSafeAction, SAFE_ACTIONS } from './actions.ts';
 
 const port = Number(process.env.AIOS_CONSOLE_PORT || 8787);
 const homePath = process.env.AIOS_HOME || process.cwd();
+const INTERNAL_ERROR_MESSAGE = 'internal server error';
 
 function sendJson(res: import('node:http').ServerResponse, status: number, body: unknown): void {
   res.writeHead(status, {
@@ -31,6 +32,16 @@ function sendPrometheus(res: import('node:http').ServerResponse, body: string): 
     'Access-Control-Allow-Origin': '*',
   });
   res.end(body);
+}
+
+function sendInternalError(
+  res: import('node:http').ServerResponse,
+  err: unknown,
+  context: string
+): void {
+  const detail = err instanceof Error ? err.message : String(err);
+  console.error(`[console-api] ${context}: ${detail}`);
+  sendJson(res, 500, { error: INTERNAL_ERROR_MESSAGE });
 }
 
 async function readJsonBody(req: import('node:http').IncomingMessage): Promise<unknown> {
@@ -60,8 +71,7 @@ const server = createServer(async (req, res) => {
     try {
       sendPrometheus(res, renderPrometheusMetrics({ homePath }));
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      sendJson(res, 500, { error: message });
+      sendInternalError(res, err, 'metrics');
     }
     return;
   }
@@ -71,8 +81,7 @@ const server = createServer(async (req, res) => {
       const status = await getGovernanceStatus({ homePath });
       sendJson(res, 200, status);
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      sendJson(res, 500, { error: message });
+      sendInternalError(res, err, 'status');
     }
     return;
   }
@@ -107,8 +116,7 @@ const server = createServer(async (req, res) => {
       const statusCode = out.error && !out.result ? 400 : 200;
       sendJson(res, statusCode, out);
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      sendJson(res, 500, { error: message });
+      sendInternalError(res, err, 'action');
     }
     return;
   }

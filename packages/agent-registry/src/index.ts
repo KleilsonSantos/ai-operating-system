@@ -8,14 +8,14 @@ import type { ValidateFunction } from 'ajv';
 const Ajv = AjvRaw as any;
 
 import yaml from 'js-yaml';
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 import { promisify } from 'util';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const agentSchema = JSON.parse(
   readFileSync(path.join(__dirname, '../schema/agent.schema.json'), 'utf-8')
 );
-const execPromise = promisify(exec);
+const execFilePromise = promisify(execFile);
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 
 export interface AgentManifest {
@@ -295,9 +295,9 @@ export class AgentRegistry {
 
     try {
       // Clone repo
-      await execPromise(`git clone --depth 1 ${repoUrl} ${tempDir}`);
+      await execFilePromise('git', ['clone', '--depth', '1', repoUrl, tempDir]);
       if (ref) {
-        await execPromise(`cd ${tempDir} && git checkout ${ref}`);
+        await execFilePromise('git', ['checkout', ref], { cwd: tempDir });
       }
 
       // Parse agent.yaml/agent.json
@@ -322,7 +322,9 @@ export class AgentRegistry {
       const manifest = await this.parseManifest(manifestPath);
 
       // Get git tags as versions
-      const { stdout: tagsStr } = await execPromise(`cd ${tempDir} && git tag --sort=-creatordate`);
+      const { stdout: tagsStr } = await execFilePromise('git', ['tag', '--sort=-creatordate'], {
+        cwd: tempDir,
+      });
       const tags = tagsStr.split('\n').filter(Boolean);
 
       const entry: AgentEntry = {

@@ -56,7 +56,11 @@ const DEFAULT_ANTHROPIC_MODEL = 'claude-haiku-4-5';
 const ANTHROPIC_VERSION = '2023-06-01';
 
 function stripTrailingSlash(url: string): string {
-  return url.replace(/\/+$/, '');
+  let normalized = url;
+  while (normalized.endsWith('/')) {
+    normalized = normalized.slice(0, -1);
+  }
+  return normalized;
 }
 
 export class OllamaProvider implements AIProvider {
