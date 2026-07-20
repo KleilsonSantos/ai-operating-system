@@ -43,22 +43,23 @@ alwaysApply: true
 
 # AIOS Policies (chat bridge)
 
-Estas regras vêm do **Policy Engine** (\`policies/aios.policies.json\`).
-O usuário digita pedidos **curtos**; você **não** pede que ele repita best practices.
+These rules come from the **Policy Engine** (\`policies/aios.policies.json\`).
+The user can write **short prompts**; do **not** ask them to repeat best practices already captured in policies and project rules.
 
-Regenerar: \`pnpm sync:cursor-rules\`
+Regenerate: \`pnpm sync:cursor-rules\`
 
 ## MUST
 
 ${bullets(must)}
 ${should.length ? `\n## SHOULD\n\n${bullets(should)}\n` : ''}${may.length ? `\n## MAY\n\n${bullets(may)}\n` : ''}
-## Comportamento no chat
+## Chat behavior
 
 1. Aplique as policies acima em toda sugestão de código, review e plano.
 2. Não peça ao usuário para colar "siga boas práticas / commits / sem depreciação".
 3. Se uma policy conflitar com o pedido, diga o trade-off e proponha o caminho alinhado.
 4. Fonte canônica de produto: \`docs/FOUNDATION.md\` > resumos.
-5. Docs de produto novas/editadas em **US English** (\`docs-language-en\` / ADR-0018); chat com o owner pode ser PT.
+5. For task routing, prefer \`.trae/rules/\`, \`docs/guides/\`, \`.github/\`, and \`scripts/\` before any generic root summary file.
+6. Docs de produto novas/editadas em **US English** (\`docs-language-en\` / ADR-0018); chat com o owner pode ser PT.
 `;
 
 const sdlcRule = `---
@@ -68,7 +69,8 @@ alwaysApply: true
 
 # AIOS SDLC (este repositório)
 
-Espelha \`AGENTS.md\` + policies de fluxo. Aplicar em todo Agent chat neste workspace.
+Use este arquivo como ponte curta para fluxo de entrega.
+Para detalhes, consulte \`.trae/rules/workflow.md\`, \`docs/guides/git-workflow.md\`, \`docs/guides/task-kickoff.md\`, \`docs/guides/releases.md\`, \`.github/pull_request_template.md\` e \`scripts/merge-pr.sh\`.
 
 ## Git
 
@@ -88,6 +90,7 @@ Espelha \`AGENTS.md\` + policies de fluxo. Aplicar em todo Agent chat neste work
 - AIOS é standalone (ADR-0001); agents = plugins
 - Não implementar todos os engines de uma vez — seguir \`docs/ROADMAP.md\`
 - CHANGELOG \`[Unreleased]\` se notável; branchs de trabalho abrem PR para \`sandbox\`, e a promoção final abre PR de \`sandbox\` para \`main\`
+- Para arquitetura e escopo, consultar \`.trae/rules/architecture.md\`, \`docs/FOUNDATION.md\` e ADRs, não apenas um resumo raiz
 
 ## Checklist rápido
 

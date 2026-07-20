@@ -31,6 +31,8 @@ const IGNORE_DIRS = new Set([
   'canvases',
 ]);
 
+const ALLOWED_HIDDEN_DIRS = new Set(['.github', '.trae']);
+
 const DOC_NAMES = new Set([
   'readme.md',
   'readme',
@@ -109,8 +111,10 @@ function kindFor(fileName: string, relPath: string): ContextSnippetKind | null {
 function priority(kind: ContextSnippetKind, relPath: string): number {
   const lower = relPath.toLowerCase();
   if (kind === 'doc' && lower.includes('foundation')) return 100;
+  if (kind === 'doc' && lower.startsWith('.trae/rules/')) return 95;
   if (kind === 'doc' && lower.startsWith('readme')) return 90;
   if (kind === 'doc' && lower.startsWith('docs/')) return 80;
+  if (kind === 'doc' && lower === 'agents.md') return 45;
   if (kind === 'manifest' && lower === 'package.json') return 70;
   if (kind === 'manifest') return 60;
   if (kind === 'doc') return 50;
@@ -128,7 +132,7 @@ function listFiles(dir: string, root: string, out: string[]): void {
   }
   for (const entry of entries) {
     if (IGNORE_DIRS.has(entry.name)) continue;
-    if (entry.name.startsWith('.') && entry.name !== '.github') continue;
+    if (entry.name.startsWith('.') && !ALLOWED_HIDDEN_DIRS.has(entry.name)) continue;
     const full = join(dir, entry.name);
     if (entry.isDirectory()) {
       listFiles(full, root, out);
@@ -184,6 +188,10 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
     for (const name of ['README.md', 'package.json', 'docs/FOUNDATION.md']) {
       const abs = join(repoPath, name);
       if (existsSync(abs)) files.push(abs);
+    }
+    const traeRulesDir = join(repoPath, '.trae', 'rules');
+    if (existsSync(traeRulesDir)) {
+      listFiles(traeRulesDir, repoPath, files);
     }
   }
 

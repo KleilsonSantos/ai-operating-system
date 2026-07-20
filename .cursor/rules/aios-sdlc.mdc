@@ -5,7 +5,8 @@ alwaysApply: true
 
 # AIOS SDLC (este repositório)
 
-Espelha `AGENTS.md` + policies de fluxo. Aplicar em todo Agent chat neste workspace.
+Use este arquivo como ponte curta para fluxo de entrega.
+Para detalhes, consulte `.trae/rules/workflow.md`, `docs/guides/git-workflow.md`, `docs/guides/task-kickoff.md`, `docs/guides/releases.md`, `.github/pull_request_template.md` e `scripts/merge-pr.sh`.
 
 ## Git
 
@@ -25,6 +26,7 @@ Espelha `AGENTS.md` + policies de fluxo. Aplicar em todo Agent chat neste worksp
 - AIOS é standalone (ADR-0001); agents = plugins
 - Não implementar todos os engines de uma vez — seguir `docs/ROADMAP.md`
 - CHANGELOG `[Unreleased]` se notável; branchs de trabalho abrem PR para `sandbox`, e a promoção final abre PR de `sandbox` para `main`
+- Para arquitetura e escopo, consultar `.trae/rules/architecture.md`, `docs/FOUNDATION.md` e ADRs, não apenas um resumo raiz
 
 ## Checklist rápido
 

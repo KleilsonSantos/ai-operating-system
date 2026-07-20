@@ -17,10 +17,16 @@ function fixtureRoot(): string {
   temps.push(root);
   // marcar como "repo"
   mkdirSync(join(root, '.git'));
+  mkdirSync(join(root, '.trae', 'rules'), { recursive: true });
   writeFileSync(join(root, 'README.md'), '# Fixture\n\nHello context.');
+  writeFileSync(join(root, 'AGENTS.md'), '# Bridge\n\nCompatibility only.');
   writeFileSync(join(root, 'package.json'), JSON.stringify({ name: 'fixture', private: true }));
   mkdirSync(join(root, 'docs'));
   writeFileSync(join(root, 'docs', 'FOUNDATION.md'), '# Pedra\n\nPolicy > prompts.');
+  writeFileSync(
+    join(root, '.trae', 'rules', 'project-map.md'),
+    '# Project Map\n\nUse scoped rules before generic summaries.\n'
+  );
   mkdirSync(join(root, 'engines', 'demo', 'src'), { recursive: true });
   writeFileSync(join(root, 'engines', 'demo', 'src', 'index.ts'), 'export const demo = 1\n');
   writeFileSync(join(root, 'engines', 'demo', 'README.md'), '# Demo engine\n');
@@ -38,6 +44,7 @@ describe('gatherContext', () => {
     expect(paths).toContain('README.md');
     expect(paths).toContain('docs/FOUNDATION.md');
     expect(paths).toContain('package.json');
+    expect(paths).toContain('.trae/rules/project-map.md');
     expect(bundle.signals.some((s) => s.startsWith('snippets:'))).toBe(true);
   });
 
@@ -53,6 +60,17 @@ describe('gatherContext', () => {
     expect(paths).toContain('engines/demo/src/index.ts');
     // âncora da raiz ainda entra
     expect(paths).toContain('README.md');
+    expect(paths).toContain('.trae/rules/project-map.md');
+  });
+
+  it('prioriza .trae/rules acima de AGENTS.md', () => {
+    const root = fixtureRoot();
+    const bundle = gatherContext({ repoPath: root, maxSnippets: 20 });
+    const traeIndex = bundle.snippets.findIndex((s) => s.path === '.trae/rules/project-map.md');
+    const agentsIndex = bundle.snippets.findIndex((s) => s.path === 'AGENTS.md');
+    expect(traeIndex).toBeGreaterThanOrEqual(0);
+    expect(agentsIndex).toBeGreaterThanOrEqual(0);
+    expect(traeIndex).toBeLessThan(agentsIndex);
   });
 
   it('scope inexistente → snippets vazios + sinal', () => {
