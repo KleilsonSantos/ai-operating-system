@@ -49,7 +49,7 @@ Boundary: [ADR-0014](./adr/0014-control-plane-companion.md) · [guide](./guides/
 - [x] Resource-Aware event hooks (no aggressive polling) — `recordOperationalEvent` on-demand (#84 / ADR-0015)
 - [x] Capability adapters (Git/GitHub/…) behind contracts — without duplicating AIOS engines → [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) `companion caps`
 - [x] Canonical product docs language: **US English** — ADR-0018 / [#112](https://github.com/KleilsonSantos/ai-operating-system/issues/112); FOUNDATION + VISION migrated (#124); ROADMAP migrated (#127)
-- [x] Prompt Knowledge Base (PKB) catalog MVP — Docs-as-Code under `docs/prompts/` (#134); RAG/embeddings deferred
+- [x] Prompt Knowledge Base (PKB) catalog MVP — Docs-as-Code under `docs/prompts/` (#134); inventory via `aios_audit_docs` (#154); RAG/embeddings deferred
 - [x] External references catalog — `docs/references/` legal/official only (#133)
 
 ## Out of scope (on purpose)
