@@ -4,8 +4,8 @@ The Prompt Knowledge Base starts as an **organized Docs-as-Code collection**. Th
 
 ## Evolution ladder
 
-1. Organized Markdown catalog + `index.yaml` ← **MVP (this issue)**
-2. Automatic inventory (e.g. extend `aios_audit_docs` to list `docs/prompts/**`)
+1. Organized Markdown catalog + `index.yaml` ← **MVP (#134)**
+2. Automatic inventory (extend `aios_audit_docs` / `@aios/documentation` for `docs/prompts/**`) ← **shipped (#154)**
 3. Textual / tag search over frontmatter + body
 4. Semantic search
 5. Embeddings + vector store (separate ADR; Resource-Aware)

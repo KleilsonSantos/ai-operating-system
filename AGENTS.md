@@ -37,6 +37,27 @@ Product docs (`docs/**`, ADRs, README, this file, CHANGELOG prose) are **US Engl
 7. Commit only when the human asks (except authorized bootstrap).
 8. Do not treat generated agent wikis as canonical product truth (ADR-0001 / spike #148).
 
+## Owner cadence (chat)
+
+Product-owner cues in chat (Portuguese ok). **Do not** skip the briefing after a summary reset.
+
+| Cue | Meaning |
+| --- | --- |
+| **`next`** | **Proposal only** — do **not** implement yet |
+| **`ok`** / **`prossegue`** | Implement the accepted proposal (Issue → feature → PR → `sandbox`) |
+| **`green`** | Promote: merge feature→`sandbox`→`main` (+ SemVer release when needed) |
+
+### Before every `next` (mandatory briefing)
+
+1. **Trajetória** — where we are (last shipped vertical + open parked items)
+2. **O quê** — concrete next vertical (1 slice)
+3. **Porquê agora** — why this beats alternatives
+4. **Analogia** — one concrete metaphor (hospital / factory / command room…)
+5. **Trade-off** — what we gain vs what we defer
+6. Stop and wait for **`ok`**
+
+Never treat `next` as silent authorization to code.
+
 ## Checklist
 
 - [ ] Change aligned with the ROADMAP phase?
@@ -44,3 +65,4 @@ Product docs (`docs/**`, ADRs, README, this file, CHANGELOG prose) are **US Engl
 - [ ] CHANGELOG `[Unreleased]` if notable?
 - [ ] New/edited product docs in US English?
 - [ ] PR targeting `sandbox`?
+- [ ] If responding to `next`: briefing above shipped before any code?
