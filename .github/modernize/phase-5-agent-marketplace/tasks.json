@@ -35,7 +35,7 @@
       "epic": "Foundation",
       "milestone": "M1",
       "owner": "architect",
-      "status": "not-started",
+      "status": "completed",
       "depends_on": ["T1"],
       "requirements": ["REQ-PKG-001: Manifest schema defined and documented"],
       "acceptance": [
@@ -53,7 +53,7 @@
       "epic": "Registry",
       "milestone": "M1",
       "owner": "platform",
-      "status": "not-started",
+      "status": "completed",
       "depends_on": ["T2"],
       "requirements": ["REQ-PKG-002: Package structure ready for development"],
       "acceptance": [
@@ -70,7 +70,7 @@
       "epic": "Registry",
       "milestone": "M2",
       "owner": "platform",
-      "status": "not-started",
+      "status": "completed",
       "depends_on": ["T3"],
       "requirements": ["REQ-REG-001: Registry can discover and validate agents"],
       "acceptance": [
