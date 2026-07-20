@@ -82,12 +82,12 @@
     },
     {
       "id": "T5",
-      "title": "Implement metadata resolver (npm, git, local)",
-      "description": "Fetch agent metadata from: npm registry, git repos, local filesystem",
-      "epic": "Registry",
-      "milestone": "M2",
-      "owner": "platform",
-      "status": "not-started",
+    "title": "Implement metadata resolver (npm, git, local)",
+    "description": "Fetch agent metadata from: npm registry, git repos, local filesystem",
+    "epic": "Registry",
+    "milestone": "M2",
+    "owner": "platform",
+    "status": "completed",
       "depends_on": ["T4"],
       "requirements": ["REQ-REG-002: Multi-source agent discovery working"],
       "acceptance": [
