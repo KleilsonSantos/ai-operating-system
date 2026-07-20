@@ -52,6 +52,20 @@ Boundary: [ADR-0014](./adr/0014-control-plane-companion.md) · [guide](./guides/
 - [x] Prompt Knowledge Base (PKB) catalog MVP — Docs-as-Code under `docs/prompts/` (#134); inventory via `aios_audit_docs` (#154); textual/tag search (#158); RAG/embeddings deferred
 - [x] External references catalog — `docs/references/` legal/official only (#133)
 
+## Phase 5 — Agent Marketplace & Reusability (v0.28.0)
+
+Boundary: [ADR-0023](./adr/0023-agent-registry-marketplace.md) · [plan](./.github/modernize/phase-5-agent-marketplace/plan.md).
+
+Agents become first-class, discoverable, reusable building blocks. Four pillars:
+
+- [ ] Agent Registry (discovery + metadata) — `aios list-agents` / `aios_list_agents` MCP tool; local cache; multi-source resolver (npm, git, local)
+- [ ] Agent Packaging (standard manifest + dependencies) — `agent.yaml` schema; npm scaffolder (`npm create @aios/agent`); dependency resolver; template published
+- [ ] Agent Observability (execution tracking + health-score) — `recordAgentExecution` hook; metrics (`kind: agent.execution`); health-score (success-rate + recency + adoption); Console Agent Catalog
+- [ ] Community Publishing (GitHub ingestion + template) — GitHub Actions (weekly scan for `aios-agent` topic); async registry service; abuse detection; publishing guide; first community agent ingested
+
+**Status:** In progress (Week 1 / M1 started 2026-07-20)  
+**Target:** v0.28.0 on 2026-08-20 (4 weeks, 116 estimated hours)
+
 ## Out of scope (on purpose)
 
 - Replacing IDEs or Copilot as an editor — AIOS governs and orchestrates; it does not compete as autocomplete
