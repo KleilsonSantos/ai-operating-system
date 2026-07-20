@@ -295,7 +295,7 @@ export class AgentRegistry {
 
     try {
       // Clone repo
-      await execFilePromise('git', ['clone', '--depth', '1', repoUrl, tempDir]);
+      await execFilePromise('git', ['clone', '--depth', '1', '--', repoUrl, tempDir]);
       if (ref) {
         await execFilePromise('git', ['checkout', ref], { cwd: tempDir });
       }

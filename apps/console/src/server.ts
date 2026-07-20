@@ -12,7 +12,6 @@ import { runSafeAction, SAFE_ACTIONS } from './actions.ts';
 
 const port = Number(process.env.AIOS_CONSOLE_PORT || 8787);
 const homePath = process.env.AIOS_HOME || process.cwd();
-const INTERNAL_ERROR_MESSAGE = 'internal server error';
 
 function sendJson(res: import('node:http').ServerResponse, status: number, body: unknown): void {
   res.writeHead(status, {
@@ -41,7 +40,14 @@ function sendInternalError(
 ): void {
   const detail = err instanceof Error ? err.message : String(err);
   console.error(`[console-api] ${context}: ${detail}`);
-  sendJson(res, 500, { error: INTERNAL_ERROR_MESSAGE });
+  res.writeHead(500, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Cache-Control': 'no-store',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  });
+  res.end('{"error":"internal server error"}');
 }
 
 async function readJsonBody(req: import('node:http').IncomingMessage): Promise<unknown> {
