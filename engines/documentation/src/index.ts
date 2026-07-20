@@ -283,3 +283,240 @@ export function auditDocumentation(
     ok,
   }
 }
+
+/** PKB asset frontmatter (subset; heuristic parse, no YAML lib). */
+export type PkbAssetMeta = {
+  id?: string
+  title?: string
+  domain?: string
+  purpose?: string
+  tags: string[]
+  status?: string
+  language?: string
+}
+
+export type PkbSearchOptions = {
+  repoPath?: string
+  /** Free-text match against id, title, purpose, tags, body. */
+  query?: string
+  /** Asset must include all listed tags (case-insensitive). */
+  tags?: string[]
+  /** Exact domain match (case-insensitive). */
+  domain?: string
+  limit?: number
+}
+
+export type PkbSearchHit = {
+  id?: string
+  path: string
+  title?: string
+  domain?: string
+  tags: string[]
+  status?: string
+  language?: string
+  score: number
+  matches: string[]
+}
+
+export type PkbSearchResult = {
+  generatedAt: string
+  repoPath: string
+  query?: string
+  tags?: string[]
+  domain?: string
+  count: number
+  hits: PkbSearchHit[]
+}
+
+/** Split Markdown frontmatter (`---` … `---`) from body. */
+export function splitMarkdownFrontmatter(raw: string): {
+  frontmatter: string
+  body: string
+} {
+  const trimmed = raw.replace(/^\uFEFF/, '')
+  if (!trimmed.startsWith('---')) {
+    return { frontmatter: '', body: trimmed }
+  }
+  const end = trimmed.indexOf('\n---', 3)
+  if (end === -1) {
+    return { frontmatter: '', body: trimmed }
+  }
+  const frontmatter = trimmed.slice(3, end).replace(/^\r?\n/, '')
+  const body = trimmed.slice(end + 4).replace(/^\r?\n/, '')
+  return { frontmatter, body }
+}
+
+function scalarField(fm: string, key: string): string | undefined {
+  const re = new RegExp(`^${key}:\\s*(.+?)\\s*$`, 'im')
+  const m = re.exec(fm)
+  if (!m?.[1]) return undefined
+  return m[1].replace(/^['"]|['"]$/g, '').trim()
+}
+
+function parseTagList(fm: string): string[] {
+  const tags: string[] = []
+  const bracket = /^tags:\s*\[([^\]]*)\]\s*$/im.exec(fm)
+  if (bracket?.[1]) {
+    for (const part of bracket[1].split(',')) {
+      const t = part.trim().replace(/^['"]|['"]$/g, '')
+      if (t) tags.push(t)
+    }
+    return tags
+  }
+  const lines = fm.split(/\r?\n/)
+  let inTags = false
+  for (const line of lines) {
+    if (/^tags:\s*$/i.test(line)) {
+      inTags = true
+      continue
+    }
+    if (inTags) {
+      const item = /^\s+-\s+(.+?)\s*$/.exec(line)
+      if (item?.[1]) {
+        tags.push(item[1].replace(/^['"]|['"]$/g, '').trim())
+        continue
+      }
+      if (/^\S/.test(line)) break
+    }
+  }
+  return tags
+}
+
+export function parsePkbFrontmatter(raw: string): {
+  meta: PkbAssetMeta
+  body: string
+} {
+  const { frontmatter, body } = splitMarkdownFrontmatter(raw)
+  const meta: PkbAssetMeta = {
+    id: scalarField(frontmatter, 'id'),
+    title: scalarField(frontmatter, 'title'),
+    domain: scalarField(frontmatter, 'domain'),
+    purpose: scalarField(frontmatter, 'purpose'),
+    tags: parseTagList(frontmatter),
+    status: scalarField(frontmatter, 'status'),
+    language: scalarField(frontmatter, 'language'),
+  }
+  return { meta, body }
+}
+
+function includesCi(haystack: string | undefined, needle: string): boolean {
+  if (!haystack) return false
+  return haystack.toLowerCase().includes(needle.toLowerCase())
+}
+
+/**
+ * Textual / tag search over PKB assets under `docs/prompts/by-domain` (#158).
+ * Requires at least one of `query`, `tags`, or `domain`.
+ */
+export function searchPkb(options: PkbSearchOptions = {}): PkbSearchResult {
+  const repoPath = resolve(options.repoPath || process.cwd())
+  const query = options.query?.trim() || undefined
+  const tags = (options.tags || [])
+    .map((t) => t.trim())
+    .filter(Boolean)
+  const domain = options.domain?.trim() || undefined
+  const limit = Math.min(Math.max(options.limit ?? 20, 1), 100)
+
+  const generatedAt = new Date().toISOString()
+  if (!query && tags.length === 0 && !domain) {
+    return {
+      generatedAt,
+      repoPath,
+      query,
+      tags: tags.length ? tags : undefined,
+      domain,
+      count: 0,
+      hits: [],
+    }
+  }
+
+  const files = listMarkdownFiles(repoPath, 'docs/prompts/by-domain')
+  const hits: PkbSearchHit[] = []
+
+  for (const rel of files) {
+    let raw: string
+    try {
+      raw = readFileSync(join(repoPath, rel), 'utf8')
+    } catch {
+      continue
+    }
+    const { meta, body } = parsePkbFrontmatter(raw)
+    const tagSet = new Set(meta.tags.map((t) => t.toLowerCase()))
+
+    if (domain && (meta.domain || '').toLowerCase() !== domain.toLowerCase()) {
+      continue
+    }
+    if (tags.length > 0) {
+      const okTags = tags.every((t) => tagSet.has(t.toLowerCase()))
+      if (!okTags) continue
+    }
+
+    const matches: string[] = []
+    let score = 0
+
+    if (domain) {
+      matches.push('domain')
+      score += 3
+    }
+    if (tags.length > 0) {
+      matches.push('tags')
+      score += 3 * tags.length
+    }
+
+    if (query) {
+      let queryHit = false
+      if (includesCi(meta.id, query)) {
+        matches.push('id')
+        score += 3
+        queryHit = true
+      }
+      if (includesCi(meta.title, query)) {
+        matches.push('title')
+        score += 2
+        queryHit = true
+      }
+      if (includesCi(meta.purpose, query)) {
+        matches.push('purpose')
+        score += 2
+        queryHit = true
+      }
+      if (meta.tags.some((t) => includesCi(t, query))) {
+        matches.push('tag')
+        score += 2
+        queryHit = true
+      }
+      if (includesCi(body, query)) {
+        matches.push('body')
+        score += 1
+        queryHit = true
+      }
+      if (!queryHit && tags.length === 0 && !domain) continue
+      if (!queryHit) continue
+    }
+
+    hits.push({
+      id: meta.id,
+      path: rel,
+      title: meta.title,
+      domain: meta.domain,
+      tags: meta.tags,
+      status: meta.status,
+      language: meta.language,
+      score,
+      matches: [...new Set(matches)],
+    })
+  }
+
+  hits.sort((a, b) => b.score - a.score || a.path.localeCompare(b.path))
+  const sliced = hits.slice(0, limit)
+
+  return {
+    generatedAt,
+    repoPath,
+    query,
+    tags: tags.length ? tags : undefined,
+    domain,
+    count: sliced.length,
+    hits: sliced,
+  }
+}
