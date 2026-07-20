@@ -2,7 +2,7 @@ import fs from 'fs/promises'
 import { readFileSync } from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import Ajv, { type ValidateFunction } from 'ajv'
+import { default as Ajv, type ValidateFunction } from 'ajv'
 import yaml from 'js-yaml'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -32,13 +32,13 @@ export interface ValidationResult {
 }
 
 export class AgentRegistry {
-  private readonly ajv: ReturnType<typeof Ajv.default>
+  private readonly ajv: any
   private readonly validateFn: ValidateFunction
   private builtinAgents: AgentEntry[] = []
   private readonly registryPath: string
 
   constructor(options?: { registryPath?: string }) {
-    this.ajv = new Ajv.default()
+    this.ajv = new (Ajv as any)()
     this.validateFn = this.ajv.compile(agentSchema)
     this.registryPath = options?.registryPath || path.join(process.cwd(), '.aios', 'agents.registry.json')
     this.initBuiltinAgents()
