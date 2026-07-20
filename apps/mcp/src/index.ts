@@ -28,6 +28,7 @@ import { auditDocumentation, searchPkb } from '@aios/documentation'
 import { auditGovernance, recordDecision } from '@aios/governance'
 import { getOperationalState } from '@aios/operational-state'
 import { resolve } from 'node:path'
+import { AgentRegistry } from '@aios/agent-registry'
 
 export function createAiosMcpServer(): McpServer {
   const server = new McpServer({
@@ -50,6 +51,47 @@ server.registerTool(
       },
     ],
   }),
+)
+
+server.registerTool(
+  'aios_list_agents',
+  {
+    title: 'List available agents',
+    description:
+      'Returns all available agents from AIOS Agent Registry (builtin, local, npm, git). Supports filtering by tags, maintainer, and name.',
+    inputSchema: {
+      tags: z.array(z.string()).optional().describe('Filter agents by tags'),
+      maintainer: z.string().optional().describe('Filter agents by maintainer'),
+      name: z.string().optional().describe('Filter agents by name (substring match)'),
+    },
+  },
+  async ({ tags, maintainer, name }) => {
+    try {
+      const registry = new AgentRegistry()
+      const agents = await registry.listAgentsFiltered({ tags, maintainer, name })
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                count: agents.length,
+                agents,
+              },
+              null,
+              2,
+            ),
+          },
+        ],
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      return {
+        content: [{ type: 'text', text: `aios_list_agents failed: ${message}` }],
+        isError: true,
+      }
+    }
+  },
 )
 
 server.registerTool(

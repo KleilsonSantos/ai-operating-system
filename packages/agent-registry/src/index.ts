@@ -126,17 +126,70 @@ export class AgentRegistry {
     return { valid: false, errors }
   }
 
-  async listAgents(): Promise<AgentEntry[]> {
-    const agents: AgentEntry[] = [...this.builtinAgents]
+  async listAgents(options?: {
+    includeLocal?: boolean
+    includeNpm?: boolean
+    includeGit?: boolean
+  }): Promise<AgentEntry[]> {
+    const opts = {
+      includeLocal: true,
+      includeNpm: true,
+      includeGit: true,
+      ...options
+    }
+    
+    const agentsMap = new Map<string, AgentEntry>()
+
+    // Add builtin first (lowest priority)
+    for (const agent of this.builtinAgents) {
+      agentsMap.set(agent.manifest.name, agent)
+    }
+
+    // Then add saved registry agents (next priority)
     try {
       const registryContent = await fs.readFile(this.registryPath, 'utf-8')
       const registryData = JSON.parse(registryContent)
       if (registryData.agents && Array.isArray(registryData.agents)) {
-        agents.push(...registryData.agents)
+        for (const agent of registryData.agents) {
+          agentsMap.set(agent.manifest.name, agent)
+        }
       }
     } catch (err) {
+      // ignore if not exists
     }
-    return agents
+
+    // Then add local agents (highest priority)
+    if (opts.includeLocal) {
+      const localAgents = await this.resolveFromLocal()
+      for (const agent of localAgents) {
+        agentsMap.set(agent.manifest.name, agent)
+      }
+    }
+
+    return Array.from(agentsMap.values())
+  }
+
+  async listAgentsFiltered(options?: {
+    tags?: string[]
+    maintainer?: string
+    name?: string
+  }): Promise<AgentEntry[]> {
+    const agents = await this.listAgents()
+    return agents.filter(agent => {
+      let pass = true
+      if (options?.tags?.length) {
+        const agentTags = (agent.manifest.metadata?.tags as string[] || [])
+        pass = pass && options.tags.some(tag => agentTags.includes(tag))
+      }
+      if (options?.maintainer) {
+        const agentMaintainer = agent.manifest.metadata?.maintainer as string || ''
+        pass = pass && agentMaintainer.includes(options.maintainer)
+      }
+      if (options?.name) {
+        pass = pass && agent.manifest.name.toLowerCase().includes(options.name.toLowerCase())
+      }
+      return pass
+    })
   }
 
   async getAgent(name: string): Promise<AgentEntry | undefined> {
