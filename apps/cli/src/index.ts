@@ -2,7 +2,7 @@ import { runPipeline, PIPELINE_CONTRACT_VERSION } from '@aios/pipeline'
 import { compilePrompt } from '@aios/prompt'
 import { getProvider } from '@aios/provider'
 import { getGovernanceStatus, chatWithMetrics, renderPrometheusMetrics } from '@aios/status'
-import { auditDocumentation } from '@aios/documentation'
+import { auditDocumentation, searchPkb } from '@aios/documentation'
 import { auditGovernance } from '@aios/governance'
 import { getOperationalState } from '@aios/operational-state'
 import { resolveWorkspace } from '@aios/workspace'
@@ -20,6 +20,10 @@ function parseArgs(argv: string[]): {
   governanceStatus: boolean
   metricsPrometheus: boolean
   auditDocs: boolean
+  searchPkb: boolean
+  searchPkbTags: string[]
+  searchPkbDomain?: string
+  searchPkbLimit?: number
   governanceAudit: boolean
   operationalState: boolean
   providerId: string
@@ -36,6 +40,10 @@ function parseArgs(argv: string[]): {
   let governanceStatus = false
   let metricsPrometheus = false
   let auditDocs = false
+  let searchPkbFlag = false
+  const searchPkbTags: string[] = []
+  let searchPkbDomain: string | undefined
+  let searchPkbLimit: number | undefined
   let governanceAudit = false
   let operationalState = false
   let providerId = 'ollama'
@@ -104,6 +112,35 @@ function parseArgs(argv: string[]): {
       auditDocs = true
       continue
     }
+    if (a === '--search-pkb') {
+      searchPkbFlag = true
+      continue
+    }
+    if (a === '--tag') {
+      const t = argv[++i]
+      if (t) searchPkbTags.push(t)
+      continue
+    }
+    if (a.startsWith('--tag=')) {
+      searchPkbTags.push(a.slice('--tag='.length))
+      continue
+    }
+    if (a === '--domain') {
+      searchPkbDomain = argv[++i]
+      continue
+    }
+    if (a.startsWith('--domain=')) {
+      searchPkbDomain = a.slice('--domain='.length)
+      continue
+    }
+    if (a === '--limit') {
+      searchPkbLimit = Number(argv[++i])
+      continue
+    }
+    if (a.startsWith('--limit=')) {
+      searchPkbLimit = Number(a.slice('--limit='.length))
+      continue
+    }
     if (a === '--governance-audit') {
       governanceAudit = true
       continue
@@ -136,7 +173,7 @@ function parseArgs(argv: string[]): {
   }
 
   return {
-    input: parts.join(' ').trim() || 'Analise meu projeto.',
+    input: parts.join(' ').trim() || (searchPkbFlag ? '' : 'Analise meu projeto.'),
     scope: scope || process.env.AIOS_SCOPE,
     repoPath: repoPath || process.env.AIOS_REPO,
     workspaceId: workspaceId || process.env.AIOS_WORKSPACE,
@@ -148,6 +185,10 @@ function parseArgs(argv: string[]): {
     governanceStatus,
     metricsPrometheus,
     auditDocs,
+    searchPkb: searchPkbFlag,
+    searchPkbTags,
+    searchPkbDomain,
+    searchPkbLimit,
     governanceAudit,
     operationalState,
     providerId,
@@ -174,6 +215,18 @@ async function main(): Promise<void> {
     const audit = auditDocumentation({ repoPath: resolveRepo(args) })
     console.log(JSON.stringify(audit, null, 2))
     if (!audit.ok) process.exitCode = 1
+    return
+  }
+
+  if (args.searchPkb) {
+    const result = searchPkb({
+      repoPath: resolveRepo(args),
+      query: args.input.trim() || undefined,
+      tags: args.searchPkbTags,
+      domain: args.searchPkbDomain,
+      limit: args.searchPkbLimit,
+    })
+    console.log(JSON.stringify(result, null, 2))
     return
   }
 

@@ -4,6 +4,12 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.27.0] - 2026-07-20
+
+### Added
+
+- 🔎 PKB textual / tag search — `searchPkb` · MCP `aios_search_pkb` · CLI `--search-pkb` (#158)
+
 ## [0.26.0] - 2026-07-20
 
 ### Added

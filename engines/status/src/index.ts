@@ -40,6 +40,7 @@ export const MCP_TOOL_CATALOG = [
   'aios_provider_chat',
   'aios_governance_status',
   'aios_audit_docs',
+  'aios_search_pkb',
   'aios_governance_audit',
   'aios_governance_record',
   'aios_operational_state',
