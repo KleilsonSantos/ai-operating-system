@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# pre-commit: valida lint, format, typecheck, e testes em arquivos staged
+set -euo pipefail
+
+echo "pre-commit: executando lint-staged..."
+npx lint-staged
+
+echo "pre-commit: executando typecheck..."
+pnpm typecheck
+
+echo "pre-commit: executando testes..."
+pnpm test
+
+echo "pre-commit: ok!"
+exit 0

@@ -72,7 +72,7 @@ Espelha \`AGENTS.md\` + policies de fluxo. Aplicar em todo Agent chat neste work
 
 ## Git
 
-- Issue → \`feature/*\` from \`sandbox\` → PR → \`sandbox\` → PR → \`main\`
+- Issue → branch semântico (\`feature/*\`, \`fix/*\`, \`docs/*\`, \`chore/*\`, \`ci/*\`) a partir de \`sandbox\` → PR para \`sandbox\` → PR de promoção \`sandbox\` → \`main\`
 - Não push force em \`main\`/\`sandbox\`
 - Commits só quando o humano pedir (exceto bootstrap autorizado)
 
@@ -87,7 +87,7 @@ Espelha \`AGENTS.md\` + policies de fluxo. Aplicar em todo Agent chat neste work
 
 - AIOS é standalone (ADR-0001); agents = plugins
 - Não implementar todos os engines de uma vez — seguir \`docs/ROADMAP.md\`
-- CHANGELOG \`[Unreleased]\` se notável; PR para \`sandbox\`
+- CHANGELOG \`[Unreleased]\` se notável; branchs de trabalho abrem PR para \`sandbox\`, e a promoção final abre PR de \`sandbox\` para \`main\`
 
 ## Checklist rápido
 
