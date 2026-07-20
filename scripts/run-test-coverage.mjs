@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
@@ -8,6 +8,28 @@ const workspaceRoots = ['apps', 'engines', 'packages'];
 const aggregatedCoverageDir = join(repoRoot, 'coverage');
 const aggregatedLcovFile = join(aggregatedCoverageDir, 'lcov.info');
 const coverageEnabled = process.argv.includes('--coverage');
+
+function normalizeLcovPaths(lcovPath) {
+  const packageDir = resolve(dirname(lcovPath), '..');
+  const raw = readFileSync(lcovPath, 'utf8').trim();
+
+  return raw
+    .split('\n')
+    .map((line) => {
+      if (!line.startsWith('SF:')) {
+        return line;
+      }
+
+      const sourcePath = line.slice(3);
+      const repoRelativePath = relative(repoRoot, resolve(packageDir, sourcePath)).replaceAll(
+        '\\',
+        '/'
+      );
+
+      return `SF:${repoRelativePath}`;
+    })
+    .join('\n');
+}
 
 function runPnpm(args, cwd) {
   execFileSync('pnpm', args, {
@@ -94,7 +116,7 @@ if (lcovFiles.length === 0) {
 mkdirSync(aggregatedCoverageDir, { recursive: true });
 
 const mergedLcov = lcovFiles
-  .map((lcovPath) => readFileSync(lcovPath, 'utf8').trim())
+  .map((lcovPath) => normalizeLcovPaths(lcovPath))
   .filter(Boolean)
   .join('\n');
 
