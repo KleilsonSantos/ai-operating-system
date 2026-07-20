@@ -24,6 +24,12 @@ dist-ssr
 *.tsbuildinfo
 coverage
 
+# Turbo cache
+.turbo/
+
+# pnpm store
+.pnpm-store/
+
 # Playwright / Lighthouse (futuro)
 /test-results/
 **/test-results/
