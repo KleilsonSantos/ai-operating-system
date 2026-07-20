@@ -2,7 +2,7 @@ import fs from 'fs/promises'
 import { readFileSync } from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { default as Ajv, type ValidateFunction } from 'ajv'
+import Ajv2020, { type ValidateFunction } from 'ajv/dist/2020.js'
 import yaml from 'js-yaml'
 import { exec } from 'child_process'
 import { promisify } from 'util'
@@ -41,14 +41,14 @@ interface CacheEntry<T> {
 }
 
 export class AgentRegistry {
-  private readonly ajv: any
+  private readonly ajv: Ajv2020
   private readonly validateFn: ValidateFunction
   private builtinAgents: AgentEntry[] = []
   private readonly registryPath: string
   private readonly cache: Map<string, CacheEntry<unknown>> = new Map()
 
   constructor(options?: { registryPath?: string }) {
-    this.ajv = new (Ajv as any)()
+    this.ajv = new Ajv2020({ strict: false })
     this.validateFn = this.ajv.compile(agentSchema)
     this.registryPath = options?.registryPath || path.join(process.cwd(), '.aios', 'agents.registry.json')
     this.initBuiltinAgents()
