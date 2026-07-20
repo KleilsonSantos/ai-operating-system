@@ -1,5 +1,5 @@
 import fs from 'fs/promises'
-import { readFileSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import Ajv from 'ajv'
@@ -26,12 +26,21 @@ export interface AgentEntry {
   source: 'builtin' | 'local' | 'npm' | 'git'
   path?: string
   healthScore?: number
+  versions?: string[]
 }
 
 export interface ValidationResult {
   valid: boolean
   errors: string[]
 }
+
+interface CacheEntry<T> {
+  data: T
+  timestamp: number
+}
+
+const CACHE_TTL = 60 * 60 * 1000 // 1 hour
+const cache: Map<string, CacheEntry<any>> = new Map()
 
 export class AgentRegistry {
   private readonly ajv: any
@@ -143,6 +152,132 @@ export class AgentRegistry {
       timestamp: new Date().toISOString(),
       agents: agents.filter(a => a.source !== 'builtin')
     }, null, 2))
+  }
+
+  private async getCached<T>(key: string, fetchFn: () => Promise<T>): Promise<T> {
+    const cached = cache.get(key)
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return cached.data
+    }
+    const data = await fetchFn()
+    cache.set(key, { data, timestamp: Date.now() })
+    return data
+  }
+
+  async resolveLocalAgents(agentsPath?: string): Promise<AgentEntry[]> {
+    const pathToScan = agentsPath || process.env.AIOS_AGENTS_PATH || './agents'
+    const entries: AgentEntry[] = []
+
+    if (!existsSync(pathToScan)) {
+      return entries
+    }
+
+    const dirents = await fs.readdir(pathToScan, { withFileTypes: true })
+    for (const dirent of dirents) {
+      if (dirent.isDirectory()) {
+        const agentDir = path.join(pathToScan, dirent.name)
+        const yamlPath = path.join(agentDir, '.aios', 'agent.yaml')
+        const jsonPath = path.join(agentDir, '.aios', 'agent.json')
+        
+        let manifestPath: string | undefined
+        if (existsSync(yamlPath)) {
+          manifestPath = yamlPath
+        } else if (existsSync(jsonPath)) {
+          manifestPath = jsonPath
+        }
+        
+        if (manifestPath) {
+          try {
+            const manifest = await this.parseManifest(manifestPath)
+            const validation = this.validate(manifest)
+            if (validation.valid) {
+              entries.push({
+                manifest,
+                source: 'local',
+                path: agentDir
+              })
+            }
+          } catch (err) {
+            // Skip invalid agents
+          }
+        }
+      }
+    }
+
+    return entries
+  }
+
+  async resolveNpmAgent(packageName: string): Promise<AgentEntry | null> {
+    return this.getCached(`npm:${packageName}`, async () => {
+      try {
+        const response = await fetch(`https://registry.npmjs.org/${packageName}`)
+        if (!response.ok) return null
+        const pkgData = await response.json() as any
+        const latestVersion = pkgData['dist-tags']?.latest
+        if (!latestVersion) return null
+        
+        const versionData = pkgData.versions?.[latestVersion]
+        if (!versionData) return null
+        
+        const manifest: AgentManifest = {
+          name: packageName,
+          version: latestVersion,
+          displayName: versionData.name,
+          description: versionData.description,
+          metadata: {
+            keywords: versionData.keywords,
+            author: versionData.author,
+            homepage: versionData.homepage
+          }
+        }
+        
+        const versions = Object.keys(pkgData.versions || {})
+        return {
+          manifest,
+          source: 'npm',
+          versions
+        }
+      } catch (err) {
+        return null
+      }
+    })
+  }
+
+  async resolveGitAgent(repoUrl: string): Promise<AgentEntry | null> {
+    return this.getCached(`git:${repoUrl}`, async () => {
+      // For now, placeholder implementation - full git cloning would be more complex
+      try {
+        // Extract owner and repo from URL like https://github.com/owner/repo
+        const match = repoUrl.match(/github\.com\/([^/]+)\/([^/.]+)/)
+        if (!match) return null
+        const [, owner, repo] = match
+        
+        // Fetch repository info from GitHub API
+        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`)
+        if (!response.ok) return null
+        const repoData = await response.json() as any
+        
+        const manifest: AgentManifest = {
+          name: repoData.full_name,
+          version: '0.0.0',
+          displayName: repoData.name,
+          description: repoData.description,
+          metadata: {
+            owner,
+            repo,
+            stars: repoData.stargazers_count,
+            homepage: repoData.homepage
+          }
+        }
+        
+        return {
+          manifest,
+          source: 'git'
+        }
+      } catch (err) {
+        return null
+      }
+    })
   }
 }
 

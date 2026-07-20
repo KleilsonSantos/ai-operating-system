@@ -87,7 +87,7 @@
       "epic": "Registry",
       "milestone": "M2",
       "owner": "platform",
-      "status": "not-started",
+      "status": "in-progress",
       "depends_on": ["T4"],
       "requirements": ["REQ-REG-002: Multi-source agent discovery working"],
       "acceptance": [
