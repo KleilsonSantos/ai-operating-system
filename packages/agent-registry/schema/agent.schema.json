@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aios.dev/schemas/agent.schema.json",
+  "title": "Agent Manifest",
+  "type": "object",
+  "required": ["name", "version"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Unique identifier of the agent, preferably scoped like @aios/agent-name",
+      "pattern": "^[@][a-zA-Z0-9][a-zA-Z0-9-]*\/[a-zA-Z0-9][a-zA-Z0-9-]*$|^[a-zA-Z0-9][a-zA-Z0-9-]*$"
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version of the agent",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "displayName": {
+      "type": "string",
+      "description": "Human-readable name for UI"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description of what the agent does"
+    },
+    "inputs": {
+      "type": "object",
+      "description": "Input ports specification",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Data type of the input (e.g., string, number, object, any)"
+          },
+          "description": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean",
+            "default": false
+          },
+          "default": {}
+        }
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "description": "Output ports specification",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Data type of the output"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "description": "Dependencies on other agents or engines",
+      "properties": {
+        "agents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "engines": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Engine identifier, e.g., intent, policy, context"
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Arbitrary metadata for categorization, tags, etc.",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}
