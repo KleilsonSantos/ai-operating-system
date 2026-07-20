@@ -4,9 +4,13 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.26.0] - 2026-07-20
+
 ### Added
 
 - 📚 PKB inventory in `aios_audit_docs` / `@aios/documentation` — scaffold + `index.yaml` paths + orphan assets (#154)
+- 📚 External references catalog — `docs/references/` (legal/official URLs only) · DESIGN + `catalog.yaml` (#133)
+- 🧪 Spike note: OpenWiki vs AIOS knowledge/docs — enrich as external wiki, reject as second SSOT (`docs/spikes/openwiki-comparison.md`) (#148)
 
 ### Changed
 
@@ -14,11 +18,6 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 - 📝 Finish US English migration for AIOS product docs (ADRs, guides, READMEs, policies prose) — ADR-0018 / #142
 - 📝 Companion MCP HTTP consumption path — ports, `AIOS_MCP_URL`, health/smoke in control-plane guide + `@aios/mcp` README (#145)
 - 📝 `AGENTS.md` canonical context order (code → FOUNDATION/ADRs → policies → ROADMAP → PKB → optional external wikis) — OpenWiki spike follow-up (#151)
-
-### Added
-
-- 📚 External references catalog — `docs/references/` (legal/official URLs only) · DESIGN + `catalog.yaml` (#133)
-- 🧪 Spike note: OpenWiki vs AIOS knowledge/docs — enrich as external wiki, reject as second SSOT (`docs/spikes/openwiki-comparison.md`) (#148)
 
 ## [0.25.0] - 2026-07-18
 
