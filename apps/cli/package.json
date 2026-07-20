@@ -22,7 +22,8 @@
     "@aios/governance": "workspace:*",
     "@aios/operational-state": "workspace:*",
     "@aios/workspace": "workspace:*",
-    "@aios/shared": "workspace:*"
+    "@aios/shared": "workspace:*",
+    "@aios/agent-registry": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

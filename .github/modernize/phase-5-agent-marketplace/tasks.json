@@ -105,7 +105,7 @@
       "epic": "Registry",
       "milestone": "M2",
       "owner": "platform",
-      "status": "not-started",
+      "status": "completed",
       "depends_on": ["T5"],
       "requirements": ["REQ-CLI-001: Agent discovery from CLI"],
       "acceptance": [
@@ -122,7 +122,7 @@
       "epic": "Registry",
       "milestone": "M2",
       "owner": "platform",
-      "status": "not-started",
+      "status": "completed",
       "depends_on": ["T5"],
       "requirements": ["REQ-MCP-001: Agent discovery via MCP"],
       "acceptance": [
@@ -139,7 +139,7 @@
       "epic": "Registry",
       "milestone": "M2",
       "owner": "platform",
-      "status": "not-started",
+      "status": "completed",
       "depends_on": ["T4"],
       "requirements": ["REQ-REG-003: Registry survives process restarts"],
       "acceptance": [
