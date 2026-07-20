@@ -35,11 +35,11 @@ Integrator  →  @aios/pipeline.runPipeline  →  engines (intent…quality-gate
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
-| Integrator imports engines directly | Unstable API; monorepo coupling |
-| Docs only, no `runPipeline` | No programmatic smoke / regression |
-| Put `runPipeline` in `@aios/core` | Dependency cycle with engines that already depend on core |
+| Option                              | Reason                                                    |
+| ----------------------------------- | --------------------------------------------------------- |
+| Integrator imports engines directly | Unstable API; monorepo coupling                           |
+| Docs only, no `runPipeline`         | No programmatic smoke / regression                        |
+| Put `runPipeline` in `@aios/core`   | Dependency cycle with engines that already depend on core |
 
 ## References
 

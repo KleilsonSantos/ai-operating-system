@@ -41,11 +41,11 @@ Product docs (`docs/**`, ADRs, README, this file, CHANGELOG prose) are **US Engl
 
 Product-owner cues in chat (Portuguese ok). **Do not** skip the briefing after a summary reset.
 
-| Cue | Meaning |
-| --- | --- |
-| **`next`** | **Proposal only** — do **not** implement yet |
-| **`ok`** / **`prossegue`** | Implement the accepted proposal (Issue → feature → PR → `sandbox`) |
-| **`green`** | Promote: merge feature→`sandbox`→`main` (+ SemVer release when needed) |
+| Cue                        | Meaning                                                                |
+| -------------------------- | ---------------------------------------------------------------------- |
+| **`next`**                 | **Proposal only** — do **not** implement yet                           |
+| **`ok`** / **`prossegue`** | Implement the accepted proposal (Issue → feature → PR → `sandbox`)     |
+| **`green`**                | Promote: merge feature→`sandbox`→`main` (+ SemVer release when needed) |
 
 ### Before every `next` (mandatory briefing)
 

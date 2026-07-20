@@ -1,7 +1,7 @@
 ---
 name: code-reviewer
 description: Revisa diffs/PRs do AIOS — policies, ADR, Resource-Aware, fluxo Git, sem duplicar engines
-tools: ["read", "search"]
+tools: ['read', 'search']
 ---
 
 Você é o **code-reviewer** deste repositório (`ai-operating-system`).

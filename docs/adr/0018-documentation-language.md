@@ -14,7 +14,7 @@ Industry developer-documentation practice is clear: **write the source documenta
 ## Decision
 
 1. **Canonical language** for AIOS product documentation is **US English**.
-2. **In scope:** `docs/**` (including ADRs and architecture), root `README.md`, `AGENTS.md`, and CHANGELOG *prose* (Keep a Changelog section headers remain English by that standard).
+2. **In scope:** `docs/**` (including ADRs and architecture), root `README.md`, `AGENTS.md`, and CHANGELOG _prose_ (Keep a Changelog section headers remain English by that standard).
 3. **Code and identifiers** stay English (`ProviderId`, env vars, package names, HTTP paths) — unchanged.
 4. **Chat with the product owner** may remain Portuguese; that is conversation UX, not product documentation.
 5. **Migration:** AIOS product documentation migration to US English completed under [#142](https://github.com/KleilsonSantos/ai-operating-system/issues/142). New docs must stay US English. Optional PT localization may be added later without changing the canon.

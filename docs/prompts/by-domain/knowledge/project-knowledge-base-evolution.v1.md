@@ -21,6 +21,7 @@ related_prompts:
 created_at: 2026-07-18
 updated_at: 2026-07-18
 ---
+
 # Prompt — Análise Arquitetural e Proposta de Evolução da Base de Conhecimento do Projeto
 
 ## Objetivo

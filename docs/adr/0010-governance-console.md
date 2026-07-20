@@ -32,11 +32,11 @@ We need palatable visibility: what is active, available, and needs attention. Gr
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
-| Grafana-first | No useful series yet; weak fit for the AIOS domain |
-| Next.js already | Overkill for a local MVP |
-| Agents-only dashboard | Violates “plugins, not direct-call UX” |
+| Option                | Reason                                             |
+| --------------------- | -------------------------------------------------- |
+| Grafana-first         | No useful series yet; weak fit for the AIOS domain |
+| Next.js already       | Overkill for a local MVP                           |
+| Agents-only dashboard | Violates “plugins, not direct-call UX”             |
 
 ## References
 

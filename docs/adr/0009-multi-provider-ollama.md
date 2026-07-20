@@ -34,11 +34,11 @@ Phase 3 calls for multi-provider support. The immediate goal is to **save tokens
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
-| IDE extension → Ollama | Out of scope; competes with the IDE |
+| Option                             | Reason                                                     |
+| ---------------------------------- | ---------------------------------------------------------- |
+| IDE extension → Ollama             | Out of scope; competes with the IDE                        |
 | Wire Ollama into the Prompt Engine | Prompt Engine only builds a deterministic brief (ADR-0008) |
-| OpenAI/Anthropic SDKs already | Scope; after Ollama is validated |
+| OpenAI/Anthropic SDKs already      | Scope; after Ollama is validated                           |
 
 ## References
 

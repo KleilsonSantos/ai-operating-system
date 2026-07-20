@@ -1,7 +1,7 @@
 ---
 name: Bug Report
 about: Reportar um problema
-title: "[bug] "
+title: '[bug] '
 labels: bug
 ---
 

@@ -33,10 +33,10 @@ FOUNDATION lists `documentation-engine` and `governance-engine`. The `agent-docs
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
+| Option                 | Reason                                  |
+| ---------------------- | --------------------------------------- |
 | Only expand agent-docs | Does not cover canonical path inventory |
-| Grafana/SaaS audit | Outside Resource-Aware / Phase 3 MVP |
+| Grafana/SaaS audit     | Outside Resource-Aware / Phase 3 MVP    |
 
 ## References
 

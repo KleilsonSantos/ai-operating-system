@@ -31,11 +31,11 @@ The Companion (ADR-0014) needs a **stable operational state** on the control pla
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
-| Git/IDE watchers in AIOS | Resource-Aware + outside mission (ADR-0014) |
+| Option                                       | Reason                                       |
+| -------------------------------------------- | -------------------------------------------- |
+| Git/IDE watchers in AIOS                     | Resource-Aware + outside mission (ADR-0014)  |
 | Expand only `@aios/status` without an engine | Mixes health console with Companion contract |
-| Embed voice in state | Companion scope |
+| Embed voice in state                         | Companion scope                              |
 
 ## References
 

@@ -17,8 +17,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "turbo run test",
-    "test:coverage": "turbo run test -- --coverage",
+    "test": "node scripts/run-test-coverage.mjs",
+    "test:coverage": "node scripts/run-test-coverage.mjs --coverage",
     "audit": "audit-ci --moderate",
     "prepare": "git config core.hooksPath .githooks",
     "sync:cursor-rules": "node scripts/sync-cursor-rules-from-policies.mjs"
@@ -27,6 +27,7 @@
     "@eslint/js": "^10.0.1",
     "@typescript-eslint/eslint-plugin": "^8.64.0",
     "@typescript-eslint/parser": "^8.64.0",
+    "@vitest/coverage-v8": "^3.2.7",
     "audit-ci": "^7.1.0",
     "eslint": "^10.7.0",
     "eslint-config-prettier": "^10.1.8",

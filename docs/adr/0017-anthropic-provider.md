@@ -31,10 +31,10 @@ ADR-0016 covered OpenAI-compatible. Anthropic uses a distinct protocol (`x-api-k
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
+| Option                         | Reason                                                 |
+| ------------------------------ | ------------------------------------------------------ |
 | Only via OpenAI-compat gateway | Loses native features; operator may not have a gateway |
-| `@anthropic-ai/sdk` SDK | Overkill for health/models/chat |
+| `@anthropic-ai/sdk` SDK        | Overkill for health/models/chat                        |
 
 ## References
 

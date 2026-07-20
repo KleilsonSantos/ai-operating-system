@@ -32,9 +32,9 @@ User / integrators  →  AIOS (platform)  →  engines + plugins
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
-| Prompts / `AGENTS.md` only, no runtime | Does not cover orchestration, decision, or quality gate |
+| Option                                     | Reason                                                  |
+| ------------------------------------------ | ------------------------------------------------------- |
+| Prompts / `AGENTS.md` only, no runtime     | Does not cover orchestration, decision, or quality gate |
 | Embed AIOS as a folder in another monorepo | Couples release cycles and confuses the product mission |
 
 ## References

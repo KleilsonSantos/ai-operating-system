@@ -1,43 +1,39 @@
-import { useCallback, useEffect, useState } from 'react'
-import type { GovernanceStatus } from './types'
-import { TryItPanel } from './TryItPanel'
-import { formatConsumptionChip } from './consumption'
+import { useCallback, useEffect, useState } from 'react';
+import type { GovernanceStatus } from './types';
+import { TryItPanel } from './TryItPanel';
+import { formatConsumptionChip } from './consumption';
 
 export function App() {
-  const [status, setStatus] = useState<GovernanceStatus | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [status, setStatus] = useState<GovernanceStatus | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
     try {
-      const res = await fetch('/api/status')
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const data = (await res.json()) as GovernanceStatus
-      setStatus(data)
+      const res = await fetch('/api/status');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = (await res.json()) as GovernanceStatus;
+      setStatus(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    void refresh()
-    const id = window.setInterval(() => void refresh(), 20_000)
-    return () => window.clearInterval(id)
-  }, [refresh])
+    void refresh();
+    const id = window.setInterval(() => void refresh(), 20_000);
+    return () => window.clearInterval(id);
+  }, [refresh]);
 
-  const errors = status?.attention.filter((a) => a.severity === 'error').length ?? 0
-  const warns = status?.attention.filter((a) => a.severity === 'warn').length ?? 0
+  const errors = status?.attention.filter((a) => a.severity === 'error').length ?? 0;
+  const warns = status?.attention.filter((a) => a.severity === 'warn').length ?? 0;
   const workspaceId =
-    status?.workspaces.find((w) => w.ok)?.id ||
-    status?.workspaces[0]?.id ||
-    'aios'
-  const consumption = status
-    ? formatConsumptionChip(status.metrics)
-    : null
+    status?.workspaces.find((w) => w.ok)?.id || status?.workspaces[0]?.id || 'aios';
+  const consumption = status ? formatConsumptionChip(status.metrics) : null;
 
   return (
     <div className="shell">
@@ -45,8 +41,8 @@ export function App() {
         <p className="brand">AIOS</p>
         <h1>Console de governança</h1>
         <p className="lede">
-          Estado, atenção e ações seguras que provam o runtime — sem substituir a
-          IDE nem chamar agentes no UX.
+          Estado, atenção e ações seguras que provam o runtime — sem substituir a IDE nem chamar
+          agentes no UX.
         </p>
         <div className="actions">
           <button type="button" onClick={() => void refresh()} disabled={loading}>
@@ -62,8 +58,7 @@ export function App() {
 
       {error && (
         <p className="banner error" role="alert">
-          API: {error}. Corre <code>pnpm --filter @aios/console api</code> (porta
-          8787).
+          API: {error}. Corre <code>pnpm --filter @aios/console api</code> (porta 8787).
         </p>
       )}
 
@@ -80,8 +75,7 @@ export function App() {
             <div className={`chip ${status.provider.ok ? 'ok' : 'bad'}`}>
               <span className="chip-k">Provider</span>
               <span className="chip-v">
-                {status.provider.provider}{' '}
-                {status.provider.ok ? 'ativo' : 'inativo'}
+                {status.provider.provider} {status.provider.ok ? 'ativo' : 'inativo'}
               </span>
             </div>
             <div className={`chip ${consumption?.tone || ''}`}>
@@ -91,8 +85,7 @@ export function App() {
             <div className="chip">
               <span className="chip-k">Workspaces</span>
               <span className="chip-v">
-                {status.workspaces.filter((w) => w.ok).length}/
-                {status.workspaces.length} ok
+                {status.workspaces.filter((w) => w.ok).length}/{status.workspaces.length} ok
               </span>
             </div>
             <div className="chip">
@@ -106,10 +99,7 @@ export function App() {
           </section>
 
           <div className="grid grid-3">
-            <TryItPanel
-              workspaceId={workspaceId}
-              onAfterAction={() => void refresh()}
-            />
+            <TryItPanel workspaceId={workspaceId} onAfterAction={() => void refresh()} />
 
             <section className="panel attention" aria-labelledby="att-h">
               <h2 id="att-h">Needs attention</h2>
@@ -138,16 +128,10 @@ export function App() {
                 <dt>Provider URL</dt>
                 <dd>
                   <code>{status.provider.baseUrl}</code>
-                  {status.provider.latencyMs != null && (
-                    <> · {status.provider.latencyMs}ms</>
-                  )}
+                  {status.provider.latencyMs != null && <> · {status.provider.latencyMs}ms</>}
                 </dd>
                 <dt>Modelos</dt>
-                <dd>
-                  {status.provider.models?.length
-                    ? status.provider.models.join(', ')
-                    : '—'}
-                </dd>
+                <dd>{status.provider.models?.length ? status.provider.models.join(', ') : '—'}</dd>
                 <dt>Memória</dt>
                 <dd>
                   {status.memory.workspaceIds.length
@@ -161,40 +145,29 @@ export function App() {
                 <ul className="metric-stats" aria-labelledby="consumption-h">
                   <li>
                     <span className="metric-k">provider.chat calls</span>
-                    <span className="metric-v">
-                      {status.metrics.providerChat.count}
-                    </span>
+                    <span className="metric-v">{status.metrics.providerChat.count}</span>
                   </li>
                   <li>
                     <span className="metric-k">Errors</span>
-                    <span className="metric-v">
-                      {status.metrics.providerChat.errorCount}
-                    </span>
+                    <span className="metric-v">{status.metrics.providerChat.errorCount}</span>
                   </li>
                   <li>
                     <span className="metric-k">Prompt tokens</span>
-                    <span className="metric-v">
-                      {status.metrics.providerChat.promptTokens}
-                    </span>
+                    <span className="metric-v">{status.metrics.providerChat.promptTokens}</span>
                   </li>
                   <li>
                     <span className="metric-k">Completion tokens</span>
-                    <span className="metric-v">
-                      {status.metrics.providerChat.completionTokens}
-                    </span>
+                    <span className="metric-v">{status.metrics.providerChat.completionTokens}</span>
                   </li>
                   <li>
                     <span className="metric-k">Total tokens</span>
-                    <span className="metric-v">
-                      ~{status.metrics.providerChat.totalTokens}
-                    </span>
+                    <span className="metric-v">~{status.metrics.providerChat.totalTokens}</span>
                   </li>
                 </ul>
               ) : (
                 <p className="quiet">
-                  No <code>provider.chat</code> events yet. Run{' '}
-                  <code>aios_provider_chat</code> or CLI{' '}
-                  <code>--provider-chat</code>.
+                  No <code>provider.chat</code> events yet. Run <code>aios_provider_chat</code> or
+                  CLI <code>--provider-chat</code>.
                 </p>
               )}
               <p className="quiet metric-note">
@@ -232,11 +205,11 @@ export function App() {
         </>
       )}
     </div>
-  )
+  );
 }
 
 function severityLabel(s: string): string {
-  if (s === 'error') return 'Atenção'
-  if (s === 'warn') return 'Aviso'
-  return 'Info'
+  if (s === 'error') return 'Atenção';
+  if (s === 'warn') return 'Aviso';
+  return 'Info';
 }

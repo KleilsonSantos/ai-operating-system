@@ -6,34 +6,34 @@
  * Uso: node scripts/sync-cursor-rules-from-policies.mjs
  * ou:  pnpm sync:cursor-rules
  */
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const policiesPath = join(root, 'policies', 'aios.policies.json')
-const outDir = join(root, '.cursor', 'rules')
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const policiesPath = join(root, 'policies', 'aios.policies.json');
+const outDir = join(root, '.cursor', 'rules');
 
 if (!existsSync(policiesPath)) {
-  console.error('Missing', policiesPath)
-  process.exit(1)
+  console.error('Missing', policiesPath);
+  process.exit(1);
 }
 
-const raw = JSON.parse(readFileSync(policiesPath, 'utf8'))
-const policies = Array.isArray(raw) ? raw : raw.policies
+const raw = JSON.parse(readFileSync(policiesPath, 'utf8'));
+const policies = Array.isArray(raw) ? raw : raw.policies;
 if (!Array.isArray(policies) || policies.length === 0) {
-  console.error('No policies found in', policiesPath)
-  process.exit(1)
+  console.error('No policies found in', policiesPath);
+  process.exit(1);
 }
 
-mkdirSync(outDir, { recursive: true })
+mkdirSync(outDir, { recursive: true });
 
-const must = policies.filter((p) => p.severity === 'must')
-const should = policies.filter((p) => p.severity === 'should')
-const may = policies.filter((p) => p.severity === 'may')
+const must = policies.filter((p) => p.severity === 'must');
+const should = policies.filter((p) => p.severity === 'should');
+const may = policies.filter((p) => p.severity === 'may');
 
 function bullets(list) {
-  return list.map((p) => `- **${p.id}** (${p.severity}): ${p.description}`).join('\n')
+  return list.map((p) => `- **${p.id}** (${p.severity}): ${p.description}`).join('\n');
 }
 
 const policiesRule = `---
@@ -59,7 +59,7 @@ ${should.length ? `\n## SHOULD\n\n${bullets(should)}\n` : ''}${may.length ? `\n#
 3. Se uma policy conflitar com o pedido, diga o trade-off e proponha o caminho alinhado.
 4. Fonte canônica de produto: \`docs/FOUNDATION.md\` > resumos.
 5. Docs de produto novas/editadas em **US English** (\`docs-language-en\` / ADR-0018); chat com o owner pode ser PT.
-`
+`;
 
 const sdlcRule = `---
 description: AIOS SDLC — Git flow, commits, ROADMAP discipline for this repo
@@ -95,17 +95,17 @@ Espelha \`AGENTS.md\` + policies de fluxo. Aplicar em todo Agent chat neste work
 - ADR se decisão arquitetural?
 - Policies (não prompts longos) para regras permanentes?
 - Docs novas/editadas em US English (ADR-0018)?
-`
+`;
 
-writeFileSync(join(outDir, 'aios-policies.mdc'), policiesRule)
-writeFileSync(join(outDir, 'aios-sdlc.mdc'), sdlcRule)
+writeFileSync(join(outDir, 'aios-policies.mdc'), policiesRule);
+writeFileSync(join(outDir, 'aios-sdlc.mdc'), sdlcRule);
 
 const stamp = {
   generatedAt: new Date().toISOString(),
   source: 'policies/aios.policies.json',
   policyCount: policies.length,
   files: ['aios-policies.mdc', 'aios-sdlc.mdc'],
-}
-writeFileSync(join(outDir, '.sync-meta.json'), `${JSON.stringify(stamp, null, 2)}\n`)
+};
+writeFileSync(join(outDir, '.sync-meta.json'), `${JSON.stringify(stamp, null, 2)}\n`);
 
-console.log(`Synced ${policies.length} policies → ${outDir}`)
+console.log(`Synced ${policies.length} policies → ${outDir}`);

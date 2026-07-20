@@ -6,17 +6,17 @@ Interprets the user request into a typed `Intent`.
 
 **Heuristic** classification (rules):
 
-| `kind` | Examples |
-| --- | --- |
-| `analyze.project` | “Analise meu projeto.” |
-| `explain.code` | “Explain how this module works.” |
-| `review.change` | “Review this pull request.” |
-| `unknown` | No clear signals / below threshold |
+| `kind`            | Examples                           |
+| ----------------- | ---------------------------------- |
+| `analyze.project` | “Analise meu projeto.”             |
+| `explain.code`    | “Explain how this module works.”   |
+| `review.change`   | “Review this pull request.”        |
+| `unknown`         | No clear signals / below threshold |
 
 ```ts
-import { resolveIntent } from '@aios/intent'
+import { resolveIntent } from '@aios/intent';
 
-const intent = resolveIntent('Analise meu projeto.')
+const intent = resolveIntent('Analise meu projeto.');
 // { kind: 'analyze.project', confidence: 0.8, signals: [...], raw: '...' }
 ```
 
