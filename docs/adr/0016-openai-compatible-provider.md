@@ -32,11 +32,11 @@ ADR-0009 left cloud providers as a future stub. The Companion already exposes `a
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
-| `openai` npm SDK | Overkill for minimal health/models/chat; larger surface |
-| Native Anthropic already | Second protocol; defer |
-| Make openai the default | Ollama remains the local default; cloud is opt-in |
+| Option                   | Reason                                                  |
+| ------------------------ | ------------------------------------------------------- |
+| `openai` npm SDK         | Overkill for minimal health/models/chat; larger surface |
+| Native Anthropic already | Second protocol; defer                                  |
+| Make openai the default  | Ollama remains the local default; cloud is opt-in       |
 
 ## References
 

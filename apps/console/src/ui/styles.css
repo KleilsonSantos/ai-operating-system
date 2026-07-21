@@ -91,7 +91,9 @@ button {
   font-size: 0.9rem;
   padding: 0.55rem 1rem;
   cursor: pointer;
-  transition: transform 0.15s ease, background 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
 }
 
 button:hover:not(:disabled) {

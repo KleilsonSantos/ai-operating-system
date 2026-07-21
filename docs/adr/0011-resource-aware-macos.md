@@ -30,10 +30,10 @@ The development MacBook (16GB, IDEs, browser, AIOS console) does not handle “i
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
-| Long chat-only prompt | Violates `short-user-prompt` / policies > sermons |
-| Ollama required for health | Forces install and RAM without a governance need |
+| Option                     | Reason                                            |
+| -------------------------- | ------------------------------------------------- |
+| Long chat-only prompt      | Violates `short-user-prompt` / policies > sermons |
+| Ollama required for health | Forces install and RAM without a governance need  |
 
 ## References
 

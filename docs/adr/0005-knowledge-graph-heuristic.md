@@ -32,10 +32,10 @@ Phase 2 calls for a basic Knowledge Graph (Project → … relationships). Embed
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
-| Embeddings already in MVP | Phase 3 scope / cost |
-| Neo4j / external store | Premature infra |
+| Option                       | Reason                         |
+| ---------------------------- | ------------------------------ |
+| Embeddings already in MVP    | Phase 3 scope / cost           |
+| Neo4j / external store       | Premature infra                |
 | Markdown docs only, no graph | Little value for orchestration |
 
 ## References

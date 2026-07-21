@@ -6,7 +6,7 @@ Coordinates Decision → plugins → policies/context injection.
 const { results, ran, skipped } = await runWorkflow(intent, {
   policies,
   context,
-})
+});
 ```
 
 Plugins are **plugins** — the user does not choose them; the Decision matrix schedules them.

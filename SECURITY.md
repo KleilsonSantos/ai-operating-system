@@ -2,9 +2,9 @@
 
 ## Supported versions
 
-| Version | Supported |
-| --- | --- |
-| 0.x (pre-release) | ✅ |
+| Version           | Supported |
+| ----------------- | --------- |
+| 0.x (pre-release) | ✅        |
 
 ## Reporting a vulnerability
 

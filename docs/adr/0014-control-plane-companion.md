@@ -50,12 +50,12 @@ Capabilities / other MCP servers (IDE, Git, …)
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
+| Option                                          | Reason                                                      |
+| ----------------------------------------------- | ----------------------------------------------------------- |
 | Merge Jarvis + AIOS into one monolithic product | Confuses mission; violates IDE out-of-scope; Resource-Aware |
-| Embed AIOS as a companion folder | Rejected by ADR-0001 |
-| Duplicate Memory/Policy in the companion | Redundancy and truth drift |
-| Long Cursor prompts only, no platform | Already rejected at AIOS genesis |
+| Embed AIOS as a companion folder                | Rejected by ADR-0001                                        |
+| Duplicate Memory/Policy in the companion        | Redundancy and truth drift                                  |
+| Long Cursor prompts only, no platform           | Already rejected at AIOS genesis                            |
 
 ## References
 

@@ -32,11 +32,11 @@ The dominant cost in Cursor/Claude/Copilot today is **repeating** policies, pref
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
-| IDE extension → Ollama first | Replaces the IDE; out of scope |
-| Cursor Rules only, no MCP | Already exists; insufficient for live memory/KG |
-| Generate brief with LLM | Cost + non-determinism in Phase 1 of this vertical |
+| Option                       | Reason                                             |
+| ---------------------------- | -------------------------------------------------- |
+| IDE extension → Ollama first | Replaces the IDE; out of scope                     |
+| Cursor Rules only, no MCP    | Already exists; insufficient for live memory/KG    |
+| Generate brief with LLM      | Cost + non-determinism in Phase 1 of this vertical |
 
 ## References
 

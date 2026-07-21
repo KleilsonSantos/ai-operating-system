@@ -20,6 +20,7 @@ related_prompts: []
 created_at: 2026-07-18
 updated_at: 2026-07-18
 ---
+
 ````md
 # Prompt — Análise Arquitetural da Documentação e Evolução do README.md
 

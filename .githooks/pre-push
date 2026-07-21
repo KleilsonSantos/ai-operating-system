@@ -1,19 +1,24 @@
 #!/usr/bin/env bash
-# pre-push: avisa/bloqueia push direto para main se houver drift SemVer (#15).
-# Bypass não recomendado; CI também aplica o gate.
+# pre-push: bloqueia push direto para branches protegidas e valida
+# vulnerabilidades em dependências antes de qualquer push.
+# Bypass não recomendado; CI também aplica os gates.
 
 set -euo pipefail
 
-ROOT="$(git rev-parse --show-toplevel)"
 remote="${1:-}"
 url="${2:-}"
 
+echo "pre-push: verificando vulnerabilidades em dependências..."
+pnpm audit
+
 while read -r local_ref local_sha remote_ref remote_sha; do
   [[ -z "${local_ref:-}" ]] && continue
-  if [[ "$remote_ref" == "refs/heads/main" ]]; then
-    echo "pre-push: verificando alinhamento SemVer antes de push para main…"
-    bash "$ROOT/scripts/check-semver-alignment.sh" "" "$local_sha"
+  if [[ "$remote_ref" == "refs/heads/main" || "$remote_ref" == "refs/heads/sandbox" ]]; then
+    echo "pre-push: push direto para ${remote_ref#refs/heads/} é proibido."
+    echo "pre-push: abra um PR para promover mudanças para branches protegidas."
+    exit 1
   fi
 done
 
+echo "pre-push: ok!"
 exit 0

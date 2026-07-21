@@ -7,82 +7,82 @@ export type IntentKind =
   | 'review.change'
   | 'implement.feature'
   | 'fix.bug'
-  | 'unknown'
+  | 'unknown';
 
 export type Intent = {
   /** Texto original do usuário */
-  raw: string
+  raw: string;
   /** Classificação tipada */
-  kind: IntentKind
+  kind: IntentKind;
   /** 0..1 — confiança da classificação */
-  confidence: number
+  confidence: number;
   /** Sinais que sustentaram a decisão (debug / audit) */
-  signals: string[]
-}
+  signals: string[];
+};
 
 export type PolicyRule = {
-  id: string
-  description: string
-  severity: 'must' | 'should' | 'may'
-}
+  id: string;
+  description: string;
+  severity: 'must' | 'should' | 'may';
+};
 
 /** Snippet recuperado do repositório (Context Engine — #7). */
-export type ContextSnippetKind = 'doc' | 'code' | 'manifest'
+export type ContextSnippetKind = 'doc' | 'code' | 'manifest';
 
 export type ContextSnippet = {
   /** Caminho relativo à raiz do repo */
-  path: string
-  kind: ContextSnippetKind
+  path: string;
+  kind: ContextSnippetKind;
   /** Conteúdo truncado */
-  content: string
-  bytes: number
-}
+  content: string;
+  bytes: number;
+};
 
 export type ContextBundle = {
   /** Raiz resolvida do repositório */
-  repoPath: string
+  repoPath: string;
   /** Escopo relativo (`. ` = repo inteiro priorizado) */
-  scope: string
-  snippets: ContextSnippet[]
+  scope: string;
+  snippets: ContextSnippet[];
   /** Sinais de coleta (audit / debug) */
-  signals: string[]
-}
+  signals: string[];
+};
 
 export type AgentResult = {
-  agentId: string
-  ok: boolean
-  findings: string[]
-  references: string[]
-}
+  agentId: string;
+  ok: boolean;
+  findings: string[];
+  references: string[];
+};
 
 export type QualityVerdict = {
-  passed: boolean
-  checks: Record<string, boolean>
-  blockers: string[]
-}
+  passed: boolean;
+  checks: Record<string, boolean>;
+  blockers: string[];
+};
 
 /** Versão do contrato CLI/API estável (issue #9). */
-export const PIPELINE_CONTRACT_VERSION = '1' as const
+export const PIPELINE_CONTRACT_VERSION = '1' as const;
 
-export type PipelineContractVersion = typeof PIPELINE_CONTRACT_VERSION
+export type PipelineContractVersion = typeof PIPELINE_CONTRACT_VERSION;
 
 /** Entrada do registry multi-repo (Fase 2 · #43 · Fase 3 · #55). */
 export type WorkspaceEntry = {
   /** Identificador estável (ex.: `aios`, `portfolio`) */
-  id: string
+  id: string;
   /** Absoluto ou relativo à âncora do registry */
-  path: string
+  path: string;
   /** Label humano opcional */
-  name?: string
+  name?: string;
   /** Se true, usado quando workspaceId omitido */
-  default?: boolean
+  default?: boolean;
   /** Tags livres (ex.: `frontend`, `java`) */
-  tags?: string[]
-}
+  tags?: string[];
+};
 
 export type WorkspaceRegistry = {
-  workspaces: WorkspaceEntry[]
-}
+  workspaces: WorkspaceEntry[];
+};
 
 /** Knowledge Graph (Fase 2 · #47). */
 export type KnowledgeNodeKind =
@@ -95,339 +95,339 @@ export type KnowledgeNodeKind =
   | 'workspace'
   | 'infra'
   | 'api'
-  | 'database'
+  | 'database';
 
-export type KnowledgeEdgeKind = 'contains' | 'depends_on' | 'documents'
+export type KnowledgeEdgeKind = 'contains' | 'depends_on' | 'documents';
 
 export type KnowledgeNode = {
-  id: string
-  kind: KnowledgeNodeKind
-  label: string
-  path?: string
-  meta?: Record<string, string>
-}
+  id: string;
+  kind: KnowledgeNodeKind;
+  label: string;
+  path?: string;
+  meta?: Record<string, string>;
+};
 
 export type KnowledgeEdge = {
-  from: string
-  to: string
-  kind: KnowledgeEdgeKind
-}
+  from: string;
+  to: string;
+  kind: KnowledgeEdgeKind;
+};
 
 export type KnowledgeGraph = {
-  repoPath?: string
-  nodes: KnowledgeNode[]
-  edges: KnowledgeEdge[]
-  signals: string[]
-}
+  repoPath?: string;
+  nodes: KnowledgeNode[];
+  edges: KnowledgeEdge[];
+  signals: string[];
+};
 
 /** Memory Engine (Fase 2 · #51). */
 export type MemoryEntry = {
-  id: string
-  content: string
-  createdAt: string
-  tags?: string[]
-}
+  id: string;
+  content: string;
+  createdAt: string;
+  tags?: string[];
+};
 
 export type MemoryStore = {
-  workspaceId: string
-  updatedAt: string
-  entries: MemoryEntry[]
-}
+  workspaceId: string;
+  updatedAt: string;
+  entries: MemoryEntry[];
+};
 
 /** Prompt Engine — brief governado (#59). */
 export type CompilePromptRequest = {
-  input: string
-  workspaceId?: string
-  repoPath?: string
-  policiesPath?: string
-  memoryLimit?: number
-}
+  input: string;
+  workspaceId?: string;
+  repoPath?: string;
+  policiesPath?: string;
+  memoryLimit?: number;
+};
 
 export type CompiledPrompt = {
-  input: string
-  intent: Intent
-  workspaceId?: string
-  repoPath: string
+  input: string;
+  intent: Intent;
+  workspaceId?: string;
+  repoPath: string;
   /** Texto pronto para o Agent (markdown curto) */
-  brief: string
+  brief: string;
   stats: {
-    mustPolicyCount: number
-    memoryCount: number
-    knowledgeNodes: number
-    briefChars: number
-  }
-}
+    mustPolicyCount: number;
+    memoryCount: number;
+    knowledgeNodes: number;
+    briefChars: number;
+  };
+};
 
 /** Multi-provider MVP (#67) — LLM auxiliar (não substitui a IDE). */
-export type ProviderId = 'ollama' | 'openai' | 'anthropic'
+export type ProviderId = 'ollama' | 'openai' | 'anthropic';
 
-export type ChatRole = 'system' | 'user' | 'assistant'
+export type ChatRole = 'system' | 'user' | 'assistant';
 
 export type ChatMessage = {
-  role: ChatRole
-  content: string
-}
+  role: ChatRole;
+  content: string;
+};
 
 export type ChatRequest = {
-  model?: string
-  messages: ChatMessage[]
-  temperature?: number
-}
+  model?: string;
+  messages: ChatMessage[];
+  temperature?: number;
+};
 
 /** Normalized token usage from provider APIs (#115). */
 export type ChatUsage = {
-  promptTokens?: number
-  completionTokens?: number
-  totalTokens?: number
-}
+  promptTokens?: number;
+  completionTokens?: number;
+  totalTokens?: number;
+};
 
 export type ChatResponse = {
-  provider: string
-  model: string
-  message: ChatMessage
-  usage?: ChatUsage
-  latencyMs?: number
-}
+  provider: string;
+  model: string;
+  message: ChatMessage;
+  usage?: ChatUsage;
+  latencyMs?: number;
+};
 
 export type ProviderModelInfo = {
-  name: string
-  size?: number
-  modifiedAt?: string
-}
+  name: string;
+  size?: number;
+  modifiedAt?: string;
+};
 
 export type ProviderHealth = {
-  provider: string
-  ok: boolean
-  baseUrl: string
-  models?: string[]
-  error?: string
-  latencyMs?: number
-}
+  provider: string;
+  ok: boolean;
+  baseUrl: string;
+  models?: string[];
+  error?: string;
+  latencyMs?: number;
+};
 
 /** Console de governança — status + attention (#71). */
-export type AttentionSeverity = 'error' | 'warn' | 'info'
+export type AttentionSeverity = 'error' | 'warn' | 'info';
 
 export type AttentionItem = {
-  id: string
-  severity: AttentionSeverity
-  title: string
-  detail: string
-}
+  id: string;
+  severity: AttentionSeverity;
+  title: string;
+  detail: string;
+};
 
 export type GovernanceStatus = {
-  generatedAt: string
-  contractVersion: PipelineContractVersion
-  homePath: string
+  generatedAt: string;
+  contractVersion: PipelineContractVersion;
+  homePath: string;
   workspaces: Array<{
-    id: string
-    name?: string
-    repoPath: string
-    ok: boolean
-    signals: string[]
-  }>
+    id: string;
+    name?: string;
+    repoPath: string;
+    ok: boolean;
+    signals: string[];
+  }>;
   policies: {
-    source: string
-    path?: string
-    count: number
-    mustIds: string[]
-  }
-  provider: ProviderHealth
+    source: string;
+    path?: string;
+    count: number;
+    mustIds: string[];
+  };
+  provider: ProviderHealth;
   memory: {
-    workspaceIds: string[]
-  }
+    workspaceIds: string[];
+  };
   exposed: {
-    mcpTools: string[]
-    providers: string[]
-  }
-  attention: AttentionItem[]
+    mcpTools: string[];
+    providers: string[];
+  };
+  attention: AttentionItem[];
   metrics: {
-    available: boolean
-    note: string
-    eventCount?: number
-    path?: string
+    available: boolean;
+    note: string;
+    eventCount?: number;
+    path?: string;
     /** Aggregated `provider.chat` JSONL events (#115). */
     providerChat?: {
-      count: number
-      errorCount: number
-      promptTokens: number
-      completionTokens: number
-      totalTokens: number
-    }
-  }
-}
+      count: number;
+      errorCount: number;
+      promptTokens: number;
+      completionTokens: number;
+      totalTokens: number;
+    };
+  };
+};
 
 /** Documentation Engine — drift heurístico (#80). */
-export type DocFindingSeverity = 'error' | 'warn' | 'info'
+export type DocFindingSeverity = 'error' | 'warn' | 'info';
 
 export type DocFinding = {
-  id: string
-  severity: DocFindingSeverity
-  title: string
-  detail: string
-  path?: string
-}
+  id: string;
+  severity: DocFindingSeverity;
+  title: string;
+  detail: string;
+  path?: string;
+};
 
 export type DocumentationAudit = {
-  generatedAt: string
-  repoPath: string
-  present: string[]
-  missing: string[]
-  findings: DocFinding[]
-  ok: boolean
-}
+  generatedAt: string;
+  repoPath: string;
+  present: string[];
+  missing: string[];
+  findings: DocFinding[];
+  ok: boolean;
+};
 
 /** Governance Engine — auditoria leve (#80). */
 export type GovernanceDecision = {
-  id: string
-  at: string
-  kind: string
-  summary: string
-  policyIds?: string[]
-  verdict?: 'pass' | 'fail' | 'info'
-  source?: string
-}
+  id: string;
+  at: string;
+  kind: string;
+  summary: string;
+  policyIds?: string[];
+  verdict?: 'pass' | 'fail' | 'info';
+  source?: string;
+};
 
 export type GovernanceAudit = {
-  generatedAt: string
-  homePath: string
-  repoPath: string
+  generatedAt: string;
+  homePath: string;
+  repoPath: string;
   policies: {
-    mustIds: string[]
-    count: number
+    mustIds: string[];
+    count: number;
     /** Platform core must ids missing from the loaded set (#121). */
-    missingCoreMustIds?: string[]
-  }
+    missingCoreMustIds?: string[];
+  };
   decisions: {
-    path: string
-    count: number
-    recent: GovernanceDecision[]
-    failCount?: number
-    unknownPolicyIds?: string[]
-  }
+    path: string;
+    count: number;
+    recent: GovernanceDecision[];
+    failCount?: number;
+    unknownPolicyIds?: string[];
+  };
   documentation?: {
-    ok: boolean
-    findingCount: number
-  }
-  findings: AttentionItem[]
-  ok: boolean
-}
+    ok: boolean;
+    findingCount: number;
+  };
+  findings: AttentionItem[];
+  ok: boolean;
+};
 
 /** Operational State — estado unificado leve do control plane (#84 / ADR-0015). */
 export type OperationalGitSnapshot = {
-  available: boolean
-  branch?: string
-  head?: string
-  dirty?: boolean
-  error?: string
-}
+  available: boolean;
+  branch?: string;
+  head?: string;
+  dirty?: boolean;
+  error?: string;
+};
 
 export type OperationalState = {
-  generatedAt: string
-  contractVersion: PipelineContractVersion
-  homePath: string
+  generatedAt: string;
+  contractVersion: PipelineContractVersion;
+  homePath: string;
   /** Sempre on-demand no MVP — sem watchers / polling. */
-  mode: 'on-demand'
-  summary: string
-  git: OperationalGitSnapshot
+  mode: 'on-demand';
+  summary: string;
+  git: OperationalGitSnapshot;
   focus?: {
-    workspaceId: string
-    name?: string
-    repoPath: string
-    ok: boolean
-  }
+    workspaceId: string;
+    name?: string;
+    repoPath: string;
+    ok: boolean;
+  };
   health: {
-    attention: AttentionItem[]
-    errorCount: number
-    warnCount: number
-    providerOk: boolean
-    workspaceCount: number
-    policiesMust: number
-  }
+    attention: AttentionItem[];
+    errorCount: number;
+    warnCount: number;
+    providerOk: boolean;
+    workspaceCount: number;
+    policiesMust: number;
+  };
   memory: {
-    workspaceIds: string[]
-  }
+    workspaceIds: string[];
+  };
   governance: {
-    decisionCount: number
-    path: string
+    decisionCount: number;
+    path: string;
     /** Present when a quick governance audit ran (#121). */
-    ok?: boolean
-    findingCount?: number
-  }
+    ok?: boolean;
+    findingCount?: number;
+  };
   /** Fronteiras explícitas (Companion / ADR-0014). */
   boundaries: {
-    voice: false
-    ideControl: false
-    dockerControl: false
-  }
-}
+    voice: false;
+    ideControl: false;
+    dockerControl: false;
+  };
+};
 
 /** Pedido do integrador → núcleo AIOS. */
 export type PipelineRequest = {
   /** Texto livre do usuário (intent raw) */
-  input: string
+  input: string;
   /** Diretório do repositório alvo (default: process.cwd()) */
-  repoPath?: string
+  repoPath?: string;
   /**
    * Id no registry `workspaces/aios.workspaces.json`.
    * Se definido, resolve `repoPath` (exceto se `repoPath` explícito vencer).
    */
-  workspaceId?: string
+  workspaceId?: string;
   /** Escopo relativo para Context Engine */
-  scope?: string
+  scope?: string;
   /** JSON de policies (opcional; senão defaults / walk-up) */
-  policiesPath?: string
+  policiesPath?: string;
   /** Override do arquivo de workspaces */
-  workspacesPath?: string
+  workspacesPath?: string;
   /**
    * Se true, anexa recall de memória ao response
    * (default: true quando workspaceId presente).
    */
-  includeMemory?: boolean
+  includeMemory?: boolean;
   /** Limite de entradas de memória no response */
-  memoryLimit?: number
-}
+  memoryLimit?: number;
+};
 
 /** Resposta estável do núcleo (stdout JSON do CLI = este shape). */
 export type PipelineResponse = {
-  contractVersion: PipelineContractVersion
-  intent: Intent
+  contractVersion: PipelineContractVersion;
+  intent: Intent;
   policies: {
-    source: string
-    path?: string
-    count: number
-    mustIds: string[]
-  }
+    source: string;
+    path?: string;
+    count: number;
+    mustIds: string[];
+  };
   context: {
-    repoPath: string
-    scope: string
-    snippetCount: number
-    paths: string[]
-    signals: string[]
-  }
+    repoPath: string;
+    scope: string;
+    snippetCount: number;
+    paths: string[];
+    signals: string[];
+  };
   /** Presente quando um workspace do registry foi usado */
   workspace?: {
-    id: string
-    name?: string
-    registryPath?: string
-  }
+    id: string;
+    name?: string;
+    registryPath?: string;
+  };
   /** Resumo do Knowledge Graph heurístico (#47) */
   knowledge?: {
-    nodeCount: number
-    edgeCount: number
-    kinds: Record<string, number>
-    signals: string[]
-  }
+    nodeCount: number;
+    edgeCount: number;
+    kinds: Record<string, number>;
+    signals: string[];
+  };
   /** Recall de memória de sessão/projeto (#51) */
   memory?: {
-    workspaceId: string
-    count: number
-    entries: MemoryEntry[]
-    path?: string
-  }
+    workspaceId: string;
+    count: number;
+    entries: MemoryEntry[];
+    path?: string;
+  };
   workflow: {
-    ran: string[]
-    skipped: string[]
-  }
-  results: AgentResult[]
-  verdict: QualityVerdict
-}
+    ran: string[];
+    skipped: string[];
+  };
+  results: AgentResult[];
+  verdict: QualityVerdict;
+};

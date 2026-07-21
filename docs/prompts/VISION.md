@@ -10,8 +10,8 @@ The Prompt Knowledge Base starts as an **organized Docs-as-Code collection**. Th
 4. Semantic search
 5. Embeddings + vector store (separate ADR; Resource-Aware)
 6. RAG over PKB (never replaces FOUNDATION / policies)
-7. MCP tools that *reference* catalog entries (not a second policy engine)
-8. Specialized agents that *compose* catalog templates
+7. MCP tools that _reference_ catalog entries (not a second policy engine)
+8. Specialized agents that _compose_ catalog templates
 9. Recommendation / similarity / quality analytics
 10. Optional link into long-horizon AIOS memory — **Memory Engine stays authoritative for session/project memory** (ADR-0006)
 

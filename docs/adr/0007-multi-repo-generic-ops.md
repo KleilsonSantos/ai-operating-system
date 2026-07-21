@@ -32,10 +32,10 @@ Phase 2 delivered registry + resolve (ADR-0004). Phase 3 calls for **generic mul
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
+| Option                             | Reason                               |
+| ---------------------------------- | ------------------------------------ |
 | Automatic discovery `~/Projects/*` | Noise (already rejected in ADR-0004) |
-| Mandatory parallel orchestration | Premature complexity |
+| Mandatory parallel orchestration   | Premature complexity                 |
 
 ## References
 

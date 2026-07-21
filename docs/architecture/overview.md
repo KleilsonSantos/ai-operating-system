@@ -53,24 +53,24 @@ AIOS
 └── ui
 ```
 
-| Engine | Role |
-| --- | --- |
-| **ai-core** | Shared runtime (types, events, execution) |
-| **intent** | Interprets the user request |
-| **policy** | Global rules (official docs, trade-offs, anti-overengineering) |
-| **context** | Retrieves relevant code/docs from the repo |
-| **workflow** | Defines the pipeline for the intent |
-| **orchestration** | Schedules and coordinates plugins |
-| **prompt** | Internal templates (do not replace policies) |
-| **knowledge** | Knowledge Graph (relations, not just files) |
-| **memory** | Session / project memory |
-| **documentation** | Doc generation/validation |
-| **governance** | Audit, decision tracking |
-| **quality** | Pre-response Quality Gate |
-| **appsec / architecture / repository** | Specialized domains (also plugins/agents) |
-| **decision** | “Does this agent need to participate?” — if not, do not run |
-| **integrations** | MCPs, IDEs, LLM providers |
-| **ui** | Governance surface (Phase 3+) |
+| Engine                                 | Role                                                           |
+| -------------------------------------- | -------------------------------------------------------------- |
+| **ai-core**                            | Shared runtime (types, events, execution)                      |
+| **intent**                             | Interprets the user request                                    |
+| **policy**                             | Global rules (official docs, trade-offs, anti-overengineering) |
+| **context**                            | Retrieves relevant code/docs from the repo                     |
+| **workflow**                           | Defines the pipeline for the intent                            |
+| **orchestration**                      | Schedules and coordinates plugins                              |
+| **prompt**                             | Internal templates (do not replace policies)                   |
+| **knowledge**                          | Knowledge Graph (relations, not just files)                    |
+| **memory**                             | Session / project memory                                       |
+| **documentation**                      | Doc generation/validation                                      |
+| **governance**                         | Audit, decision tracking                                       |
+| **quality**                            | Pre-response Quality Gate                                      |
+| **appsec / architecture / repository** | Specialized domains (also plugins/agents)                      |
+| **decision**                           | “Does this agent need to participate?” — if not, do not run    |
+| **integrations**                       | MCPs, IDEs, LLM providers                                      |
+| **ui**                                 | Governance surface (Phase 3+)                                  |
 
 ## Policies instead of long prompts
 
@@ -97,7 +97,7 @@ Rules are registered once in the **Policy Engine**, for example:
 
 ## Intent → automatic decomposition
 
-Request: *Analyze my project.*
+Request: _Analyze my project._
 
 ```text
 Intent → Project → Code → Backend → Spring Boot → Java → Architecture

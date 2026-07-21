@@ -1,12 +1,12 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 type ActionDef = {
-  id: string
-  label: string
-  hint: string
-  needsInput?: boolean
-  placeholder?: string
-}
+  id: string;
+  label: string;
+  hint: string;
+  needsInput?: boolean;
+  placeholder?: string;
+};
 
 const ACTIONS: ActionDef[] = [
   {
@@ -63,28 +63,28 @@ const ACTIONS: ActionDef[] = [
     label: 'Operational state',
     hint: 'Snapshot unificado (#84) — sem voz/IDE',
   },
-]
+];
 
 type ActionResult = {
-  ok: boolean
-  action: string
-  latencyMs: number
-  result: unknown
-  error?: string
-}
+  ok: boolean;
+  action: string;
+  latencyMs: number;
+  result: unknown;
+  error?: string;
+};
 
 type Props = {
-  workspaceId: string
-  onAfterAction?: () => void
-}
+  workspaceId: string;
+  onAfterAction?: () => void;
+};
 
 export function TryItPanel({ workspaceId, onAfterAction }: Props) {
-  const [busy, setBusy] = useState<string | null>(null)
-  const [input, setInput] = useState('')
-  const [last, setLast] = useState<ActionResult | null>(null)
+  const [busy, setBusy] = useState<string | null>(null);
+  const [input, setInput] = useState('');
+  const [last, setLast] = useState<ActionResult | null>(null);
 
   async function run(actionId: string) {
-    setBusy(actionId)
+    setBusy(actionId);
     try {
       const res = await fetch('/api/action', {
         method: 'POST',
@@ -94,10 +94,10 @@ export function TryItPanel({ workspaceId, onAfterAction }: Props) {
           workspaceId,
           input: input || undefined,
         }),
-      })
-      const data = (await res.json()) as ActionResult
-      setLast(data)
-      onAfterAction?.()
+      });
+      const data = (await res.json()) as ActionResult;
+      setLast(data);
+      onAfterAction?.();
     } catch (err) {
       setLast({
         ok: false,
@@ -105,9 +105,9 @@ export function TryItPanel({ workspaceId, onAfterAction }: Props) {
         latencyMs: 0,
         result: null,
         error: err instanceof Error ? err.message : String(err),
-      })
+      });
     } finally {
-      setBusy(null)
+      setBusy(null);
     }
   }
 
@@ -115,8 +115,7 @@ export function TryItPanel({ workspaceId, onAfterAction }: Props) {
     <section className="panel tryit" aria-labelledby="try-h">
       <h2 id="try-h">Try it</h2>
       <p className="quiet">
-        Ações seguras nos engines — prova que o runtime funciona. Sem agentes no
-        UX.
+        Ações seguras nos engines — prova que o runtime funciona. Sem agentes no UX.
       </p>
       <label className="field">
         <span>Workspace</span>
@@ -124,11 +123,7 @@ export function TryItPanel({ workspaceId, onAfterAction }: Props) {
       </label>
       <label className="field">
         <span>Input (brief / remember)</span>
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Opcional…"
-        />
+        <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Opcional…" />
       </label>
       <ul className="try-list">
         {ACTIONS.map((a) => (
@@ -158,5 +153,5 @@ export function TryItPanel({ workspaceId, onAfterAction }: Props) {
         </div>
       )}
     </section>
-  )
+  );
 }

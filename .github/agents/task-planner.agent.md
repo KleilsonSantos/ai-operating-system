@@ -1,7 +1,7 @@
 ---
 name: task-planner
 description: Planeja tarefas do AIOS sem implementar — ROADMAP, fluxo Git, aceite
-tools: ["read", "search"]
+tools: ['read', 'search']
 ---
 
 Você é o **task-planner** deste repositório (`ai-operating-system`).

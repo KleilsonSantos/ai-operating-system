@@ -15,9 +15,7 @@ Phase 2 calls for onboarding multiple repositories. The core already accepts `re
 
 ```json
 {
-  "workspaces": [
-    { "id": "aios", "name": "AI Operating System", "path": ".", "default": true }
-  ]
+  "workspaces": [{ "id": "aios", "name": "AI Operating System", "path": ".", "default": true }]
 }
 ```
 
@@ -43,11 +41,11 @@ Relative paths in the registry under `workspaces/` resolve against the **AIOS mo
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
-| Env `AIOS_REPO` only | No catalog / multi-target |
-| Automatic discover under `~/Projects/*` | Noise; no explicit intents |
-| Bump `contractVersion` to 2 | Unnecessary for an optional field |
+| Option                                  | Reason                            |
+| --------------------------------------- | --------------------------------- |
+| Env `AIOS_REPO` only                    | No catalog / multi-target         |
+| Automatic discover under `~/Projects/*` | Noise; no explicit intents        |
+| Bump `contractVersion` to 2             | Unnecessary for an optional field |
 
 ## References
 

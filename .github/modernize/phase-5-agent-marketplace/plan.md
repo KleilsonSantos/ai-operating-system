@@ -3,7 +3,7 @@
 **Phase:** 5  
 **Target Release:** v0.28.0 (aspirational: 2026-08-20)  
 **Pillar:** Agent Marketplace & Reusability  
-**Status:** In Progress  
+**Status:** In Progress
 
 ---
 
@@ -21,6 +21,7 @@ Phase 5 enables agents as first-class, discoverable, reusable building blocks fo
 ## Milestones
 
 ### M1: Foundation (Week 1)
+
 - [x] ADR-0023 approved (decision captured)
 - [ ] Agent Registry architecture docs
 - [ ] `agent.yaml` manifest schema (JSON Schema)
@@ -33,6 +34,7 @@ Phase 5 enables agents as first-class, discoverable, reusable building blocks fo
 ---
 
 ### M2: Registry MVP (Week 1–2)
+
 - [ ] Implement `@aios/agent-registry` core (parse, validate, discover)
 - [ ] CLI: `aios list-agents` command
 - [ ] MCP: `aios_list_agents` tool
@@ -46,6 +48,7 @@ Phase 5 enables agents as first-class, discoverable, reusable building blocks fo
 ---
 
 ### M3: Packaging Standards (Week 2)
+
 - [ ] Agent manifest validator
 - [ ] npm scaffolder: `npm create @aios/agent@latest --name my-agent`
 - [ ] Dependency resolver (multi-level: agent → agent → engine)
@@ -59,6 +62,7 @@ Phase 5 enables agents as first-class, discoverable, reusable building blocks fo
 ---
 
 ### M4: Observability & Metrics (Week 2–3)
+
 - [ ] Add `recordAgentExecution` hook to Orchestration Engine
 - [ ] Metrics schema: `kind: agent.execution` (agent-name, version, outcome, duration, cost)
 - [ ] Health-score calculator (success-rate + recency + adoption)
@@ -72,6 +76,7 @@ Phase 5 enables agents as first-class, discoverable, reusable building blocks fo
 ---
 
 ### M5: Community Publishing (Week 3)
+
 - [ ] GitHub Actions workflow: detect `aios-agent` topic, ingest metadata
 - [ ] Async registry ingestion service (weekly scan)
 - [ ] Abuse detection heuristics (stale agents, spam repos)
@@ -85,6 +90,7 @@ Phase 5 enables agents as first-class, discoverable, reusable building blocks fo
 ---
 
 ### M6: Integration & Backcompat (Week 3–4)
+
 - [ ] Migrate built-in agents (Architecture, AppSec, Docs, QA) to registry
 - [ ] Backwards compatibility: auto-wrap engines/* agents
 - [ ] Cross-workspace discovery (multi-repo context)
@@ -103,13 +109,13 @@ See `tasks.json` for detailed task graph.
 
 ### Key epics:
 
-| Epic | Tasks | Owner | Week | Gate |
-|------|-------|-------|------|------|
-| **Registry** | T1–T8 | Platform | 1–2 | List agents ✅ |
-| **Packaging** | T9–T14 | DevEx | 2 | Scaffold works |
-| **Observability** | T15–T22 | Analytics | 2–3 | Dashboard live |
-| **Publishing** | T23–T28 | DevOps+DevEx | 3 | Community agent ingested |
-| **Integration** | T29–T35 | Platform Lead | 3–4 | Full adoption tracking |
+| Epic              | Tasks   | Owner         | Week | Gate                     |
+| ----------------- | ------- | ------------- | ---- | ------------------------ |
+| **Registry**      | T1–T8   | Platform      | 1–2  | List agents ✅           |
+| **Packaging**     | T9–T14  | DevEx         | 2    | Scaffold works           |
+| **Observability** | T15–T22 | Analytics     | 2–3  | Dashboard live           |
+| **Publishing**    | T23–T28 | DevOps+DevEx  | 3    | Community agent ingested |
+| **Integration**   | T29–T35 | Platform Lead | 3–4  | Full adoption tracking   |
 
 ---
 
@@ -142,13 +148,13 @@ See `tasks.json` for detailed task graph.
 
 ## Blockers & Risks
 
-| Risk | Mitigation |
-|------|-----------|
-| Spam/abuse in community agents | Validation gate + manual moderation (first month) |
+| Risk                            | Mitigation                                                   |
+| ------------------------------- | ------------------------------------------------------------ |
+| Spam/abuse in community agents  | Validation gate + manual moderation (first month)            |
 | Dependency resolution conflicts | Sandbox all agent tests; version constraints clear in schema |
-| Registry size explosion | Pagination + archive (Phase 6+) |
-| Backwards compat issues | Built-in agents wrapped in shim; tests for both paths |
-| GitHub API rate limits | Batch ingestion; cache responses (24h TTL) |
+| Registry size explosion         | Pagination + archive (Phase 6+)                              |
+| Backwards compat issues         | Built-in agents wrapped in shim; tests for both paths        |
+| GitHub API rate limits          | Batch ingestion; cache responses (24h TTL)                   |
 
 ---
 

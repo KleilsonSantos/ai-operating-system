@@ -3,13 +3,13 @@
 Stable port for CLI and integrators (`runPipeline`).
 
 ```ts
-import { runPipeline } from '@aios/pipeline'
+import { runPipeline } from '@aios/pipeline';
 
 const response = await runPipeline({
   input: 'Analise meu projeto.',
   repoPath: process.cwd(),
   scope: 'engines/policy', // optional
-})
+});
 // response.contractVersion === '1'
 ```
 

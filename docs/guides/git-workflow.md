@@ -16,9 +16,9 @@ feature/* | fix/* | docs/* | chore/* | ci/*
 
 ## Permanent branches
 
-| Branch | Role |
-| --- | --- |
-| `main` | Production / releases |
+| Branch    | Role                   |
+| --------- | ---------------------- |
+| `main`    | Production / releases  |
 | `sandbox` | Continuous integration |
 
 ## Canonical kickoff
