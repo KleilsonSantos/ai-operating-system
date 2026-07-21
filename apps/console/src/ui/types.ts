@@ -1,52 +1,52 @@
-export type AttentionSeverity = 'error' | 'warn' | 'info'
+export type AttentionSeverity = 'error' | 'warn' | 'info';
 
 export type GovernanceStatus = {
-  generatedAt: string
-  contractVersion: string
-  homePath: string
+  generatedAt: string;
+  contractVersion: string;
+  homePath: string;
   workspaces: Array<{
-    id: string
-    name?: string
-    repoPath: string
-    ok: boolean
-    signals: string[]
-  }>
+    id: string;
+    name?: string;
+    repoPath: string;
+    ok: boolean;
+    signals: string[];
+  }>;
   policies: {
-    source: string
-    path?: string
-    count: number
-    mustIds: string[]
-  }
+    source: string;
+    path?: string;
+    count: number;
+    mustIds: string[];
+  };
   provider: {
-    provider: string
-    ok: boolean
-    baseUrl: string
-    models?: string[]
-    error?: string
-    latencyMs?: number
-  }
-  memory: { workspaceIds: string[] }
+    provider: string;
+    ok: boolean;
+    baseUrl: string;
+    models?: string[];
+    error?: string;
+    latencyMs?: number;
+  };
+  memory: { workspaceIds: string[] };
   exposed: {
-    mcpTools: string[]
-    providers: string[]
-  }
+    mcpTools: string[];
+    providers: string[];
+  };
   attention: Array<{
-    id: string
-    severity: AttentionSeverity
-    title: string
-    detail: string
-  }>
+    id: string;
+    severity: AttentionSeverity;
+    title: string;
+    detail: string;
+  }>;
   metrics: {
-    available: boolean
-    note: string
-    eventCount?: number
-    path?: string
+    available: boolean;
+    note: string;
+    eventCount?: number;
+    path?: string;
     providerChat?: {
-      count: number
-      errorCount: number
-      promptTokens: number
-      completionTokens: number
-      totalTokens: number
-    }
-  }
-}
+      count: number;
+      errorCount: number;
+      promptTokens: number;
+      completionTokens: number;
+      totalTokens: number;
+    };
+  };
+};

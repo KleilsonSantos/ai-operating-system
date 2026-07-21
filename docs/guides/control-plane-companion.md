@@ -8,13 +8,13 @@
 
 ## Who does what
 
-| Capability | AIOS | Companion |
-| --- | --- | --- |
-| Policies / quality / brief | ✅ | consumes |
-| Memory / KG / docs audit | ✅ | consumes |
-| Governance console | ✅ | optional deep-link |
-| Voice / continuous dialogue | ❌ | ✅ |
-| IDE/Docker/Git watchers | ❌ (MVP) | ✅ (when it exists) |
+| Capability                  | AIOS              | Companion              |
+| --------------------------- | ----------------- | ---------------------- |
+| Policies / quality / brief  | ✅                | consumes               |
+| Memory / KG / docs audit    | ✅                | consumes               |
+| Governance console          | ✅                | optional deep-link     |
+| Voice / continuous dialogue | ❌                | ✅                     |
+| IDE/Docker/Git watchers     | ❌ (MVP)          | ✅ (when it exists)    |
 | Open IDE / start containers | ❌ (out of scope) | ✅ with Resource-Aware |
 
 ## Contracts
@@ -27,17 +27,17 @@ The Companion does **not** import `engines/*` internals as a stable public API; 
 
 ## MCP transports (Companion)
 
-| Transport | How | Notes |
-| --- | --- | --- |
-| **stdio** (default) | Companion spawns `$AIOS_HOME/apps/mcp` | Cursor unchanged; Resource-Aware |
+| Transport                    | How                                                                                                      | Notes                                                        |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| **stdio** (default)          | Companion spawns `$AIOS_HOME/apps/mcp`                                                                   | Cursor unchanged; Resource-Aware                             |
 | **Streamable HTTP** (opt-in) | Run AIOS `pnpm --filter @aios/mcp dev:http`, then set Companion `AIOS_MCP_URL=http://127.0.0.1:8791/mcp` | Companion does **not** auto-start HTTP or fall back silently |
 
 **Ports (do not collide):**
 
-| Port | Service |
-| --- | --- |
-| `8787` | AIOS console |
-| `8790` | Companion surface API |
+| Port   | Service                 |
+| ------ | ----------------------- |
+| `8787` | AIOS console            |
+| `8790` | Companion surface API   |
 | `8791` | AIOS MCP HTTP (default) |
 
 **Operator smoke:**
@@ -57,12 +57,12 @@ Details: [`apps/mcp/README.md`](../../apps/mcp/README.md) · Companion release n
 
 ## Companion contract (minimum)
 
-| Tool / API | Use |
-| --- | --- |
-| `aios_operational_state` | Snapshot: focus, git, health, memory/governance |
-| `aios_governance_status` | Detailed health + attention |
-| `aios_memory_*` / `aios_governance_*` | Memory and decisions |
-| `runPipeline` / `contractVersion` | Governed workflow |
+| Tool / API                            | Use                                             |
+| ------------------------------------- | ----------------------------------------------- |
+| `aios_operational_state`              | Snapshot: focus, git, health, memory/governance |
+| `aios_governance_status`              | Detailed health + attention                     |
+| `aios_memory_*` / `aios_governance_*` | Memory and decisions                            |
+| `runPipeline` / `contractVersion`     | Governed workflow                               |
 
 Do not import `engines/*` as a public API.
 

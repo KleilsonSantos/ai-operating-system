@@ -14,7 +14,7 @@
 ## Checklist
 
 - [ ] Branch semântica criada a partir de `sandbox`
-- [ ] PR aberto para `sandbox` (não para `main` diretamente)
+- [ ] Target correto para esta etapa: branch de trabalho → `sandbox`; promoção `sandbox` → `main`
 - [ ] `pnpm typecheck` passou (quando aplicável)
 - [ ] Documentação atualizada se o PR altera build/uso/arquitetura
 - [ ] `CHANGELOG.md` `[Unreleased]` atualizado (se mudança notável)

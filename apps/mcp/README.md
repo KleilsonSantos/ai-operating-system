@@ -6,19 +6,19 @@ Bridges Cursor / Companion / HTTP clients to the AIOS runtime (`runPipeline`, po
 
 ## Tools
 
-| Tool | Role |
-| --- | --- |
-| `aios_contract_version` | Pipeline contract version |
-| `aios_compile_prompt` | Governed brief (#59) |
-| `aios_list_workspaces` | Multi-repo registry (#43) |
-| `aios_workspace_upsert` / `remove` / `validate` | Workspace ops (#55) |
-| `aios_run_across_workspaces` | Batch pipeline (#55) |
-| `aios_build_knowledge` | Knowledge Graph (#47) |
-| `aios_memory_remember` / `recall` / `clear` | Memory (#51) |
-| `aios_load_policies` | Policies + constraints |
-| `aios_governance_*` / `aios_audit_docs` / `aios_search_pkb` / `aios_operational_state` | Governance + docs/PKB + ops |
-| `aios_provider_*` | Provider health / models / chat |
-| `aios_run_pipeline` | Full core → `PipelineResponse` |
+| Tool                                                                                   | Role                            |
+| -------------------------------------------------------------------------------------- | ------------------------------- |
+| `aios_contract_version`                                                                | Pipeline contract version       |
+| `aios_compile_prompt`                                                                  | Governed brief (#59)            |
+| `aios_list_workspaces`                                                                 | Multi-repo registry (#43)       |
+| `aios_workspace_upsert` / `remove` / `validate`                                        | Workspace ops (#55)             |
+| `aios_run_across_workspaces`                                                           | Batch pipeline (#55)            |
+| `aios_build_knowledge`                                                                 | Knowledge Graph (#47)           |
+| `aios_memory_remember` / `recall` / `clear`                                            | Memory (#51)                    |
+| `aios_load_policies`                                                                   | Policies + constraints          |
+| `aios_governance_*` / `aios_audit_docs` / `aios_search_pkb` / `aios_operational_state` | Governance + docs/PKB + ops     |
+| `aios_provider_*`                                                                      | Provider health / models / chat |
+| `aios_run_pipeline`                                                                    | Full core → `PipelineResponse`  |
 
 ## Stdio (default)
 

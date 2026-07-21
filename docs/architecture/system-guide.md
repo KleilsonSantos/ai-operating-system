@@ -24,11 +24,11 @@ flowchart TD
 
 ## Contracts (sketch)
 
-| Port | Who talks | What |
-| --- | --- | --- |
-| CLI / API | Human or integrator | `PipelineRequest` → `runPipeline` → `PipelineResponse` (`contractVersion: "1"`) |
-| Engine API | Internal | Typed events between engines |
-| Plugin API | Agents | Context + policies input → artifact |
+| Port       | Who talks           | What                                                                            |
+| ---------- | ------------------- | ------------------------------------------------------------------------------- |
+| CLI / API  | Human or integrator | `PipelineRequest` → `runPipeline` → `PipelineResponse` (`contractVersion: "1"`) |
+| Engine API | Internal            | Typed events between engines                                                    |
+| Plugin API | Agents              | Context + policies input → artifact                                             |
 
 ### Intent Engine (`@aios/intent`) — issue #5
 

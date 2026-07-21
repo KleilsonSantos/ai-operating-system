@@ -9,12 +9,12 @@ pnpm --filter @aios/cli dev -- --repo=/path/to/project "Review this PR"
 pnpm --filter @aios/cli dev -- --contract-version
 ```
 
-| Flag / env | Role |
-| --- | --- |
-| `--scope` / `AIOS_SCOPE` | Context scope |
-| `--repo` / `AIOS_REPO` | Target repository root |
-| `--policies` / `AIOS_POLICIES_PATH` | Policies JSON |
-| `--contract-version` | Prints `1` and exits |
+| Flag / env                          | Role                   |
+| ----------------------------------- | ---------------------- |
+| `--scope` / `AIOS_SCOPE`            | Context scope          |
+| `--repo` / `AIOS_REPO`              | Target repository root |
+| `--policies` / `AIOS_POLICIES_PATH` | Policies JSON          |
+| `--contract-version`                | Prints `1` and exits   |
 
 Exit `1` if `verdict.passed === false`.
 

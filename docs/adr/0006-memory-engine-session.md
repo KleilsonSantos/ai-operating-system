@@ -32,11 +32,11 @@ Phase 2 calls for a Memory Engine (session / project). Persistence must be simpl
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
-| RAM-only memory | Lost across MCP restarts |
-| SQLite/Postgres already | Phase 3 scope |
-| Vector store | Overengineering in this phase |
+| Option                  | Reason                        |
+| ----------------------- | ----------------------------- |
+| RAM-only memory         | Lost across MCP restarts      |
+| SQLite/Postgres already | Phase 3 scope                 |
+| Vector store            | Overengineering in this phase |
 
 ## References
 

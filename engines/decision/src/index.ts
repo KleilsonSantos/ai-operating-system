@@ -2,9 +2,9 @@
  * Decision Engine — decide quais plugins participam do workflow (#8).
  * Fase 1: matriz estática por IntentKind (sem LLM).
  */
-import type { IntentKind } from '@aios/shared'
+import type { IntentKind } from '@aios/shared';
 
-export type AgentId = 'architecture' | 'appsec' | 'docs' | 'qa'
+export type AgentId = 'architecture' | 'appsec' | 'docs' | 'qa';
 
 /** Matriz intent → agentes. `unknown` não agenda ninguém. */
 export const AGENT_MATRIX: Record<IntentKind, readonly AgentId[]> = {
@@ -14,17 +14,17 @@ export const AGENT_MATRIX: Record<IntentKind, readonly AgentId[]> = {
   'implement.feature': ['architecture', 'appsec', 'docs', 'qa'],
   'fix.bug': ['architecture', 'appsec', 'qa'],
   unknown: [],
-}
+};
 
 export function agentsForIntent(kind: IntentKind): readonly AgentId[] {
-  return AGENT_MATRIX[kind] ?? []
+  return AGENT_MATRIX[kind] ?? [];
 }
 
 /**
  * Retorna true se o agente deve rodar para este intent.
  */
 export function shouldRunAgent(agentId: string, intentKind: string): boolean {
-  const kind = intentKind as IntentKind
-  const list = agentsForIntent(kind)
-  return list.includes(agentId as AgentId)
+  const kind = intentKind as IntentKind;
+  const list = agentsForIntent(kind);
+  return list.includes(agentId as AgentId);
 }

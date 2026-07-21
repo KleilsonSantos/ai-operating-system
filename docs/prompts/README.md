@@ -10,12 +10,12 @@ This is **not** a second product SSOT. Canonical product truth remains:
 
 Related engines (do **not** duplicate here):
 
-| Capability | Where |
-| --- | --- |
-| Governed brief builder (`compilePrompt`) | `@aios/prompt` · ADR-0008 |
-| Session / project memory | `@aios/memory` · ADR-0006 |
-| Heuristic knowledge graph | `@aios/knowledge` · ADR-0005 |
-| External official references | [`docs/references/`](../references/) (#133) |
+| Capability                               | Where                                       |
+| ---------------------------------------- | ------------------------------------------- |
+| Governed brief builder (`compilePrompt`) | `@aios/prompt` · ADR-0008                   |
+| Session / project memory                 | `@aios/memory` · ADR-0006                   |
+| Heuristic knowledge graph                | `@aios/knowledge` · ADR-0005                |
+| External official references             | [`docs/references/`](../references/) (#133) |
 
 Long-term evolution: [`VISION.md`](./VISION.md).
 
@@ -35,20 +35,20 @@ Naming: `{slug}.v{n}.md` — descriptive English slug, SemVer-like integer `n`, 
 
 ## Frontmatter (required)
 
-| Field | Notes |
-| --- | --- |
-| `id` | Stable unique id, e.g. `prompt.documentation.readme-docs-architecture-audit` |
-| `title` | Short English title |
-| `domain` | Folder under `by-domain/` |
-| `purpose` | One-line why |
-| `tags` | Searchable keywords |
-| `version` | Integer matching `.vN` |
-| `status` | `active` · `draft` · `archived` |
-| `language` | Body language (`pt-BR`, `en-US`, …) |
-| `ai_ready` | Safe to feed agents as-is |
-| `related_docs` | Paths under `docs/` or repo root |
-| `related_prompts` | Other prompt `id`s |
-| `created_at` / `updated_at` | ISO date |
+| Field                       | Notes                                                                        |
+| --------------------------- | ---------------------------------------------------------------------------- |
+| `id`                        | Stable unique id, e.g. `prompt.documentation.readme-docs-architecture-audit` |
+| `title`                     | Short English title                                                          |
+| `domain`                    | Folder under `by-domain/`                                                    |
+| `purpose`                   | One-line why                                                                 |
+| `tags`                      | Searchable keywords                                                          |
+| `version`                   | Integer matching `.vN`                                                       |
+| `status`                    | `active` · `draft` · `archived`                                              |
+| `language`                  | Body language (`pt-BR`, `en-US`, …)                                          |
+| `ai_ready`                  | Safe to feed agents as-is                                                    |
+| `related_docs`              | Paths under `docs/` or repo root                                             |
+| `related_prompts`           | Other prompt `id`s                                                           |
+| `created_at` / `updated_at` | ISO date                                                                     |
 
 ## Intake rule (when a strong prompt appears)
 

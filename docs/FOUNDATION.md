@@ -343,8 +343,8 @@ Because those rules are already registered as platform policies.
 
 # Phased evolution
 
-* **Phase 1:** AIOS core — intent, policy, context, orchestration, plugins, and quality gate — validating architecture and flows.
-* **Phase 2:** reusable multi-repository platform, with Knowledge Graph and project memory.
-* **Phase 3:** full operational independence — multi-tool (ChatGPT, Claude, Gemini, GitHub Copilot, etc.), context providers, integrations/MCP, and governance UI.
+- **Phase 1:** AIOS core — intent, policy, context, orchestration, plugins, and quality gate — validating architecture and flows.
+- **Phase 2:** reusable multi-repository platform, with Knowledge Graph and project memory.
+- **Phase 3:** full operational independence — multi-tool (ChatGPT, Claude, Gemini, GitHub Copilot, etc.), context providers, integrations/MCP, and governance UI.
 
 AIOS is unique: an AI governance platform for the SDLC — architecture, automation, policies, and quality composing the product.

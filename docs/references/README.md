@@ -4,12 +4,12 @@ Curated, versioned links to **official / legal** external documentation that hum
 
 This is **not** product SSOT and **not** a curriculum dump.
 
-| Layer | Role |
-| --- | --- |
-| Product SSOT | [`FOUNDATION.md`](../FOUNDATION.md) · ADRs · [`ROADMAP.md`](../ROADMAP.md) · code |
-| Prompt assets | [`docs/prompts/`](../prompts/) (PKB · #134) |
-| Runtime state | `.aios/memory`, Knowledge Graph — not catalogs |
-| **This folder** | External **references** only (URLs + metadata) |
+| Layer           | Role                                                                              |
+| --------------- | --------------------------------------------------------------------------------- |
+| Product SSOT    | [`FOUNDATION.md`](../FOUNDATION.md) · ADRs · [`ROADMAP.md`](../ROADMAP.md) · code |
+| Prompt assets   | [`docs/prompts/`](../prompts/) (PKB · #134)                                       |
+| Runtime state   | `.aios/memory`, Knowledge Graph — not catalogs                                    |
+| **This folder** | External **references** only (URLs + metadata)                                    |
 
 Design note: [`DESIGN.md`](./DESIGN.md).
 

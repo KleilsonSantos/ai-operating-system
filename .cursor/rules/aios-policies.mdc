@@ -5,10 +5,10 @@ alwaysApply: true
 
 # AIOS Policies (chat bridge)
 
-Estas regras vêm do **Policy Engine** (`policies/aios.policies.json`).
-O usuário digita pedidos **curtos**; você **não** pede que ele repita best practices.
+These rules come from the **Policy Engine** (`policies/aios.policies.json`).
+The user can write **short prompts**; do **not** ask them to repeat best practices already captured in policies and project rules.
 
-Regenerar: `pnpm sync:cursor-rules`
+Regenerate: `pnpm sync:cursor-rules`
 
 ## MUST
 
@@ -32,10 +32,11 @@ Regenerar: `pnpm sync:cursor-rules`
 
 - **justify-resource-impact** (should): Infra suggestions must state why, alternatives, and impact on hardware/maintenance/consumption
 
-## Comportamento no chat
+## Chat behavior
 
 1. Aplique as policies acima em toda sugestão de código, review e plano.
 2. Não peça ao usuário para colar "siga boas práticas / commits / sem depreciação".
 3. Se uma policy conflitar com o pedido, diga o trade-off e proponha o caminho alinhado.
 4. Fonte canônica de produto: `docs/FOUNDATION.md` > resumos.
-5. Docs de produto novas/editadas em **US English** (`docs-language-en` / ADR-0018); chat com o owner pode ser PT.
+5. For task routing, prefer `.trae/rules/`, `docs/guides/`, `.github/`, and `scripts/` before any generic root summary file.
+6. Docs de produto novas/editadas em **US English** (`docs-language-en` / ADR-0018); chat com o owner pode ser PT.

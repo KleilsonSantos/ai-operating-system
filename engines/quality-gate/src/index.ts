@@ -1,20 +1,15 @@
 /**
  * Quality Gate — valida o pacote antes de considerar a resposta OK (#8).
  */
-import type {
-  AgentResult,
-  ContextBundle,
-  Intent,
-  QualityVerdict,
-} from '@aios/shared'
-import { agentsForIntent } from '@aios/decision'
+import type { AgentResult, ContextBundle, Intent, QualityVerdict } from '@aios/shared';
+import { agentsForIntent } from '@aios/decision';
 
 export type EvaluateQualityOptions = {
-  intent: Intent
-  context?: ContextBundle
+  intent: Intent;
+  context?: ContextBundle;
   /** Agentes que o Decision pulou de propósito */
-  skipped?: string[]
-}
+  skipped?: string[];
+};
 
 /**
  * Bloqueia resposta inconsistente:
@@ -26,55 +21,45 @@ export type EvaluateQualityOptions = {
  */
 export function evaluateQuality(
   results: AgentResult[],
-  options?: EvaluateQualityOptions,
+  options?: EvaluateQualityOptions
 ): QualityVerdict {
   const checks: Record<string, boolean> = {
     agentsOk: results.every((r) => r.ok),
-  }
+  };
 
   if (!options) {
-    checks.hasFindings = results.some((r) => r.findings.length > 0)
+    checks.hasFindings = results.some((r) => r.findings.length > 0);
     const blockers = Object.entries(checks)
       .filter(([, ok]) => !ok)
-      .map(([name]) => name)
-    return { passed: blockers.length === 0, checks, blockers }
+      .map(([name]) => name);
+    return { passed: blockers.length === 0, checks, blockers };
   }
 
-  const { intent, context } = options
-  const expected = agentsForIntent(intent.kind)
-  const ranIds = new Set(results.map((r) => r.agentId))
+  const { intent, context } = options;
+  const expected = agentsForIntent(intent.kind);
+  const ranIds = new Set(results.map((r) => r.agentId));
 
   checks.agentsScheduled =
-    intent.kind === 'unknown'
-      ? results.length === 0
-      : expected.every((id) => ranIds.has(id))
+    intent.kind === 'unknown' ? results.length === 0 : expected.every((id) => ranIds.has(id));
 
-  checks.nonEmptyRun =
-    intent.kind === 'unknown' ? true : results.length > 0
+  checks.nonEmptyRun = intent.kind === 'unknown' ? true : results.length > 0;
 
   checks.contextPresent =
-    intent.kind !== 'analyze.project'
-      ? true
-      : Boolean(context && context.snippets.length > 0)
+    intent.kind !== 'analyze.project' ? true : Boolean(context && context.snippets.length > 0);
 
   checks.policiesInjected =
-    results.length === 0
-      ? true
-      : results.every((r) => r.findings.includes('policies.injected'))
+    results.length === 0 ? true : results.every((r) => r.findings.includes('policies.injected'));
 
   checks.hasDomainFindings =
     results.length === 0
       ? true
       : results.every((r) =>
-          r.findings.some(
-            (f) =>
-              !f.startsWith('policies.') && !f.startsWith('context.injected'),
-          ),
-        )
+          r.findings.some((f) => !f.startsWith('policies.') && !f.startsWith('context.injected'))
+        );
 
   const blockers = Object.entries(checks)
     .filter(([, ok]) => !ok)
-    .map(([name]) => name)
+    .map(([name]) => name);
 
-  return { passed: blockers.length === 0, checks, blockers }
+  return { passed: blockers.length === 0, checks, blockers };
 }

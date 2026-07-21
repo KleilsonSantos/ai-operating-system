@@ -38,11 +38,11 @@ The Health+Attention MVP (ADR-0010) shows state but does not prove value: the **
 
 ## Rejected alternatives
 
-| Option | Reason |
-| --- | --- |
-| Status refresh only | Does not prove engines |
-| Agent buttons | Violates AGENTS.md / FOUNDATION |
-| Proxy to Cursor Agent | Out of console scope |
+| Option                | Reason                          |
+| --------------------- | ------------------------------- |
+| Status refresh only   | Does not prove engines          |
+| Agent buttons         | Violates AGENTS.md / FOUNDATION |
+| Proxy to Cursor Agent | Out of console scope            |
 
 ## References
 

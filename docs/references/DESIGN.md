@@ -4,13 +4,13 @@
 
 Ship a **Docs-as-Code catalog** of external official URLs under `docs/references/`, separate from product SSOT and from runtime knowledge/memory.
 
-| Concern | Where it lives |
-| --- | --- |
-| What AIOS *is* and how it behaves | `docs/FOUNDATION.md`, ADRs, ROADMAP, code |
-| Reusable prompt assets | `docs/prompts/` (PKB) |
-| Session / project facts | Memory Engine (ADR-0006) |
-| Heuristic repo graph | Knowledge Graph (ADR-0005) |
-| External standards & vendor docs | **`docs/references/catalog.yaml`** |
+| Concern                           | Where it lives                            |
+| --------------------------------- | ----------------------------------------- |
+| What AIOS _is_ and how it behaves | `docs/FOUNDATION.md`, ADRs, ROADMAP, code |
+| Reusable prompt assets            | `docs/prompts/` (PKB)                     |
+| Session / project facts           | Memory Engine (ADR-0006)                  |
+| Heuristic repo graph              | Knowledge Graph (ADR-0005)                |
+| External standards & vendor docs  | **`docs/references/catalog.yaml`**        |
 
 ## Why not ADR-level runtime?
 

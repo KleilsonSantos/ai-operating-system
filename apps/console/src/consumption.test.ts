@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { formatConsumptionChip } from './ui/consumption.ts'
+import { describe, expect, it } from 'vitest';
+import { formatConsumptionChip } from './ui/consumption.ts';
 
 describe('formatConsumptionChip', () => {
   it('shows empty state when no provider.chat', () => {
@@ -7,9 +7,9 @@ describe('formatConsumptionChip', () => {
       formatConsumptionChip({
         available: false,
         note: 'none',
-      }),
-    ).toEqual({ tone: '', label: 'no chat events' })
-  })
+      })
+    ).toEqual({ tone: '', label: 'no chat events' });
+  });
 
   it('summarizes providerChat totals', () => {
     expect(
@@ -24,9 +24,9 @@ describe('formatConsumptionChip', () => {
           completionTokens: 5,
           totalTokens: 15,
         },
-      }),
-    ).toEqual({ tone: 'ok', label: '2 chat · ~15 tok' })
-  })
+      })
+    ).toEqual({ tone: 'ok', label: '2 chat · ~15 tok' });
+  });
 
   it('marks errors as bad tone', () => {
     const out = formatConsumptionChip({
@@ -39,8 +39,8 @@ describe('formatConsumptionChip', () => {
         completionTokens: 1,
         totalTokens: 2,
       },
-    })
-    expect(out.tone).toBe('bad')
-    expect(out.label).toContain('1 err')
-  })
-})
+    });
+    expect(out.tone).toBe('bad');
+    expect(out.label).toContain('1 err');
+  });
+});

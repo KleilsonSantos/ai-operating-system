@@ -23,22 +23,22 @@ pnpm sync:cursor-rules
 
 **Live** link to the runtime: the Agent calls tools.
 
-| Tool | Role |
-| --- | --- |
-| `aios_contract_version` | `contractVersion` |
-| `aios_compile_prompt` | Governed brief (policies + memory + KG) — **token savings** (#59) |
-| `aios_list_workspaces` | Multi-repo registry (Phase 2 · #43) |
-| `aios_workspace_upsert` / `remove` / `validate` | Generic multi-repo (#55) |
-| `aios_run_across_workspaces` | Pipeline across N workspaces (#55) |
-| `aios_build_knowledge` | Heuristic Knowledge Graph (#47; `full: true` = nodes/edges) |
-| `aios_memory_remember` / `recall` / `clear` | Session/project memory (#51) |
-| `aios_load_policies` | Policies + constraints |
-| `aios_run_pipeline` | Full core (`PipelineResponse`; accepts `workspaceId`) |
-| `aios_provider_health` / `models` / `chat` | Multi-provider with optional Ollama (#67) |
-| `aios_governance_status` | Console Health + Attention (#71) |
-| `aios_audit_docs` | Canonical docs inventory/drift (#80) |
-| `aios_search_pkb` | PKB textual / tag search over `docs/prompts/**` (#158) |
-| `aios_governance_audit` / `aios_governance_record` | Light audit + decision log (#80) |
+| Tool                                               | Role                                                              |
+| -------------------------------------------------- | ----------------------------------------------------------------- |
+| `aios_contract_version`                            | `contractVersion`                                                 |
+| `aios_compile_prompt`                              | Governed brief (policies + memory + KG) — **token savings** (#59) |
+| `aios_list_workspaces`                             | Multi-repo registry (Phase 2 · #43)                               |
+| `aios_workspace_upsert` / `remove` / `validate`    | Generic multi-repo (#55)                                          |
+| `aios_run_across_workspaces`                       | Pipeline across N workspaces (#55)                                |
+| `aios_build_knowledge`                             | Heuristic Knowledge Graph (#47; `full: true` = nodes/edges)       |
+| `aios_memory_remember` / `recall` / `clear`        | Session/project memory (#51)                                      |
+| `aios_load_policies`                               | Policies + constraints                                            |
+| `aios_run_pipeline`                                | Full core (`PipelineResponse`; accepts `workspaceId`)             |
+| `aios_provider_health` / `models` / `chat`         | Multi-provider with optional Ollama (#67)                         |
+| `aios_governance_status`                           | Console Health + Attention (#71)                                  |
+| `aios_audit_docs`                                  | Canonical docs inventory/drift (#80)                              |
+| `aios_search_pkb`                                  | PKB textual / tag search over `docs/prompts/**` (#158)            |
+| `aios_governance_audit` / `aios_governance_record` | Light audit + decision log (#80)                                  |
 
 Config example: [`.cursor/mcp.json.example`](../../.cursor/mcp.json.example) — use an **absolute `node` path** (Cursor GUI often lacks `pnpm`/`nvm` on PATH).
 

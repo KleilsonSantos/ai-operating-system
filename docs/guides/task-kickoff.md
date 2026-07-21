@@ -1,19 +1,19 @@
 # Task Kickoff (Canonical Flow)
 
 ```text
-Issue (GitHub) → Project In Progress → feature/* from sandbox → PR → sandbox → PR → main
+Issue (GitHub) → Project In Progress → semantic branch from sandbox → PR → sandbox → promotion PR → main
 ```
 
 ```bash
 git checkout sandbox && git pull origin sandbox
-git checkout -b feature/<slug>
+git checkout -b <type>/<slug>
 gh issue comment <N> --repo KleilsonSantos/ai-operating-system \
-  --body "🚀 Kickoff: branch \`feature/<slug>\` created from \`sandbox\`."
+  --body "🚀 Kickoff: branch \`<type>/<slug>\` created from \`sandbox\`."
 ```
 
 Before push: typecheck/lint/tests for the area you touched.
 
-PR always targets `sandbox`. Merge **only** via:
+Work branches target `sandbox`. After that merge, promote `sandbox` to `main` with a second PR. Merge **only** via:
 
 ```bash
 bash scripts/merge-pr.sh <N>

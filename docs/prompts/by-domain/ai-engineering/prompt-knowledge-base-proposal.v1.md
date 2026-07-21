@@ -21,6 +21,7 @@ related_prompts:
 created_at: 2026-07-18
 updated_at: 2026-07-18
 ---
+
 # Prompt — Proposta de Arquitetura para Gestão Inteligente de Prompts (Prompt Knowledge Base)
 
 ## Objetivo
