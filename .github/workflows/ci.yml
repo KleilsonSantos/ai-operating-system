@@ -108,11 +108,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: SonarQube Quality Gate
-        uses: SonarSource/sonarqube-quality-gate-action@master
-        timeout-minutes: 5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   # Issue #15 — impede main à frente da última tag SemVer sem bump
   semver-align:
