@@ -78,7 +78,7 @@ To merge code into `main` or `sandbox`, all the following gates must pass:
 2. Branch from `sandbox`
 3. Enable hooks (`git config core.hooksPath .githooks`)
 4. Commits: Conventional Commits + Gitmoji
-5. Author: `Kleilson Santos <kdsddesign1@gmail.com>` — no IDE co-authorship
+5. Author: `Kleilson Santos <kdsdesign1@gmail.com>` — no IDE co-authorship
 6. PR → `sandbox`, then `sandbox` → `main`
 7. Releaseable delivery on `main` requires SemVer bump + CHANGELOG + tag ([releases.md](./docs/guides/releases.md))
 8. Include docs in the same PR if build/usage/architecture changes

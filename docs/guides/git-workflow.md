@@ -30,7 +30,7 @@ feature/* | fix/* | docs/* | chore/* | ci/*
 5. Commits: `type: <gitmoji> description`
 6. Local QA → PR → `sandbox` → PR → `main` → tag if releaseable
 
-Author: `Kleilson Santos <kdsddesign1@gmail.com>` — no `Co-authored-by: Cursor` / IDE trailers.
+Author: `Kleilson Santos <kdsdesign1@gmail.com>` — no `Co-authored-by: Cursor` / IDE trailers.
 
 ### Merges (required)
 
