@@ -5,3 +5,10 @@ packages:
 
 allowBuilds:
   esbuild: true
+
+# pnpm 11: overrides belong here (package.json#pnpm is ignored).
+# Pins transitive CVEs that block pre-push `pnpm audit`.
+overrides:
+  fast-uri: 3.1.4
+  '@hono/node-server': 2.0.10
+  brace-expansion: 5.0.8
