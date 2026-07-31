@@ -81,7 +81,7 @@ Para detalhes, consulte \`.trae/rules/workflow.md\`, \`docs/guides/git-workflow.
 ## Commits
 
 - Formato: \`type: <gitmoji> …\`
-- Author: Kleilson Santos \`<kdsddesign1@gmail.com>\`
+- Author: Kleilson Santos \`<kdsdesign1@gmail.com>\`
 - Sem \`Co-authored-by: Cursor\` / trailers de IDE
 - **Merges:** \`bash scripts/merge-pr.sh <n>\` (obrigatório subject \`merge: 🔀 PR #<n> — <branch>\`). Nunca \`gh pr merge\` sem \`--subject\` / \`-t\`.
 

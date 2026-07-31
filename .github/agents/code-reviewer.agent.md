@@ -24,7 +24,7 @@ Revisar o diff atual ou o PR indicado. Comentários acionáveis; não reescrever
 - [ ] Docs/ADR/CHANGELOG `[Unreleased]` se notável?
 - [ ] Fluxo Git: Issue → `feature/*` from `sandbox` → PR → `sandbox` → PR → `main`?
 - [ ] Commits `type: <gitmoji> …`; merges via `scripts/merge-pr.sh` / subject `merge: 🔀 …`?
-- [ ] Autoria `Kleilson Santos <kdsddesign1@gmail.com>` — sem `Co-authored-by: Cursor`?
+- [ ] Autoria `Kleilson Santos <kdsdesign1@gmail.com>` — sem `Co-authored-by: Cursor`?
 
 ## Formato da resposta
 
