@@ -127,7 +127,7 @@ Implement **Phase 5: Agent Registry & Marketplace** as a 4-pillar system:
 - [Phase 5 Briefing](../ROADMAP.md#phase-5--agent-marketplace--reusability) — rationale & timeline
 - ADR-0001 (Standalone Platform) — AIOS governance thesis
 - ADR-0008 (Prompt Engine) — brief/token economy analogy
-- [Architecture Overview](./architecture/overview.md) — orchestration contract
+- [Architecture Overview](../architecture/overview.md) — orchestration contract
 
 ---
 

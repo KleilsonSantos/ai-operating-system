@@ -38,4 +38,4 @@ Always-on HTTP conflicts with Resource-Aware / inspect-before-install (ADR-0011)
 ## References
 
 - MCP TypeScript SDK `StreamableHTTPServerTransport` · `createMcpExpressApp`
-- [ADR-0003](./0003-pipeline-contract.md) · [ADR-0011](./0011-resource-aware-runtime.md) · [ADR-0014](./0014-control-plane-companion.md)
+- [ADR-0003](./0003-pipeline-integration-contract.md) · [ADR-0011](./0011-resource-aware-macos.md) · [ADR-0014](./0014-control-plane-companion.md)

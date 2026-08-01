@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@aios/shared": "workspace:*",
-    "@aios/core": "workspace:*",
     "@aios/policy": "workspace:*",
     "@aios/decision": "workspace:*",
     "@aios/agent-architecture": "workspace:*",
