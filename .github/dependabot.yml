@@ -1,11 +1,20 @@
 version: 2
 updates:
+  # Version updates follow AIOS git flow: PR → sandbox → main.
+  # Note: Dependabot *security* updates always target the default branch (main)
+  # when target-branch is set — see docs/guides/git-workflow.md.
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    target-branch: sandbox
+    labels:
+      - dependencies
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: monthly
+    target-branch: sandbox
+    labels:
+      - dependencies
