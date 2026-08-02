@@ -6,6 +6,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Changed
 
+- 🔧 Cursor agent network: allowlist `api.github.com` via `.cursor/sandbox.json` so `gh` / `merge-pr.sh` work in-agent (#191)
 - 📝 Document rationalization audit + Quick Wins (#187): fix broken doc links; Phase 5a/5b ROADMAP reconcile vs `v0.28.0`; drop unused `husky` / `eslint-plugin-prettier`; remove unused `@aios/core` workspace deps from engines
 
 ## [0.28.1] - 2026-07-21

@@ -4,7 +4,7 @@ Thanks for considering a contribution to the **AI Operating System**.
 
 ## Git flow (required)
 
-[`docs/guides/git-workflow.md`](./docs/guides/git-workflow.md) · [`docs/guides/task-kickoff.md`](./docs/guides/task-kickoff.md)
+[`docs/guides/git-workflow.md`](./docs/guides/git-workflow.md) · [`docs/guides/task-kickoff.md`](./docs/guides/task-kickoff.md) (includes Cursor agent `gh` / `api.github.com` allowlist notes)
 
 ```mermaid
 flowchart LR
