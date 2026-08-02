@@ -22,3 +22,11 @@ bash scripts/merge-pr.sh <N>
 Subject: `merge: 🔀 PR #<n> — <branch>` (never GitHub’s default).
 
 Details: [git-workflow.md](./git-workflow.md).
+
+## Cursor agent + `gh` (network allowlist)
+
+Cursor’s agent Shell seatbelt allowlists `github.com` (git) by default but **not** `api.github.com` (REST/GraphQL used by `gh`). A blocked API call is often misreported as “token in keyring is invalid” even when Terminal `gh auth status` is healthy.
+
+This repo ships [`.cursor/sandbox.json`](../../.cursor/sandbox.json) allowing `api.github.com`. In Cursor: **Settings → Agents → Auto Run → Auto-Run Network Access** → `sandbox.json + Defaults` (or Allow All).
+
+Optional global allowlist for all workspaces: `~/.cursor/sandbox.json` with the same `networkPolicy.allow` entry.
