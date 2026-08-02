@@ -13,8 +13,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@aios/shared": "workspace:*",
-    "@aios/core": "workspace:*"
+    "@aios/shared": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.9.2",

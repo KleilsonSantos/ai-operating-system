@@ -52,19 +52,27 @@ Boundary: [ADR-0014](./adr/0014-control-plane-companion.md) · [guide](./guides/
 - [x] Prompt Knowledge Base (PKB) catalog MVP — Docs-as-Code under `docs/prompts/` (#134); inventory via `aios_audit_docs` (#154); textual/tag search (#158); RAG/embeddings deferred
 - [x] External references catalog — `docs/references/` legal/official only (#133)
 
-## Phase 5 — Agent Marketplace & Reusability (v0.28.0)
+## Phase 5 — Agent Marketplace & Reusability
 
-Boundary: [ADR-0023](./adr/0023-agent-registry-marketplace.md) · [plan](./.github/modernize/phase-5-agent-marketplace/plan.md).
+Boundary: [ADR-0023](./adr/0023-agent-registry-marketplace.md) · [plan](../.github/modernize/phase-5-agent-marketplace/plan.md).
 
 Agents become first-class, discoverable, reusable building blocks. Four pillars:
 
-- [ ] Agent Registry (discovery + metadata) — `aios list-agents` / `aios_list_agents` MCP tool; local cache; multi-source resolver (npm, git, local)
-- [ ] Agent Packaging (standard manifest + dependencies) — `agent.yaml` schema; npm scaffolder (`npm create @aios/agent`); dependency resolver; template published
+### Phase 5a — Registry MVP ✅ (`v0.28.0`)
+
+- [x] Agent Registry (discovery + metadata) — `aios list-agents` / `aios_list_agents` MCP tool; local cache; multi-source resolver (npm, git, local)
+- [x] Agent Packaging (schema MVP) — `agent.yaml` / JSON schema in `@aios/agent-registry`; parse/validate/list/save
+
+**Status:** Shipped in `v0.28.0` (2026-07-20).
+
+### Phase 5b — Packaging depth, observability, community (next)
+
+- [ ] Agent Packaging (distribution) — npm scaffolder (`npm create @aios/agent`); dependency resolver; template published
 - [ ] Agent Observability (execution tracking + health-score) — `recordAgentExecution` hook; metrics (`kind: agent.execution`); health-score (success-rate + recency + adoption); Console Agent Catalog
 - [ ] Community Publishing (GitHub ingestion + template) — GitHub Actions (weekly scan for `aios-agent` topic); async registry service; abuse detection; publishing guide; first community agent ingested
 
-**Status:** In progress (Week 1 / M1 started 2026-07-20)  
-**Target:** v0.28.0 on 2026-08-20 (4 weeks, 116 estimated hours)
+**Status:** Not started (follow-on after 5a).  
+**Target:** next minor after `v0.28.0` (track in issues / plan tasks — do not backdate into 5a).
 
 ## Out of scope (on purpose)
 
