@@ -1,16 +1,16 @@
 ---
 name: Feature Request
-about: Sugerir uma melhoria
+about: Suggest an improvement
 title: '[feat] '
 labels: enhancement
 ---
 
-## Problema / oportunidade
+## Problem / opportunity
 
-## Proposta
+## Proposal
 
-## Critérios de aceite
+## Acceptance criteria
 
 - [ ]
 
-## Fase do ROADMAP (se aplicável)
+## ROADMAP phase (if applicable)

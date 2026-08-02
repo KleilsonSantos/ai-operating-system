@@ -1,20 +1,20 @@
 ---
 name: Bug Report
-about: Reportar um problema
+about: Report a problem
 title: '[bug] '
 labels: bug
 ---
 
-## Descrição
+## Description
 
-## Passos para reproduzir
+## Steps to reproduce
 
 1.
 2.
 
-## Comportamento esperado
+## Expected behavior
 
-## Ambiente
+## Environment
 
 - OS:
 - Node:
