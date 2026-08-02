@@ -8,6 +8,18 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 - 📝 Document rationalization audit + Quick Wins (#187): fix broken doc links; Phase 5a/5b ROADMAP reconcile vs `v0.28.0`; drop unused `husky` / `eslint-plugin-prettier`; remove unused `@aios/core` workspace deps from engines
 
+## [0.28.1] - 2026-07-21
+
+### Fixed
+
+- 🔧 Align `@aios/agent-registry` schema handling with Ajv compatibility and keep the `v0.28.0` fix stream mergeable (#172)
+- 🔍 Scope SonarCloud validation to supported `main` pushes so PR checks stay aligned with the current plan limits (#172)
+
+### Changed
+
+- 🧭 Route project context gathering through `.trae/rules` before generic root summaries, including context-engine priority updates (#172)
+- 🧪 Normalize merged LCOV paths so monorepo coverage reports map correctly during CI and release promotion (#172)
+
 ## [0.28.0] - 2026-07-20
 
 ### Added
