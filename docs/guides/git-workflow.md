@@ -50,6 +50,17 @@ CI: `scripts/check-commit-messages.sh` (PR) + `scripts/check-merge-tip.sh` (push
 - Commits without gitmoji
 - `gh pr merge` without `--subject` / `-t`
 
+## Dependabot
+
+Configured in [`.github/dependabot.yml`](../../.github/dependabot.yml).
+
+| Kind                            | Target branch           | Notes                                                                                                            |
+| ------------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Version updates** (scheduled) | `sandbox`               | Matches git flow; review → merge to sandbox → promote                                                            |
+| **Security updates**            | `main` (default branch) | GitHub limitation when `target-branch` is set for version updates — triage on `main` or cherry-pick into sandbox |
+
+Do not leave large Dependabot queues open against `main` for routine bumps. Prefer closing stale version-update PRs after changing `target-branch` so Dependabot recreates them against `sandbox`.
+
 ## Related
 
 - [task-kickoff.md](./task-kickoff.md)
