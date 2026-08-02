@@ -22,7 +22,7 @@
     "registry",
     "metadata"
   ],
-  "author": "Kleilson Santos <kdsddesign1@gmail.com>",
+  "author": "Kleilson Santos <kdsdesign1@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@aios/shared": "workspace:*",

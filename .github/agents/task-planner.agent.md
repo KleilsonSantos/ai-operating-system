@@ -28,4 +28,4 @@ Planejar. **Não implementar** código, não abrir commits, não editar ficheiro
 - Não implementar todos os engines de uma vez
 - Não sugerir push direto em `main`/`sandbox`
 - Companion = repo [`aios-companion`](https://github.com/KleilsonSantos/aios-companion) — não fundir monólito
-- Autoria: `Kleilson Santos <kdsddesign1@gmail.com>` — sem co-autoria de IDE
+- Autoria: `Kleilson Santos <kdsdesign1@gmail.com>` — sem co-autoria de IDE

@@ -15,7 +15,7 @@ cd "$WIKI_DIR"
 git init -b master >/dev/null
 git add Home.md
 git -c user.name="${GIT_AUTHOR_NAME:-Kleilson Santos}" \
-    -c user.email="${GIT_AUTHOR_EMAIL:-kdsddesign1@gmail.com}" \
+    -c user.email="${GIT_AUTHOR_EMAIL:-kdsdesign1@gmail.com}" \
     commit -m "docs: 📋 sync Wiki Home from docs/wiki/Home.md" >/dev/null
 git remote add origin https://github.com/KleilsonSantos/ai-operating-system.wiki.git
 if ! git push -u origin master --force; then

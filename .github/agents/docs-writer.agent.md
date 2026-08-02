@@ -26,7 +26,7 @@ Com base no diff (ou escopo pedido):
 
 - Commits só se o humano pedir
 - Formato: `type: <gitmoji> …`
-- Author: `Kleilson Santos <kdsddesign1@gmail.com>`
+- Author: `Kleilson Santos <kdsdesign1@gmail.com>`
 - Proibido: `Co-authored-by: Cursor`
 - Merges: `bash scripts/merge-pr.sh <n>`
 - Fluxo: `feature/*` → `sandbox` → `main`
