@@ -590,6 +590,22 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
 
+  packages/create-agent:
+    dependencies:
+      '@aios/agent-registry':
+        specifier: workspace:*
+        version: link:../agent-registry
+    devDependencies:
+      '@types/node':
+        specifier: ^26.1.1
+        version: 26.1.1
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@26.1.1)(yaml@2.9.0)
+
   packages/pipeline:
     dependencies:
       '@aios/context':
