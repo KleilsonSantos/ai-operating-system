@@ -1,0 +1,40 @@
+{
+  "name": "@aios/create-agent",
+  "version": "0.28.0",
+  "private": true,
+  "type": "module",
+  "description": "Scaffold an AIOS agent package (npm create @aios/agent)",
+  "bin": {
+    "create-agent": "./src/cli.ts"
+  },
+  "main": "./src/scaffold.ts",
+  "types": "./src/scaffold.ts",
+  "files": [
+    "dist/**/*",
+    "template/**/*",
+    "src/**/*"
+  ],
+  "scripts": {
+    "dev": "node --experimental-strip-types ./src/cli.ts",
+    "build": "node -e \"process.exit(0)\"",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "node -e \"process.exit(0)\"",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "aios",
+    "agent",
+    "scaffold",
+    "create"
+  ],
+  "author": "Kleilson Santos <kdsdesign1@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@aios/agent-registry": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

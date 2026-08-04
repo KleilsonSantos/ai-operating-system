@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📦 Phase 5b packaging: `@aios/create-agent` scaffolder (`pnpm --filter @aios/create-agent dev -- --name …`) + Writing an Agent guide; fix `js-yaml` ESM import in `@aios/agent-registry` (#211)
+
 ### Fixed
 
 - 🔒 Pin transitive CVEs (fast-uri, ip-address, postcss, hono) so `pnpm audit` / green unblock (#205)

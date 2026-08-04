@@ -4,7 +4,8 @@ Agent Registry for AIOS – discovery, validation, and resolution of agent metad
 
 ## Documentation
 
-See the [Phase 5 plan](../../.github/modernize/phase-5-agent-marketplace/plan.md) for details.
+- [Writing an Agent](../../docs/guides/writing-an-agent.md) — packaging + scaffolder (`@aios/create-agent`)
+- [Phase 5 plan](../../.github/modernize/phase-5-agent-marketplace/plan.md)
 
 ## License
 

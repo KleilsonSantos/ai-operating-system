@@ -7,7 +7,7 @@ import type { ValidateFunction } from 'ajv';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Ajv = AjvRaw as any;
 
-import yaml from 'js-yaml';
+import { load as yamlLoad } from 'js-yaml';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 
@@ -119,7 +119,7 @@ export class AgentRegistry {
     const ext = path.extname(manifestPath);
     let manifest: AgentManifest;
     if (ext === '.yaml' || ext === '.yml') {
-      manifest = yaml.load(content) as AgentManifest;
+      manifest = yamlLoad(content) as AgentManifest;
     } else if (ext === '.json') {
       manifest = JSON.parse(content);
     } else {
