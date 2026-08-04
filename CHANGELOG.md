@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Fixed
+
+- 🔒 Pin transitive CVEs (fast-uri, ip-address, postcss, hono) so `pnpm audit` / green unblock (#205)
+
 ### Changed
 
 - 🔧 Dependabot version updates target `sandbox` (git flow); document security-update exception (#197)
