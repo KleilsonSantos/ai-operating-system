@@ -20,7 +20,7 @@
     "test": "node scripts/run-test-coverage.mjs",
     "test:coverage": "node scripts/run-test-coverage.mjs --coverage",
     "audit": "audit-ci --moderate",
-    "prepare": "git config core.hooksPath .githooks",
+    "prepare": "git config core.hooksPath .githooks || true",
     "sync:cursor-rules": "node scripts/sync-cursor-rules-from-policies.mjs"
   },
   "devDependencies": {

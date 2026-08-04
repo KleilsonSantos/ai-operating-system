@@ -4,8 +4,13 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Fixed
+
+- 🔒 Pin transitive CVEs (fast-uri, ip-address, postcss, hono) so `pnpm audit` / green unblock (#205)
+
 ### Changed
 
+- 🔧 Dependabot version updates target `sandbox` (git flow); document security-update exception (#197)
 - 📝 ADR-0018 community surfaces: SUPPORT.md + GitHub issue templates → US English; install script for Cursor sandbox allowlist (#194)
 - 🔧 Cursor agent network: allowlist `api.github.com` via `.cursor/sandbox.json` so `gh` / `merge-pr.sh` work in-agent (#191)
 - 📝 Document rationalization audit + Quick Wins (#187): fix broken doc links; Phase 5a/5b ROADMAP reconcile vs `v0.28.0`; drop unused `husky` / `eslint-plugin-prettier`; remove unused `@aios/core` workspace deps from engines
