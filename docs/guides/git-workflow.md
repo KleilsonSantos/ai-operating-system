@@ -61,6 +61,8 @@ Configured in [`.github/dependabot.yml`](../../.github/dependabot.yml).
 
 Do not leave large Dependabot queues open against `main` for routine bumps. Prefer closing stale version-update PRs after changing `target-branch` so Dependabot recreates them against `sandbox`.
 
+Dependabot commit subjects use `chore(deps):` / `chore(deps-dev):` (no gitmoji). `scripts/check-commit-messages.sh` allows that form so promote PRs (`sandbox` → `main`) are not blocked by upstream Dependabot commits already merged into `sandbox`.
+
 ## Related
 
 - [task-kickoff.md](./task-kickoff.md)
