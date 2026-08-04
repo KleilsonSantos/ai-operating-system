@@ -35,7 +35,12 @@ export interface ScaffoldResult {
 
 const NAME_RE = /^(@[a-zA-Z0-9][a-zA-Z0-9-]*\/)?[a-zA-Z0-9][a-zA-Z0-9-]*$/;
 
-function normalizeNames(raw: string): { packageName: string; manifestName: string; dirName: string; displayName: string } {
+function normalizeNames(raw: string): {
+  packageName: string;
+  manifestName: string;
+  dirName: string;
+  displayName: string;
+} {
   const trimmed = raw.trim();
   if (!NAME_RE.test(trimmed)) {
     throw new Error(
@@ -55,7 +60,12 @@ function normalizeNames(raw: string): { packageName: string; manifestName: strin
     .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
     .join(' ');
 
-  return { packageName, manifestName, dirName: `agent-${dirName}`, displayName: displayName || short };
+  return {
+    packageName,
+    manifestName,
+    dirName: `agent-${dirName}`,
+    displayName: displayName || short,
+  };
 }
 
 async function walkFiles(root: string): Promise<string[]> {
@@ -128,7 +138,9 @@ export async function scaffoldAgent(options: ScaffoldOptions): Promise<ScaffoldR
 
   let validation: { valid: boolean; errors: string[] } = { valid: true, errors: [] };
   if (!options.skipValidate) {
-    const registry = new AgentRegistry({ registryPath: path.join(targetDir, '.registry-unused.json') });
+    const registry = new AgentRegistry({
+      registryPath: path.join(targetDir, '.registry-unused.json'),
+    });
     const manifestPath = path.join(targetDir, 'agent.yaml');
     const manifest = await registry.parseManifest(manifestPath);
     validation = registry.validate(manifest);

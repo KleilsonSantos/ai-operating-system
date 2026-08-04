@@ -8,12 +8,12 @@ This guide covers packaging a reusable agent that the [Agent Registry](../../pac
 
 ## Concept
 
-| Idea              | Meaning                                                                 |
-| ----------------- | ----------------------------------------------------------------------- |
-| Manifest          | `agent.yaml` (or `.json`) — name, version, I/O ports, dependencies      |
+| Idea              | Meaning                                                                   |
+| ----------------- | ------------------------------------------------------------------------- |
+| Manifest          | `agent.yaml` (or `.json`) — name, version, I/O ports, dependencies        |
 | Package           | npm-style folder with `src/`, tests, and the manifest at the package root |
-| Built-in agents   | Shipped in this monorepo (Architecture, AppSec, Docs, QA)               |
-| Local / npm / git | Additional sources resolved by `@aios/agent-registry`                   |
+| Built-in agents   | Shipped in this monorepo (Architecture, AppSec, Docs, QA)                 |
+| Local / npm / git | Additional sources resolved by `@aios/agent-registry`                     |
 
 ## Anatomy
 
