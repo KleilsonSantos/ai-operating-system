@@ -1,0 +1,19 @@
+{
+  "name": "{{PACKAGE_NAME}}",
+  "version": "{{VERSION}}",
+  "private": true,
+  "type": "module",
+  "description": "{{DESCRIPTION}}",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --experimental-strip-types --test ./src/**/*.test.ts"
+  },
+  "keywords": ["aios", "agent", "plugin"],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "typescript": "^5.9.2"
+  }
+}

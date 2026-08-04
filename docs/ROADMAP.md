@@ -67,11 +67,11 @@ Agents become first-class, discoverable, reusable building blocks. Four pillars:
 
 ### Phase 5b — Packaging depth, observability, community (next)
 
-- [ ] Agent Packaging (distribution) — npm scaffolder (`npm create @aios/agent`); dependency resolver; template published
+- [x] Agent Packaging (scaffolder MVP) — `@aios/create-agent` + template + `docs/guides/writing-an-agent.md` (#211); npm publish of `@aios/create-agent` / `@aios/agent-template` and multi-level dependency resolver still open
 - [ ] Agent Observability (execution tracking + health-score) — `recordAgentExecution` hook; metrics (`kind: agent.execution`); health-score (success-rate + recency + adoption); Console Agent Catalog
 - [ ] Community Publishing (GitHub ingestion + template) — GitHub Actions (weekly scan for `aios-agent` topic); async registry service; abuse detection; publishing guide; first community agent ingested
 
-**Status:** Not started (follow-on after 5a).  
+**Status:** Scaffolder MVP in progress (#211); observability + community not started.  
 **Target:** next minor after `v0.28.0` (track in issues / plan tasks — do not backdate into 5a).
 
 ## Out of scope (on purpose)

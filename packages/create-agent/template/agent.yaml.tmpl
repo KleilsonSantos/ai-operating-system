@@ -1,0 +1,21 @@
+name: '{{MANIFEST_NAME}}'
+version: '{{VERSION}}'
+displayName: '{{DISPLAY_NAME}}'
+description: '{{DESCRIPTION}}'
+inputs:
+  intent:
+    type: string
+    description: User or orchestration intent for this agent
+    required: true
+outputs:
+  result:
+    type: object
+    description: Agent result payload
+dependencies:
+  engines:
+    - context
+metadata:
+  tags:
+    - scaffold
+    - aios-agent
+  maintainer: local
