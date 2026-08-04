@@ -18,6 +18,11 @@ while IFS= read -r line; do
   if [[ "$subject" =~ ^merge:\ 🔀 ]]; then
     continue
   fi
+  # Dependabot version updates cannot emit gitmoji; allow Conventional scope form.
+  # See docs/guides/git-workflow.md (Dependabot → sandbox → promote).
+  if [[ "$subject" =~ ^chore\(deps(-dev)?\):\  ]]; then
+    continue
+  fi
   if [[ "$subject" =~ ^Merge\ pull\ request ]]; then
     echo "FAIL $hash  $subject"
     fail=1
