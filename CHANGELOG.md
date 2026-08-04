@@ -7,6 +7,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 ### Added
 
 - 📦 Phase 5b packaging: `@aios/create-agent` scaffolder (`pnpm --filter @aios/create-agent dev -- --name …`) + Writing an Agent guide; fix `js-yaml` ESM import in `@aios/agent-registry` (#211)
+- 🔒 Security hygiene: sanitize console JSON responses (no `Error.stack` leak); document Dependabot alerts vs security-update PRs (#214)
 
 ### Fixed
 
