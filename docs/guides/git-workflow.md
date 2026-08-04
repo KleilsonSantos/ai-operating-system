@@ -54,14 +54,17 @@ CI: `scripts/check-commit-messages.sh` (PR) + `scripts/check-merge-tip.sh` (push
 
 Configured in [`.github/dependabot.yml`](../../.github/dependabot.yml).
 
-| Kind                            | Target branch           | Notes                                                                                                            |
-| ------------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| **Version updates** (scheduled) | `sandbox`               | Matches git flow; review → merge to sandbox → promote                                                            |
-| **Security updates**            | `main` (default branch) | GitHub limitation when `target-branch` is set for version updates — triage on `main` or cherry-pick into sandbox |
+| Kind                            | Target branch           | Notes                                                                                                                                                                    |
+| ------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Version updates** (scheduled) | `sandbox`               | Matches git flow; review → merge to sandbox → promote                                                                                                                    |
+| **Security updates**            | `main` (default branch) | GitHub limitation when `target-branch` is set for version updates — **leave auto security-update PRs off**; use Dependabot **alerts** + `pnpm audit` / overrides instead |
+| **Dependabot alerts**           | n/a (Security tab)      | Keep **enabled** so CVEs appear under Security → Dependabot; complements CI `pnpm audit`                                                                                 |
 
 Do not leave large Dependabot queues open against `main` for routine bumps. Prefer closing stale version-update PRs after changing `target-branch` so Dependabot recreates them against `sandbox`.
 
 Dependabot commit subjects use `chore(deps):` / `chore(deps-dev):` (no gitmoji). `scripts/check-commit-messages.sh` allows that form so promote PRs (`sandbox` → `main`) are not blocked by upstream Dependabot commits already merged into `sandbox`.
+
+Repo security posture (alerts, CodeQL, secrets): [`SECURITY.md`](../../SECURITY.md).
 
 ## Related
 
