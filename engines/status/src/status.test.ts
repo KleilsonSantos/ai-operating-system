@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   chatWithMetrics,
   getGovernanceStatus,
+  recordAgentExecution,
   recordMetricEvent,
   recordProviderChatMetric,
 } from './index.ts';
@@ -119,6 +120,47 @@ describe('getGovernanceStatus', () => {
     });
     expect(status.attention.some((a) => a.id === 'metrics-stub')).toBe(false);
     expect(status.attention.some((a) => a.id === 'provider-chat-errors')).toBe(true);
+  });
+
+  it('aggregates agent.execution and exposes healthScore', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'aios-status-ae-'));
+    temps.push(root);
+    writeFileSync(join(root, 'package.json'), '{"name":"aios"}');
+    mkdirSync(join(root, 'workspaces'));
+    writeFileSync(
+      join(root, 'workspaces', 'aios.workspaces.json'),
+      JSON.stringify({
+        workspaces: [{ id: 'aios', path: '.', name: 'AIOS', default: true }],
+      })
+    );
+    mkdirSync(join(root, 'policies'));
+    writeFileSync(
+      join(root, 'policies', 'aios.policies.json'),
+      JSON.stringify({
+        policies: [{ id: 'official-docs', description: 'docs', severity: 'must' }],
+      })
+    );
+    recordAgentExecution(
+      { agent: '@aios/agent-docs', outcome: 'success', durationMs: 5, source: 'test' },
+      { homePath: root }
+    );
+    recordAgentExecution(
+      { agent: '@aios/agent-docs', outcome: 'failure', durationMs: 3, source: 'test' },
+      { homePath: root }
+    );
+    const status = await getGovernanceStatus({
+      homePath: root,
+      providerHealth: {
+        provider: 'ollama',
+        ok: true,
+        baseUrl: 'http://127.0.0.1:11434',
+        models: ['llama'],
+      },
+    });
+    expect(status.metrics.agentExecution?.count).toBe(2);
+    expect(status.metrics.agentExecution?.errorCount).toBe(1);
+    expect(status.metrics.agentExecution?.byAgent[0]?.healthScore).toBeGreaterThan(0);
+    expect(status.attention.some((a) => a.id === 'agent-execution-errors')).toBe(true);
   });
 
   it('chatWithMetrics records success via injectable provider fetch', async () => {

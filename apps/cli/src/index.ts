@@ -1,7 +1,12 @@
 import { runPipeline, PIPELINE_CONTRACT_VERSION } from '@aios/pipeline';
 import { compilePrompt } from '@aios/prompt';
 import { getProvider } from '@aios/provider';
-import { getGovernanceStatus, chatWithMetrics, renderPrometheusMetrics } from '@aios/status';
+import {
+  getGovernanceStatus,
+  chatWithMetrics,
+  renderPrometheusMetrics,
+  loadMetricsSnapshot,
+} from '@aios/status';
 import { auditDocumentation, searchPkb } from '@aios/documentation';
 import { auditGovernance } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
@@ -283,14 +288,29 @@ async function main(): Promise<void> {
       maintainer: args.listAgentsMaintainer,
       name: args.listAgentsName,
     });
+    const snap = loadMetricsSnapshot({ homePath: process.env.AIOS_HOME || process.cwd() });
+    const healthByAgent = new Map(
+      (snap.agentExecution?.byAgent ?? []).map((row) => [row.agent, row])
+    );
+    const enriched = agents.map((agent) => {
+      const metrics = healthByAgent.get(agent.manifest.name);
+      return {
+        ...agent,
+        healthScore: metrics?.healthScore,
+        executionCount: metrics?.count,
+      };
+    });
     if (args.listAgentsJson) {
-      console.log(JSON.stringify({ count: agents.length, agents }, null, 2));
+      console.log(JSON.stringify({ count: enriched.length, agents: enriched }, null, 2));
     } else {
       console.log('Agents disponíveis:');
       console.log();
-      for (const agent of agents) {
+      for (const agent of enriched) {
+        const health = typeof agent.healthScore === 'number' ? ` health=${agent.healthScore}%` : '';
+        const runs =
+          typeof agent.executionCount === 'number' ? ` runs=${agent.executionCount}` : '';
         console.log(
-          `  ${agent.manifest.displayName || agent.manifest.name} (${agent.manifest.version}) [${agent.source}]`
+          `  ${agent.manifest.displayName || agent.manifest.name} (${agent.manifest.version}) [${agent.source}]${health}${runs}`
         );
         if (agent.manifest.description) {
           console.log(`    ${agent.manifest.description}`);

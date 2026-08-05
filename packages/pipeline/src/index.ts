@@ -160,6 +160,7 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
   const workflow = await runWorkflow(intent, {
     policies: policyBundle.rules,
     context,
+    homePath: process.env.AIOS_HOME || process.cwd(),
   });
   const verdict = evaluateQuality(workflow.results, {
     intent,

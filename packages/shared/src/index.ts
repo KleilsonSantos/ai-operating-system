@@ -253,6 +253,18 @@ export type GovernanceStatus = {
       completionTokens: number;
       totalTokens: number;
     };
+    /** Aggregated `agent.execution` JSONL events (#217 / ADR-0023). */
+    agentExecution?: {
+      count: number;
+      errorCount: number;
+      byAgent: Array<{
+        agent: string;
+        count: number;
+        errorCount: number;
+        healthScore: number;
+        lastAt?: string;
+      }>;
+    };
   };
 };
 
