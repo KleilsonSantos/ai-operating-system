@@ -9,6 +9,7 @@ import {
   PROMETHEUS_CONTENT_TYPE,
 } from '@aios/status';
 import { runSafeAction, SAFE_ACTIONS } from './actions.ts';
+import { stringifyClientJson } from './json-response.ts';
 
 const port = Number(process.env.AIOS_CONSOLE_PORT || 8787);
 const homePath = process.env.AIOS_HOME || process.cwd();
@@ -21,7 +22,7 @@ function sendJson(res: import('node:http').ServerResponse, status: number, body:
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   });
-  res.end(JSON.stringify(body, null, 2));
+  res.end(stringifyClientJson(body));
 }
 
 function sendPrometheus(res: import('node:http').ServerResponse, body: string): void {
