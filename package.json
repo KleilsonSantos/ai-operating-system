@@ -21,7 +21,8 @@
     "test:coverage": "node scripts/run-test-coverage.mjs --coverage",
     "audit": "audit-ci --moderate",
     "prepare": "git config core.hooksPath .githooks || true",
-    "sync:cursor-rules": "node scripts/sync-cursor-rules-from-policies.mjs"
+    "sync:cursor-rules": "node scripts/sync-cursor-rules-from-policies.mjs",
+    "community:ingest": "node scripts/community-agents-ingest.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

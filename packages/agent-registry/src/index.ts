@@ -34,9 +34,37 @@ export interface AgentManifest {
 
 export interface AgentEntry {
   manifest: AgentManifest;
-  source: 'builtin' | 'local' | 'npm' | 'git';
+  source: 'builtin' | 'local' | 'npm' | 'git' | 'community';
   path?: string;
   healthScore?: number;
+}
+
+export interface CommunityCatalogFlags {
+  stale?: boolean;
+  suspicious?: boolean;
+  missingManifest?: boolean;
+}
+
+export interface CommunityCatalogAgent {
+  fullName: string;
+  htmlUrl: string;
+  description?: string;
+  stargazers?: number;
+  forks?: number;
+  pushedAt?: string;
+  createdAt?: string;
+  defaultBranch?: string;
+  topics?: string[];
+  archived?: boolean;
+  manifestPath?: string | null;
+  flags?: CommunityCatalogFlags;
+}
+
+export interface CommunityCatalog {
+  generatedAt?: string;
+  source?: string;
+  query?: string;
+  agents: CommunityCatalogAgent[];
 }
 
 export interface ValidationResult {
@@ -49,19 +77,23 @@ interface CacheEntry<T> {
   timestamp: number;
 }
 
+const DEFAULT_COMMUNITY_CATALOG = path.join(__dirname, '../data/community-catalog.json');
+
 export class AgentRegistry {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly ajv: any;
   private readonly validateFn: ValidateFunction;
   private builtinAgents: AgentEntry[] = [];
   private readonly registryPath: string;
+  private readonly communityCatalogPath: string;
   private readonly cache: Map<string, CacheEntry<unknown>> = new Map();
 
-  constructor(options?: { registryPath?: string }) {
+  constructor(options?: { registryPath?: string; communityCatalogPath?: string }) {
     this.ajv = new Ajv({ strict: false });
     this.validateFn = this.ajv.compile(agentSchema);
     this.registryPath =
       options?.registryPath || path.join(process.cwd(), '.aios', 'agents.registry.json');
+    this.communityCatalogPath = options?.communityCatalogPath || DEFAULT_COMMUNITY_CATALOG;
     this.initBuiltinAgents();
   }
 
@@ -141,11 +173,13 @@ export class AgentRegistry {
     includeLocal?: boolean;
     includeNpm?: boolean;
     includeGit?: boolean;
+    includeCommunity?: boolean;
   }): Promise<AgentEntry[]> {
     const opts = {
       includeLocal: true,
       includeNpm: true,
       includeGit: true,
+      includeCommunity: true,
       ...options,
     };
 
@@ -154,6 +188,14 @@ export class AgentRegistry {
     // Add builtin first (lowest priority)
     for (const agent of this.builtinAgents) {
       agentsMap.set(agent.manifest.name, agent);
+    }
+
+    // Community catalog stubs (below saved registry / local)
+    if (opts.includeCommunity) {
+      const communityAgents = await this.resolveFromCommunity();
+      for (const agent of communityAgents) {
+        agentsMap.set(agent.manifest.name, agent);
+      }
     }
 
     // Then add saved registry agents (next priority)
@@ -178,6 +220,54 @@ export class AgentRegistry {
     }
 
     return Array.from(agentsMap.values());
+  }
+
+  /**
+   * Read-only community stubs from the committed / ingested catalog.
+   * Does not clone or execute remote agent code.
+   */
+  async resolveFromCommunity(catalogPath?: string): Promise<AgentEntry[]> {
+    const filePath = catalogPath || this.communityCatalogPath;
+    const cacheKey = `community:${filePath}`;
+    const cached = this.getCache<AgentEntry[]>(cacheKey);
+    if (cached) return cached;
+
+    try {
+      const raw = await fs.readFile(filePath, 'utf-8');
+      const catalog = JSON.parse(raw) as CommunityCatalog;
+      if (!Array.isArray(catalog.agents)) return [];
+
+      const entries: AgentEntry[] = catalog.agents.map((item) => {
+        const name = `community:${item.fullName}`;
+        const topics = item.topics || [];
+        return {
+          manifest: {
+            name,
+            version: '0.0.0',
+            displayName: item.fullName,
+            description: item.description || `Community agent from ${item.htmlUrl}`,
+            metadata: {
+              category: 'community',
+              tags: topics.includes('aios-agent') ? topics : [...topics, 'aios-agent'],
+              repository: item.htmlUrl,
+              community: true,
+              flags: item.flags || {},
+              stargazers: item.stargazers ?? 0,
+              pushedAt: item.pushedAt,
+              manifestPath: item.manifestPath ?? null,
+              catalogGeneratedAt: catalog.generatedAt,
+            },
+          },
+          source: 'community',
+          path: item.htmlUrl,
+        };
+      });
+
+      this.setCache(cacheKey, entries);
+      return entries;
+    } catch {
+      return [];
+    }
   }
 
   async listAgentsFiltered(options?: {
@@ -216,7 +306,7 @@ export class AgentRegistry {
       JSON.stringify(
         {
           timestamp: new Date().toISOString(),
-          agents: agents.filter((a) => a.source !== 'builtin'),
+          agents: agents.filter((a) => a.source !== 'builtin' && a.source !== 'community'),
         },
         null,
         2

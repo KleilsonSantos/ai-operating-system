@@ -9,6 +9,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 - 📦 Phase 5b packaging: `@aios/create-agent` scaffolder (`pnpm --filter @aios/create-agent dev -- --name …`) + Writing an Agent guide; fix `js-yaml` ESM import in `@aios/agent-registry` (#211)
 - 🔒 Security hygiene: sanitize console JSON responses (no `Error.stack` leak); document Dependabot alerts vs security-update PRs (#214)
 - 📊 Phase 5b observability MVP: `recordAgentExecution` (`kind: agent.execution`), health-score, CLI/MCP enrichment, console Agents chip (#217)
+- 🌐 Phase 5b community publishing MVP: `docs/guides/publish-an-agent.md`, GitHub topic ingest script + weekly workflow artifact, `community` source stubs in `@aios/agent-registry` (#220)
 
 ### Fixed
 
