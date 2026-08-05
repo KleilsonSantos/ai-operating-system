@@ -34,6 +34,13 @@ export function App() {
   const workspaceId =
     status?.workspaces.find((w) => w.ok)?.id || status?.workspaces[0]?.id || 'aios';
   const consumption = status ? formatConsumptionChip(status.metrics) : null;
+  const agentExec = status?.metrics.agentExecution;
+  const agentChip = agentExec
+    ? {
+        label: `${agentExec.count} run(s) · ${agentExec.byAgent.length} agent(s)`,
+        tone: agentExec.errorCount > 0 ? 'warn' : 'ok',
+      }
+    : { label: 'sem agent.execution', tone: '' };
 
   return (
     <div className="shell">
@@ -81,6 +88,10 @@ export function App() {
             <div className={`chip ${consumption?.tone || ''}`}>
               <span className="chip-k">Consumption</span>
               <span className="chip-v">{consumption?.label}</span>
+            </div>
+            <div className={`chip ${agentChip.tone}`}>
+              <span className="chip-k">Agents</span>
+              <span className="chip-v">{agentChip.label}</span>
             </div>
             <div className="chip">
               <span className="chip-k">Workspaces</span>
@@ -170,6 +181,34 @@ export function App() {
                   CLI <code>--provider-chat</code>.
                 </p>
               )}
+
+              <h3 id="agents-h">Agent executions</h3>
+              {status.metrics.agentExecution ? (
+                <ul className="metric-stats" aria-labelledby="agents-h">
+                  <li>
+                    <span className="metric-k">agent.execution runs</span>
+                    <span className="metric-v">{status.metrics.agentExecution.count}</span>
+                  </li>
+                  <li>
+                    <span className="metric-k">Failures</span>
+                    <span className="metric-v">{status.metrics.agentExecution.errorCount}</span>
+                  </li>
+                  {status.metrics.agentExecution.byAgent.slice(0, 6).map((row) => (
+                    <li key={row.agent}>
+                      <span className="metric-k">{row.agent}</span>
+                      <span className="metric-v">
+                        {row.count} · health {row.healthScore}%
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="quiet">
+                  No <code>agent.execution</code> yet. Run a pipeline (
+                  <code>aios_run_pipeline</code>) to record plugin health (Phase 5b).
+                </p>
+              )}
+
               <p className="quiet metric-note">
                 {status.metrics.eventCount ?? 0} JSONL event
                 {(status.metrics.eventCount ?? 0) === 1 ? '' : 's'}

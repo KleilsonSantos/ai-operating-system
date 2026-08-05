@@ -23,7 +23,7 @@ import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge';
 import { remember, recall, clearMemory, listMemoryWorkspaces } from '@aios/memory';
 import { compilePrompt } from '@aios/prompt';
 import { getProvider, listProviderIds } from '@aios/provider';
-import { getGovernanceStatus, chatWithMetrics } from '@aios/status';
+import { getGovernanceStatus, chatWithMetrics, loadMetricsSnapshot } from '@aios/status';
 import { auditDocumentation, searchPkb } from '@aios/documentation';
 import { auditGovernance, recordDecision } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
@@ -68,14 +68,28 @@ export function createAiosMcpServer(): McpServer {
       try {
         const registry = new AgentRegistry();
         const agents = await registry.listAgentsFiltered({ tags, maintainer, name });
+        const snap = loadMetricsSnapshot({
+          homePath: process.env.AIOS_HOME || process.cwd(),
+        });
+        const healthByAgent = new Map(
+          (snap.agentExecution?.byAgent ?? []).map((row) => [row.agent, row])
+        );
+        const enriched = agents.map((agent) => {
+          const metrics = healthByAgent.get(agent.manifest.name);
+          return {
+            ...agent,
+            healthScore: metrics?.healthScore,
+            executionCount: metrics?.count,
+          };
+        });
         return {
           content: [
             {
               type: 'text',
               text: JSON.stringify(
                 {
-                  count: agents.length,
-                  agents,
+                  count: enriched.length,
+                  agents: enriched,
                 },
                 null,
                 2

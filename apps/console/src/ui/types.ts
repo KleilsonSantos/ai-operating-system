@@ -48,5 +48,16 @@ export type GovernanceStatus = {
       completionTokens: number;
       totalTokens: number;
     };
+    agentExecution?: {
+      count: number;
+      errorCount: number;
+      byAgent: Array<{
+        agent: string;
+        count: number;
+        errorCount: number;
+        healthScore: number;
+        lastAt?: string;
+      }>;
+    };
   };
 };
