@@ -6,6 +6,7 @@ import { runArchitectureAgent } from '@aios/agent-architecture';
 import { runAppsecAgent } from '@aios/agent-appsec';
 import { runDocsAgent } from '@aios/agent-docs';
 import { runQaAgent } from '@aios/agent-qa';
+import { recordAgentExecution } from '@aios/status';
 
 const plugins = [
   { id: 'architecture' as const, run: runArchitectureAgent },
@@ -17,6 +18,8 @@ const plugins = [
 export type WorkflowOptions = {
   policies?: PolicyRule[];
   context?: ContextBundle;
+  /** Home for `.aios/metrics/events.jsonl` (Phase 5b agent.execution). */
+  homePath?: string;
 };
 
 export type WorkflowResult = {
@@ -37,6 +40,7 @@ export async function runWorkflow(
   const policyRefs = applied.mustIds.map((id) => `policy:${id}`);
   const ctx = options.context;
   const contextRefs = (ctx?.snippets ?? []).map((s) => `context:${s.path}`);
+  const homePath = options.homePath;
 
   const ran: AgentId[] = [];
   const skipped: AgentId[] = [];
@@ -48,18 +52,49 @@ export async function runWorkflow(
       continue;
     }
 
-    const result = await plugin.run(intent, ctx);
-    const findings = [...result.findings];
-    if (applied.constraints.length > 0) findings.unshift('policies.injected');
-    if (ctx && ctx.snippets.length > 0) {
-      findings.unshift(`context.injected:${ctx.snippets.length}`);
+    const started = Date.now();
+    try {
+      const result = await plugin.run(intent, ctx);
+      const findings = [...result.findings];
+      if (applied.constraints.length > 0) findings.unshift('policies.injected');
+      if (ctx && ctx.snippets.length > 0) {
+        findings.unshift(`context.injected:${ctx.snippets.length}`);
+      }
+      const enriched: AgentResult = {
+        ...result,
+        references: [...result.references, ...policyRefs, ...contextRefs],
+        findings,
+      };
+      results.push(enriched);
+      ran.push(plugin.id);
+      recordAgentExecution(
+        {
+          agent: `@aios/agent-${plugin.id}`,
+          outcome: enriched.ok ? 'success' : 'failure',
+          durationMs: Date.now() - started,
+          source: 'orchestration',
+        },
+        { homePath }
+      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      results.push({
+        agentId: plugin.id,
+        ok: false,
+        findings: [`orchestration.error:${message.slice(0, 120)}`],
+        references: [...policyRefs, ...contextRefs],
+      });
+      ran.push(plugin.id);
+      recordAgentExecution(
+        {
+          agent: `@aios/agent-${plugin.id}`,
+          outcome: 'failure',
+          durationMs: Date.now() - started,
+          source: 'orchestration',
+        },
+        { homePath }
+      );
     }
-    results.push({
-      ...result,
-      references: [...result.references, ...policyRefs, ...contextRefs],
-      findings,
-    });
-    ran.push(plugin.id);
   }
 
   return { results, ran, skipped };

@@ -38,6 +38,7 @@ export const MCP_TOOL_CATALOG = [
   'aios_provider_health',
   'aios_provider_models',
   'aios_provider_chat',
+  'aios_list_agents',
   'aios_governance_status',
   'aios_audit_docs',
   'aios_search_pkb',
@@ -75,11 +76,35 @@ export type ProviderChatByProvider = ProviderChatTotals & {
   provider: string;
 };
 
+export type AgentExecutionOutcome = 'success' | 'failure' | 'timeout' | 'partial';
+
+export type AgentExecutionMetricInput = {
+  agent: string;
+  version?: string;
+  outcome: AgentExecutionOutcome;
+  durationMs?: number;
+  source?: string;
+};
+
+export type AgentExecutionTotals = {
+  count: number;
+  errorCount: number;
+};
+
+export type AgentExecutionByAgent = AgentExecutionTotals & {
+  agent: string;
+  healthScore: number;
+  lastAt?: string;
+};
+
 export type MetricsSnapshot = {
   path: string;
   eventCount: number;
   providerChat?: ProviderChatTotals;
   byProvider: ProviderChatByProvider[];
+  agentExecution?: AgentExecutionTotals & {
+    byAgent: AgentExecutionByAgent[];
+  };
 };
 
 /** Content-Type for classic Prometheus text exposition. */
@@ -117,6 +142,37 @@ export function escapePromLabel(value: string): string {
 }
 
 /**
+ * Health-score 0–100 from success-rate (70%), recency (20%), adoption (10%).
+ * ADR-0023 / Phase 5b (#217).
+ */
+export function computeAgentHealthScore(input: {
+  successCount: number;
+  totalCount: number;
+  lastAt?: string;
+  maxExecutionsSeen: number;
+  nowMs?: number;
+}): number {
+  const total = Math.max(0, input.totalCount);
+  if (total === 0) return 0;
+  const successRate = Math.min(1, Math.max(0, input.successCount / total));
+  const now = input.nowMs ?? Date.now();
+  let recency = 0.5;
+  if (input.lastAt) {
+    const ageDays = Math.max(0, (now - Date.parse(input.lastAt)) / (24 * 60 * 60 * 1000));
+    if (Number.isFinite(ageDays)) {
+      if (ageDays <= 1) recency = 1;
+      else if (ageDays <= 7) recency = 0.7;
+      else if (ageDays <= 30) recency = 0.4;
+      else recency = 0.15;
+    }
+  }
+  const maxSeen = Math.max(1, input.maxExecutionsSeen);
+  const adoption = Math.min(1, Math.log(total + 1) / Math.log(maxSeen + 1));
+  const score = 0.7 * successRate + 0.2 * recency + 0.1 * adoption;
+  return Math.round(Math.min(100, Math.max(0, score * 100)));
+}
+
+/**
  * Read `.aios/metrics/events.jsonl` once (Resource-Aware).
  */
 export function loadMetricsSnapshot(options: { homePath?: string } = {}): MetricsSnapshot {
@@ -129,6 +185,14 @@ export function loadMetricsSnapshot(options: { homePath?: string } = {}): Metric
   let eventCount = 0;
   const total = emptyTotals();
   const per = new Map<string, ProviderChatTotals>();
+  const agentTotal: AgentExecutionTotals = { count: 0, errorCount: 0 };
+  type AgentBucket = {
+    count: number;
+    errorCount: number;
+    successCount: number;
+    lastAt?: string;
+  };
+  const perAgent = new Map<string, AgentBucket>();
 
   try {
     const raw = readFileSync(path, 'utf8');
@@ -141,23 +205,47 @@ export function loadMetricsSnapshot(options: { homePath?: string } = {}): Metric
       } catch {
         continue;
       }
-      if (ev.kind !== 'provider.chat') continue;
-      const provider =
-        typeof ev.provider === 'string' && ev.provider.trim() ? ev.provider.trim() : 'unknown';
-      let bucket = per.get(provider);
-      if (!bucket) {
-        bucket = emptyTotals();
-        per.set(provider, bucket);
+      if (ev.kind === 'provider.chat') {
+        const provider =
+          typeof ev.provider === 'string' && ev.provider.trim() ? ev.provider.trim() : 'unknown';
+        let bucket = per.get(provider);
+        if (!bucket) {
+          bucket = emptyTotals();
+          per.set(provider, bucket);
+        }
+        total.count += 1;
+        bucket.count += 1;
+        if (ev.ok === false) {
+          total.errorCount += 1;
+          bucket.errorCount += 1;
+        }
+        const usage = ev.usage as ChatUsage | undefined;
+        addUsage(total, usage);
+        addUsage(bucket, usage);
+        continue;
       }
-      total.count += 1;
-      bucket.count += 1;
-      if (ev.ok === false) {
-        total.errorCount += 1;
-        bucket.errorCount += 1;
+      if (ev.kind === 'agent.execution') {
+        const agent = typeof ev.agent === 'string' && ev.agent.trim() ? ev.agent.trim() : 'unknown';
+        let bucket = perAgent.get(agent);
+        if (!bucket) {
+          bucket = { count: 0, errorCount: 0, successCount: 0 };
+          perAgent.set(agent, bucket);
+        }
+        agentTotal.count += 1;
+        bucket.count += 1;
+        const outcome = typeof ev.outcome === 'string' ? ev.outcome : '';
+        const ok = outcome === 'success' || (ev.ok === true && outcome !== 'failure');
+        if (ok) {
+          bucket.successCount += 1;
+        } else {
+          agentTotal.errorCount += 1;
+          bucket.errorCount += 1;
+        }
+        const at = typeof ev.at === 'string' ? ev.at : undefined;
+        if (at && (!bucket.lastAt || at > bucket.lastAt)) {
+          bucket.lastAt = at;
+        }
       }
-      const usage = ev.usage as ChatUsage | undefined;
-      addUsage(total, usage);
-      addUsage(bucket, usage);
     }
   } catch {
     return { path, eventCount: 0, byProvider: [] };
@@ -167,11 +255,35 @@ export function loadMetricsSnapshot(options: { homePath?: string } = {}): Metric
     .map(([provider, t]) => ({ provider, ...t }))
     .sort((a, b) => a.provider.localeCompare(b.provider));
 
+  const maxExecutionsSeen = Math.max(1, ...[...perAgent.values()].map((b) => b.count), 1);
+  const byAgent = [...perAgent.entries()]
+    .map(([agent, b]) => ({
+      agent,
+      count: b.count,
+      errorCount: b.errorCount,
+      lastAt: b.lastAt,
+      healthScore: computeAgentHealthScore({
+        successCount: b.successCount,
+        totalCount: b.count,
+        lastAt: b.lastAt,
+        maxExecutionsSeen,
+      }),
+    }))
+    .sort((a, b) => a.agent.localeCompare(b.agent));
+
   return {
     path,
     eventCount,
     providerChat: total.count > 0 ? total : undefined,
     byProvider,
+    agentExecution:
+      agentTotal.count > 0
+        ? {
+            count: agentTotal.count,
+            errorCount: agentTotal.errorCount,
+            byAgent,
+          }
+        : undefined,
   };
 }
 
@@ -276,6 +388,19 @@ export function renderPrometheusMetrics(options: { homePath?: string } = {}): st
     }
   }
 
+  if (snap.agentExecution) {
+    out.push('# HELP aios_agent_execution_total Agent plugin executions (JSONL agent.execution)');
+    out.push('# TYPE aios_agent_execution_total counter');
+    out.push(promLine('aios_agent_execution_total', snap.agentExecution.count));
+    out.push('# HELP aios_agent_execution_errors_total Failed agent.execution outcomes');
+    out.push('# TYPE aios_agent_execution_errors_total counter');
+    out.push(promLine('aios_agent_execution_errors_total', snap.agentExecution.errorCount));
+    for (const row of snap.agentExecution.byAgent) {
+      out.push(promLine('aios_agent_execution_by_agent_total', row.count, { agent: row.agent }));
+      out.push(promLine('aios_agent_health_score', row.healthScore, { agent: row.agent }));
+    }
+  }
+
   return `${out.join('\n')}\n`;
 }
 
@@ -309,6 +434,26 @@ export function recordProviderChatMetric(
       latencyMs: input.latencyMs,
       usage: input.usage,
       error: input.error,
+      source: input.source,
+    },
+    options
+  );
+}
+
+/** Record a single agent plugin run (`kind: agent.execution`) — Phase 5b / #217. */
+export function recordAgentExecution(
+  input: AgentExecutionMetricInput,
+  options: { homePath?: string } = {}
+): string {
+  const ok = input.outcome === 'success';
+  return recordMetricEvent(
+    {
+      kind: 'agent.execution',
+      agent: input.agent,
+      version: input.version || undefined,
+      outcome: input.outcome,
+      ok,
+      durationMs: input.durationMs,
       source: input.source,
     },
     options
@@ -366,6 +511,7 @@ function buildAttention(parts: {
   provider: GovernanceStatus['provider'];
   memoryIds: string[];
   providerChat?: ProviderChatSummary;
+  agentExecution?: NonNullable<GovernanceStatus['metrics']['agentExecution']>;
   eventCount: number;
   governanceFindings?: AttentionItem[];
 }): AttentionItem[] {
@@ -439,6 +585,15 @@ function buildAttention(parts: {
     });
   }
 
+  if (parts.agentExecution && parts.agentExecution.errorCount > 0) {
+    items.push({
+      id: 'agent-execution-errors',
+      severity: 'warn',
+      title: `Agent execution failures (${parts.agentExecution.errorCount}/${parts.agentExecution.count})`,
+      detail: 'See kind: agent.execution rows in .aios/metrics/events.jsonl (Phase 5b).',
+    });
+  }
+
   // Governance v2 signals (#121) — skip duplicates already covered above
   const skipGov = new Set(['gov-no-must', 'gov-no-decisions']);
   for (const f of parts.governanceFindings || []) {
@@ -480,7 +635,9 @@ export async function getGovernanceStatus(
   const memoryIds = listMemoryWorkspaces({ homePath });
   const metricsSnap = loadMetricsSnapshot({ homePath });
   const providerChat = metricsSnap.providerChat;
-  const metricsAvailable = Boolean(providerChat) || metricsSnap.eventCount > 0;
+  const agentExecution = metricsSnap.agentExecution;
+  const metricsAvailable =
+    Boolean(providerChat) || Boolean(agentExecution) || metricsSnap.eventCount > 0;
 
   // Quick governance audit (no docs walk) — Resource-Aware (#121)
   const govAudit = auditGovernance({
@@ -496,15 +653,20 @@ export async function getGovernanceStatus(
     provider,
     memoryIds,
     providerChat,
+    agentExecution,
     eventCount: metricsSnap.eventCount,
     governanceFindings: govAudit.findings,
   });
 
   let note: string;
-  if (providerChat) {
+  if (providerChat && agentExecution) {
+    note = `provider.chat: ${providerChat.count}; agent.execution: ${agentExecution.count} (JSONL; scrape GET /metrics).`;
+  } else if (providerChat) {
     note = `provider.chat: ${providerChat.count} call(s), ~${providerChat.totalTokens} tokens (JSONL; scrape GET /metrics).`;
+  } else if (agentExecution) {
+    note = `agent.execution: ${agentExecution.count} run(s) across ${agentExecution.byAgent.length} agent(s).`;
   } else if (metricsSnap.eventCount > 0) {
-    note = 'Local JSONL events present; no provider.chat rows yet.';
+    note = 'Local JSONL events present; no provider.chat / agent.execution rows yet.';
   } else {
     note = 'No consumption events — use chatWithMetrics / aios_provider_chat (ADR-0019).';
   }
@@ -528,6 +690,7 @@ export async function getGovernanceStatus(
       eventCount: metricsSnap.eventCount,
       path: metricsSnap.path,
       providerChat,
+      agentExecution,
     },
   };
 }
