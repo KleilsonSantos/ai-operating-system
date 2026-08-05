@@ -1,0 +1,35 @@
+name: Community agents ingest
+
+# Weekly discovery of GitHub topic `aios-agent` (ADR-0023 / Phase 5b).
+# Resource-Aware: schedule + manual dispatch only; no always-on service.
+# Produces an artifact; maintainers may commit an updated catalog from a follow-up PR.
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Discover aios-agent topic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/community-agents-ingest.mjs --out packages/agent-registry/data/community-catalog.json
+
+      - name: Upload community catalog artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: community-catalog
+          path: packages/agent-registry/data/community-catalog.json
+          if-no-files-found: error

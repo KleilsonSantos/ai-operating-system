@@ -8,12 +8,12 @@ This guide covers packaging a reusable agent that the [Agent Registry](../../pac
 
 ## Concept
 
-| Idea              | Meaning                                                                   |
-| ----------------- | ------------------------------------------------------------------------- |
-| Manifest          | `agent.yaml` (or `.json`) — name, version, I/O ports, dependencies        |
-| Package           | npm-style folder with `src/`, tests, and the manifest at the package root |
-| Built-in agents   | Shipped in this monorepo (Architecture, AppSec, Docs, QA)                 |
-| Local / npm / git | Additional sources resolved by `@aios/agent-registry`                     |
+| Idea                          | Meaning                                                                   |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| Manifest                      | `agent.yaml` (or `.json`) — name, version, I/O ports, dependencies        |
+| Package                       | npm-style folder with `src/`, tests, and the manifest at the package root |
+| Built-in agents               | Shipped in this monorepo (Architecture, AppSec, Docs, QA)                 |
+| Local / npm / git / community | Additional sources resolved by `@aios/agent-registry`                     |
 
 ## Anatomy
 
@@ -105,6 +105,6 @@ The scaffolded `run(input)` function is a stub. Wire it to engines (context, pol
 2. `aios list-agents` / MCP `aios_list_agents` — confirm discovery (local path / tags).
 3. Keep prompts short; permanent rules belong in `policies/`, not in agent copy-paste.
 
-## Publish (later)
+## Publish
 
-Community publishing (npm template package, GitHub `aios-agent` topic ingest) is Phase 5b follow-on. Until then, keep agents in-repo or on a private path and register them locally.
+See [Publish an Agent](./publish-an-agent.md) for the GitHub topic `aios-agent`, weekly ingest, and community catalog stubs. npm publish of `@aios/create-agent` as a public create package remains a follow-on.

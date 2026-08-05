@@ -45,4 +45,51 @@ describe('AgentRegistry', () => {
     expect(agent).toBeDefined();
     expect(agent?.manifest.displayName).toBe('QA Agent');
   });
+
+  it('should load community catalog stubs', async () => {
+    const catalogPath = path.join(tempDir, 'community-catalog.json');
+    await fs.writeFile(
+      catalogPath,
+      JSON.stringify({
+        generatedAt: '2026-07-23T00:00:00.000Z',
+        source: 'github-topic:aios-agent',
+        agents: [
+          {
+            fullName: 'example/demo-agent',
+            htmlUrl: 'https://github.com/example/demo-agent',
+            description: 'Demo community agent',
+            stargazers: 3,
+            topics: ['aios-agent'],
+            flags: { stale: false, suspicious: false, missingManifest: false },
+            manifestPath: 'agent.yaml',
+          },
+        ],
+      })
+    );
+
+    const registry = new AgentRegistry({ registryPath, communityCatalogPath: catalogPath });
+    const agents = await registry.listAgents({ includeLocal: false });
+    const community = agents.find((a) => a.source === 'community');
+    expect(community).toBeDefined();
+    expect(community?.manifest.name).toBe('community:example/demo-agent');
+    expect(community?.manifest.metadata?.repository).toBe('https://github.com/example/demo-agent');
+  });
+
+  it('should skip community when includeCommunity is false', async () => {
+    const catalogPath = path.join(tempDir, 'community-catalog.json');
+    await fs.writeFile(
+      catalogPath,
+      JSON.stringify({
+        agents: [
+          {
+            fullName: 'example/hidden',
+            htmlUrl: 'https://github.com/example/hidden',
+          },
+        ],
+      })
+    );
+    const registry = new AgentRegistry({ registryPath, communityCatalogPath: catalogPath });
+    const agents = await registry.listAgents({ includeLocal: false, includeCommunity: false });
+    expect(agents.every((a) => a.source !== 'community')).toBe(true);
+  });
 });
