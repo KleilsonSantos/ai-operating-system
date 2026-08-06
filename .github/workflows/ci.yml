@@ -5,6 +5,8 @@ on:
     branches: [main, sandbox]
   pull_request:
     branches: [main, sandbox]
+  # Manual re-run when GitHub fails to queue pull_request/push (ops recovery)
+  workflow_dispatch:
 
 jobs:
   commitlint:
