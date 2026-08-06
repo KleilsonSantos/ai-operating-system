@@ -15,8 +15,8 @@ This guide explains how to publish a **community** agent so AIOS can discover it
 1. **Develop and test** — unit-test `run()`, validate the manifest with `AgentRegistry.validate`.
 2. **Tag the repo** — on GitHub → About → Topics → add **`aios-agent`**. Keep metadata tags in `agent.yaml` (`metadata.tags`) aligned when useful.
 3. **Document** — README should state that the package is an AIOS agent plugin (agents are plugins; not primary UX).
-4. **Wait for ingest** — weekly GitHub Action scans `topic:aios-agent` and writes a catalog artifact. Maintainers may refresh the committed catalog at `packages/agent-registry/data/community-catalog.json`.
-5. **Verify locally** — after the catalog includes your repo:
+4. **Wait for ingest** — the **Community agents ingest** workflow (weekly Monday 06:00 UTC, or `workflow_dispatch`) scans `topic:aios-agent`. When the agents list changes, it opens or updates a PR to `sandbox` refreshing `packages/agent-registry/data/community-catalog.json`. Maintainers review flags, then merge (git flow).
+5. **Verify** — after that PR lands on `sandbox` / `main`:
 
    ```bash
    pnpm --filter @aios/cli exec aios --list-agents
@@ -25,7 +25,7 @@ This guide explains how to publish a **community** agent so AIOS can discover it
 
 ## Catalog & heuristics (MVP)
 
-Ingest script: `node scripts/community-agents-ingest.mjs`.
+Ingest script: `node scripts/community-agents-ingest.mjs` (`pnpm community:ingest`).
 
 | Flag              | Meaning                                                             |
 | ----------------- | ------------------------------------------------------------------- |
@@ -35,9 +35,22 @@ Ingest script: `node scripts/community-agents-ingest.mjs`.
 
 Flagged entries still appear as **stubs** so operators can review them; they are not auto-trusted for execution.
 
+The script **does not rewrite** the catalog when only `generatedAt` would change (stable fingerprint of the agents list), so empty weeks do not open no-op PRs. Use `--force` to rewrite anyway.
+
+## First-agent verification gate
+
+Until at least one **public** repository carries topic `aios-agent` with a discoverable manifest, the committed catalog stays empty and the workflow uploads an artifact without opening a PR.
+
+To complete the gate:
+
+1. Publish a public demo agent (separate repo) with topic `aios-agent` + `agent.yaml`.
+2. Run **Community agents ingest** → `workflow_dispatch`.
+3. Review/merge the catalog PR → `sandbox`, then promote when ready.
+4. Confirm `aios list-agents` shows `source: community`.
+
 ## Out of scope (this MVP)
 
-- Always-on async HTTP registry service
+- Always-on async HTTP registry service / n8n as product dependency
 - Productized malware scanning / owner negotiation UX
 - npm publish of `@aios/create-agent` as a public `npm create` package (tracked separately)
 
@@ -46,7 +59,8 @@ Flagged entries still appear as **stubs** so operators can review them; they are
 ```bash
 # Prefer a token to avoid unauthenticated rate limits
 export GITHUB_TOKEN="$(gh auth token)"
-node scripts/community-agents-ingest.mjs
+pnpm community:ingest
+# or: node scripts/community-agents-ingest.mjs
 ```
 
-Or run the **Community agents ingest** workflow (`workflow_dispatch`) and download the artifact.
+Or run the **Community agents ingest** workflow (`workflow_dispatch`) and review the PR / artifact.

@@ -10,6 +10,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 - 🔒 Security hygiene: sanitize console JSON responses (no `Error.stack` leak); document Dependabot alerts vs security-update PRs (#214)
 - 📊 Phase 5b observability MVP: `recordAgentExecution` (`kind: agent.execution`), health-score, CLI/MCP enrichment, console Agents chip (#217)
 - 🌐 Phase 5b community publishing MVP: `docs/guides/publish-an-agent.md`, GitHub topic ingest script + weekly workflow artifact, `community` source stubs in `@aios/agent-registry` (#220)
+- 🤖 Community catalog auto-PR: weekly/manual GHA refreshes catalog and opens PR → `sandbox` only when agents change (#223)
 
 ### Fixed
 
