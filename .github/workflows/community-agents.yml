@@ -2,7 +2,8 @@ name: Community agents ingest
 
 # Weekly discovery of GitHub topic `aios-agent` (ADR-0023 / Phase 5b).
 # Resource-Aware: schedule + manual dispatch only; no always-on service.
-# Produces an artifact; maintainers may commit an updated catalog from a follow-up PR.
+# When the agents list changes, opens/updates a PR targeting `sandbox`
+# (human review). Artifact is always uploaded for debugging.
 
 on:
   schedule:
@@ -10,19 +11,24 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
   ingest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # Need sandbox tip so the refresh PR bases cleanly
+          ref: sandbox
 
       - uses: actions/setup-node@v6
         with:
           node-version: 22
 
       - name: Discover aios-agent topic
+        id: ingest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/community-agents-ingest.mjs --out packages/agent-registry/data/community-catalog.json
@@ -33,3 +39,45 @@ jobs:
           name: community-catalog
           path: packages/agent-registry/data/community-catalog.json
           if-no-files-found: error
+
+      - name: Open or update catalog PR to sandbox
+        if: steps.ingest.outputs.catalog_changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          BRANCH="chore/community-catalog-refresh"
+          COUNT="${{ steps.ingest.outputs.agent_count }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git checkout -B "$BRANCH"
+          git add packages/agent-registry/data/community-catalog.json
+          if git diff --cached --quiet; then
+            echo "Staged catalog empty after change flag — nothing to commit"
+            exit 0
+          fi
+
+          git commit -m "chore: 📦 refresh community agents catalog"
+          git push -u origin "$BRANCH" --force-with-lease
+
+          EXISTING="$(gh pr list --base sandbox --head "$BRANCH" --state open --json number --jq '.[0].number // empty')"
+          BODY="## Summary
+          Automated refresh of \`packages/agent-registry/data/community-catalog.json\` from GitHub topic \`aios-agent\` (workflow **Community agents ingest**).
+
+          - Agent stubs in catalog: **${COUNT}**
+          - Review flags (\`stale\` / \`suspicious\` / \`missingManifest\`) before merge
+          - Target: \`sandbox\` (git flow)
+
+          Closes nothing automatically — merge when the catalog looks sane."
+          BODY="$(printf '%s\n' "$BODY" | sed 's/^          //')"
+
+          if [ -n "$EXISTING" ]; then
+            echo "Updated existing PR #$EXISTING"
+            gh pr edit "$EXISTING" --body "$BODY"
+          else
+            gh pr create --base sandbox --head "$BRANCH" \
+              --title "chore: refresh community agents catalog" \
+              --body "$BODY"
+          fi
