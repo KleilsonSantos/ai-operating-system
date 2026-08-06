@@ -5,14 +5,16 @@
 
 set -euo pipefail
 
-remote="${1:-}"
-url="${2:-}"
+# Git hook protocol args (name + URL); kept for signature compatibility.
+_remote="${1:-}"
+_url="${2:-}"
+: "${_remote}" "${_url}"
 
 echo "pre-push: verificando vulnerabilidades em dependências..."
 pnpm audit
 
-while read -r local_ref local_sha remote_ref remote_sha; do
-  [[ -z "${local_ref:-}" ]] && continue
+while read -r _local_ref _local_sha remote_ref _remote_sha; do
+  [[ -z "${_local_ref:-}" ]] && continue
   if [[ "$remote_ref" == "refs/heads/main" || "$remote_ref" == "refs/heads/sandbox" ]]; then
     echo "pre-push: push direto para ${remote_ref#refs/heads/} é proibido."
     echo "pre-push: abra um PR para promover mudanças para branches protegidas."
