@@ -69,9 +69,10 @@ Agents become first-class, discoverable, reusable building blocks. Four pillars:
 
 - [x] Agent Packaging (scaffolder MVP) — `@aios/create-agent` + template + `docs/guides/writing-an-agent.md` (#211); npm publish of `@aios/create-agent` / `@aios/agent-template` and multi-level dependency resolver still open
 - [x] Agent Observability (MVP) — `recordAgentExecution` + `kind: agent.execution` JSONL; health-score on list-agents / console chip (#217); full Agent Catalog / adoption graphs still open
-- [x] Community Publishing (MVP) — publish guide; `scripts/community-agents-ingest.mjs`; weekly GHA artifact; catalog + `community` source in `@aios/agent-registry` (#220); async HTTP registry service + productized abuse pipeline still open
+- [x] Community Publishing (MVP) — publish guide; `scripts/community-agents-ingest.mjs`; weekly GHA artifact; catalog + `community` source in `@aios/agent-registry` (#220)
+- [x] Community catalog auto-PR — GHA opens/updates PR → `sandbox` when agents list changes; skip `generatedAt`-only churn (#223); first live topic ingest still waits on a public `aios-agent` repo; async HTTP registry service + productized abuse pipeline still open (deferred — Resource-Aware)
 
-**Status:** Scaffolder + observability + community MVP landed (#211 / #217 / #220).  
+**Status:** Scaffolder + observability + community MVP + catalog auto-PR landed (#211 / #217 / #220 / #223).  
 **Target:** next minor after `v0.28.0` (track remaining depth in issues / plan tasks — do not backdate into 5a).
 
 ## Out of scope (on purpose)

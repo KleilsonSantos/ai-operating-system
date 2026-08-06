@@ -6,12 +6,16 @@
  * Resource-Aware: one search request + optional per-repo HEAD checks; no
  * always-on ingest service. Prefer GITHUB_TOKEN / GH_TOKEN to avoid rate limits.
  *
+ * Skips rewriting the file when the agents list is unchanged (ignores
+ * generatedAt churn) so weekly CI does not open empty PRs.
+ *
  * Usage:
  *   node scripts/community-agents-ingest.mjs
  *   node scripts/community-agents-ingest.mjs --out path/to/catalog.json
  *   node scripts/community-agents-ingest.mjs --dry-run
+ *   node scripts/community-agents-ingest.mjs --force
  */
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, readFileSync, existsSync, appendFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -27,22 +31,30 @@ const MANIFEST_CANDIDATES = ['agent.yaml', 'agent.yml', 'agent.json', '.aios/age
 function parseArgs(argv) {
   let out = DEFAULT_OUT;
   let dryRun = false;
+  let force = false;
   let limit = 50;
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--dry-run') dryRun = true;
+    else if (a === '--force') force = true;
     else if (a === '--out') out = argv[++i];
     else if (a.startsWith('--out=')) out = a.slice('--out='.length);
     else if (a === '--limit') limit = Number(argv[++i]) || limit;
     else if (a.startsWith('--limit=')) limit = Number(a.slice('--limit='.length)) || limit;
     else if (a === '--help' || a === '-h') {
       console.log(
-        `Usage: node scripts/community-agents-ingest.mjs [--out FILE] [--limit N] [--dry-run]`
+        `Usage: node scripts/community-agents-ingest.mjs [--out FILE] [--limit N] [--dry-run] [--force]`
       );
       process.exit(0);
     }
   }
-  return { out, dryRun, limit: Math.min(Math.max(limit, 1), 100) };
+  return { out, dryRun, force, limit: Math.min(Math.max(limit, 1), 100) };
+}
+
+function setGithubOutput(name, value) {
+  const file = process.env.GITHUB_OUTPUT;
+  if (!file) return;
+  appendFileSync(file, `${name}=${value}\n`, 'utf8');
 }
 
 function authHeaders() {
@@ -117,6 +129,40 @@ function toCatalogEntry(repo, manifest) {
   };
 }
 
+function agentsFingerprint(agents) {
+  const normalized = [...(agents || [])]
+    .map((a) => ({
+      fullName: a.fullName,
+      htmlUrl: a.htmlUrl,
+      description: a.description || '',
+      stargazers: a.stargazers ?? 0,
+      forks: a.forks ?? 0,
+      pushedAt: a.pushedAt || null,
+      createdAt: a.createdAt || null,
+      defaultBranch: a.defaultBranch || 'main',
+      topics: [...(a.topics || [])].sort(),
+      archived: Boolean(a.archived),
+      manifestPath: a.manifestPath ?? null,
+      flags: {
+        stale: Boolean(a.flags?.stale),
+        suspicious: Boolean(a.flags?.suspicious),
+        missingManifest: Boolean(a.flags?.missingManifest),
+      },
+    }))
+    .sort((a, b) => a.fullName.localeCompare(b.fullName));
+  return JSON.stringify(normalized);
+}
+
+function readExistingAgents(outPath) {
+  if (!existsSync(outPath)) return [];
+  try {
+    const raw = JSON.parse(readFileSync(outPath, 'utf8'));
+    return Array.isArray(raw.agents) ? raw.agents : [];
+  } catch {
+    return [];
+  }
+}
+
 async function searchRepos(limit) {
   const url = new URL('https://api.github.com/search/repositories');
   url.searchParams.set('q', SEARCH_QUERY);
@@ -128,7 +174,7 @@ async function searchRepos(limit) {
 }
 
 async function main() {
-  const { out, dryRun, limit } = parseArgs(process.argv);
+  const { out, dryRun, force, limit } = parseArgs(process.argv);
   console.log(`Searching GitHub for ${SEARCH_QUERY} (limit=${limit})…`);
   const repos = await searchRepos(limit);
   console.log(`Found ${repos.length} repositories`);
@@ -148,6 +194,8 @@ async function main() {
     );
   }
 
+  agents.sort((a, b) => a.fullName.localeCompare(b.fullName));
+
   const catalog = {
     generatedAt: new Date().toISOString(),
     source: `github-topic:${TOPIC}`,
@@ -157,6 +205,17 @@ async function main() {
 
   if (dryRun) {
     console.log(JSON.stringify(catalog, null, 2));
+    setGithubOutput('catalog_changed', 'false');
+    return;
+  }
+
+  const previous = readExistingAgents(out);
+  const changed = force || agentsFingerprint(previous) !== agentsFingerprint(agents);
+  setGithubOutput('catalog_changed', changed ? 'true' : 'false');
+  setGithubOutput('agent_count', String(agents.length));
+
+  if (!changed) {
+    console.log(`Unchanged (${agents.length} agents) — skipped write → ${out}`);
     return;
   }
 
