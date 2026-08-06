@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.29.0] - 2026-08-06
+
 ### Added
 
 - 📦 Phase 5b packaging: `@aios/create-agent` scaffolder (`pnpm --filter @aios/create-agent dev -- --name …`) + Writing an Agent guide; fix `js-yaml` ESM import in `@aios/agent-registry` (#211)
@@ -12,6 +14,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 - 🌐 Phase 5b community publishing MVP: `docs/guides/publish-an-agent.md`, GitHub topic ingest script + weekly workflow artifact, `community` source stubs in `@aios/agent-registry` (#220)
 - 🤖 Community catalog auto-PR: weekly/manual GHA refreshes catalog and opens PR → `sandbox` only when agents change (#223)
 - 🔒 ShellCheck on `scripts/*.sh` + `.githooks/*` in CI; harden Actions `run:` against script injection via `env:` (#227)
+- 🌐 First community agent ingest: public [`aios-agent-smoke`](https://github.com/KleilsonSantos/aios-agent-smoke) (`topic:aios-agent`) in committed catalog (#230)
 
 ### Fixed
 
