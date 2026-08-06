@@ -44,10 +44,10 @@ jobs:
         if: steps.ingest.outputs.catalog_changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COUNT: ${{ steps.ingest.outputs.agent_count }}
         run: |
           set -euo pipefail
           BRANCH="chore/community-catalog-refresh"
-          COUNT="${{ steps.ingest.outputs.agent_count }}"
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
