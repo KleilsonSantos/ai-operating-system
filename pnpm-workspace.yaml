@@ -26,4 +26,6 @@ overrides:
   ip-address: 10.3.1
   # GHSA-fxqj-rqcc-2cmp — sourceMappingURL incomplete fix
   postcss: 8.5.23
+  # GHSA-2v37-7h3g-55p8 — nanoid infinite loop when size is zero
+  nanoid: 3.3.17
   'glob@10>minimatch': 10.2.5

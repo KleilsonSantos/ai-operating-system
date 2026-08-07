@@ -161,6 +161,31 @@ describe('getGovernanceStatus', () => {
     expect(status.metrics.agentExecution?.errorCount).toBe(1);
     expect(status.metrics.agentExecution?.byAgent[0]?.healthScore).toBeGreaterThan(0);
     expect(status.attention.some((a) => a.id === 'agent-execution-errors')).toBe(true);
+    expect(status.agents.length).toBeGreaterThanOrEqual(4);
+    const docs = status.agents.find((a) => a.name === '@aios/agent-docs');
+    expect(docs?.source).toBe('builtin');
+    expect(docs?.executions).toBe(2);
+    expect(docs?.healthScore).toBeGreaterThan(0);
+  });
+
+  it('includes Agent Catalog rows from the registry without executions', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'aios-status-catalog-'));
+    temps.push(root);
+    writeFileSync(join(root, 'package.json'), '{"name":"aios"}');
+    const status = await getGovernanceStatus({
+      homePath: root,
+      providerHealth: {
+        provider: 'ollama',
+        ok: true,
+        baseUrl: 'http://127.0.0.1:11434',
+        models: ['llama'],
+      },
+    });
+    expect(status.agents.some((a) => a.name === '@aios/agent-architecture')).toBe(true);
+    expect(status.agents.every((a) => typeof a.version === 'string')).toBe(true);
+    expect(
+      status.agents.find((a) => a.name === '@aios/agent-architecture')?.executions
+    ).toBeUndefined();
   });
 
   it('chatWithMetrics records success via injectable provider fetch', async () => {
