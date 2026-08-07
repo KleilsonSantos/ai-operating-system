@@ -216,6 +216,16 @@ export type AttentionItem = {
   detail: string;
 };
 
+/** Registry agent row joined with optional execution metrics (console catalog / #247). */
+export type AgentCatalogEntry = {
+  name: string;
+  version: string;
+  displayName?: string;
+  source: 'builtin' | 'local' | 'npm' | 'git' | 'community';
+  healthScore?: number;
+  executions?: number;
+};
+
 export type GovernanceStatus = {
   generatedAt: string;
   contractVersion: PipelineContractVersion;
@@ -241,6 +251,8 @@ export type GovernanceStatus = {
     mcpTools: string[];
     providers: string[];
   };
+  /** Agent Registry catalog with optional health/execution join (#247 / ADR-0023). */
+  agents: AgentCatalogEntry[];
   attention: AttentionItem[];
   metrics: {
     available: boolean;

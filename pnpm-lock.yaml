@@ -516,6 +516,9 @@ importers:
 
   engines/status:
     dependencies:
+      '@aios-platform/agent-registry':
+        specifier: workspace:*
+        version: link:../../packages/agent-registry
       '@aios/governance':
         specifier: workspace:*
         version: link:../governance

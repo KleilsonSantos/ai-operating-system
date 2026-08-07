@@ -30,6 +30,14 @@ export type GovernanceStatus = {
     mcpTools: string[];
     providers: string[];
   };
+  agents: Array<{
+    name: string;
+    version: string;
+    displayName?: string;
+    source: 'builtin' | 'local' | 'npm' | 'git' | 'community';
+    healthScore?: number;
+    executions?: number;
+  }>;
   attention: Array<{
     id: string;
     severity: AttentionSeverity;

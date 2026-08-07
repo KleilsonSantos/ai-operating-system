@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📊 Console Agent Catalog MVP: `GovernanceStatus.agents` (registry + health/runs join); console catalog panel (#247)
+
 ## [0.30.0] - 2026-08-07
 
 ### Added
