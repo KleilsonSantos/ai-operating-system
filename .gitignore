@@ -48,6 +48,9 @@ coverage
 .cursor/mcp.json
 # Memory Engine local store (#51)
 .aios/
+
+# Local scaffolder output (npm create @aios-platform/agent)
+/agent-*/
 .idea
 .DS_Store
 *.suo
