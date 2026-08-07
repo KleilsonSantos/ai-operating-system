@@ -563,9 +563,6 @@ importers:
 
   packages/agent-registry:
     dependencies:
-      '@aios/shared':
-        specifier: workspace:*
-        version: link:../shared
       ajv:
         specifier: ^8.17.1
         version: 8.20.0

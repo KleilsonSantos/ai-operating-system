@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📦 Publish-ready `@aios/create-agent` + `@aios/agent-registry` (`npm create @aios/agent`); pack smoke + publish scripts (#233)
+
 ## [0.29.0] - 2026-08-06
 
 ### Added

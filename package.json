@@ -22,7 +22,9 @@
     "audit": "audit-ci --moderate",
     "prepare": "git config core.hooksPath .githooks || true",
     "sync:cursor-rules": "node scripts/sync-cursor-rules-from-policies.mjs",
-    "community:ingest": "node scripts/community-agents-ingest.mjs"
+    "community:ingest": "node scripts/community-agents-ingest.mjs",
+    "create-agent:pack-smoke": "bash scripts/smoke-create-agent-pack.sh",
+    "create-agent:publish": "bash scripts/npm-publish-create-agent.sh"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

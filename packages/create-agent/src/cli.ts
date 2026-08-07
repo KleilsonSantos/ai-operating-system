@@ -2,7 +2,7 @@
 /**
  * CLI entry for `npm create @aios/agent` / `pnpm --filter @aios/create-agent dev -- --name …`
  */
-import { scaffoldAgent } from './scaffold.ts';
+import { scaffoldAgent } from './scaffold.js';
 
 function printHelp(): void {
   console.log(`Usage: create-agent --name <agent-name> [--dir <path>]
