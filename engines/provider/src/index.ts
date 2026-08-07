@@ -1,6 +1,7 @@
 /**
  * Multi-provider — abstração AIProvider + Ollama local + OpenAI-compatible (#67 / #105).
  * Auxiliar para tarefas baratas — **não** substitui o LLM da IDE.
+ * Resilience: retry + circuit breaker (#238).
  */
 import type {
   ChatMessage,
@@ -11,6 +12,14 @@ import type {
   ProviderId,
   ProviderModelInfo,
 } from '@aios/shared';
+import {
+  CircuitBreaker,
+  isTransientError,
+  resolveResilience,
+  withRetry,
+  type ResilienceOptions,
+  type CircuitState,
+} from './resilience.js';
 
 export type {
   ChatMessage,
@@ -21,6 +30,9 @@ export type {
   ProviderId,
   ProviderModelInfo,
 };
+
+export type { CircuitState, ResilienceOptions } from './resilience.js';
+export { CircuitBreaker, isTransientError, resolveResilience, withRetry } from './resilience.js';
 
 export type FetchLike = typeof fetch;
 
@@ -42,7 +54,7 @@ export type ProviderOptions = {
   fetch?: FetchLike;
   /** Request timeout ms (default 30_000) */
   timeoutMs?: number;
-};
+} & ResilienceOptions;
 
 /** @deprecated Prefer ProviderOptions — alias for Ollama. */
 export type OllamaProviderOptions = ProviderOptions;
@@ -504,14 +516,88 @@ const PROVIDERS: Record<string, (opts?: ProviderOptions) => AIProvider> = {
   anthropic: (opts) => new AnthropicProvider(opts),
 };
 
-/** Router stub — seleção por nome; roteamento inteligente depois. */
+/**
+ * Wraps an AIProvider with retry + circuit breaker for chat/models.
+ * Health probes once (no retry storm) and reports circuit state.
+ */
+export class ResilientProvider implements AIProvider {
+  readonly id: string;
+  private readonly circuit: CircuitBreaker;
+  private readonly cfg: ReturnType<typeof resolveResilience>;
+  private readonly sleep?: (ms: number) => Promise<void>;
+
+  constructor(
+    private readonly inner: AIProvider,
+    opts: ResilienceOptions = {},
+    hooks?: { sleep?: (ms: number) => Promise<void>; now?: () => number }
+  ) {
+    this.id = inner.id;
+    this.cfg = resolveResilience(opts);
+    this.circuit = new CircuitBreaker(
+      this.cfg.circuitFailureThreshold,
+      this.cfg.circuitCooldownMs,
+      hooks?.now
+    );
+    this.sleep = hooks?.sleep;
+  }
+
+  getCircuitState(): CircuitState {
+    return this.circuit.getState();
+  }
+
+  private async guarded<T>(fn: () => Promise<T>): Promise<T> {
+    if (!this.cfg.enabled) {
+      return fn();
+    }
+    this.circuit.assertCanPass();
+    const probing = this.circuit.getState() === 'half-open';
+    try {
+      const result = await withRetry(fn, {
+        maxRetries: this.cfg.maxRetries,
+        retryBackoffMs: this.cfg.retryBackoffMs,
+        sleep: this.sleep,
+      });
+      this.circuit.recordSuccess();
+      return result;
+    } catch (err) {
+      // Trip only on transient faults (or failed half-open probe) — not on 4xx client errors
+      if (probing || isTransientError(err)) {
+        this.circuit.recordFailure();
+      }
+      throw err;
+    }
+  }
+
+  async models(): Promise<ProviderModelInfo[]> {
+    return this.guarded(() => this.inner.models());
+  }
+
+  async chat(request: ChatRequest): Promise<ChatResponse> {
+    return this.guarded(() => this.inner.chat(request));
+  }
+
+  async health(): Promise<ProviderHealth> {
+    const h = await this.inner.health();
+    if (!this.cfg.enabled) {
+      return h;
+    }
+    return { ...h, circuit: this.circuit.getState() };
+  }
+}
+
+/** Router stub — seleção por nome; roteamento inteligente depois. Resilience on by default (#238). */
 export function getProvider(id: string = 'ollama', opts?: ProviderOptions): AIProvider {
   const key = id.trim().toLowerCase() || 'ollama';
   const factory = PROVIDERS[key];
   if (!factory) {
     throw new Error(`Unknown provider "${id}". Available: ${listProviderIds().join(', ')}`);
   }
-  return factory(opts);
+  const inner = factory(opts);
+  const cfg = resolveResilience(opts ?? {});
+  if (!cfg.enabled) {
+    return inner;
+  }
+  return new ResilientProvider(inner, opts ?? {});
 }
 
 export function listProviderIds(): ProviderId[] {

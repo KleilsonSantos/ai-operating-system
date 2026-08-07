@@ -6,7 +6,12 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Added
 
-- 📦 Publish-ready `@aios/create-agent` + `@aios/agent-registry` (`npm create @aios/agent`); pack smoke + publish scripts (#233)
+- 🔌 Provider resilience MVP: retry (transient) + circuit breaker via `getProvider` / `ResilientProvider`; `ProviderHealth.circuit` (#238)
+
+### Changed
+
+- 📦 Republish `@aios-platform/agent-registry@0.29.1` (registry metadata 404 on 0.29.0) + matching create-agent (#236)
+- 📦 Public npm scope: `@aios-platform/agent-registry` + `@aios-platform/create-agent` (`npm create @aios-platform/agent`) — org `aios` unavailable on npm (#236)
 
 ## [0.29.0] - 2026-08-06
 

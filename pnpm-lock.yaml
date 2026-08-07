@@ -58,7 +58,7 @@ importers:
 
   apps/cli:
     dependencies:
-      '@aios/agent-registry':
+      '@aios-platform/agent-registry':
         specifier: workspace:*
         version: link:../../packages/agent-registry
       '@aios/documentation':
@@ -162,7 +162,7 @@ importers:
 
   apps/mcp:
     dependencies:
-      '@aios/agent-registry':
+      '@aios-platform/agent-registry':
         specifier: workspace:*
         version: link:../../packages/agent-registry
       '@aios/documentation':
@@ -595,7 +595,7 @@ importers:
 
   packages/create-agent:
     dependencies:
-      '@aios/agent-registry':
+      '@aios-platform/agent-registry':
         specifier: workspace:*
         version: link:../agent-registry
     devDependencies:

@@ -1,13 +1,13 @@
 # Publish an Agent
 
-> Phase 5b · [ADR-0023](../adr/0023-agent-registry-marketplace.md) · scaffold: [`@aios/create-agent`](../../packages/create-agent/) · companion guide: [Writing an Agent](./writing-an-agent.md)
+> Phase 5b · [ADR-0023](../adr/0023-agent-registry-marketplace.md) · scaffold: [`@aios-platform/create-agent`](../../packages/create-agent/) · companion guide: [Writing an Agent](./writing-an-agent.md)
 
 This guide explains how to publish a **community** agent so AIOS can discover it via the GitHub topic `aios-agent`. Discovery is read-only catalog metadata — not automatic remote code execution.
 
 ## Prerequisites
 
 1. A valid `agent.yaml` (or `.json`) at the package root (or under `.aios/`). See the [schema](../../packages/agent-registry/schema/agent.schema.json).
-2. Scaffold optional: `npm create @aios/agent@latest -- --name my-agent` (or monorepo `pnpm --filter @aios/create-agent dev -- --name my-agent`; see Writing an Agent).
+2. Scaffold optional: `npm create @aios-platform/agent@latest -- --name my-agent` (or monorepo `pnpm --filter @aios-platform/create-agent dev -- --name my-agent`; see Writing an Agent).
 3. Public GitHub repository (private repos are not in the public topic search).
 
 ## Steps
@@ -27,7 +27,7 @@ This guide explains how to publish a **community** agent so AIOS can discover it
 
 Ingest script: `node scripts/community-agents-ingest.mjs` (`pnpm community:ingest`).
 
-To publish the **scaffolder** (`npm create @aios/agent`), see [Publish create-agent](./publish-create-agent.md) — separate from publishing a community agent repo.
+To publish the **scaffolder** (`npm create @aios-platform/agent`), see [Publish create-agent](./publish-create-agent.md) — separate from publishing a community agent repo.
 
 | Flag              | Meaning                                                             |
 | ----------------- | ------------------------------------------------------------------- |
@@ -54,7 +54,7 @@ To re-verify after new publishers appear:
 
 - Always-on async HTTP registry service / n8n as product dependency
 - Productized malware scanning / owner negotiation UX
-- npm publish of `@aios/create-agent` as a public `npm create` package (tracked separately)
+- npm publish of `@aios-platform/create-agent` as a public `npm create` package (tracked separately)
 
 ## Manual refresh
 

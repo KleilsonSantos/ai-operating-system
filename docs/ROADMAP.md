@@ -35,7 +35,7 @@ Validate AIOS architecture and flows.
 - [x] Generic multi-repo — ops registry + `runAcrossWorkspaces` (#55 / ADR-0007)
 - [x] Prompt Engine — governed brief / token economy (#59 / ADR-0008)
 - [x] Intent Engine v2 — `implement.feature` · `fix.bug` (#63)
-- [x] Multi-provider MVP — `@aios/provider` + Ollama (#67 / ADR-0009); OpenAI-compatible (#105 / ADR-0016); Anthropic Messages (#109 / ADR-0017)
+- [x] Multi-provider MVP — `@aios/provider` + Ollama (#67 / ADR-0009); OpenAI-compatible (#105 / ADR-0016); Anthropic Messages (#109 / ADR-0017); resilience retry + circuit breaker (#238)
 - [x] Integrations / MCP orchestration — stdio MVP `@aios/mcp` (#38); Streamable HTTP opt-in (#137 / ADR-0022)
 - [x] Governance UI — console Health + Attention + Try it + Consumption (`providerChat`, #118) (`@aios/console` / `@aios/status`, #71 / #76 / ADR-0010 / ADR-0012); provider.chat JSONL metrics (#115 / ADR-0019); Prometheus text export (`GET /metrics` / `--metrics-prometheus`, #130 / ADR-0021) — Grafana optional / user-owned
 - [x] Documentation / Governance engines — heuristic MVP (#80 / ADR-0013); audit v2 signals (#121 / ADR-0020)
@@ -61,19 +61,19 @@ Agents become first-class, discoverable, reusable building blocks. Four pillars:
 ### Phase 5a — Registry MVP ✅ (`v0.28.0`)
 
 - [x] Agent Registry (discovery + metadata) — `aios list-agents` / `aios_list_agents` MCP tool; local cache; multi-source resolver (npm, git, local)
-- [x] Agent Packaging (schema MVP) — `agent.yaml` / JSON schema in `@aios/agent-registry`; parse/validate/list/save
+- [x] Agent Packaging (schema MVP) — `agent.yaml` / JSON schema in `@aios-platform/agent-registry`; parse/validate/list/save
 
 **Status:** Shipped in `v0.28.0` (2026-07-20).
 
 ### Phase 5b — Packaging depth, observability, community (next)
 
-- [x] Agent Packaging (scaffolder MVP) — `@aios/create-agent` + template + `docs/guides/writing-an-agent.md` (#211); npm publish readiness for `@aios/create-agent` + `@aios/agent-registry` (#233); separate `@aios/agent-template` package and multi-level dependency resolver still open
+- [x] Agent Packaging (scaffolder MVP) — `@aios-platform/create-agent` + template + `docs/guides/writing-an-agent.md` (#211); npm publish readiness for `@aios-platform/create-agent` + `@aios-platform/agent-registry` (#233); separate `@aios/agent-template` package and multi-level dependency resolver still open
 - [x] Agent Observability (MVP) — `recordAgentExecution` + `kind: agent.execution` JSONL; health-score on list-agents / console chip (#217); full Agent Catalog / adoption graphs still open
-- [x] Community Publishing (MVP) — publish guide; `scripts/community-agents-ingest.mjs`; weekly GHA artifact; catalog + `community` source in `@aios/agent-registry` (#220)
+- [x] Community Publishing (MVP) — publish guide; `scripts/community-agents-ingest.mjs`; weekly GHA artifact; catalog + `community` source in `@aios-platform/agent-registry` (#220)
 - [x] Community catalog auto-PR — GHA opens/updates PR → `sandbox` when agents list changes; skip `generatedAt`-only churn (#223); async HTTP registry service + productized abuse pipeline still open (deferred — Resource-Aware)
 - [x] First community agent ingested — public [`aios-agent-smoke`](https://github.com/KleilsonSantos/aios-agent-smoke) (`topic:aios-agent`) in committed catalog (#230)
 
-**Status:** Phase 5b MVP complete for scaffolder, observability, community ingest loop, and first live topic hit (`v0.29.0`). npm create packaging ready (#233); remaining depth: Console Agent Catalog / adoption graphs, multi-level dependency resolver, optional `@aios/agent-template` package.  
+**Status:** Phase 5b MVP complete for scaffolder, observability, community ingest loop, and first live topic hit (`v0.29.0`). Public npm scope `@aios-platform` (#236); remaining depth: Console Agent Catalog / adoption graphs, multi-level dependency resolver, optional `@aios/agent-template` package.  
 **Target:** shipped as `v0.29.0` (do not backdate into 5a).
 
 ## Out of scope (on purpose)
