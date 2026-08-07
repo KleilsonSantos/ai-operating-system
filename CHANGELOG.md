@@ -4,14 +4,21 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.30.0] - 2026-08-07
+
 ### Added
 
 - 🔌 Provider resilience MVP: retry (transient) + circuit breaker via `getProvider` / `ResilientProvider`; `ProviderHealth.circuit` (#238)
+- 📦 Publish-ready scaffolder / `npm create @aios-platform/agent` (#233 / #236)
 
 ### Changed
 
-- 📦 Republish `@aios-platform/agent-registry@0.29.1` (registry metadata 404 on 0.29.0) + matching create-agent (#236)
-- 📦 Public npm scope: `@aios-platform/agent-registry` + `@aios-platform/create-agent` (`npm create @aios-platform/agent`) — org `aios` unavailable on npm (#236)
+- 📦 Public npm scope `@aios-platform` (#236)
+- 🔧 Workspace resolves agent-registry from `src/` (publishConfig → `dist/`); Sonar builds registry before coverage (#241)
+
+### Fixed
+
+- 🔍 Sonar/main coverage agent-registry resolve (#241)
 
 ## [0.29.0] - 2026-08-06
 
