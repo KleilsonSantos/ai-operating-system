@@ -1,8 +1,8 @@
 # AIOS Console (`@aios/console`)
 
-Governance UI — **Health + Needs attention + Try it** (#71 · #76 · ADR-0010 · ADR-0012) · **Consumption** (`providerChat`, #118) · **Prometheus** scrape (#130 / ADR-0021).
+Governance UI — **Health + Needs attention + Try it** (#71 · #76 · ADR-0010 · ADR-0012) · **Consumption** (`providerChat`, #118) · **Prometheus** scrape (#130 / ADR-0021) · **Agent Catalog** (#247).
 
-Not Grafana-first. Provider chat appends `.aios/metrics/events.jsonl` (`provider.chat`, ADR-0019). The Health strip shows call/token totals. Scrape `GET /metrics` for Prometheus text (Grafana remains optional / user-owned).
+Not Grafana-first. Provider chat appends `.aios/metrics/events.jsonl` (`provider.chat`, ADR-0019). The Health strip shows call/token totals. Scrape `GET /metrics` for Prometheus text (Grafana remains optional / user-owned). `GET /api/status` includes `agents` (registry catalog joined with local `agent.execution` health/runs).
 
 ## Dev
 

@@ -304,6 +304,73 @@ button:disabled {
   color: var(--teal-deep);
 }
 
+.catalog {
+  margin-top: 1.25rem;
+  animation: rise 0.85s ease both;
+}
+
+.catalog-lede {
+  margin: 0.25rem 0 0.85rem;
+}
+
+.catalog-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.catalog-list li {
+  display: grid;
+  grid-template-columns: minmax(8rem, 2.2fr) 0.7fr 0.7fr 0.55fr 0.45fr;
+  gap: 0.65rem;
+  align-items: baseline;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+  font-size: 0.88rem;
+}
+
+.catalog-head {
+  background: transparent !important;
+  border: none !important;
+  padding-inline: 0.55rem !important;
+  font-size: 0.72rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(15, 28, 26, 0.5);
+}
+
+.catalog-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.catalog-mono,
+.catalog-source {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.82rem;
+  color: var(--teal-deep);
+}
+
+.catalog-source {
+  color: rgba(15, 28, 26, 0.62);
+  text-transform: lowercase;
+}
+
+@media (max-width: 720px) {
+  .catalog-list li {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .catalog-head {
+    display: none !important;
+  }
+}
+
 .metric-note {
   margin: 0 0 1rem;
   font-size: 0.8rem;

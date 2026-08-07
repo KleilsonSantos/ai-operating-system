@@ -35,12 +35,14 @@ export function App() {
     status?.workspaces.find((w) => w.ok)?.id || status?.workspaces[0]?.id || 'aios';
   const consumption = status ? formatConsumptionChip(status.metrics) : null;
   const agentExec = status?.metrics.agentExecution;
-  const agentChip = agentExec
+  const agentChip = status
     ? {
-        label: `${agentExec.count} run(s) · ${agentExec.byAgent.length} agent(s)`,
-        tone: agentExec.errorCount > 0 ? 'warn' : 'ok',
+        label: `${status.agents.length} no catálogo${
+          agentExec ? ` · ${agentExec.count} run(s)` : ''
+        }`,
+        tone: agentExec && agentExec.errorCount > 0 ? 'warn' : 'ok',
       }
-    : { label: 'sem agent.execution', tone: '' };
+    : { label: 'sem agents', tone: '' };
 
   return (
     <div className="shell">
@@ -241,6 +243,42 @@ export function App() {
               </p>
             </section>
           </div>
+
+          <section className="panel catalog" aria-labelledby="catalog-h">
+            <h2 id="catalog-h">Agent Catalog</h2>
+            <p className="quiet catalog-lede">
+              Registry agents (builtin / local / community) joined with local{' '}
+              <code>agent.execution</code> health when available.
+            </p>
+            {status.agents.length === 0 ? (
+              <p className="quiet">No agents in the registry yet.</p>
+            ) : (
+              <ul className="catalog-list" aria-labelledby="catalog-h">
+                <li className="catalog-head" aria-hidden="true">
+                  <span>Agent</span>
+                  <span>Version</span>
+                  <span>Source</span>
+                  <span>Health</span>
+                  <span>Runs</span>
+                </li>
+                {status.agents.map((row) => (
+                  <li key={row.name}>
+                    <span className="catalog-name" title={row.name}>
+                      {row.displayName || row.name}
+                    </span>
+                    <span className="catalog-mono">{row.version}</span>
+                    <span className="catalog-source">{row.source}</span>
+                    <span className="catalog-mono">
+                      {typeof row.healthScore === 'number' ? `${row.healthScore}%` : '—'}
+                    </span>
+                    <span className="catalog-mono">
+                      {typeof row.executions === 'number' ? row.executions : '—'}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
         </>
       )}
     </div>

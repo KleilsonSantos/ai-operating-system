@@ -18,7 +18,8 @@
     "@aios/policy": "workspace:*",
     "@aios/memory": "workspace:*",
     "@aios/provider": "workspace:*",
-    "@aios/governance": "workspace:*"
+    "@aios/governance": "workspace:*",
+    "@aios-platform/agent-registry": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

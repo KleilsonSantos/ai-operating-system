@@ -4,6 +4,14 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📊 Console Agent Catalog MVP: `GovernanceStatus.agents` (registry + health/runs join); console catalog panel (#247)
+
+### Fixed
+
+- 🔒 Pin transitive `nanoid@3.3.17` (GHSA-2v37) so `pnpm audit` / pre-push stay green
+
 ## [0.30.0] - 2026-08-07
 
 ### Added

@@ -8,6 +8,7 @@ import { existsSync, mkdirSync, appendFileSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import {
   PIPELINE_CONTRACT_VERSION,
+  type AgentCatalogEntry,
   type AttentionItem,
   type ChatRequest,
   type ChatResponse,
@@ -19,6 +20,7 @@ import { loadPolicies, applyPolicies } from '@aios/policy';
 import { listMemoryWorkspaces } from '@aios/memory';
 import { getProvider, listProviderIds } from '@aios/provider';
 import { auditGovernance } from '@aios/governance';
+import { AgentRegistry } from '@aios-platform/agent-registry';
 
 /** Tools exposed by `@aios/mcp` (canonical MVP list). */
 export const MCP_TOOL_CATALOG = [
@@ -606,6 +608,34 @@ function buildAttention(parts: {
   return items.sort((a, b) => rank[a.severity] - rank[b.severity]);
 }
 
+/** Join Agent Registry entries with local agent.execution metrics (CLI/MCP/console). */
+export async function buildAgentCatalog(options: {
+  homePath: string;
+  agentExecution?: MetricsSnapshot['agentExecution'];
+}): Promise<AgentCatalogEntry[]> {
+  const registry = new AgentRegistry({
+    registryPath: join(options.homePath, '.aios', 'agents.registry.json'),
+  });
+  const listed = await registry.listAgents();
+  const healthByAgent = new Map(
+    (options.agentExecution?.byAgent ?? []).map((row) => [row.agent, row])
+  );
+  return listed
+    .map((entry) => {
+      const metrics = healthByAgent.get(entry.manifest.name);
+      const row: AgentCatalogEntry = {
+        name: entry.manifest.name,
+        version: entry.manifest.version,
+        source: entry.source,
+      };
+      if (entry.manifest.displayName) row.displayName = entry.manifest.displayName;
+      if (typeof metrics?.healthScore === 'number') row.healthScore = metrics.healthScore;
+      if (typeof metrics?.count === 'number') row.executions = metrics.count;
+      return row;
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
 export async function getGovernanceStatus(
   options: GetGovernanceStatusOptions = {}
 ): Promise<GovernanceStatus> {
@@ -671,6 +701,8 @@ export async function getGovernanceStatus(
     note = 'No consumption events — use chatWithMetrics / aios_provider_chat (ADR-0019).';
   }
 
+  const agents = await buildAgentCatalog({ homePath, agentExecution });
+
   return {
     generatedAt: new Date().toISOString(),
     contractVersion: PIPELINE_CONTRACT_VERSION,
@@ -683,6 +715,7 @@ export async function getGovernanceStatus(
       mcpTools: [...MCP_TOOL_CATALOG],
       providers: listProviderIds(),
     },
+    agents,
     attention,
     metrics: {
       available: metricsAvailable,
