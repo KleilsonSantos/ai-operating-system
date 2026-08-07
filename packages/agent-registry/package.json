@@ -1,18 +1,25 @@
 {
   "name": "@aios/agent-registry",
   "version": "0.29.0",
-  "private": true,
   "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "description": "Agent Registry for AIOS – discovery, validation, and resolution of agent metadata",
   "files": [
     "dist/**/*",
     "schema/**/*",
-    "data/**/*"
+    "data/**/*",
+    "README.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prepack": "pnpm run build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "node -e \"process.exit(0)\"",
     "test": "vitest run"
@@ -25,8 +32,22 @@
   ],
   "author": "Kleilson Santos <kdsdesign1@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KleilsonSantos/ai-operating-system.git",
+    "directory": "packages/agent-registry"
+  },
+  "homepage": "https://github.com/KleilsonSantos/ai-operating-system/tree/main/packages/agent-registry",
+  "bugs": {
+    "url": "https://github.com/KleilsonSantos/ai-operating-system/issues"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
-    "@aios/shared": "workspace:*",
     "ajv": "^8.17.1",
     "js-yaml": "^5.2.3"
   },
