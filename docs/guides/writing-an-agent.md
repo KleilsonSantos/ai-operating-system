@@ -70,7 +70,16 @@ console.log(registry.validate(manifest));
 
 ## Scaffold
 
-From this monorepo:
+Preferred (after packages are on npm):
+
+```bash
+npm create @aios/agent@latest -- --name my-security
+cd agent-my-security
+npm install
+npm test
+```
+
+From this monorepo (no npm publish required):
 
 ```bash
 pnpm --filter @aios/create-agent dev -- --name my-security
@@ -79,11 +88,7 @@ pnpm install
 pnpm test
 ```
 
-When `@aios/create-agent` is published:
-
-```bash
-npm create @aios/agent@latest -- --name my-security
-```
+Maintainers: publish both packages with `bash scripts/npm-publish-create-agent.sh` (see [Publish create-agent](./publish-create-agent.md)). Local pack smoke: `bash scripts/smoke-create-agent-pack.sh`.
 
 ## I/O contract
 
@@ -107,4 +112,4 @@ The scaffolded `run(input)` function is a stub. Wire it to engines (context, pol
 
 ## Publish
 
-See [Publish an Agent](./publish-an-agent.md) for the GitHub topic `aios-agent`, weekly ingest, and community catalog stubs. npm publish of `@aios/create-agent` as a public create package remains a follow-on.
+See [Publish an Agent](./publish-an-agent.md) for the GitHub topic `aios-agent`, weekly ingest, and community catalog stubs. To publish the scaffolder itself to npm, see [Publish create-agent](./publish-create-agent.md).

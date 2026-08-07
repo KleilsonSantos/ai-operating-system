@@ -67,13 +67,13 @@ Agents become first-class, discoverable, reusable building blocks. Four pillars:
 
 ### Phase 5b — Packaging depth, observability, community (next)
 
-- [x] Agent Packaging (scaffolder MVP) — `@aios/create-agent` + template + `docs/guides/writing-an-agent.md` (#211); npm publish of `@aios/create-agent` / `@aios/agent-template` and multi-level dependency resolver still open
+- [x] Agent Packaging (scaffolder MVP) — `@aios/create-agent` + template + `docs/guides/writing-an-agent.md` (#211); npm publish readiness for `@aios/create-agent` + `@aios/agent-registry` (#233); separate `@aios/agent-template` package and multi-level dependency resolver still open
 - [x] Agent Observability (MVP) — `recordAgentExecution` + `kind: agent.execution` JSONL; health-score on list-agents / console chip (#217); full Agent Catalog / adoption graphs still open
 - [x] Community Publishing (MVP) — publish guide; `scripts/community-agents-ingest.mjs`; weekly GHA artifact; catalog + `community` source in `@aios/agent-registry` (#220)
 - [x] Community catalog auto-PR — GHA opens/updates PR → `sandbox` when agents list changes; skip `generatedAt`-only churn (#223); async HTTP registry service + productized abuse pipeline still open (deferred — Resource-Aware)
 - [x] First community agent ingested — public [`aios-agent-smoke`](https://github.com/KleilsonSantos/aios-agent-smoke) (`topic:aios-agent`) in committed catalog (#230)
 
-**Status:** Phase 5b MVP complete for scaffolder, observability, community ingest loop, and first live topic hit (`v0.29.0`). Remaining depth: npm publish of `@aios/create-agent`, Console Agent Catalog / adoption graphs.  
+**Status:** Phase 5b MVP complete for scaffolder, observability, community ingest loop, and first live topic hit (`v0.29.0`). npm create packaging ready (#233); remaining depth: Console Agent Catalog / adoption graphs, multi-level dependency resolver, optional `@aios/agent-template` package.  
 **Target:** shipped as `v0.29.0` (do not backdate into 5a).
 
 ## Out of scope (on purpose)

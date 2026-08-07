@@ -7,7 +7,7 @@ This guide explains how to publish a **community** agent so AIOS can discover it
 ## Prerequisites
 
 1. A valid `agent.yaml` (or `.json`) at the package root (or under `.aios/`). See the [schema](../../packages/agent-registry/schema/agent.schema.json).
-2. Scaffold optional: `pnpm --filter @aios/create-agent dev -- --name my-agent` (see Writing an Agent).
+2. Scaffold optional: `npm create @aios/agent@latest -- --name my-agent` (or monorepo `pnpm --filter @aios/create-agent dev -- --name my-agent`; see Writing an Agent).
 3. Public GitHub repository (private repos are not in the public topic search).
 
 ## Steps
@@ -26,6 +26,8 @@ This guide explains how to publish a **community** agent so AIOS can discover it
 ## Catalog & heuristics (MVP)
 
 Ingest script: `node scripts/community-agents-ingest.mjs` (`pnpm community:ingest`).
+
+To publish the **scaffolder** (`npm create @aios/agent`), see [Publish create-agent](./publish-create-agent.md) — separate from publishing a community agent repo.
 
 | Flag              | Meaning                                                             |
 | ----------------- | ------------------------------------------------------------------- |

@@ -1,23 +1,29 @@
 {
   "name": "@aios/create-agent",
   "version": "0.29.0",
-  "private": true,
   "type": "module",
   "description": "Scaffold an AIOS agent package (npm create @aios/agent)",
   "bin": {
-    "create-agent": "./src/cli.ts"
+    "create-agent": "./dist/cli.js"
   },
-  "main": "./src/scaffold.ts",
-  "types": "./src/scaffold.ts",
+  "main": "./dist/scaffold.js",
+  "types": "./dist/scaffold.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/scaffold.d.ts",
+      "import": "./dist/scaffold.js"
+    }
+  },
   "files": [
     "dist/**/*",
     "template/**/*",
-    "src/**/*"
+    "README.md"
   ],
   "scripts": {
-    "dev": "node --experimental-strip-types ./src/cli.ts",
-    "build": "node -e \"process.exit(0)\"",
-    "typecheck": "tsc -p tsconfig.json",
+    "dev": "pnpm run build && node ./dist/cli.js",
+    "build": "tsc -p tsconfig.json",
+    "prepack": "pnpm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "node -e \"process.exit(0)\"",
     "test": "vitest run"
   },
@@ -29,6 +35,21 @@
   ],
   "author": "Kleilson Santos <kdsdesign1@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KleilsonSantos/ai-operating-system.git",
+    "directory": "packages/create-agent"
+  },
+  "homepage": "https://github.com/KleilsonSantos/ai-operating-system/tree/main/packages/create-agent",
+  "bugs": {
+    "url": "https://github.com/KleilsonSantos/ai-operating-system/issues"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@aios/agent-registry": "workspace:*"
   },
