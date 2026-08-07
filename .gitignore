@@ -24,6 +24,9 @@ dist-ssr
 *.tsbuildinfo
 coverage
 
+# Agent/session scratch (git wrappers, nested test repos, local dumps)
+.tmp/
+
 # Turbo cache
 .turbo/
 
