@@ -1,6 +1,25 @@
 {
-  "generatedAt": "1970-01-01T00:00:00.000Z",
+  "generatedAt": "2026-08-06T23:54:20.689Z",
   "source": "github-topic:aios-agent",
   "query": "topic:aios-agent",
-  "agents": []
+  "agents": [
+    {
+      "fullName": "KleilsonSantos/aios-agent-smoke",
+      "htmlUrl": "https://github.com/KleilsonSantos/aios-agent-smoke",
+      "description": "Minimal AIOS community agent (topic aios-agent) for Phase 5b ingest smoke test",
+      "stargazers": 0,
+      "forks": 0,
+      "pushedAt": "2026-08-06T23:53:34Z",
+      "createdAt": "2026-08-06T23:53:31Z",
+      "defaultBranch": "main",
+      "topics": ["aios", "aios-agent", "smoke-test"],
+      "archived": false,
+      "manifestPath": "agent.yaml",
+      "flags": {
+        "stale": false,
+        "suspicious": false,
+        "missingManifest": false
+      }
+    }
+  ]
 }
