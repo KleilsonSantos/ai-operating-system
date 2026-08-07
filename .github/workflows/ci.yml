@@ -109,6 +109,8 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # agent-registry exports dist for publish; build so create-agent vitest resolves without prior quality job
+      - run: pnpm --filter @aios-platform/agent-registry build
       - run: pnpm test:coverage
       - name: SonarQube Cloud Scan
         uses: SonarSource/sonarcloud-github-action@master

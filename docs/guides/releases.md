@@ -18,6 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag       | Description                                                                                    |
 | --------- | ---------------------------------------------------------------------------------------------- |
+| `v0.30.0` | @aios-platform npm + provider resilience (#241)                                                |
 | `v0.29.0` | Phase 5b depth — scaffolder, observability, community ingest + first `aios-agent` smoke (#230) |
 | `v0.18.1` | AIOS_MCP_QUIET + ROADMAP Companion/caps · GitHub hygiene                                       |
 | `v0.18.0` | Operational State MVP · ADR-0015 (#84) · merge-subject gate · ADR-0014                         |
