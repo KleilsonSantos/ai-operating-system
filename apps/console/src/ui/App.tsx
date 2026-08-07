@@ -3,10 +3,15 @@ import type { GovernanceStatus } from './types';
 import { TryItPanel } from './TryItPanel';
 import { formatConsumptionChip } from './consumption';
 
+type CatalogView = 'all' | 'top' | 'unhealthy';
+
+const UNHEALTHY_THRESHOLD = 70;
+
 export function App() {
   const [status, setStatus] = useState<GovernanceStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [catalogView, setCatalogView] = useState<CatalogView>('all');
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -29,18 +34,24 @@ export function App() {
     return () => window.clearInterval(id);
   }, [refresh]);
 
+  const catalogRows = status ? filterCatalogAgents(status.agents, catalogView) : [];
+
   const errors = status?.attention.filter((a) => a.severity === 'error').length ?? 0;
   const warns = status?.attention.filter((a) => a.severity === 'warn').length ?? 0;
   const workspaceId =
     status?.workspaces.find((w) => w.ok)?.id || status?.workspaces[0]?.id || 'aios';
   const consumption = status ? formatConsumptionChip(status.metrics) : null;
   const agentExec = status?.metrics.agentExecution;
+  const unhealthyCount =
+    status?.agents.filter(
+      (a) => typeof a.healthScore === 'number' && a.healthScore < UNHEALTHY_THRESHOLD
+    ).length ?? 0;
   const agentChip = status
     ? {
         label: `${status.agents.length} no catálogo${
           agentExec ? ` · ${agentExec.count} run(s)` : ''
-        }`,
-        tone: agentExec && agentExec.errorCount > 0 ? 'warn' : 'ok',
+        }${unhealthyCount ? ` · ${unhealthyCount} unhealthy` : ''}`,
+        tone: unhealthyCount > 0 || (agentExec && agentExec.errorCount > 0) ? 'warn' : 'ok',
       }
     : { label: 'sem agents', tone: '' };
 
@@ -247,11 +258,39 @@ export function App() {
           <section className="panel catalog" aria-labelledby="catalog-h">
             <h2 id="catalog-h">Agent Catalog</h2>
             <p className="quiet catalog-lede">
-              Registry agents (builtin / local / community) joined with local{' '}
-              <code>agent.execution</code> health when available.
+              Registry agents joined with local <code>agent.execution</code> health. Top-used sorts
+              by runs; Unhealthy shows health &lt; {UNHEALTHY_THRESHOLD}%.
             </p>
+            <div className="catalog-tabs" role="tablist" aria-label="Catalog views">
+              {(
+                [
+                  ['all', 'All'],
+                  ['top', 'Top-used'],
+                  ['unhealthy', 'Unhealthy'],
+                ] as const
+              ).map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  aria-selected={catalogView === id}
+                  className={catalogView === id ? 'active' : ''}
+                  onClick={() => setCatalogView(id)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
             {status.agents.length === 0 ? (
               <p className="quiet">No agents in the registry yet.</p>
+            ) : catalogRows.length === 0 ? (
+              <p className="quiet">
+                {catalogView === 'unhealthy'
+                  ? 'No unhealthy agents (health < 70%).'
+                  : catalogView === 'top'
+                    ? 'No execution runs yet — run a pipeline to populate top-used.'
+                    : 'No agents match this view.'}
+              </p>
             ) : (
               <ul className="catalog-list" aria-labelledby="catalog-h">
                 <li className="catalog-head" aria-hidden="true">
@@ -260,9 +299,17 @@ export function App() {
                   <span>Source</span>
                   <span>Health</span>
                   <span>Runs</span>
+                  <span>7d</span>
                 </li>
-                {status.agents.map((row) => (
-                  <li key={row.name}>
+                {catalogRows.map((row) => (
+                  <li
+                    key={row.name}
+                    className={
+                      typeof row.healthScore === 'number' && row.healthScore < UNHEALTHY_THRESHOLD
+                        ? 'catalog-row unhealthy'
+                        : 'catalog-row'
+                    }
+                  >
                     <span className="catalog-name" title={row.name}>
                       {row.displayName || row.name}
                     </span>
@@ -274,6 +321,9 @@ export function App() {
                     <span className="catalog-mono">
                       {typeof row.executions === 'number' ? row.executions : '—'}
                     </span>
+                    <span className="catalog-mono">
+                      {typeof row.executions7d === 'number' ? row.executions7d : '—'}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -283,6 +333,28 @@ export function App() {
       )}
     </div>
   );
+}
+
+function filterCatalogAgents(
+  agents: GovernanceStatus['agents'],
+  view: CatalogView
+): GovernanceStatus['agents'] {
+  if (view === 'unhealthy') {
+    return agents
+      .filter((a) => typeof a.healthScore === 'number' && a.healthScore < UNHEALTHY_THRESHOLD)
+      .sort((a, b) => (a.healthScore ?? 0) - (b.healthScore ?? 0));
+  }
+  if (view === 'top') {
+    return agents
+      .filter((a) => (a.executions7d ?? a.executions ?? 0) > 0)
+      .sort((a, b) => {
+        const aScore = a.executions7d ?? a.executions ?? 0;
+        const bScore = b.executions7d ?? b.executions ?? 0;
+        if (bScore !== aScore) return bScore - aScore;
+        return a.name.localeCompare(b.name);
+      });
+  }
+  return agents;
 }
 
 function severityLabel(s: string): string {

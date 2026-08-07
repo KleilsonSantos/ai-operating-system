@@ -224,6 +224,8 @@ export type AgentCatalogEntry = {
   source: 'builtin' | 'local' | 'npm' | 'git' | 'community';
   healthScore?: number;
   executions?: number;
+  /** Executions with `at` in the last 7 days (#253). */
+  executions7d?: number;
 };
 
 export type GovernanceStatus = {
@@ -276,6 +278,7 @@ export type GovernanceStatus = {
         count: number;
         errorCount: number;
         healthScore: number;
+        count7d?: number;
         lastAt?: string;
       }>;
     };

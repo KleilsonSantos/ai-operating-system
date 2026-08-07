@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📊 Agent Catalog trending: `executions7d` / `count7d`, console views All · Top-used · Unhealthy (health &lt; 70%)
+
 ## [0.31.0] - 2026-08-07
 
 ### Added

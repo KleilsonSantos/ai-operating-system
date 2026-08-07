@@ -96,6 +96,8 @@ export type AgentExecutionTotals = {
 export type AgentExecutionByAgent = AgentExecutionTotals & {
   agent: string;
   healthScore: number;
+  /** Executions in the rolling 7-day window (by event `at`). */
+  count7d: number;
   lastAt?: string;
 };
 
@@ -177,12 +179,17 @@ export function computeAgentHealthScore(input: {
 /**
  * Read `.aios/metrics/events.jsonl` once (Resource-Aware).
  */
-export function loadMetricsSnapshot(options: { homePath?: string } = {}): MetricsSnapshot {
+export function loadMetricsSnapshot(
+  options: { homePath?: string; nowMs?: number } = {}
+): MetricsSnapshot {
   const home = resolve(options.homePath || process.env.AIOS_HOME || process.cwd());
   const path = metricsPath(home);
   if (!existsSync(path)) {
     return { path, eventCount: 0, byProvider: [] };
   }
+
+  const nowMs = options.nowMs ?? Date.now();
+  const window7dMs = 7 * 24 * 60 * 60 * 1000;
 
   let eventCount = 0;
   const total = emptyTotals();
@@ -192,6 +199,7 @@ export function loadMetricsSnapshot(options: { homePath?: string } = {}): Metric
     count: number;
     errorCount: number;
     successCount: number;
+    count7d: number;
     lastAt?: string;
   };
   const perAgent = new Map<string, AgentBucket>();
@@ -230,7 +238,7 @@ export function loadMetricsSnapshot(options: { homePath?: string } = {}): Metric
         const agent = typeof ev.agent === 'string' && ev.agent.trim() ? ev.agent.trim() : 'unknown';
         let bucket = perAgent.get(agent);
         if (!bucket) {
-          bucket = { count: 0, errorCount: 0, successCount: 0 };
+          bucket = { count: 0, errorCount: 0, successCount: 0, count7d: 0 };
           perAgent.set(agent, bucket);
         }
         agentTotal.count += 1;
@@ -246,6 +254,10 @@ export function loadMetricsSnapshot(options: { homePath?: string } = {}): Metric
         const at = typeof ev.at === 'string' ? ev.at : undefined;
         if (at && (!bucket.lastAt || at > bucket.lastAt)) {
           bucket.lastAt = at;
+        }
+        const atMs = at ? Date.parse(at) : Number.NaN;
+        if (Number.isFinite(atMs) && nowMs - atMs <= window7dMs && nowMs - atMs >= 0) {
+          bucket.count7d += 1;
         }
       }
     }
@@ -263,12 +275,14 @@ export function loadMetricsSnapshot(options: { homePath?: string } = {}): Metric
       agent,
       count: b.count,
       errorCount: b.errorCount,
+      count7d: b.count7d,
       lastAt: b.lastAt,
       healthScore: computeAgentHealthScore({
         successCount: b.successCount,
         totalCount: b.count,
         lastAt: b.lastAt,
         maxExecutionsSeen,
+        nowMs,
       }),
     }))
     .sort((a, b) => a.agent.localeCompare(b.agent));
@@ -631,6 +645,9 @@ export async function buildAgentCatalog(options: {
       if (entry.manifest.displayName) row.displayName = entry.manifest.displayName;
       if (typeof metrics?.healthScore === 'number') row.healthScore = metrics.healthScore;
       if (typeof metrics?.count === 'number') row.executions = metrics.count;
+      if (typeof metrics?.count7d === 'number' && metrics.count7d > 0) {
+        row.executions7d = metrics.count7d;
+      }
       return row;
     })
     .sort((a, b) => a.name.localeCompare(b.name));

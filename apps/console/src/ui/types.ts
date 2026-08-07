@@ -37,6 +37,7 @@ export type GovernanceStatus = {
     source: 'builtin' | 'local' | 'npm' | 'git' | 'community';
     healthScore?: number;
     executions?: number;
+    executions7d?: number;
   }>;
   attention: Array<{
     id: string;
@@ -64,6 +65,7 @@ export type GovernanceStatus = {
         count: number;
         errorCount: number;
         healthScore: number;
+        count7d?: number;
         lastAt?: string;
       }>;
     };
