@@ -4,9 +4,9 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
-### Added
+### Changed
 
-- 📦 Publish-ready `@aios/create-agent` + `@aios/agent-registry` (`npm create @aios/agent`); pack smoke + publish scripts (#233)
+- 📦 Public npm scope: `@aios-platform/agent-registry` + `@aios-platform/create-agent` (`npm create @aios-platform/agent`) — org `aios` unavailable on npm (#236)
 
 ## [0.29.0] - 2026-08-06
 

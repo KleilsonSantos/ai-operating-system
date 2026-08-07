@@ -11,14 +11,14 @@ cleanup() { rm -rf "$TMP"; }
 trap cleanup EXIT
 
 echo "==> Build"
-pnpm --filter @aios/agent-registry build
-pnpm --filter @aios/create-agent build
+pnpm --filter @aios-platform/agent-registry build
+pnpm --filter @aios-platform/create-agent build
 
 echo "==> Pack"
-pnpm --filter @aios/agent-registry pack --pack-destination "$TMP" >/dev/null
-pnpm --filter @aios/create-agent pack --pack-destination "$TMP" >/dev/null
-REG_TGZ="$(ls -1 "$TMP"/aios-agent-registry-*.tgz | head -1)"
-CREATE_TGZ="$(ls -1 "$TMP"/aios-create-agent-*.tgz | head -1)"
+pnpm --filter @aios-platform/agent-registry pack --pack-destination "$TMP" >/dev/null
+pnpm --filter @aios-platform/create-agent pack --pack-destination "$TMP" >/dev/null
+REG_TGZ="$(ls -1 "$TMP"/aios-platform-agent-registry-*.tgz | head -1)"
+CREATE_TGZ="$(ls -1 "$TMP"/aios-platform-create-agent-*.tgz | head -1)"
 echo "registry: $REG_TGZ"
 echo "create-agent: $CREATE_TGZ"
 

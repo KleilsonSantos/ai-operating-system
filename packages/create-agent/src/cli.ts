@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * CLI entry for `npm create @aios/agent` / `pnpm --filter @aios/create-agent dev -- --name …`
+ * CLI entry for `npm create @aios-platform/agent` / `pnpm --filter @aios-platform/create-agent dev -- --name …`
  */
 import { scaffoldAgent } from './scaffold.js';
 
@@ -10,8 +10,8 @@ function printHelp(): void {
 Scaffold a new AIOS agent package (Phase 5b / ADR-0023).
 
 Examples:
-  pnpm --filter @aios/create-agent dev -- --name my-security
-  npm create @aios/agent@latest -- --name my-security
+  pnpm --filter @aios-platform/create-agent dev -- --name my-security
+  npm create @aios-platform/agent@latest -- --name my-security
 
 Options:
   --name, -n   Agent name (kebab-case or @scope/name)

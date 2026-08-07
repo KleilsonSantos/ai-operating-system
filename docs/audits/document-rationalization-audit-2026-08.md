@@ -20,7 +20,7 @@ AIOS is a **coherent monorepo** (engines + plugins + apps) with clear SSOT routi
 The highest-value hygiene is **truth drift**, not folder surgery:
 
 1. **Broken relative links** in ROADMAP / ADRs / package README (onboarding and navigation fail).
-2. **Phase 5 ROADMAP still unchecked** while `v0.28.0` and `@aios/agent-registry` already shipped Registry + CLI/MCP list (pillars partially done).
+2. **Phase 5 ROADMAP still unchecked** while `v0.28.0` and `@aios-platform/agent-registry` already shipped Registry + CLI/MCP list (pillars partially done).
 3. **Dead / placeholder dependency graph** around `@aios/core` (declared on six engines, **zero** TypeScript imports).
 4. **Unused `husky`** while hooks are `.githooks` via `core.hooksPath`.
 5. **ADR-0018 gaps** on community surfaces (`SUPPORT.md`, issue templates still Portuguese).
@@ -91,12 +91,12 @@ Evidence:
 
 Partial pillar reality:
 
-| Pillar               | Shipped?          | Notes                                                                                                |
-| -------------------- | ----------------- | ---------------------------------------------------------------------------------------------------- |
-| Agent Registry       | **Yes (MVP)**     | `@aios/agent-registry`, CLI, MCP                                                                     |
-| Agent Packaging      | **Partial**       | `agent.yaml` schema exists; `npm create @aios/agent` / community template not evidenced as published |
-| Agent Observability  | **No / deferred** | `recordAgentExecution` / Console catalog still aspirational in ADR-0023                              |
-| Community Publishing | **No**            | Weekly GitHub scan / async registry service not in tree                                              |
+| Pillar               | Shipped?          | Notes                                                                                                         |
+| -------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------- |
+| Agent Registry       | **Yes (MVP)**     | `@aios-platform/agent-registry`, CLI, MCP                                                                     |
+| Agent Packaging      | **Partial**       | `agent.yaml` schema exists; `npm create @aios-platform/agent` / community template not evidenced as published |
+| Agent Observability  | **No / deferred** | `recordAgentExecution` / Console catalog still aspirational in ADR-0023                                       |
+| Community Publishing | **No**            | Weekly GitHub scan / async registry service not in tree                                                       |
 
 **Impact:** Planning lie; agents and humans mis-prioritize “next”.  
 **Recommendation:** Split Phase 5 into **5a shipped (check)** vs **5b remaining** with new target version (e.g. `0.29.x` / `0.30.0`); do not pretend Observability shipped with Registry.

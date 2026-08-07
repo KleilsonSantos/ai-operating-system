@@ -1,8 +1,8 @@
 {
-  "name": "@aios/create-agent",
+  "name": "@aios-platform/create-agent",
   "version": "0.29.0",
   "type": "module",
-  "description": "Scaffold an AIOS agent package (npm create @aios/agent)",
+  "description": "Scaffold an AIOS agent package (npm create @aios-platform/agent)",
   "bin": {
     "create-agent": "./dist/cli.js"
   },
@@ -51,7 +51,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@aios/agent-registry": "workspace:*"
+    "@aios-platform/agent-registry": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

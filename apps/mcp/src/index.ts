@@ -28,7 +28,7 @@ import { auditDocumentation, searchPkb } from '@aios/documentation';
 import { auditGovernance, recordDecision } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
 import { resolve } from 'node:path';
-import { AgentRegistry } from '@aios/agent-registry';
+import { AgentRegistry } from '@aios-platform/agent-registry';
 
 export function createAiosMcpServer(): McpServer {
   const server = new McpServer({

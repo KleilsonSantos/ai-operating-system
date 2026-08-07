@@ -1,24 +1,24 @@
-# @aios/create-agent
+# @aios-platform/create-agent
 
 Scaffold a new AIOS agent package (Phase 5b / [ADR-0023](../../docs/adr/0023-agent-registry-marketplace.md)).
 
 ## Usage (npm)
 
 ```bash
-npm create @aios/agent@latest -- --name my-security
+npm create @aios-platform/agent@latest -- --name my-security
 # → ./agent-my-security with agent.yaml, src/, tests, README
 ```
 
 ## Usage (monorepo)
 
 ```bash
-pnpm --filter @aios/create-agent dev -- --name my-security
+pnpm --filter @aios-platform/create-agent dev -- --name my-security
 ```
 
 ## API
 
 ```ts
-import { scaffoldAgent } from '@aios/create-agent';
+import { scaffoldAgent } from '@aios-platform/create-agent';
 
 await scaffoldAgent({ name: 'my-security', targetDir: './agent-my-security' });
 ```

@@ -11,7 +11,7 @@ import { auditDocumentation, searchPkb } from '@aios/documentation';
 import { auditGovernance } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
 import { resolveWorkspace } from '@aios/workspace';
-import { AgentRegistry } from '@aios/agent-registry';
+import { AgentRegistry } from '@aios-platform/agent-registry';
 
 function parseArgs(argv: string[]): {
   input: string;

@@ -48,7 +48,7 @@
     },
     {
       "id": "T3",
-      "title": "Create @aios/agent-registry package scaffold",
+      "title": "Create @aios-platform/agent-registry package scaffold",
       "description": "Initialize TypeScript package: src/, tests/, types/, README, tsconfig",
       "epic": "Registry",
       "milestone": "M1",
@@ -57,7 +57,7 @@
       "depends_on": ["T2"],
       "requirements": ["REQ-PKG-002: Package structure ready for development"],
       "acceptance": [
-        "@aios/agent-registry folder created in packages/",
+        "@aios-platform/agent-registry folder created in packages/",
         "tsconfig.json, package.json, src/, tests/ directories",
         "README outlines core exports: parseManifest, validateAgent, listAgents, getAgentHealth"
       ],
@@ -169,7 +169,7 @@
     },
     {
       "id": "T10",
-      "title": "npm scaffolder: npm create @aios/agent",
+      "title": "npm scaffolder: npm create @aios-platform/agent",
       "description": "Create npm init template for agents. Generates folder + manifest + src/index.ts",
       "epic": "Packaging",
       "milestone": "M3",
@@ -178,7 +178,7 @@
       "depends_on": ["T9"],
       "requirements": ["REQ-SCAF-001: Agent scaffolding template published"],
       "acceptance": [
-        "npm create @aios/agent@latest --name my-security-agent",
+        "npm create @aios-platform/agent@latest --name my-security-agent",
         "Generated: my-security-agent/ with agent.yaml, src/, tests/, README",
         "Manifest pre-filled (name, version=0.1.0, inputs/outputs skeleton)",
         "npm test works out of box"
@@ -642,7 +642,7 @@
       "tasks": ["T9", "T10", "T11", "T12", "T13", "T14"],
       "hours": 22,
       "owner": "devex",
-      "gate": "npm create @aios/agent scaffolds"
+      "gate": "npm create @aios-platform/agent scaffolds"
     },
     "Observability": {
       "tasks": ["T15", "T16", "T17", "T18", "T19", "T20", "T21", "T22"],
