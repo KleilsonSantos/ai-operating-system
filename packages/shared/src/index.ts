@@ -202,6 +202,8 @@ export type ProviderHealth = {
   models?: string[];
   error?: string;
   latencyMs?: number;
+  /** Circuit breaker state when resilience is enabled (#238). */
+  circuit?: 'closed' | 'open' | 'half-open';
 };
 
 /** Console de governança — status + attention (#71). */

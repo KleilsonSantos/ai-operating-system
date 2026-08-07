@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🔌 Provider resilience MVP: retry (transient) + circuit breaker via `getProvider` / `ResilientProvider`; `ProviderHealth.circuit` (#238)
+
 ### Changed
 
 - 📦 Republish `@aios-platform/agent-registry@0.29.1` (registry metadata 404 on 0.29.0) + matching create-agent (#236)
