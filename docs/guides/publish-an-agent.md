@@ -39,12 +39,12 @@ The script **does not rewrite** the catalog when only `generatedAt` would change
 
 ## First-agent verification gate
 
-Until at least one **public** repository carries topic `aios-agent` with a discoverable manifest, the committed catalog stays empty and the workflow uploads an artifact without opening a PR.
+Reference smoke repo: [`KleilsonSantos/aios-agent-smoke`](https://github.com/KleilsonSantos/aios-agent-smoke) (`topic:aios-agent`, `agent.yaml` at repo root). The committed catalog at `packages/agent-registry/data/community-catalog.json` includes this entry as of `v0.29.0`.
 
-To complete the gate:
+To re-verify after new publishers appear:
 
-1. Publish a public demo agent (separate repo) with topic `aios-agent` + `agent.yaml`.
-2. Run **Community agents ingest** → `workflow_dispatch`.
+1. Ensure the public repo has topic `aios-agent` + discoverable manifest.
+2. Run **Community agents ingest** → `workflow_dispatch` (or `pnpm community:ingest`).
 3. Review/merge the catalog PR → `sandbox`, then promote when ready.
 4. Confirm `aios list-agents` shows `source: community`.
 

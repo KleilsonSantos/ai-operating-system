@@ -14,8 +14,13 @@ describe('AgentRegistry', () => {
   });
 
   it('should initialize with built-in agents', async () => {
-    const registry = new AgentRegistry({ registryPath });
-    const agents = await registry.listAgents();
+    const emptyCatalog = path.join(tempDir, 'empty-community.json');
+    await fs.writeFile(emptyCatalog, JSON.stringify({ agents: [] }));
+    const registry = new AgentRegistry({
+      registryPath,
+      communityCatalogPath: emptyCatalog,
+    });
+    const agents = await registry.listAgents({ includeLocal: false });
     expect(agents.length).toBe(4);
     expect(agents.some((a) => a.manifest.name === '@aios/agent-architecture')).toBe(true);
   });
