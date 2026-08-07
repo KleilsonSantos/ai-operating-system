@@ -1,14 +1,16 @@
-# Publish `@aios/create-agent` (npm)
+# Publish `@aios-platform/create-agent` (npm)
 
 > Phase 5b · Issue [#233](https://github.com/KleilsonSantos/ai-operating-system/issues/233) · [ADR-0023](../adr/0023-agent-registry-marketplace.md)
+
+> **Scope note:** the npm organization `aios` is not available. Public packages ship under **`@aios-platform`**. Workspace packages elsewhere may still use the `@aios/*` name until migrated.
 
 This guide is for **maintainers** publishing the scaffolder so anyone can run:
 
 ```bash
-npm create @aios/agent@latest -- --name my-agent
+npm create @aios-platform/agent@latest -- --name my-agent
 ```
 
-(`npm create @aios/agent` resolves to the `@aios/create-agent` package and runs its `create-agent` bin.)
+(`npm create @aios-platform/agent` resolves to the `@aios-platform/create-agent` package and runs its `create-agent` bin.)
 
 ## Prerequisites
 
@@ -19,9 +21,9 @@ npm create @aios/agent@latest -- --name my-agent
 
 ## Package order
 
-`@aios/create-agent` depends on `@aios/agent-registry`. Publish **registry first**, then create-agent.
+`@aios-platform/create-agent` depends on `@aios-platform/agent-registry`. Publish **registry first**, then create-agent.
 
-The template lives **inside** `@aios/create-agent` (`template/`). A separate `@aios/agent-template` package is optional and deferred.
+The template lives **inside** `@aios-platform/create-agent` (`template/`). A separate `@aios/agent-template` package is optional and deferred.
 
 ## Dry-run / local smoke
 
@@ -42,8 +44,8 @@ bash scripts/npm-publish-create-agent.sh
 Equivalent manual steps:
 
 ```bash
-pnpm --filter @aios/agent-registry publish --access public --no-git-checks
-pnpm --filter @aios/create-agent publish --access public --no-git-checks
+pnpm --filter @aios-platform/agent-registry publish --access public --no-git-checks
+pnpm --filter @aios-platform/create-agent publish --access public --no-git-checks
 ```
 
 `pnpm publish` rewrites `workspace:*` dependencies to the concrete version in the tarball.
@@ -51,8 +53,8 @@ pnpm --filter @aios/create-agent publish --access public --no-git-checks
 ## Verify
 
 ```bash
-npm view @aios/create-agent version
-npm create @aios/agent@latest -- --name verify-smoke
+npm view @aios-platform/create-agent version
+npm create @aios-platform/agent@latest -- --name verify-smoke
 ```
 
 ## Notes

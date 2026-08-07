@@ -5,7 +5,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { AgentRegistry } from '@aios/agent-registry';
+import { AgentRegistry } from '@aios-platform/agent-registry';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

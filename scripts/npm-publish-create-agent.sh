@@ -1,29 +1,56 @@
 #!/usr/bin/env bash
-# Publish @aios/agent-registry then @aios/create-agent (order matters for workspace deps).
+# Publish @aios-platform/agent-registry then @aios-platform/create-agent (order matters).
 # Usage:
 #   bash scripts/npm-publish-create-agent.sh --dry-run
 #   bash scripts/npm-publish-create-agent.sh
+#   bash scripts/npm-publish-create-agent.sh --otp=123456
 #
-# Requires: npm login with publish rights on the @aios org; pnpm; Node >= 22.13
+# Auth: TOKEN_NPM in .env (or existing npm login). Org scope: @aios-platform
+# Classic tokens may still need --otp= for publish (2FA).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 DRY=()
-if [[ "${1:-}" == "--dry-run" ]]; then
-  DRY=(--dry-run)
-  shift
+OTP=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --dry-run) DRY=(--dry-run); shift ;;
+    --otp=*) OTP=(--otp="${1#--otp=}"); shift ;;
+    --otp) OTP=(--otp="$2"); shift 2 ;;
+    *) echo "Unknown arg: $1" >&2; exit 2 ;;
+  esac
+done
+
+if [[ -f "$ROOT/.env" ]]; then
+  # Load TOKEN_NPM only (do not source whole .env — may contain invalid shell names)
+  TOKEN_NPM="$(grep -E '^TOKEN_NPM=' "$ROOT/.env" | head -1 | cut -d= -f2- || true)"
+fi
+
+TMPRC=""
+cleanup() {
+  if [[ -n "${TMPRC}" && -f "${TMPRC}" ]]; then
+    rm -f "${TMPRC}"
+  fi
+}
+trap cleanup EXIT
+
+if [[ -n "${TOKEN_NPM:-}" ]]; then
+  TMPRC="$(mktemp)"
+  printf '//registry.npmjs.org/:_authToken=%s\n' "$TOKEN_NPM" > "$TMPRC"
+  export NPM_CONFIG_USERCONFIG="$TMPRC"
+  echo "==> Using TOKEN_NPM from .env"
 fi
 
 echo "==> Building packages"
-pnpm --filter @aios/agent-registry build
-pnpm --filter @aios/create-agent build
+pnpm --filter @aios-platform/agent-registry build
+pnpm --filter @aios-platform/create-agent build
 
-echo "==> Publishing @aios/agent-registry ${DRY[*]:-}"
-pnpm --filter @aios/agent-registry publish --access public --no-git-checks "${DRY[@]}"
+echo "==> Publishing @aios-platform/agent-registry ${DRY[*]:-} ${OTP[*]:-}"
+pnpm --filter @aios-platform/agent-registry publish --access public --no-git-checks "${DRY[@]}" "${OTP[@]}"
 
-echo "==> Publishing @aios/create-agent ${DRY[*]:-}"
-pnpm --filter @aios/create-agent publish --access public --no-git-checks "${DRY[@]}"
+echo "==> Publishing @aios-platform/create-agent ${DRY[*]:-} ${OTP[*]:-}"
+pnpm --filter @aios-platform/create-agent publish --access public --no-git-checks "${DRY[@]}" "${OTP[@]}"
 
-echo "OK: npm create @aios/agent@latest -- --name my-agent"
+echo "OK: npm create @aios-platform/agent@latest -- --name my-agent"

@@ -53,7 +53,7 @@ Implement **Phase 5: Agent Registry & Marketplace** as a 4-pillar system:
 
 ### 4. Community Publishing
 
-- Template: `npm create @aios/agent@latest --name my-agent`
+- Template: `npm create @aios-platform/agent@latest --name my-agent`
 - GitHub discovery: weekly scan for `aios-agent` topic
 - Registry ingestion (async, validated, abuse-aware)
 - Documentation: "Publish Your Agent"
@@ -74,7 +74,7 @@ Implement **Phase 5: Agent Registry & Marketplace** as a 4-pillar system:
 
 ### What we build
 
-- `@aios/agent-registry` — discovery + metadata + validation
+- `@aios-platform/agent-registry` — discovery + metadata + validation
 - `@aios/agent-scaffold` — template + validator + dependency resolver
 - Console: Agent Catalog surface (trending, adoption curve, health)
 - GitHub Actions: async registry ingestion

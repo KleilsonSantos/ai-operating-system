@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { AgentRegistry } from '@aios/agent-registry';
+import { AgentRegistry } from '@aios-platform/agent-registry';
 import { scaffoldAgent } from './scaffold.js';
 
 describe('scaffoldAgent', () => {

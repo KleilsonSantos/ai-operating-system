@@ -1,6 +1,6 @@
 # Writing an Agent
 
-> Phase 5 · [ADR-0023](../adr/0023-agent-registry-marketplace.md) · scaffold: [`@aios/create-agent`](../../packages/create-agent/)
+> Phase 5 · [ADR-0023](../adr/0023-agent-registry-marketplace.md) · scaffold: [`@aios-platform/create-agent`](../../packages/create-agent/)
 
 AIOS treats agents as **plugins**. You do not call them as the primary UX. The user sends an intent; Intent → Workflow → Orchestration selects agents → Quality Gate → response.
 
@@ -13,7 +13,7 @@ This guide covers packaging a reusable agent that the [Agent Registry](../../pac
 | Manifest                      | `agent.yaml` (or `.json`) — name, version, I/O ports, dependencies        |
 | Package                       | npm-style folder with `src/`, tests, and the manifest at the package root |
 | Built-in agents               | Shipped in this monorepo (Architecture, AppSec, Docs, QA)                 |
-| Local / npm / git / community | Additional sources resolved by `@aios/agent-registry`                     |
+| Local / npm / git / community | Additional sources resolved by `@aios-platform/agent-registry`            |
 
 ## Anatomy
 
@@ -61,7 +61,7 @@ metadata:
 Validate with:
 
 ```ts
-import { AgentRegistry } from '@aios/agent-registry';
+import { AgentRegistry } from '@aios-platform/agent-registry';
 
 const registry = new AgentRegistry();
 const manifest = await registry.parseManifest('./agent.yaml');
@@ -73,7 +73,7 @@ console.log(registry.validate(manifest));
 Preferred (after packages are on npm):
 
 ```bash
-npm create @aios/agent@latest -- --name my-security
+npm create @aios-platform/agent@latest -- --name my-security
 cd agent-my-security
 npm install
 npm test
@@ -82,7 +82,7 @@ npm test
 From this monorepo (no npm publish required):
 
 ```bash
-pnpm --filter @aios/create-agent dev -- --name my-security
+pnpm --filter @aios-platform/create-agent dev -- --name my-security
 cd agent-my-security
 pnpm install
 pnpm test

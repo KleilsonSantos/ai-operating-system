@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Discover GitHub repositories tagged with topic `aios-agent` and write a
- * community catalog for @aios/agent-registry (Phase 5b / ADR-0023).
+ * community catalog for @aios-platform/agent-registry (Phase 5b / ADR-0023).
  *
  * Resource-Aware: one search request + optional per-repo HEAD checks; no
  * always-on ingest service. Prefer GITHUB_TOKEN / GH_TOKEN to avoid rate limits.

@@ -25,7 +25,7 @@ Phase 5 enables agents as first-class, discoverable, reusable building blocks fo
 - [x] ADR-0023 approved (decision captured)
 - [ ] Agent Registry architecture docs
 - [ ] `agent.yaml` manifest schema (JSON Schema)
-- [ ] `@aios/agent-registry` package scaffold
+- [ ] `@aios-platform/agent-registry` package scaffold
 
 **Deliverables:** Schema + package structure  
 **Owner:** Architect  
@@ -35,7 +35,7 @@ Phase 5 enables agents as first-class, discoverable, reusable building blocks fo
 
 ### M2: Registry MVP (Week 1–2)
 
-- [ ] Implement `@aios/agent-registry` core (parse, validate, discover)
+- [ ] Implement `@aios-platform/agent-registry` core (parse, validate, discover)
 - [ ] CLI: `aios list-agents` command
 - [ ] MCP: `aios_list_agents` tool
 - [ ] Local registry storage (`.aios/agents.registry.json`)
@@ -50,7 +50,7 @@ Phase 5 enables agents as first-class, discoverable, reusable building blocks fo
 ### M3: Packaging Standards (Week 2)
 
 - [ ] Agent manifest validator
-- [ ] npm scaffolder: `npm create @aios/agent@latest --name my-agent`
+- [ ] npm scaffolder: `npm create @aios-platform/agent@latest --name my-agent`
 - [ ] Dependency resolver (multi-level: agent → agent → engine)
 - [ ] Publish `@aios/agent-template` on npm
 - [ ] Documentation: "Writing an Agent"
@@ -125,7 +125,7 @@ See `tasks.json` for detailed task graph.
 
 1. ✅ `aios list-agents` returns built-in + community agents
 2. ✅ Console Agent Catalog shows trending/health/adoption
-3. ✅ `npm create @aios/agent` scaffolds without errors
+3. ✅ `npm create @aios-platform/agent` scaffolds without errors
 4. ✅ Community agents (GitHub `aios-agent` topic) auto-ingest weekly
 5. ✅ Metrics (`kind: agent.execution`) record every orchestration event
 6. ✅ Health-score reflects adoption + success rate

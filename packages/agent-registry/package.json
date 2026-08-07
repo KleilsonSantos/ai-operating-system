@@ -1,6 +1,6 @@
 {
-  "name": "@aios/agent-registry",
-  "version": "0.29.0",
+  "name": "@aios-platform/agent-registry",
+  "version": "0.29.1",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -10,7 +10,7 @@
       "import": "./dist/index.js"
     }
   },
-  "description": "Agent Registry for AIOS – discovery, validation, and resolution of agent metadata",
+  "description": "Agent Registry for AIOS \u2013 discovery, validation, and resolution of agent metadata",
   "files": [
     "dist/**/*",
     "schema/**/*",
