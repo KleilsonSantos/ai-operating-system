@@ -17,14 +17,14 @@ Related engines (do **not** duplicate here):
 | Heuristic knowledge graph                | `@aios/knowledge` · ADR-0005                |
 | External official references             | [`docs/references/`](../references/) (#133) |
 
-Long-term evolution: [`VISION.md`](./VISION.md).
+Long-term evolution: [`pkb-evolution.md`](./pkb-evolution.md).
 
 ## Layout
 
 ```text
 docs/prompts/
   README.md                 # this file (rules + intake)
-  VISION.md                 # long-term ladder (RAG / MCP / …)
+  pkb-evolution.md          # long-term ladder (RAG / MCP / …)
   index.yaml                # machine-readable catalog
   by-domain/<domain>/<slug>.vN.md
   templates/                # thin skeletons for new assets

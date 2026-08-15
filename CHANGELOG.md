@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Changed
+
+- 📋 Repository hygiene: PKB vision → `docs/prompts/pkb-evolution.md`; Phase 5 modernize plan marked historical; `artifact-lifecycle` policy (#270)
+
 ## [0.32.0] - 2026-08-15
 
 ### Added

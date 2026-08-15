@@ -14,7 +14,7 @@ language: pt-BR
 ai_ready: true
 related_docs:
   - docs/prompts/README.md
-  - docs/prompts/VISION.md
+  - docs/prompts/pkb-evolution.md
   - docs/adr/0008-prompt-engine-brief.md
 related_prompts:
   - prompt.knowledge.project-knowledge-base-evolution
