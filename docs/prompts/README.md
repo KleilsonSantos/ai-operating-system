@@ -50,6 +50,30 @@ Naming: `{slug}.v{n}.md` — descriptive English slug, SemVer-like integer `n`, 
 | `related_prompts`           | Other prompt `id`s                                                           |
 | `created_at` / `updated_at` | ISO date                                                                     |
 
+## Chat trigger (PKB intake)
+
+When the owner pastes an engineering prompt and says any of:
+
+```text
+PKB intake
+catalogar prompt
+guardar prompt
+```
+
+treat that as **catalog only**, not “run the analysis now”.
+
+1. Do **not** echo the full prompt back in chat.
+2. Do **not** execute the prompt body unless the owner also says `ok` / `prossegue` for a run.
+3. Pick an existing `by-domain/` (`documentation` · `knowledge` · `ai-engineering`). Do not invent a new domain without asking.
+4. Name the file `{kebab-slug}.v1.md` (bump `.vN` only when the contract forks).
+5. `id`: `prompt.<domain>.<slug>`.
+6. Fill required frontmatter (this file) + register the row in [`index.yaml`](./index.yaml).
+7. Add a short **catalog note** if a related ADR / audit / guide already exists — link it; do not duplicate the result.
+8. Keep the chat reply to: id, path, domain, and whether a matching asset already existed.
+9. Commit / PR only when the owner asks. Same Git flow as any other docs change (`feature/*` or `docs/*` from `sandbox`).
+
+One-off chat dumps, vendor skill packs, and prompts that only repeat policies do **not** belong here.
+
 ## Intake rule (when a strong prompt appears)
 
 1. Assess reuse potential — avoid one-off chat dumps.
