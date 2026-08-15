@@ -32,6 +32,7 @@ Integrator  →  @aios/pipeline.runPipeline  →  engines (intent…quality-gate
 
 - One more workspace package (`@aios/pipeline`)
 - Contract evolution requires a `contractVersion` bump (no silent breakage)
+- Additive fields (e.g. `PipelineResponse.run`, ADR-0024) do **not** bump the version
 
 ## Rejected alternatives
 

@@ -11,6 +11,7 @@ const response = await runPipeline({
   scope: 'engines/policy', // optional
 });
 // response.contractVersion === '1'
+// response.run — execution state (runId, steps, evidence)
 ```
 
 - Types: `PipelineRequest` / `PipelineResponse` in `@aios/shared`

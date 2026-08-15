@@ -1,5 +1,177 @@
 /** Tipos compartilhados entre engines e apps (Fase 1). */
 
+/** Capability / privilege for MCP `aios_*` tools. Never chosen by the model. */
+export const PRIVILEGES = [
+  'READ_ONLY',
+  'SAFE_WRITE',
+  'CONTROLLED_EXECUTION',
+  'PRIVILEGED',
+  'HUMAN_APPROVAL_REQUIRED',
+] as const;
+
+export type Privilege = (typeof PRIVILEGES)[number];
+
+export const PRIVILEGE_RANK: Record<Privilege, number> = {
+  READ_ONLY: 0,
+  SAFE_WRITE: 1,
+  CONTROLLED_EXECUTION: 2,
+  PRIVILEGED: 3,
+  HUMAN_APPROVAL_REQUIRED: 4,
+};
+
+/** Tools exposed by `@aios/mcp` (canonical MVP list). */
+export const MCP_TOOL_CATALOG = [
+  'aios_contract_version',
+  'aios_compile_prompt',
+  'aios_list_workspaces',
+  'aios_workspace_upsert',
+  'aios_workspace_remove',
+  'aios_workspace_validate',
+  'aios_run_across_workspaces',
+  'aios_build_knowledge',
+  'aios_memory_remember',
+  'aios_memory_recall',
+  'aios_memory_clear',
+  'aios_load_policies',
+  'aios_run_pipeline',
+  'aios_provider_health',
+  'aios_provider_models',
+  'aios_provider_chat',
+  'aios_list_agents',
+  'aios_governance_status',
+  'aios_audit_docs',
+  'aios_search_pkb',
+  'aios_governance_audit',
+  'aios_governance_record',
+  'aios_operational_state',
+] as const;
+
+export type McpToolName = (typeof MCP_TOOL_CATALOG)[number];
+
+export const MCP_TOOL_PRIVILEGE: Record<McpToolName, Privilege> = {
+  aios_contract_version: 'READ_ONLY',
+  aios_compile_prompt: 'READ_ONLY',
+  aios_list_workspaces: 'READ_ONLY',
+  aios_workspace_validate: 'READ_ONLY',
+  aios_build_knowledge: 'READ_ONLY',
+  aios_memory_recall: 'READ_ONLY',
+  aios_load_policies: 'READ_ONLY',
+  aios_provider_health: 'READ_ONLY',
+  aios_provider_models: 'READ_ONLY',
+  aios_list_agents: 'READ_ONLY',
+  aios_governance_status: 'READ_ONLY',
+  aios_audit_docs: 'READ_ONLY',
+  aios_search_pkb: 'READ_ONLY',
+  aios_governance_audit: 'READ_ONLY',
+  aios_operational_state: 'READ_ONLY',
+  aios_memory_remember: 'SAFE_WRITE',
+  aios_memory_clear: 'SAFE_WRITE',
+  aios_workspace_upsert: 'SAFE_WRITE',
+  aios_governance_record: 'SAFE_WRITE',
+  aios_run_pipeline: 'CONTROLLED_EXECUTION',
+  aios_run_across_workspaces: 'CONTROLLED_EXECUTION',
+  aios_provider_chat: 'CONTROLLED_EXECUTION',
+  aios_workspace_remove: 'PRIVILEGED',
+};
+
+export const DEFAULT_CALLER_PRIVILEGE: Privilege = 'CONTROLLED_EXECUTION';
+
+/** Process env without depending on `@types/node` in every consumer. */
+export type EnvMap = Record<string, string | undefined>;
+
+function readEnv(env?: EnvMap): EnvMap {
+  if (env) return env;
+  const proc = (globalThis as { process?: { env?: EnvMap } }).process;
+  return proc?.env ?? {};
+}
+
+export type CapabilityDecision = {
+  allowed: boolean;
+  tool: string;
+  required: Privilege;
+  caller: Privilege;
+  reason?: string;
+};
+
+export function isPrivilege(value: string): value is Privilege {
+  return (PRIVILEGES as readonly string[]).includes(value);
+}
+
+export function resolveCallerPrivilege(env?: EnvMap): Privilege {
+  const raw = readEnv(env).AIOS_MCP_PRIVILEGE?.trim();
+  if (raw && isPrivilege(raw)) return raw;
+  return DEFAULT_CALLER_PRIVILEGE;
+}
+
+export function privilegeForMcpTool(tool: string): Privilege {
+  if (tool in MCP_TOOL_PRIVILEGE) {
+    return MCP_TOOL_PRIVILEGE[tool as McpToolName];
+  }
+  return 'PRIVILEGED';
+}
+
+/**
+ * Authorize an MCP tool. Privilege comes from env/operator — never from tool args.
+ * `PRIVILEGED` also requires `AIOS_MCP_ALLOW_PRIVILEGED=1`.
+ * `HUMAN_APPROVAL_REQUIRED` is always denied on the MCP surface in this phase.
+ */
+export function authorizeMcpTool(
+  tool: string,
+  options?: { env?: EnvMap; privilege?: Privilege }
+): CapabilityDecision {
+  const env = readEnv(options?.env);
+  const caller = options?.privilege ?? resolveCallerPrivilege(env);
+  const required = privilegeForMcpTool(tool);
+
+  if (required === 'HUMAN_APPROVAL_REQUIRED') {
+    return {
+      allowed: false,
+      tool,
+      required,
+      caller,
+      reason: 'human-approval-required',
+    };
+  }
+
+  if (PRIVILEGE_RANK[caller] < PRIVILEGE_RANK[required]) {
+    return {
+      allowed: false,
+      tool,
+      required,
+      caller,
+      reason: 'insufficient-privilege',
+    };
+  }
+
+  if (required === 'PRIVILEGED' && env.AIOS_MCP_ALLOW_PRIVILEGED !== '1') {
+    return {
+      allowed: false,
+      tool,
+      required,
+      caller,
+      reason: 'privileged-not-enabled',
+    };
+  }
+
+  return { allowed: true, tool, required, caller };
+}
+
+export function deniedMcpPayload(decision: CapabilityDecision): {
+  error: 'policy.denied';
+  tool: string;
+  required: Privilege;
+  caller: Privilege;
+  reason?: string;
+} {
+  return {
+    error: 'policy.denied',
+    tool: decision.tool,
+    required: decision.required,
+    caller: decision.caller,
+    reason: decision.reason,
+  };
+}
+
 /** Intents canônicas do núcleo (#5 · v2 #63). */
 export type IntentKind =
   | 'analyze.project'
@@ -251,6 +423,8 @@ export type GovernanceStatus = {
   };
   exposed: {
     mcpTools: string[];
+    /** Privilege required per MCP tool (ADR-0024). */
+    mcpToolPrivileges?: Record<string, Privilege>;
     providers: string[];
   };
   /** Agent Registry catalog with optional health/execution join (#247 / ADR-0023). */
@@ -414,6 +588,44 @@ export type PipelineRequest = {
   includeMemory?: boolean;
   /** Limite de entradas de memória no response */
   memoryLimit?: number;
+  /**
+   * Plugin selection source (ADR-0024).
+   * Default: builtin 4. `registry` intersects Agent Registry with known runners.
+   */
+  pluginSource?: 'builtin' | 'registry';
+};
+
+export type PipelineStepKind =
+  'classify' | 'policy' | 'context' | 'knowledge' | 'memory' | 'agent' | 'gate';
+
+export type PipelineStepStatus = 'ok' | 'skip' | 'fail' | 'denied';
+
+export type PipelineStep = {
+  stepId: string;
+  kind: PipelineStepKind;
+  status: PipelineStepStatus;
+  agentId?: string;
+  detail?: string;
+};
+
+export type PipelineArtifact = {
+  id: string;
+  kind: string;
+  ref: string;
+};
+
+/** Execution state for one `runPipeline` invocation (ADR-0024). Additive on v1. */
+export type PipelineRun = {
+  runId: string;
+  taskId: string;
+  intentKind: string;
+  workspaceId?: string;
+  policyIds: string[];
+  agentIds: string[];
+  skillIds: string[];
+  steps: PipelineStep[];
+  artifacts: PipelineArtifact[];
+  verdict?: { passed: boolean; reasons: string[] };
 };
 
 /** Resposta estável do núcleo (stdout JSON do CLI = este shape). */
@@ -459,4 +671,6 @@ export type PipelineResponse = {
   };
   results: AgentResult[];
   verdict: QualityVerdict;
+  /** Additive execution record — omitted only by older producers. */
+  run?: PipelineRun;
 };

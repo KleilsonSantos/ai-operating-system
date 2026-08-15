@@ -137,3 +137,4 @@ Implement **Phase 5: Agent Registry & Marketplace** as a 4-pillar system:
 2. → Create `plan.md` + `tasks.json` in `.github/modernize/phase-5-agent-marketplace/`
 3. → Feature branch: `feature/agent-registry-v5`
 4. → PR → `sandbox` → review → `main`
+5. ✅ Orchestration may read the registry at runtime (opt-in + fallback) — [ADR-0024](./0024-execution-state-capability-registry.md)

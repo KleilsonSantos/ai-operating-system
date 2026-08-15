@@ -17,6 +17,7 @@
     "@aios/policy": "workspace:*",
     "@aios/decision": "workspace:*",
     "@aios/status": "workspace:*",
+    "@aios-platform/agent-registry": "workspace:*",
     "@aios/agent-architecture": "workspace:*",
     "@aios/agent-appsec": "workspace:*",
     "@aios/agent-docs": "workspace:*",

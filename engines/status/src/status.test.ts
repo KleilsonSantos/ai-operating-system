@@ -56,6 +56,8 @@ describe('getGovernanceStatus', () => {
     expect(status.attention.find((a) => a.id === 'provider-down')?.severity).toBe('warn');
     expect(status.attention.some((a) => a.id === 'metrics-stub')).toBe(true);
     expect(status.exposed.mcpTools.length).toBeGreaterThan(5);
+    expect(status.exposed.mcpToolPrivileges?.aios_run_pipeline).toBe('CONTROLLED_EXECUTION');
+    expect(status.exposed.mcpToolPrivileges?.aios_workspace_remove).toBe('PRIVILEGED');
   });
 
   it('recordMetricEvent alone does not clear metrics-stub without provider.chat', async () => {

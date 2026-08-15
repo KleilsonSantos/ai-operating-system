@@ -2,6 +2,7 @@
 
 Point-in-time engineering and documentation audits. **Not** product SSOT — foundation remains [`../FOUNDATION.md`](../FOUNDATION.md).
 
-| Report                                                                  | Date    |
-| ----------------------------------------------------------------------- | ------- |
-| [Document rationalization](./document-rationalization-audit-2026-08.md) | 2026-08 |
+| Report                                                                   | Date    |
+| ------------------------------------------------------------------------ | ------- |
+| [Document rationalization](./document-rationalization-audit-2026-08.md)  | 2026-08 |
+| [Agent runtime evolution](./agent-runtime-evolution-analysis-2026-08.md) | 2026-08 |
