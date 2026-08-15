@@ -68,13 +68,20 @@ Agents become first-class, discoverable, reusable building blocks. Four pillars:
 ### Phase 5b — Packaging depth, observability, community (next)
 
 - [x] Agent Packaging (scaffolder MVP) — `@aios-platform/create-agent` + template + `docs/guides/writing-an-agent.md` (#211); npm publish readiness for `@aios-platform/create-agent` + `@aios-platform/agent-registry` (#233); separate `@aios/agent-template` package and multi-level dependency resolver still open
-- [x] Agent Observability (MVP) — `recordAgentExecution` + `kind: agent.execution` JSONL; health-score on list-agents / console chip (#217); Console Agent Catalog MVP (registry + health join, #247); full adoption graphs / trending tables still open
+- [x] Agent Observability (MVP) — `recordAgentExecution` + `kind: agent.execution` JSONL; health-score on list-agents / console chip (#217); Console Agent Catalog MVP (registry + health join, #247) + trending/top-used/unhealthy views + 7d runs; full adoption curves / Prometheus time-series still open
 - [x] Community Publishing (MVP) — publish guide; `scripts/community-agents-ingest.mjs`; weekly GHA artifact; catalog + `community` source in `@aios-platform/agent-registry` (#220)
 - [x] Community catalog auto-PR — GHA opens/updates PR → `sandbox` when agents list changes; skip `generatedAt`-only churn (#223); async HTTP registry service + productized abuse pipeline still open (deferred — Resource-Aware)
 - [x] First community agent ingested — public [`aios-agent-smoke`](https://github.com/KleilsonSantos/aios-agent-smoke) (`topic:aios-agent`) in committed catalog (#230)
 
 **Status:** Phase 5b MVP complete for scaffolder, observability, community ingest loop, and first live topic hit (`v0.29.0`). Public npm scope `@aios-platform` (#236); remaining depth: Console Agent Catalog adoption graphs / trending tables, multi-level dependency resolver, optional `@aios/agent-template` package. Console Agent Catalog MVP (registry list + health join) shipped via #247.  
 **Target:** shipped as `v0.29.0` (do not backdate into 5a).
+
+## Execution contract (incremental)
+
+Thin runtime on the existing pipeline — not a second orchestrator. [ADR-0024](./adr/0024-execution-state-capability-registry.md) · #261.
+
+- [x] Phase 1 foundation — `PipelineResponse.run` + MCP capability allowlist + registry-selected plugins (flag + fallback)
+- [ ] Phase 2 — model router by capability class, context budget, skill packs (not authorized here)
 
 ## Out of scope (on purpose)
 

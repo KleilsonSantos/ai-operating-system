@@ -29,14 +29,41 @@ import { auditGovernance, recordDecision } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
 import { resolve } from 'node:path';
 import { AgentRegistry } from '@aios-platform/agent-registry';
+import { authorizeMcpTool, deniedMcpPayload } from '@aios/shared';
 
 export function createAiosMcpServer(): McpServer {
   const server = new McpServer({
     name: 'aios',
-    version: '0.25.0',
+    version: '0.32.0',
   });
 
-  server.registerTool(
+  const registerRaw = server.registerTool.bind(server);
+  const registerTool = ((
+    name: string,
+    config: unknown,
+    handler: (args: unknown, extra: unknown) => unknown
+  ) =>
+    registerRaw(
+      name as never,
+      config as never,
+      (async (args: unknown, extra: unknown) => {
+        const decision = authorizeMcpTool(String(name));
+        if (!decision.allowed) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(deniedMcpPayload(decision)),
+              },
+            ],
+            isError: true,
+          };
+        }
+        return handler(args, extra);
+      }) as never
+    )) as typeof server.registerTool;
+
+  registerTool(
     'aios_contract_version',
     {
       title: 'AIOS contract version',
@@ -52,7 +79,7 @@ export function createAiosMcpServer(): McpServer {
     })
   );
 
-  server.registerTool(
+  registerTool(
     'aios_list_agents',
     {
       title: 'List available agents',
@@ -107,7 +134,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_compile_prompt',
     {
       title: 'Compile AIOS brief',
@@ -156,7 +183,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_list_workspaces',
     {
       title: 'List AIOS workspaces',
@@ -210,7 +237,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_workspace_upsert',
     {
       title: 'Upsert workspace',
@@ -236,7 +263,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_workspace_remove',
     {
       title: 'Remove workspace',
@@ -256,7 +283,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_workspace_validate',
     {
       title: 'Validate workspace(s)',
@@ -299,7 +326,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_run_across_workspaces',
     {
       title: 'Run pipeline across workspaces',
@@ -334,7 +361,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_build_knowledge',
     {
       title: 'Build AIOS knowledge graph',
@@ -365,7 +392,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_memory_remember',
     {
       title: 'Remember for workspace',
@@ -396,7 +423,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_memory_recall',
     {
       title: 'Recall workspace memory',
@@ -421,7 +448,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_memory_clear',
     {
       title: 'Clear workspace memory',
@@ -448,7 +475,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_load_policies',
     {
       title: 'Load AIOS policies',
@@ -498,7 +525,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_governance_status',
     {
       title: 'Governance status',
@@ -529,7 +556,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_audit_docs',
     {
       title: 'Audit documentation',
@@ -564,7 +591,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_search_pkb',
     {
       title: 'Search Prompt Knowledge Base',
@@ -608,7 +635,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_governance_audit',
     {
       title: 'Governance audit',
@@ -641,7 +668,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_governance_record',
     {
       title: 'Record governance decision',
@@ -679,7 +706,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_operational_state',
     {
       title: 'Operational state',
@@ -712,7 +739,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_provider_health',
     {
       title: 'Provider health',
@@ -744,7 +771,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_provider_models',
     {
       title: 'List provider models',
@@ -776,7 +803,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_provider_chat',
     {
       title: 'Provider chat (aux)',
@@ -816,7 +843,7 @@ export function createAiosMcpServer(): McpServer {
     }
   );
 
-  server.registerTool(
+  registerTool(
     'aios_run_pipeline',
     {
       title: 'Run AIOS pipeline',

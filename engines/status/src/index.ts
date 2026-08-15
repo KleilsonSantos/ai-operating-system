@@ -7,6 +7,8 @@
 import { existsSync, mkdirSync, appendFileSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import {
+  MCP_TOOL_CATALOG,
+  MCP_TOOL_PRIVILEGE,
   PIPELINE_CONTRACT_VERSION,
   type AgentCatalogEntry,
   type AttentionItem,
@@ -15,39 +17,14 @@ import {
   type ChatUsage,
   type GovernanceStatus,
 } from '@aios/shared';
+
+export { MCP_TOOL_CATALOG } from '@aios/shared';
 import { listValidatedWorkspaces } from '@aios/workspace';
 import { loadPolicies, applyPolicies } from '@aios/policy';
 import { listMemoryWorkspaces } from '@aios/memory';
 import { getProvider, listProviderIds } from '@aios/provider';
 import { auditGovernance } from '@aios/governance';
 import { AgentRegistry } from '@aios-platform/agent-registry';
-
-/** Tools exposed by `@aios/mcp` (canonical MVP list). */
-export const MCP_TOOL_CATALOG = [
-  'aios_contract_version',
-  'aios_compile_prompt',
-  'aios_list_workspaces',
-  'aios_workspace_upsert',
-  'aios_workspace_remove',
-  'aios_workspace_validate',
-  'aios_run_across_workspaces',
-  'aios_build_knowledge',
-  'aios_memory_remember',
-  'aios_memory_recall',
-  'aios_memory_clear',
-  'aios_load_policies',
-  'aios_run_pipeline',
-  'aios_provider_health',
-  'aios_provider_models',
-  'aios_provider_chat',
-  'aios_list_agents',
-  'aios_governance_status',
-  'aios_audit_docs',
-  'aios_search_pkb',
-  'aios_governance_audit',
-  'aios_governance_record',
-  'aios_operational_state',
-] as const;
 
 export type GetGovernanceStatusOptions = {
   homePath?: string;
@@ -96,6 +73,8 @@ export type AgentExecutionTotals = {
 export type AgentExecutionByAgent = AgentExecutionTotals & {
   agent: string;
   healthScore: number;
+  /** Executions in the rolling 7-day window (by event `at`). */
+  count7d: number;
   lastAt?: string;
 };
 
@@ -177,12 +156,17 @@ export function computeAgentHealthScore(input: {
 /**
  * Read `.aios/metrics/events.jsonl` once (Resource-Aware).
  */
-export function loadMetricsSnapshot(options: { homePath?: string } = {}): MetricsSnapshot {
+export function loadMetricsSnapshot(
+  options: { homePath?: string; nowMs?: number } = {}
+): MetricsSnapshot {
   const home = resolve(options.homePath || process.env.AIOS_HOME || process.cwd());
   const path = metricsPath(home);
   if (!existsSync(path)) {
     return { path, eventCount: 0, byProvider: [] };
   }
+
+  const nowMs = options.nowMs ?? Date.now();
+  const window7dMs = 7 * 24 * 60 * 60 * 1000;
 
   let eventCount = 0;
   const total = emptyTotals();
@@ -192,6 +176,7 @@ export function loadMetricsSnapshot(options: { homePath?: string } = {}): Metric
     count: number;
     errorCount: number;
     successCount: number;
+    count7d: number;
     lastAt?: string;
   };
   const perAgent = new Map<string, AgentBucket>();
@@ -230,7 +215,7 @@ export function loadMetricsSnapshot(options: { homePath?: string } = {}): Metric
         const agent = typeof ev.agent === 'string' && ev.agent.trim() ? ev.agent.trim() : 'unknown';
         let bucket = perAgent.get(agent);
         if (!bucket) {
-          bucket = { count: 0, errorCount: 0, successCount: 0 };
+          bucket = { count: 0, errorCount: 0, successCount: 0, count7d: 0 };
           perAgent.set(agent, bucket);
         }
         agentTotal.count += 1;
@@ -246,6 +231,10 @@ export function loadMetricsSnapshot(options: { homePath?: string } = {}): Metric
         const at = typeof ev.at === 'string' ? ev.at : undefined;
         if (at && (!bucket.lastAt || at > bucket.lastAt)) {
           bucket.lastAt = at;
+        }
+        const atMs = at ? Date.parse(at) : Number.NaN;
+        if (Number.isFinite(atMs) && nowMs - atMs <= window7dMs && nowMs - atMs >= 0) {
+          bucket.count7d += 1;
         }
       }
     }
@@ -263,12 +252,14 @@ export function loadMetricsSnapshot(options: { homePath?: string } = {}): Metric
       agent,
       count: b.count,
       errorCount: b.errorCount,
+      count7d: b.count7d,
       lastAt: b.lastAt,
       healthScore: computeAgentHealthScore({
         successCount: b.successCount,
         totalCount: b.count,
         lastAt: b.lastAt,
         maxExecutionsSeen,
+        nowMs,
       }),
     }))
     .sort((a, b) => a.agent.localeCompare(b.agent));
@@ -631,6 +622,9 @@ export async function buildAgentCatalog(options: {
       if (entry.manifest.displayName) row.displayName = entry.manifest.displayName;
       if (typeof metrics?.healthScore === 'number') row.healthScore = metrics.healthScore;
       if (typeof metrics?.count === 'number') row.executions = metrics.count;
+      if (typeof metrics?.count7d === 'number' && metrics.count7d > 0) {
+        row.executions7d = metrics.count7d;
+      }
       return row;
     })
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -713,6 +707,7 @@ export async function getGovernanceStatus(
     memory: { workspaceIds: memoryIds },
     exposed: {
       mcpTools: [...MCP_TOOL_CATALOG],
+      mcpToolPrivileges: { ...MCP_TOOL_PRIVILEGE },
       providers: listProviderIds(),
     },
     agents,

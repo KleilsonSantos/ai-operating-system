@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   chatWithMetrics,
   getGovernanceStatus,
+  loadMetricsSnapshot,
   recordAgentExecution,
   recordMetricEvent,
   recordProviderChatMetric,
@@ -55,6 +56,8 @@ describe('getGovernanceStatus', () => {
     expect(status.attention.find((a) => a.id === 'provider-down')?.severity).toBe('warn');
     expect(status.attention.some((a) => a.id === 'metrics-stub')).toBe(true);
     expect(status.exposed.mcpTools.length).toBeGreaterThan(5);
+    expect(status.exposed.mcpToolPrivileges?.aios_run_pipeline).toBe('CONTROLLED_EXECUTION');
+    expect(status.exposed.mcpToolPrivileges?.aios_workspace_remove).toBe('PRIVILEGED');
   });
 
   it('recordMetricEvent alone does not clear metrics-stub without provider.chat', async () => {
@@ -166,6 +169,37 @@ describe('getGovernanceStatus', () => {
     expect(docs?.source).toBe('builtin');
     expect(docs?.executions).toBe(2);
     expect(docs?.healthScore).toBeGreaterThan(0);
+    expect(docs?.executions7d).toBe(2);
+    expect(status.metrics.agentExecution?.byAgent[0]?.count7d).toBeGreaterThan(0);
+  });
+
+  it('counts executions7d only within the rolling 7-day window', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'aios-status-7d-'));
+    temps.push(root);
+    writeFileSync(join(root, 'package.json'), '{"name":"aios"}');
+    const now = Date.parse('2026-08-07T12:00:00.000Z');
+    mkdirSync(join(root, '.aios', 'metrics'), { recursive: true });
+    writeFileSync(
+      join(root, '.aios', 'metrics', 'events.jsonl'),
+      [
+        JSON.stringify({
+          kind: 'agent.execution',
+          agent: '@aios/agent-docs',
+          outcome: 'success',
+          at: '2026-08-05T12:00:00.000Z',
+        }),
+        JSON.stringify({
+          kind: 'agent.execution',
+          agent: '@aios/agent-docs',
+          outcome: 'success',
+          at: '2026-07-01T12:00:00.000Z',
+        }),
+      ].join('\n') + '\n'
+    );
+    const snap = loadMetricsSnapshot({ homePath: root, nowMs: now });
+    const row = snap.agentExecution?.byAgent.find((a) => a.agent === '@aios/agent-docs');
+    expect(row?.count).toBe(2);
+    expect(row?.count7d).toBe(1);
   });
 
   it('includes Agent Catalog rows from the registry without executions', async () => {
