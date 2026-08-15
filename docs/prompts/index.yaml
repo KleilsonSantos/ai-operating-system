@@ -2,7 +2,7 @@
 # Machine-readable; keep in sync with by-domain/**/*.md frontmatter.
 
 version: 1
-updated_at: 2026-07-18
+updated_at: 2026-08-15
 root: docs/prompts
 
 prompts:
@@ -13,6 +13,14 @@ prompts:
     status: active
     language: pt-BR
     tags: [documentation, readme, architecture-audit, docs-as-code]
+
+  - id: prompt.documentation.repository-structure-rationalization
+    path: by-domain/documentation/repository-structure-rationalization.v1.md
+    domain: documentation
+    version: 1
+    status: active
+    language: pt-BR
+    tags: [documentation, repository-structure, naming, artifact-lifecycle, architecture-audit]
 
   - id: prompt.knowledge.project-knowledge-base-evolution
     path: by-domain/knowledge/project-knowledge-base-evolution.v1.md
@@ -29,3 +37,11 @@ prompts:
     status: active
     language: pt-BR
     tags: [prompt-engineering, pkb, catalog, docs-as-code]
+
+  - id: prompt.ai-engineering.agent-runtime-evolution
+    path: by-domain/ai-engineering/agent-runtime-evolution.v1.md
+    domain: ai-engineering
+    version: 1
+    status: active
+    language: pt-BR
+    tags: [agent-runtime, model-routing, execution-governance, skills, architecture]

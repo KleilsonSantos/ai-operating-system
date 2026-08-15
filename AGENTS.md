@@ -26,6 +26,7 @@ If a summary conflicts with `docs/FOUNDATION.md`, the foundation wins until an A
 - **Architecture and product scope**: start with `.trae/rules/architecture.md`, `docs/FOUNDATION.md`, `docs/architecture/overview.md`, and the relevant ADRs.
 - **Quality gates and repository automation**: start with `.trae/rules/quality-gates.md`, `.github/workflows/ci.yml`, `.githooks/`, `package.json`, `sonar-project.properties`, and `CONTRIBUTING.md`.
 - **Context engine work**: start with `.trae/rules/modules/context-engine.md` and `engines/context/src/`.
+- **PKB intake** (`PKB intake` / `catalogar prompt` / `guardar prompt`): catalog into `docs/prompts/` per [`docs/prompts/README.md`](./docs/prompts/README.md). Do not run the prompt unless the owner also authorizes a run.
 
 ## Hard Constraints
 
