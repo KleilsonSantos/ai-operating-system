@@ -81,11 +81,11 @@ Provider is **outside** this path (ADR-0008/0009: does not replace the IDE LLM).
 
 ### Version drift (docs hygiene)
 
-| Source                     | Value             |
-| -------------------------- | ----------------- |
-| `package.json` / CHANGELOG | `0.32.0`          |
-| README “Latest release”    | `v0.25.0` (stale) |
-| MCP server version in code | `0.25.0` (stale)  |
+| Source                     | Value            |
+| -------------------------- | ---------------- |
+| `package.json` / CHANGELOG | `0.32.0`         |
+| README “Latest release”    | `v0.31.0` (#263) |
+| MCP server version in code | `0.31.0` (#263)  |
 
 ---
 
@@ -138,18 +138,18 @@ Useful patterns:
 
 ## C. Gap analysis
 
-| Gap                                                     | Why it matters                                            | Fit          |
-| ------------------------------------------------------- | --------------------------------------------------------- | ------------ |
-| Registry does not drive orchestration                   | Phase 5 discovery is cosmetic if plugins stay hardcoded   | P0           |
-| No first-class Execution State (Task/Run/Step/Evidence) | Governance cannot answer “who/what/why” per run           | P0           |
-| No capability / privilege levels                        | Policy exists but tools are not capability-scoped         | P0           |
-| Provider router is name stub                            | Cannot select by risk/cost/latency                        | P1           |
-| Context has no budget/rank/policy filter                | Risk of dump-the-repo as scope grows                      | P1           |
-| No Skills layer                                         | Repeatable “how” lives in prompts/agents/docs, fragmented | P2           |
-| No centralized hooks                                    | Policy/obs/security intercepts will sprawl                | P2           |
-| No parallel worker graph                                | Sequential `runAcrossWorkspaces` only                     | P3           |
-| Agent plugins untested                                  | 4 plugins have no `*.test.ts`                             | P1 (quality) |
-| README/MCP version stale                                | Contradicts SemVer discipline                             | P1 (hygiene) |
+| Gap                                                     | Why it matters                                            | Fit               |
+| ------------------------------------------------------- | --------------------------------------------------------- | ----------------- |
+| Registry does not drive orchestration                   | Phase 5 discovery is cosmetic if plugins stay hardcoded   | P0                |
+| No first-class Execution State (Task/Run/Step/Evidence) | Governance cannot answer “who/what/why” per run           | P0                |
+| No capability / privilege levels                        | Policy exists but tools are not capability-scoped         | P0                |
+| Provider router is name stub                            | Cannot select by risk/cost/latency                        | P1                |
+| Context has no budget/rank/policy filter                | Risk of dump-the-repo as scope grows                      | P1                |
+| No Skills layer                                         | Repeatable “how” lives in prompts/agents/docs, fragmented | P2                |
+| No centralized hooks                                    | Policy/obs/security intercepts will sprawl                | P2                |
+| No parallel worker graph                                | Sequential `runAcrossWorkspaces` only                     | P3                |
+| Agent plugins untested                                  | 4 plugins have no `*.test.ts`                             | P1 (quality)      |
+| README/MCP version stale                                | Contradicts SemVer discipline                             | P1 — fixed (#263) |
 
 ---
 
@@ -319,21 +319,21 @@ Observability (Phase 4, not Phase 1): structured events already sketched in `@ai
 
 ## I. Prioritized backlog
 
-| ID  | Item                                                      | Pri    | Value   | Complexity | Risk   |
-| --- | --------------------------------------------------------- | ------ | ------- | ---------- | ------ |
-| 1   | Execution State on `PipelineResponse` (run/step/evidence) | P0     | High    | Low        | Low    |
-| 2   | Registry-selected plugins (flag + fallback to 4)          | P0     | High    | Medium     | Medium |
-| 3   | Capability / privilege table for MCP tools                | P0     | High    | Low        | Low    |
-| 4   | Tests for 4 agent plugins                                 | P1     | High    | Low        | Low    |
-| 5   | Fix README + MCP version drift                            | P1     | Medium  | Low        | Low    |
-| 6   | Model Router by capability class + policy                 | P1     | High    | Medium     | Medium |
-| 7   | Context budget + rank + policy filter                     | P1     | High    | Medium     | Low    |
-| 8   | Skill registry (packs, not agents)                        | P2     | Medium  | Medium     | Medium |
-| 9   | Central hook bus                                          | P2     | Medium  | Medium     | Medium |
-| 10  | Parallel read-only workspace fan-out                      | P3     | Low–Med | High       | High   |
-| 11  | Planner/Validator/Arbitrator as new agents                | REJECT | —       | High       | High   |
-| 12  | Embed coding-agent loop in core                           | REJECT | —       | High       | High   |
-| 13  | Vendor-locked DeepSeek/OpenAI routing                     | REJECT | —       | Low        | High   |
+| ID  | Item                                                      | Pri    | Value   | Complexity | Risk              |
+| --- | --------------------------------------------------------- | ------ | ------- | ---------- | ----------------- |
+| 1   | Execution State on `PipelineResponse` (run/step/evidence) | P0     | High    | Low        | Low               |
+| 2   | Registry-selected plugins (flag + fallback to 4)          | P0     | High    | Medium     | Medium            |
+| 3   | Capability / privilege table for MCP tools                | P0     | High    | Low        | Low               |
+| 4   | Tests for 4 agent plugins                                 | P1     | High    | Low        | Low               |
+| 5   | Fix README + MCP version drift                            | P1     | Medium  | Low        | Low — done (#263) |
+| 6   | Model Router by capability class + policy                 | P1     | High    | Medium     | Medium            |
+| 7   | Context budget + rank + policy filter                     | P1     | High    | Medium     | Low               |
+| 8   | Skill registry (packs, not agents)                        | P2     | Medium  | Medium     | Medium            |
+| 9   | Central hook bus                                          | P2     | Medium  | Medium     | Medium            |
+| 10  | Parallel read-only workspace fan-out                      | P3     | Low–Med | High       | High              |
+| 11  | Planner/Validator/Arbitrator as new agents                | REJECT | —       | High       | High              |
+| 12  | Embed coding-agent loop in core                           | REJECT | —       | High       | High              |
+| 13  | Vendor-locked DeepSeek/OpenAI routing                     | REJECT | —       | Low        | High              |
 
 ### Phases (only if justified)
 

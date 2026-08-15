@@ -10,6 +10,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 - 🔒 MCP capability allowlist: privilege per `aios_*` tool; model cannot pick `PRIVILEGED` (`AIOS_MCP_PRIVILEGE`, `AIOS_MCP_ALLOW_PRIVILEGED`)
 - 🔌 Registry-selected plugins behind `pluginSource: "registry"` / `AIOS_REGISTRY_PLUGINS=1`, fallback to the 4 builtin agents
 
+### Changed
+
+- 📋 README Latest release + MCP server version aligned to `v0.31.0` (#263)
+
 ### Fixed
 
 - 🔒 Bump transitive `nanoid` pin to `3.3.18` (GHSA-2v37) so pre-push `pnpm audit` stays green
