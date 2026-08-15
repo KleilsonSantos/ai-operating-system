@@ -20,3 +20,5 @@ When the task affects architecture, product boundaries, or engine responsibiliti
 - AIOS is a standalone product.
 - Agents are plugins and should not dominate the primary UX.
 - Follow the roadmap phase before introducing new engines or expanding scope.
+- Before creating a file or directory: domain, canonical location, lifecycle, and consumer — reuse an existing artifact when it already fulfills the purpose (`artifact-lifecycle`).
+- Living docs use a stable name. Date in a filename only for snapshots under `docs/audits/` (or incident/evidence). `.github/modernize/` plans are historical; ROADMAP + ADRs win.

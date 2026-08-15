@@ -76,6 +76,11 @@
       "severity": "must"
     },
     {
+      "id": "artifact-lifecycle",
+      "description": "Before creating a file or directory: determine semantic domain, canonical location, lifecycle, and consumer; reuse an existing artifact when it already fulfills the purpose. Living docs use a stable name (Git, ADR, CHANGELOG hold history). Date in a filename only for a snapshot, incident, or evidence (docs/audits/). Do not use tmp/backup/final/latest/copy as versioning.",
+      "severity": "must"
+    },
+    {
       "id": "justify-resource-impact",
       "description": "Infra suggestions must state why, alternatives, and impact on hardware/maintenance/consumption",
       "severity": "should"

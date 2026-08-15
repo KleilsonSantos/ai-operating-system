@@ -1,8 +1,8 @@
-# System Guide — AIOS (Phase 1)
+# System Guide — AIOS (implemented core)
 
-Operational guide for the core implemented first. The full map is in [overview.md](./overview.md).
+Operational guide for the implemented control-plane flow. The mermaid below is the historical Phase 1 core; later engines, MCP, console, and the agent registry sit on top. The full map is in [overview.md](./overview.md).
 
-## End-to-end flow (Phase 1)
+## End-to-end flow (core)
 
 ```mermaid
 flowchart TD

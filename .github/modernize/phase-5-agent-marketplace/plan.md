@@ -1,9 +1,13 @@
 # Phase 5 Implementation Plan — Agent Marketplace & Reusability
 
+> **Historical plan** (written for target `v0.28.0`, 2026-08-20). This file is **not** delivery SSOT.
+> Live status: [`docs/ROADMAP.md`](../../../docs/ROADMAP.md) · [ADR-0023](../../../docs/adr/0023-agent-registry-marketplace.md).
+> Keep the path so existing links resolve. Do not treat unchecked boxes below as current backlog.
+
 **Phase:** 5  
-**Target Release:** v0.28.0 (aspirational: 2026-08-20)  
+**Target Release:** v0.28.0 (aspirational: 2026-08-20) — **shipped; later SemVer is on ROADMAP**  
 **Pillar:** Agent Marketplace & Reusability  
-**Status:** In Progress
+**Status:** Historical (superseded as a living plan)
 
 ---
 
