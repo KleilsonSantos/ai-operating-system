@@ -76,6 +76,13 @@ Agents become first-class, discoverable, reusable building blocks. Four pillars:
 **Status:** Phase 5b MVP complete for scaffolder, observability, community ingest loop, and first live topic hit (`v0.29.0`). Public npm scope `@aios-platform` (#236); remaining depth: Console Agent Catalog adoption graphs / trending tables, multi-level dependency resolver, optional `@aios/agent-template` package. Console Agent Catalog MVP (registry list + health join) shipped via #247.  
 **Target:** shipped as `v0.29.0` (do not backdate into 5a).
 
+## Execution contract (incremental)
+
+Thin runtime on the existing pipeline — not a second orchestrator. [ADR-0024](./adr/0024-execution-state-capability-registry.md) · #261.
+
+- [x] Phase 1 foundation — `PipelineResponse.run` + MCP capability allowlist + registry-selected plugins (flag + fallback)
+- [ ] Phase 2 — model router by capability class, context budget, skill packs (not authorized here)
+
 ## Out of scope (on purpose)
 
 - Replacing IDEs or Copilot as an editor — AIOS governs and orchestrates; it does not compete as autocomplete

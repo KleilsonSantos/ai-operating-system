@@ -9,6 +9,6 @@ const { results, ran, skipped } = await runWorkflow(intent, {
 });
 ```
 
-Plugins are **plugins** — the user does not choose them; the Decision matrix schedules them.
+Plugins are **plugins** — the user does not choose them; the Decision matrix schedules them. Opt-in `pluginSource: "registry"` intersects Agent Registry with known runners (fallback: the 4 builtins).
 
 Issue #8 · [system-guide](../../docs/architecture/system-guide.md)

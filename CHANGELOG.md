@@ -6,6 +6,9 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Added
 
+- 🔐 Execution state on `PipelineResponse.run` (Run / Step / evidence) — `contractVersion` stays `"1"` (#261 / ADR-0024)
+- 🔒 MCP capability allowlist: privilege per `aios_*` tool; model cannot pick `PRIVILEGED` (`AIOS_MCP_PRIVILEGE`, `AIOS_MCP_ALLOW_PRIVILEGED`)
+- 🔌 Registry-selected plugins behind `pluginSource: "registry"` / `AIOS_REGISTRY_PLUGINS=1`, fallback to the 4 builtin agents
 - 📊 Agent Catalog trending: `executions7d` / `count7d`, console views All · Top-used · Unhealthy (health &lt; 70%)
 
 ## [0.31.0] - 2026-08-07

@@ -2,6 +2,7 @@
  * @aios/pipeline — porta estável do núcleo (CLI / integradores).
  * Issue #9 · ADR-0003 · workspace #43 · knowledge #47 · memory #51
  */
+import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { resolveIntent } from '@aios/intent';
 import { loadPolicies, applyPolicies } from '@aios/policy';
@@ -13,8 +14,11 @@ import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge';
 import { recall } from '@aios/memory';
 import {
   PIPELINE_CONTRACT_VERSION,
+  type PipelineArtifact,
   type PipelineRequest,
   type PipelineResponse,
+  type PipelineRun,
+  type PipelineStep,
 } from '@aios/shared';
 
 export { PIPELINE_CONTRACT_VERSION };
@@ -157,15 +161,34 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
     };
   }
 
+  const homePath = process.env.AIOS_HOME || process.cwd();
   const workflow = await runWorkflow(intent, {
     policies: policyBundle.rules,
     context,
-    homePath: process.env.AIOS_HOME || process.cwd(),
+    homePath,
+    pluginSource: request.pluginSource,
   });
   const verdict = evaluateQuality(workflow.results, {
     intent,
     context,
     skipped: workflow.skipped,
+  });
+
+  const run = buildPipelineRun({
+    intentKind: intent.kind,
+    workspaceId: workspaceMeta?.id ?? memoryWorkspaceId,
+    policyIds: applied.mustIds,
+    ran: workflow.ran,
+    skipped: workflow.skipped,
+    results: workflow.results,
+    contextPaths: context.snippets.map((s) => ({
+      id: s.path,
+      kind: s.kind,
+      ref: s.path,
+    })),
+    memoryAttached: Boolean(memoryMeta),
+    verdictPassed: verdict.passed,
+    verdictReasons: verdict.blockers,
   });
 
   return {
@@ -193,5 +216,84 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
     },
     results: workflow.results,
     verdict,
+    run,
+  };
+}
+
+function stepId(kind: PipelineStep['kind']): string {
+  return `${kind}-${randomUUID()}`;
+}
+
+function buildPipelineRun(input: {
+  intentKind: string;
+  workspaceId?: string;
+  policyIds: string[];
+  ran: string[];
+  skipped: string[];
+  results: PipelineResponse['results'];
+  contextPaths: PipelineArtifact[];
+  memoryAttached: boolean;
+  verdictPassed: boolean;
+  verdictReasons: string[];
+}): PipelineRun {
+  const runId = randomUUID();
+  const steps: PipelineStep[] = [
+    { stepId: stepId('classify'), kind: 'classify', status: 'ok', detail: input.intentKind },
+    {
+      stepId: stepId('policy'),
+      kind: 'policy',
+      status: input.policyIds.length > 0 ? 'ok' : 'skip',
+    },
+    {
+      stepId: stepId('context'),
+      kind: 'context',
+      status: input.contextPaths.length > 0 ? 'ok' : 'skip',
+    },
+    { stepId: stepId('knowledge'), kind: 'knowledge', status: 'ok' },
+    {
+      stepId: stepId('memory'),
+      kind: 'memory',
+      status: input.memoryAttached ? 'ok' : 'skip',
+    },
+  ];
+
+  for (const agentId of input.ran) {
+    const result = input.results.find((r) => r.agentId === agentId);
+    steps.push({
+      stepId: stepId('agent'),
+      kind: 'agent',
+      status: result && !result.ok ? 'fail' : 'ok',
+      agentId,
+    });
+  }
+  for (const agentId of input.skipped) {
+    steps.push({
+      stepId: stepId('agent'),
+      kind: 'agent',
+      status: 'skip',
+      agentId,
+    });
+  }
+
+  steps.push({
+    stepId: stepId('gate'),
+    kind: 'gate',
+    status: input.verdictPassed ? 'ok' : 'fail',
+  });
+
+  return {
+    runId,
+    taskId: runId,
+    intentKind: input.intentKind,
+    ...(input.workspaceId ? { workspaceId: input.workspaceId } : {}),
+    policyIds: [...input.policyIds],
+    agentIds: [...input.ran],
+    skillIds: [],
+    steps,
+    artifacts: input.contextPaths.slice(0, 12),
+    verdict: {
+      passed: input.verdictPassed,
+      reasons: [...input.verdictReasons],
+    },
   };
 }

@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { afterEach, describe, expect, it } from 'vitest';
 import { computeAgentHealthScore, loadMetricsSnapshot, recordAgentExecution } from '@aios/status';
-import { runWorkflow } from './index.ts';
+import { pluginsFromRegistryNames, resolvePluginSource, runWorkflow } from './index.ts';
 
 const temps: string[] = [];
 
@@ -64,6 +64,65 @@ describe('computeAgentHealthScore', () => {
       maxExecutionsSeen: 10,
     });
     expect(score).toBeLessThan(50);
+  });
+});
+
+describe('registry-selected plugins', () => {
+  it('defaults to builtin (env unset)', () => {
+    expect(resolvePluginSource(undefined, {})).toBe('builtin');
+    expect(resolvePluginSource(undefined, { AIOS_REGISTRY_PLUGINS: '1' })).toBe('registry');
+    expect(resolvePluginSource('builtin', { AIOS_REGISTRY_PLUGINS: '1' })).toBe('builtin');
+  });
+
+  it('intersects registry names with known runners', () => {
+    const plugins = pluginsFromRegistryNames([
+      '@aios/agent-architecture',
+      'community:someone/unknown',
+      '@aios/agent-docs',
+    ]);
+    expect(plugins.map((p) => p.id)).toEqual(['architecture', 'docs']);
+  });
+
+  it('runs only registry-selected plugins when names are provided', async () => {
+    const home = mkdtempSync(join(tmpdir(), 'aios-orch-reg-'));
+    temps.push(home);
+    const out = await runWorkflow(
+      {
+        kind: 'analyze.project',
+        raw: 'Analyze my project.',
+        confidence: 1,
+        signals: ['test'],
+      },
+      {
+        homePath: home,
+        pluginSource: 'registry',
+        registryAgentNames: ['@aios/agent-architecture'],
+      }
+    );
+    expect(out.pluginSource).toBe('registry');
+    expect(out.ran).toEqual(['architecture']);
+    expect(out.skipped).toEqual([]);
+  });
+
+  it('falls back to builtin plugins when registry selection is empty', async () => {
+    const home = mkdtempSync(join(tmpdir(), 'aios-orch-fb-'));
+    temps.push(home);
+    const out = await runWorkflow(
+      {
+        kind: 'analyze.project',
+        raw: 'Analyze my project.',
+        confidence: 1,
+        signals: ['test'],
+      },
+      {
+        homePath: home,
+        pluginSource: 'registry',
+        registryAgentNames: [],
+      }
+    );
+    expect(out.ran.length).toBeGreaterThan(1);
+    expect(out.ran).toContain('architecture');
+    expect(out.ran).toContain('qa');
   });
 });
 

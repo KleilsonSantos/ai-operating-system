@@ -67,13 +67,14 @@ Short request in chat; policies injected without the CLI. Guide: [`docs/guides/c
 ### Decision · Orchestration · Quality Gate — issue #8
 
 - `shouldRunAgent` / `agentsForIntent` — matrix by `IntentKind` (unknown = none).
-- `runWorkflow` → `{ results, ran, skipped }` with policies + context injection.
+- `runWorkflow` → `{ results, ran, skipped, pluginSource }` with policies + context injection.
 - Plugins (architecture / appsec / docs / qa): heuristic findings over the bundle.
+- Opt-in registry selection (`pluginSource: "registry"` / `AIOS_REGISTRY_PLUGINS=1`) intersects Agent Registry with those runners; empty/error falls back to the 4 builtins ([ADR-0024](../adr/0024-execution-state-capability-registry.md)).
 - `evaluateQuality(results, { intent, context })` blocks an inconsistent package; CLI exit `1` on failure.
 
 ### CLI/API contract (`@aios/pipeline`) — issue #9
 
-`runPipeline({ input, repoPath?, workspaceId?, scope?, policiesPath? })` → `PipelineResponse` with `contractVersion: "1"`.
+`runPipeline({ input, repoPath?, workspaceId?, scope?, policiesPath?, pluginSource? })` → `PipelineResponse` with `contractVersion: "1"` and additive `run` (execution state). MCP `aios_*` tools are privilege-gated ([ADR-0024](../adr/0024-execution-state-capability-registry.md)).
 
 CLI (`@aios/cli`) is a thin client of this contract (`--workspace`). Integrators depend on `@aios/pipeline` + `@aios/shared` — [ADR-0003](../adr/0003-pipeline-integration-contract.md).
 

@@ -37,6 +37,14 @@ describe('runPipeline', () => {
     expect(res.verdict.checks).toBeDefined();
     expect(res.context.snippetCount).toBeGreaterThan(0);
     expect(res.knowledge?.nodeCount).toBeGreaterThan(0);
+    expect(res.run?.runId).toBeTruthy();
+    expect(res.run?.taskId).toBe(res.run?.runId);
+    expect(res.run?.intentKind).toBe('analyze.project');
+    expect(res.run?.agentIds).toEqual(res.workflow.ran);
+    expect(res.run?.skillIds).toEqual([]);
+    expect(res.run?.steps.some((s) => s.kind === 'classify' && s.status === 'ok')).toBe(true);
+    expect(res.run?.steps.some((s) => s.kind === 'gate')).toBe(true);
+    expect(res.run?.verdict?.passed).toBe(res.verdict.passed);
   });
 
   it('unknown não agenda plugins', async () => {
@@ -45,6 +53,10 @@ describe('runPipeline', () => {
     expect(res.intent.kind).toBe('unknown');
     expect(res.workflow.ran).toEqual([]);
     expect(res.verdict.passed).toBe(true);
+    expect(res.run?.agentIds).toEqual([]);
+    expect(res.run?.steps.filter((s) => s.kind === 'agent').every((s) => s.status === 'skip')).toBe(
+      true
+    );
   });
 
   it('runAcrossWorkspaces resume N workspaces', async () => {

@@ -7,6 +7,8 @@
 import { existsSync, mkdirSync, appendFileSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import {
+  MCP_TOOL_CATALOG,
+  MCP_TOOL_PRIVILEGE,
   PIPELINE_CONTRACT_VERSION,
   type AgentCatalogEntry,
   type AttentionItem,
@@ -15,39 +17,14 @@ import {
   type ChatUsage,
   type GovernanceStatus,
 } from '@aios/shared';
+
+export { MCP_TOOL_CATALOG } from '@aios/shared';
 import { listValidatedWorkspaces } from '@aios/workspace';
 import { loadPolicies, applyPolicies } from '@aios/policy';
 import { listMemoryWorkspaces } from '@aios/memory';
 import { getProvider, listProviderIds } from '@aios/provider';
 import { auditGovernance } from '@aios/governance';
 import { AgentRegistry } from '@aios-platform/agent-registry';
-
-/** Tools exposed by `@aios/mcp` (canonical MVP list). */
-export const MCP_TOOL_CATALOG = [
-  'aios_contract_version',
-  'aios_compile_prompt',
-  'aios_list_workspaces',
-  'aios_workspace_upsert',
-  'aios_workspace_remove',
-  'aios_workspace_validate',
-  'aios_run_across_workspaces',
-  'aios_build_knowledge',
-  'aios_memory_remember',
-  'aios_memory_recall',
-  'aios_memory_clear',
-  'aios_load_policies',
-  'aios_run_pipeline',
-  'aios_provider_health',
-  'aios_provider_models',
-  'aios_provider_chat',
-  'aios_list_agents',
-  'aios_governance_status',
-  'aios_audit_docs',
-  'aios_search_pkb',
-  'aios_governance_audit',
-  'aios_governance_record',
-  'aios_operational_state',
-] as const;
 
 export type GetGovernanceStatusOptions = {
   homePath?: string;
@@ -730,6 +707,7 @@ export async function getGovernanceStatus(
     memory: { workspaceIds: memoryIds },
     exposed: {
       mcpTools: [...MCP_TOOL_CATALOG],
+      mcpToolPrivileges: { ...MCP_TOOL_PRIVILEGE },
       providers: listProviderIds(),
     },
     agents,
