@@ -27,7 +27,7 @@ export const CANONICAL_DOCS = [
 /** Prompt Knowledge Base scaffold (MVP #134 · inventory #154). */
 export const PKB_CANONICAL = [
   'docs/prompts/README.md',
-  'docs/prompts/VISION.md',
+  'docs/prompts/pkb-evolution.md',
   'docs/prompts/index.yaml',
 ] as const;
 

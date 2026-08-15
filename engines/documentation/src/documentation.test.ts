@@ -158,7 +158,7 @@ describe('auditDocumentation', () => {
       recursive: true,
     });
     writeFileSync(join(root, 'docs', 'prompts', 'README.md'), '# pkb');
-    writeFileSync(join(root, 'docs', 'prompts', 'VISION.md'), '# vision');
+    writeFileSync(join(root, 'docs', 'prompts', 'pkb-evolution.md'), '# vision');
     writeFileSync(
       join(root, 'docs', 'prompts', 'index.yaml'),
       `version: 1\nprompts:\n  - id: demo\n    path: by-domain/demo/asset.v1.md\n`
@@ -195,7 +195,7 @@ describe('auditDocumentation', () => {
     mkdirSync(join(root, 'engines', 'governance'), { recursive: true });
     mkdirSync(join(root, 'docs', 'prompts'), { recursive: true });
     writeFileSync(join(root, 'docs', 'prompts', 'README.md'), '# pkb');
-    writeFileSync(join(root, 'docs', 'prompts', 'VISION.md'), '# vision');
+    writeFileSync(join(root, 'docs', 'prompts', 'pkb-evolution.md'), '# vision');
     writeFileSync(
       join(root, 'docs', 'prompts', 'index.yaml'),
       `version: 1\nprompts:\n  - id: ghost\n    path: by-domain/ghost/missing.v1.md\n`
