@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📋 PKB: catalog `prompt.ai-engineering.agent-runtime-evolution` and `prompt.documentation.repository-structure-rationalization`; chat trigger `PKB intake` / `catalogar prompt` / `guardar prompt`
+
 ### Changed
 
 - 📋 Repository hygiene: PKB vision → `docs/prompts/pkb-evolution.md`; Phase 5 modernize plan marked historical; `artifact-lifecycle` policy (#270)

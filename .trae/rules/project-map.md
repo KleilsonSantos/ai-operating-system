@@ -20,3 +20,4 @@ Use this rule as a short router, not as a replacement for the repository documen
 - If a summary conflicts with [`docs/FOUNDATION.md`](../../docs/FOUNDATION.md), the foundation wins until an ADR changes the decision.
 - Product documentation stays in US English according to [`docs/guides/documentation-language.md`](../../docs/guides/documentation-language.md).
 - Keep new permanent instructions in policies or scoped rules instead of growing one giant root file.
+- Chat triggers `PKB intake`, `catalogar prompt`, or `guardar prompt` mean: store a reusable engineering prompt under [`docs/prompts/`](../../docs/prompts/README.md) (frontmatter + `index.yaml`). Do not execute the body unless the owner also authorizes a run.
