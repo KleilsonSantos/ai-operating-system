@@ -4,20 +4,22 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.32.0] - 2026-08-15
+
 ### Added
 
 - 🔐 Execution state on `PipelineResponse.run` (Run / Step / evidence) — `contractVersion` stays `"1"` (#261 / ADR-0024)
 - 🔒 MCP capability allowlist: privilege per `aios_*` tool; model cannot pick `PRIVILEGED` (`AIOS_MCP_PRIVILEGE`, `AIOS_MCP_ALLOW_PRIVILEGED`)
 - 🔌 Registry-selected plugins behind `pluginSource: "registry"` / `AIOS_REGISTRY_PLUGINS=1`, fallback to the 4 builtin agents
+- 📊 Agent Catalog trending: `executions7d` / `count7d`, console views All · Top-used · Unhealthy (health &lt; 70%) (#253)
 
 ### Changed
 
-- 📋 README Latest release + MCP server version aligned to `v0.31.0` (#263)
+- 📋 README Latest release + MCP server version aligned to `v0.32.0` (#263 / #255)
 
 ### Fixed
 
 - 🔒 Bump transitive `nanoid` pin to `3.3.18` (GHSA-2v37) so pre-push `pnpm audit` stays green
-- 📊 Agent Catalog trending: `executions7d` / `count7d`, console views All · Top-used · Unhealthy (health &lt; 70%)
 
 ## [0.31.0] - 2026-08-07
 
