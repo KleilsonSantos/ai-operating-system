@@ -34,7 +34,7 @@ import { authorizeMcpTool, deniedMcpPayload, isModelCapabilityClass } from '@aio
 export function createAiosMcpServer(): McpServer {
   const server = new McpServer({
     name: 'aios',
-    version: '0.36.0',
+    version: '0.37.0',
   });
 
   const registerRaw = server.registerTool.bind(server);
