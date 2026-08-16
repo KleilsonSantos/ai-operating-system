@@ -13,6 +13,15 @@ import { getOperationalState } from '@aios/operational-state';
 import { resolveWorkspace } from '@aios/workspace';
 import { AgentRegistry } from '@aios-platform/agent-registry';
 
+function parseSkillIds(raw: string | undefined): string[] | undefined {
+  if (!raw?.trim()) return undefined;
+  const ids = raw
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean);
+  return ids.length ? ids : undefined;
+}
+
 function parseArgs(argv: string[]): {
   input: string;
   scope?: string;
@@ -21,6 +30,7 @@ function parseArgs(argv: string[]): {
   policiesPath?: string;
   compilePromptOnly: boolean;
   briefOnly: boolean;
+  skillIds?: string[];
   providerHealth: boolean;
   providerChat: boolean;
   governanceStatus: boolean;
@@ -46,6 +56,7 @@ function parseArgs(argv: string[]): {
   let policiesPath: string | undefined;
   let compilePromptOnly = false;
   let briefOnly = false;
+  let skillIds: string[] | undefined;
   let providerHealth = false;
   let providerChat = false;
   let governanceStatus = false;
@@ -102,6 +113,14 @@ function parseArgs(argv: string[]): {
     }
     if (a === '--compile-prompt') {
       compilePromptOnly = true;
+      continue;
+    }
+    if (a === '--skill-ids') {
+      skillIds = parseSkillIds(argv[++i]);
+      continue;
+    }
+    if (a.startsWith('--skill-ids=')) {
+      skillIds = parseSkillIds(a.slice('--skill-ids='.length));
       continue;
     }
     if (a === '--brief-only') {
@@ -229,6 +248,7 @@ function parseArgs(argv: string[]): {
     policiesPath: policiesPath || process.env.AIOS_POLICIES_PATH,
     compilePromptOnly,
     briefOnly,
+    skillIds,
     providerHealth,
     providerChat,
     governanceStatus,
@@ -393,6 +413,7 @@ async function main(): Promise<void> {
       repoPath: args.repoPath,
       workspaceId: args.workspaceId,
       policiesPath: args.policiesPath,
+      skillIds: args.skillIds,
     });
     if (args.briefOnly) {
       console.log(compiled.brief);
@@ -408,6 +429,7 @@ async function main(): Promise<void> {
     workspaceId: args.workspaceId,
     scope: args.scope,
     policiesPath: args.policiesPath,
+    skillIds: args.skillIds,
   });
 
   console.log(JSON.stringify(response, null, 2));

@@ -49,6 +49,22 @@ describe('runPipeline', () => {
     expect(res.run?.model?.providerId).toBe('ollama');
     expect(res.run?.steps.some((s) => s.kind === 'route' && s.status === 'ok')).toBe(true);
     expect(res.context.budget?.tier).toBe('standard');
+    expect(res.run?.steps.some((s) => s.kind === 'skill' && s.status === 'skip')).toBe(true);
+  });
+
+  it('records requested skill ids on run without loading a catalog', async () => {
+    const repo = fixtureRepo();
+    const res = await runPipeline({
+      input: 'Analise meu projeto.',
+      repoPath: repo,
+      skillIds: ['governed-brief'],
+    });
+    expect(res.run?.skillIds).toEqual(['governed-brief']);
+    expect(
+      res.run?.steps.some(
+        (s) => s.kind === 'skill' && s.status === 'ok' && s.detail === 'governed-brief'
+      )
+    ).toBe(true);
   });
 
   it('costBudget=low força class fast e budget tight', async () => {

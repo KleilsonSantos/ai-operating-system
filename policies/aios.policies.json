@@ -86,6 +86,11 @@
       "severity": "must"
     },
     {
+      "id": "skills-are-packs",
+      "description": "Skills are how, not who: optional Prompt Engine packs (id, purpose, allowedTools, failurePolicy). Default is none — do not load a catalog unless ids are requested. Do not invent a new agent or hook bus for a skill (ADR-0026).",
+      "severity": "must"
+    },
+    {
       "id": "justify-resource-impact",
       "description": "Infra suggestions must state why, alternatives, and impact on hardware/maintenance/consumption",
       "severity": "should"
