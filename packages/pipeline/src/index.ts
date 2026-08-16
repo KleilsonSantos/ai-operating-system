@@ -207,6 +207,7 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
     verdictPassed: verdict.passed,
     verdictReasons: verdict.blockers,
     route,
+    skillIds: (request.skillIds ?? []).map((id) => id.trim()).filter(Boolean),
   });
 
   return {
@@ -260,6 +261,7 @@ function buildPipelineRun(input: {
   verdictPassed: boolean;
   verdictReasons: string[];
   route: RouteDecision;
+  skillIds: string[];
 }): PipelineRun {
   const runId = randomUUID();
   const steps: PipelineStep[] = [
@@ -285,6 +287,12 @@ function buildPipelineRun(input: {
       stepId: stepId('memory'),
       kind: 'memory',
       status: input.memoryAttached ? 'ok' : 'skip',
+    },
+    {
+      stepId: stepId('skill'),
+      kind: 'skill',
+      status: input.skillIds.length > 0 ? 'ok' : 'skip',
+      detail: input.skillIds.join(',') || undefined,
     },
   ];
 
@@ -319,7 +327,7 @@ function buildPipelineRun(input: {
     ...(input.workspaceId ? { workspaceId: input.workspaceId } : {}),
     policyIds: [...input.policyIds],
     agentIds: [...input.ran],
-    skillIds: [],
+    skillIds: [...input.skillIds],
     model: {
       providerId: input.route.providerId,
       modelId: input.route.modelId,

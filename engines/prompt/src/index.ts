@@ -8,7 +8,8 @@ import { loadPolicies, applyPolicies } from '@aios/policy';
 import { resolveWorkspace } from '@aios/workspace';
 import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge';
 import { recall } from '@aios/memory';
-import type { CompiledPrompt, CompilePromptRequest, Intent } from '@aios/shared';
+import type { CompiledPrompt, CompilePromptRequest, Intent, SkillManifest } from '@aios/shared';
+import { loadSkills } from './skills.js';
 
 export type { CompiledPrompt, CompilePromptRequest };
 
@@ -43,6 +44,7 @@ function formatBrief(parts: {
   knowledge: { nodeCount: number; edgeCount: number; kinds: Record<string, number> };
   workspaceId?: string;
   repoPath: string;
+  skills: SkillManifest[];
 }): string {
   const lines: string[] = [
     '# AIOS brief (não repetir estas regras no chat)',
@@ -75,6 +77,16 @@ function formatBrief(parts: {
   );
   if (parts.memoryLines.length) {
     lines.push(`## Memory (workspace)`, ...parts.memoryLines.map((m) => `- ${m}`), '');
+  }
+  if (parts.skills.length) {
+    lines.push(
+      `## Skills`,
+      ...parts.skills.map(
+        (s) =>
+          `- \`${s.id}\`: ${s.purpose} (tools: ${s.allowedTools.join(', ') || '—'}; on-fail: ${s.failurePolicy})`
+      ),
+      ''
+    );
   }
   lines.push(
     `## Instruções ao Agent`,
@@ -115,6 +127,11 @@ export function compilePrompt(request: CompilePromptRequest): CompiledPrompt {
     });
   }
 
+  const skillBundle = loadSkills(request.skillIds, {
+    cwd: repoPath,
+    configPath: request.skillsPath,
+  });
+
   const brief = formatBrief({
     input,
     intent,
@@ -128,6 +145,7 @@ export function compilePrompt(request: CompilePromptRequest): CompiledPrompt {
     },
     workspaceId,
     repoPath,
+    skills: skillBundle.skills,
   });
 
   return {
@@ -136,11 +154,13 @@ export function compilePrompt(request: CompilePromptRequest): CompiledPrompt {
     workspaceId,
     repoPath,
     brief,
+    skills: skillBundle.skills,
     stats: {
       mustPolicyCount: applied.mustIds.length,
       memoryCount,
       knowledgeNodes: knowledge.nodeCount,
       briefChars: brief.length,
+      skillCount: skillBundle.skills.length,
     },
   };
 }

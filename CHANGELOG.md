@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📦 Skill packs for the Prompt Engine — opt-in manifests (`id`, `purpose`, `allowedTools`, `failurePolicy`) injected into `compilePrompt`; `run.skillIds` + `skill` step on the pipeline (#284 / ADR-0026)
+
 ## [0.33.1] - 2026-08-15
 
 ### Fixed

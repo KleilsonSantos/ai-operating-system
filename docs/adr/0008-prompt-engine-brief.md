@@ -16,6 +16,7 @@ The dominant cost in Cursor/Claude/Copilot today is **repeating** policies, pref
 3. **Does not** call an LLM — only builds deterministic text/structure.
 4. MCP `aios_compile_prompt` · CLI `--compile-prompt` (`--brief-only` prints markdown only).
 5. Pipeline `contractVersion` stays `"1"` (additive MCP tool).
+6. Optional skill packs (how, not who) are [ADR-0026](./0026-skill-packs-prompt-engine.md). Default remains none.
 
 ## Consequences
 
