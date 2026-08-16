@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.33.1] - 2026-08-15
+
 ### Fixed
 
 - 🔒 Console safe-actions: log unexpected errors server-side; HTTP client gets a generic `internal error` (CWE-209 / CodeQL #10)
