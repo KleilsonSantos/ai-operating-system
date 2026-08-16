@@ -28,6 +28,7 @@ Validate AIOS architecture and flows.
 - [x] Stable integration contracts — ADR-0003 / `@aios/pipeline` (#9); MCP Level 2 (#38)
 - [x] Multi-repository onboarding — `@aios/workspace` + ADR-0004 (#43)
 - [x] Basic Knowledge Graph (Project → packages/engines → docs…) — `#47` / ADR-0005
+- [x] Heuristic KG depth — two-pass `workspace:*`, pnpm-workspace buckets, ADR/policy files (#295)
 - [x] Memory Engine (session / project) — `#51` / ADR-0006
 
 ## Phase 3 — Full platform (`v1.0.0` aspirational)

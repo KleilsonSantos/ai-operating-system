@@ -30,6 +30,14 @@ Phase 2 calls for a basic Knowledge Graph (Project → … relationships). Embed
 - Shallow heuristic (no deep code typing)
 - `depends_on` only via `workspace:*` + dep hints
 
+### Later refinement (#295)
+
+Still heuristic (no embeddings / store):
+
+1. Two-pass `workspace:*` `depends_on` (scan order no longer drops edges).
+2. Extra top-level buckets from `pnpm-workspace.yaml` `packages:` globs (`tools/*`, …).
+3. Individual `docs/adr/*.md` and `policies/*.json` nodes (capped).
+
 ## Rejected alternatives
 
 | Option                       | Reason                         |
