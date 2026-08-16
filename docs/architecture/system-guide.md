@@ -92,7 +92,7 @@ Local store `.aios/memory/{workspaceId}.json` · `remember`/`recall` · MCP `aio
 
 ### Prompt Engine (`@aios/prompt`) — issue #59
 
-`compilePrompt` → markdown brief (policies + memory + KG + optional skill packs) · MCP `aios_compile_prompt` · CLI `--compile-prompt` / `--skill-ids` · [ADR-0008](../adr/0008-prompt-engine-brief.md) · [ADR-0026](../adr/0026-skill-packs-prompt-engine.md). Default: no catalog I/O unless `skillIds` is set.
+`compilePrompt` → markdown brief (policies + memory + KG summary + optional scoped neighbors + optional skill packs) · MCP `aios_compile_prompt` · CLI `--compile-prompt` / `--skill-ids` / `--scope` · [ADR-0008](../adr/0008-prompt-engine-brief.md) · [ADR-0026](../adr/0026-skill-packs-prompt-engine.md) · #305. Default: no catalog I/O unless `skillIds` is set.
 
 ### Multi-provider (`@aios/provider`) — issue #67
 

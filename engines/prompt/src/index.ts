@@ -8,6 +8,7 @@ import { loadPolicies, applyPolicies } from '@aios/policy';
 import { resolveWorkspace } from '@aios/workspace';
 import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge';
 import { recall } from '@aios/memory';
+import { knowledgeNeighborRelPaths } from '@aios/context';
 import type { CompiledPrompt, CompilePromptRequest, Intent, SkillManifest } from '@aios/shared';
 import { loadSkills } from './skills.js';
 
@@ -44,6 +45,8 @@ function formatBrief(parts: {
   knowledge: { nodeCount: number; edgeCount: number; kinds: Record<string, number> };
   workspaceId?: string;
   repoPath: string;
+  scope?: string;
+  neighbors: string[];
   skills: SkillManifest[];
 }): string {
   const lines: string[] = [
@@ -61,12 +64,20 @@ function formatBrief(parts: {
   if (parts.workspaceId) {
     lines.push(`- workspace: \`${parts.workspaceId}\``);
   }
+  if (parts.scope && parts.scope !== '.') {
+    lines.push(`- scope: \`${parts.scope}\``);
+  }
   lines.push(
     `- knowledge: ${parts.knowledge.nodeCount} nós / ${parts.knowledge.edgeCount} arestas (${
       Object.entries(parts.knowledge.kinds)
         .map(([k, n]) => `${k}:${n}`)
         .join(', ') || '—'
-    })`,
+    })`
+  );
+  if (parts.neighbors.length > 0) {
+    lines.push(`- neighbors: ${parts.neighbors.map((p) => `\`${p}\``).join(' · ')}`);
+  }
+  lines.push(
     '',
     `## Policies (must)`,
     ...parts.mustIds.map((id) => `- ${id}`),
@@ -112,6 +123,10 @@ export function compilePrompt(request: CompilePromptRequest): CompiledPrompt {
   });
   const applied = applyPolicies(policyBundle.rules);
   const knowledge = summarizeKnowledge(buildKnowledgeGraph({ repoPath }));
+  const MAX_BRIEF_NEIGHBORS = 8;
+  const neighbors = request.scope
+    ? knowledgeNeighborRelPaths(repoPath, request.scope).slice(0, MAX_BRIEF_NEIGHBORS)
+    : [];
 
   let memoryLines: string[] = [];
   let memoryCount = 0;
@@ -145,6 +160,8 @@ export function compilePrompt(request: CompilePromptRequest): CompiledPrompt {
     },
     workspaceId,
     repoPath,
+    scope: request.scope,
+    neighbors,
     skills: skillBundle.skills,
   });
 

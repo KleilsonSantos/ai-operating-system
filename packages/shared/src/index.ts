@@ -372,6 +372,8 @@ export type CompilePromptRequest = {
   skillIds?: string[];
   /** Override `skills/aios.skills.json` */
   skillsPath?: string;
+  /** Path relative to repo root — names KG neighbors in the brief (#305). */
+  scope?: string;
 };
 
 export type CompiledPrompt = {

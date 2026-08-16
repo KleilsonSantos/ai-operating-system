@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🪪 Prompt Engine names Knowledge Graph neighbors in the brief when `scope` is set (#305)
+
 ## [0.37.0] - 2026-08-16
 
 ### Added
