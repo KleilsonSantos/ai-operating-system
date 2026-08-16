@@ -81,6 +81,11 @@
       "severity": "must"
     },
     {
+      "id": "model-route-by-capability",
+      "description": "Model routing selects a capability class (fast|coding|reasoning|arbitration), never a vendor. Operator binds class→provider via AIOS_ROUTE_* env. Default binding is local ollama (ADR-0025).",
+      "severity": "must"
+    },
+    {
       "id": "justify-resource-impact",
       "description": "Infra suggestions must state why, alternatives, and impact on hardware/maintenance/consumption",
       "severity": "should"

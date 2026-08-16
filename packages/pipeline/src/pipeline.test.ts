@@ -45,6 +45,21 @@ describe('runPipeline', () => {
     expect(res.run?.steps.some((s) => s.kind === 'classify' && s.status === 'ok')).toBe(true);
     expect(res.run?.steps.some((s) => s.kind === 'gate')).toBe(true);
     expect(res.run?.verdict?.passed).toBe(res.verdict.passed);
+    expect(res.run?.model?.capabilityClass).toBe('reasoning');
+    expect(res.run?.model?.providerId).toBe('ollama');
+    expect(res.run?.steps.some((s) => s.kind === 'route' && s.status === 'ok')).toBe(true);
+    expect(res.context.budget?.tier).toBe('standard');
+  });
+
+  it('costBudget=low força class fast e budget tight', async () => {
+    const repo = fixtureRepo();
+    const res = await runPipeline({
+      input: 'Analise meu projeto.',
+      repoPath: repo,
+      costBudget: 'low',
+    });
+    expect(res.run?.model?.capabilityClass).toBe('fast');
+    expect(res.context.budget?.tier).toBe('tight');
   });
 
   it('unknown não agenda plugins', async () => {
@@ -57,6 +72,8 @@ describe('runPipeline', () => {
     expect(res.run?.steps.filter((s) => s.kind === 'agent').every((s) => s.status === 'skip')).toBe(
       true
     );
+    expect(res.run?.model?.capabilityClass).toBe('fast');
+    expect(res.context.budget?.tier).toBe('tight');
   });
 
   it('runAcrossWorkspaces resume N workspaces', async () => {

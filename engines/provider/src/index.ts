@@ -33,6 +33,7 @@ export type {
 
 export type { CircuitState, ResilienceOptions } from './resilience.js';
 export { CircuitBreaker, isTransientError, resolveResilience, withRetry } from './resilience.js';
+export { inferRouteRisk, resolveCapabilityClass, routeModel } from './router.js';
 
 export type FetchLike = typeof fetch;
 
@@ -585,7 +586,7 @@ export class ResilientProvider implements AIProvider {
   }
 }
 
-/** Router stub — seleção por nome; roteamento inteligente depois. Resilience on by default (#238). */
+/** Name lookup + resilience. Capability-class routing is `routeModel` (ADR-0025). */
 export function getProvider(id: string = 'ollama', opts?: ProviderOptions): AIProvider {
   const key = id.trim().toLowerCase() || 'ollama';
   const factory = PROVIDERS[key];

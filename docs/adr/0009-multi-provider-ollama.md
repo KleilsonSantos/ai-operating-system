@@ -13,7 +13,7 @@ Phase 3 calls for multi-provider support. The immediate goal is to **save tokens
 
 1. Engine **`@aios/provider`** with `AIProvider` interface (`health` · `models` · `chat`).
 2. **`OllamaProvider`** implementation over HTTP (`AIOS_OLLAMA_URL`, default `http://127.0.0.1:11434`; model `AIOS_OLLAMA_MODEL`).
-3. Router stub `getProvider(id)` — name-based selection only in this MVP.
+3. Router stub `getProvider(id)` — name-based selection only in this MVP. Capability-class routing is [ADR-0025](./0025-model-router-context-budget.md).
 4. MCP: `aios_provider_health` · `aios_provider_models` · `aios_provider_chat`.
 5. CLI: `--provider-health` · `--provider-chat` · `--provider=` · `--model=`.
 6. Heavy coding / review stays in Cursor Agent; Ollama = auxiliary.

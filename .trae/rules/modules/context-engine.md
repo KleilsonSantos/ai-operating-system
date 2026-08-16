@@ -22,3 +22,4 @@ When working on the context engine, read these sources together:
 - Treat [`../../../AGENTS.md`](../../../AGENTS.md) as a compatibility bridge, not the dominant context source.
 - Keep `.trae/rules/` visible to the context engine so project rules can be gathered alongside product docs.
 - Preserve root anchors such as `README.md`, `docs/FOUNDATION.md`, and `package.json` when gathering scoped context.
+- Apply a named budget (`tight` / `standard` / `wide`) from intent/risk/cost. Do not dump the repo. Deny secret-like paths (`.env*`, keys, `secrets/`).

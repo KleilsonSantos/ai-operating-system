@@ -198,6 +198,44 @@ export type PolicyRule = {
   severity: 'must' | 'should' | 'may';
 };
 
+/** Vendor-agnostic model class — Policy picks a class, never a vendor (ADR-0025). */
+export const MODEL_CAPABILITY_CLASSES = ['fast', 'coding', 'reasoning', 'arbitration'] as const;
+
+export type ModelCapabilityClass = (typeof MODEL_CAPABILITY_CLASSES)[number];
+
+export type RouteRisk = 'low' | 'medium' | 'high';
+
+export type RouteCostBudget = 'low' | 'normal';
+
+export type RouteRequest = {
+  intentKind: IntentKind;
+  risk?: RouteRisk;
+  privilege?: Privilege;
+  costBudget?: RouteCostBudget;
+  /** Force a class; binding to provider/model still comes from env. */
+  capabilityClass?: ModelCapabilityClass;
+};
+
+export type RouteDecision = {
+  providerId: ProviderId;
+  modelId: string;
+  capabilityClass: ModelCapabilityClass;
+  reason: string;
+};
+
+export type ContextBudgetTier = 'tight' | 'standard' | 'wide';
+
+export type ContextBudget = {
+  tier: ContextBudgetTier;
+  maxSnippets: number;
+  maxBytesPerFile: number;
+  maxTotalBytes: number;
+};
+
+export function isModelCapabilityClass(value: string): value is ModelCapabilityClass {
+  return (MODEL_CAPABILITY_CLASSES as readonly string[]).includes(value);
+}
+
 /** Snippet recuperado do repositório (Context Engine — #7). */
 export type ContextSnippetKind = 'doc' | 'code' | 'manifest';
 
@@ -218,6 +256,8 @@ export type ContextBundle = {
   snippets: ContextSnippet[];
   /** Sinais de coleta (audit / debug) */
   signals: string[];
+  /** Named budget applied during gather (ADR-0025). */
+  budget?: ContextBudget;
 };
 
 export type AgentResult = {
@@ -332,6 +372,120 @@ export type CompiledPrompt = {
 
 /** Multi-provider MVP (#67) — LLM auxiliar (não substitui a IDE). */
 export type ProviderId = 'ollama' | 'openai' | 'anthropic';
+
+const ROUTE_PROVIDER_IDS: readonly ProviderId[] = ['ollama', 'openai', 'anthropic'];
+
+const DEFAULT_ROUTE_BINDINGS: Record<
+  ModelCapabilityClass,
+  { providerId: ProviderId; modelId: string }
+> = {
+  fast: { providerId: 'ollama', modelId: 'llama3.2' },
+  coding: { providerId: 'ollama', modelId: 'llama3.2' },
+  reasoning: { providerId: 'ollama', modelId: 'llama3.2' },
+  arbitration: { providerId: 'ollama', modelId: 'llama3.2' },
+};
+
+const ROUTE_ENV_KEYS: Record<ModelCapabilityClass, { provider: string; model: string }> = {
+  fast: { provider: 'AIOS_ROUTE_FAST_PROVIDER', model: 'AIOS_ROUTE_FAST_MODEL' },
+  coding: { provider: 'AIOS_ROUTE_CODING_PROVIDER', model: 'AIOS_ROUTE_CODING_MODEL' },
+  reasoning: { provider: 'AIOS_ROUTE_REASONING_PROVIDER', model: 'AIOS_ROUTE_REASONING_MODEL' },
+  arbitration: {
+    provider: 'AIOS_ROUTE_ARBITRATION_PROVIDER',
+    model: 'AIOS_ROUTE_ARBITRATION_MODEL',
+  },
+};
+
+function isRouteProviderId(value: string): value is ProviderId {
+  return (ROUTE_PROVIDER_IDS as readonly string[]).includes(value);
+}
+
+export function inferRouteRisk(req: Pick<RouteRequest, 'intentKind' | 'privilege'>): RouteRisk {
+  if (req.privilege === 'PRIVILEGED' || req.privilege === 'HUMAN_APPROVAL_REQUIRED') {
+    return 'high';
+  }
+  if (
+    req.intentKind === 'implement.feature' ||
+    req.intentKind === 'fix.bug' ||
+    req.intentKind === 'review.change'
+  ) {
+    return 'medium';
+  }
+  return 'low';
+}
+
+export function resolveCapabilityClass(req: RouteRequest): ModelCapabilityClass {
+  if (req.capabilityClass) return req.capabilityClass;
+  if (req.costBudget === 'low') return 'fast';
+
+  const risk = req.risk ?? inferRouteRisk(req);
+  if (risk === 'high') return 'arbitration';
+
+  switch (req.intentKind) {
+    case 'explain.code':
+    case 'implement.feature':
+    case 'fix.bug':
+      return 'coding';
+    case 'review.change':
+    case 'analyze.project':
+      return 'reasoning';
+    default:
+      return 'fast';
+  }
+}
+
+function bindCapabilityClass(
+  capabilityClass: ModelCapabilityClass,
+  envMap: EnvMap
+): { providerId: ProviderId; modelId: string; signals: string[] } {
+  const defaults = DEFAULT_ROUTE_BINDINGS[capabilityClass];
+  const keys = ROUTE_ENV_KEYS[capabilityClass];
+  const rawProvider = envMap[keys.provider]?.trim().toLowerCase();
+  const rawModel = envMap[keys.model]?.trim();
+  const signals: string[] = [];
+
+  let providerId = defaults.providerId;
+  if (rawProvider) {
+    if (isRouteProviderId(rawProvider)) {
+      providerId = rawProvider;
+      signals.push('env-provider');
+    } else {
+      signals.push('env-provider-invalid');
+    }
+  }
+
+  let modelId = defaults.modelId;
+  if (rawModel) {
+    modelId = rawModel;
+    signals.push('env-model');
+  } else if (providerId === 'ollama' && envMap.AIOS_OLLAMA_MODEL?.trim()) {
+    modelId = envMap.AIOS_OLLAMA_MODEL.trim();
+  } else if (providerId === 'openai' && envMap.AIOS_OPENAI_MODEL?.trim()) {
+    modelId = envMap.AIOS_OPENAI_MODEL.trim();
+  } else if (providerId === 'anthropic' && envMap.AIOS_ANTHROPIC_MODEL?.trim()) {
+    modelId = envMap.AIOS_ANTHROPIC_MODEL.trim();
+  }
+
+  return { providerId, modelId, signals };
+}
+
+/** Pure decision — no network, no chat (ADR-0025). */
+export function routeModel(req: RouteRequest, env?: EnvMap): RouteDecision {
+  const capabilityClass = resolveCapabilityClass(req);
+  const envMap = readEnv(env);
+  const bound = bindCapabilityClass(capabilityClass, envMap);
+  const risk = req.risk ?? inferRouteRisk(req);
+  const parts = [`class:${capabilityClass}`, `intent:${req.intentKind}`, `risk:${risk}`];
+  if (req.costBudget) parts.push(`cost:${req.costBudget}`);
+  if (req.capabilityClass) parts.push('forced-class');
+  parts.push(...bound.signals);
+
+  return {
+    providerId: bound.providerId,
+    modelId: bound.modelId,
+    capabilityClass,
+    reason: parts.join(' '),
+  };
+}
 
 export type ChatRole = 'system' | 'user' | 'assistant';
 
@@ -593,10 +747,16 @@ export type PipelineRequest = {
    * Default: builtin 4. `registry` intersects Agent Registry with known runners.
    */
   pluginSource?: 'builtin' | 'registry';
+  /** Optional risk hint for model routing + context budget (ADR-0025). */
+  risk?: RouteRisk;
+  /** Optional cost hint — `low` forces class `fast` and a tight context budget. */
+  costBudget?: RouteCostBudget;
+  /** Optional privilege hint for routing (default: caller MCP privilege). */
+  privilege?: Privilege;
 };
 
 export type PipelineStepKind =
-  'classify' | 'policy' | 'context' | 'knowledge' | 'memory' | 'agent' | 'gate';
+  'classify' | 'policy' | 'context' | 'route' | 'knowledge' | 'memory' | 'agent' | 'gate';
 
 export type PipelineStepStatus = 'ok' | 'skip' | 'fail' | 'denied';
 
@@ -623,6 +783,8 @@ export type PipelineRun = {
   policyIds: string[];
   agentIds: string[];
   skillIds: string[];
+  /** Capability-class route — no chat is invoked (ADR-0025). */
+  model?: { providerId: string; modelId: string; capabilityClass: ModelCapabilityClass };
   steps: PipelineStep[];
   artifacts: PipelineArtifact[];
   verdict?: { passed: boolean; reasons: string[] };
@@ -644,6 +806,12 @@ export type PipelineResponse = {
     snippetCount: number;
     paths: string[];
     signals: string[];
+    budget?: {
+      tier: ContextBudgetTier;
+      maxSnippets: number;
+      maxTotalBytes: number;
+      usedBytes: number;
+    };
   };
   /** Presente quando um workspace do registry foi usado */
   workspace?: {
