@@ -1,12 +1,18 @@
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { afterEach, describe, expect, it } from 'vitest';
-import { runSafeAction } from './actions.ts';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { runSafeAction, SAFE_ACTION_INTERNAL_ERROR } from './actions.ts';
+import { getProvider } from '@aios/provider';
+
+vi.mock('@aios/provider', () => ({
+  getProvider: vi.fn(),
+}));
 
 const temps: string[] = [];
 
 afterEach(() => {
+  vi.clearAllMocks();
   for (const dir of temps.splice(0)) {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -54,6 +60,25 @@ describe('runSafeAction', () => {
     });
     expect(p.ok).toBe(true);
     expect((p.result as { mustIds: string[] }).mustIds).toContain('official-docs');
+  });
+
+  it('exceção inesperada não vaza texto do Error para o cliente', async () => {
+    vi.mocked(getProvider).mockReturnValue({
+      health: async () => {
+        throw new Error('secret stack /Users/aios/.env leaked');
+      },
+    } as never);
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const out = await runSafeAction({
+      action: 'provider_ping',
+      homePath: process.cwd(),
+    });
+    expect(out.ok).toBe(false);
+    expect(out.error).toBe(SAFE_ACTION_INTERNAL_ERROR);
+    expect(out.error).not.toMatch(/secret|stack|\.env/);
+    expect(JSON.stringify(out)).not.toMatch(/secret|stack|\.env/);
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
   });
 
   it('rejeita action desconhecida', async () => {
