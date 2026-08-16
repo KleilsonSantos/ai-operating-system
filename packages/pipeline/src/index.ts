@@ -14,8 +14,10 @@ import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge';
 import { recall } from '@aios/memory';
 import {
   PIPELINE_CONTRACT_VERSION,
+  recordsLifecycleHooks,
   resolveCallerPrivilege,
   routeModel,
+  selectPipelineHooks,
   type PipelineArtifact,
   type PipelineRequest,
   type PipelineResponse,
@@ -208,6 +210,7 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
     verdictReasons: verdict.blockers,
     route,
     skillIds: (request.skillIds ?? []).map((id) => id.trim()).filter(Boolean),
+    hookIds: selectPipelineHooks(request.hookIds).selected,
   });
 
   return {
@@ -262,20 +265,32 @@ function buildPipelineRun(input: {
   verdictReasons: string[];
   route: RouteDecision;
   skillIds: string[];
+  hookIds: string[];
 }): PipelineRun {
   const runId = randomUUID();
+  const recordHooks = recordsLifecycleHooks(input.hookIds);
+  const hook = (point: string): PipelineStep => ({
+    stepId: stepId('hook'),
+    kind: 'hook',
+    status: 'ok',
+    detail: point,
+  });
   const steps: PipelineStep[] = [
     { stepId: stepId('classify'), kind: 'classify', status: 'ok', detail: input.intentKind },
+    ...(recordHooks ? [hook('before.policy')] : []),
     {
       stepId: stepId('policy'),
       kind: 'policy',
       status: input.policyIds.length > 0 ? 'ok' : 'skip',
     },
+    ...(recordHooks ? [hook('after.policy')] : []),
+    ...(recordHooks ? [hook('before.context')] : []),
     {
       stepId: stepId('context'),
       kind: 'context',
       status: input.contextPaths.length > 0 ? 'ok' : 'skip',
     },
+    ...(recordHooks ? [hook('after.context')] : []),
     {
       stepId: stepId('route'),
       kind: 'route',
@@ -294,6 +309,16 @@ function buildPipelineRun(input: {
       status: input.skillIds.length > 0 ? 'ok' : 'skip',
       detail: input.skillIds.join(',') || undefined,
     },
+    ...(recordHooks
+      ? []
+      : [
+          {
+            stepId: stepId('hook'),
+            kind: 'hook' as const,
+            status: 'skip' as const,
+          },
+        ]),
+    ...(recordHooks ? [hook('before.agent')] : []),
   ];
 
   for (const agentId of input.ran) {
@@ -314,11 +339,18 @@ function buildPipelineRun(input: {
     });
   }
 
+  if (recordHooks) {
+    steps.push(hook('after.agent'));
+    steps.push(hook('before.gate'));
+  }
   steps.push({
     stepId: stepId('gate'),
     kind: 'gate',
     status: input.verdictPassed ? 'ok' : 'fail',
   });
+  if (recordHooks) {
+    steps.push(hook('after.gate'));
+  }
 
   return {
     runId,
@@ -328,6 +360,7 @@ function buildPipelineRun(input: {
     policyIds: [...input.policyIds],
     agentIds: [...input.ran],
     skillIds: [...input.skillIds],
+    hookIds: [...input.hookIds],
     model: {
       providerId: input.route.providerId,
       modelId: input.route.modelId,

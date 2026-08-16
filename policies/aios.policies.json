@@ -42,7 +42,7 @@
     },
     {
       "id": "conventional-commits",
-      "description": "Commits: type: <gitmoji> … · merges via gh: always --subject/scripts/merge-pr.sh → merge: 🔀 PR #<n> — <branch> (forbid 'Merge pull request…') · author Kleilson Santos · no IDE Co-authored-by",
+      "description": "Commits: type: <gitmoji> … · merges via gh: always --subject/scripts/merge-pr.sh → merge: 🔀 PR #<n> — <branch> (forbid 'Merge pull request…') · author/committer Kleilson Santos <kdsdesign1@gmail.com> · no IDE Co-authored-by · no Made with Cursor on PR bodies",
       "severity": "must"
     },
     {
@@ -88,6 +88,11 @@
     {
       "id": "skills-are-packs",
       "description": "Skills are how, not who: optional Prompt Engine packs (id, purpose, allowedTools, failurePolicy). Default is none — do not load a catalog unless ids are requested. Do not invent a new agent or hook bus for a skill (ADR-0026).",
+      "severity": "must"
+    },
+    {
+      "id": "hooks-are-central-list",
+      "description": "Pipeline intercepts attach to the central hook list (before|after × policy|context|agent|gate). Default is none. Do not scatter ifs, invent a hook marketplace, or intercept MCP tools for a hook (ADR-0027).",
       "severity": "must"
     },
     {
