@@ -84,7 +84,7 @@ Registry `workspaces/aios.workspaces.json` · resolve by `workspaceId` · upsert
 
 ### Knowledge Graph (`@aios/knowledge`) — issue #47
 
-Heuristic `buildKnowledgeGraph` · summary in `PipelineResponse.knowledge` · MCP `aios_build_knowledge` · [ADR-0005](../adr/0005-knowledge-graph-heuristic.md).
+Heuristic `buildKnowledgeGraph` (two-pass `workspace:*`, pnpm-workspace buckets, ADR/policy files) · summary in `PipelineResponse.knowledge` · MCP `aios_build_knowledge` · [ADR-0005](../adr/0005-knowledge-graph-heuristic.md) · #295.
 
 ### Memory (`@aios/memory`) — issue #51
 

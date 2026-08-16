@@ -91,6 +91,98 @@ function packageName(pkgPath: string, fallback: string): string {
   return fallback;
 }
 
+const DEFAULT_BUCKETS = ['packages', 'engines', 'apps'] as const;
+const MAX_ADR_FILES = 20;
+const MAX_POLICY_FILES = 20;
+
+/** `packages:` list in pnpm-workspace.yaml — no YAML parser (Resource-Aware). */
+export function parsePnpmWorkspacePackageGlobs(text: string): string[] {
+  const globs: string[] = [];
+  let inPackages = false;
+  for (const raw of text.split('\n')) {
+    if (/^packages:\s*(#.*)?$/.test(raw)) {
+      inPackages = true;
+      continue;
+    }
+    if (inPackages && /^[A-Za-z]/.test(raw)) {
+      inPackages = false;
+    }
+    if (!inPackages) continue;
+    const m = raw.match(/^\s+-\s+['"]([^'"]+)['"]/);
+    if (m) globs.push(m[1]);
+  }
+  return globs;
+}
+
+function extraBucketsFromGlobs(globs: string[]): string[] {
+  const extra: string[] = [];
+  for (const glob of globs) {
+    if (!glob.endsWith('/*')) continue;
+    const bucket = glob.slice(0, -2);
+    if (
+      !bucket ||
+      bucket.includes('/') ||
+      (DEFAULT_BUCKETS as readonly string[]).includes(bucket)
+    ) {
+      continue;
+    }
+    extra.push(bucket);
+  }
+  return extra;
+}
+
+function listMarkdown(absDir: string): string[] {
+  if (!existsSync(absDir)) return [];
+  return readdirSync(absDir)
+    .filter((name) => name.endsWith('.md') && !name.startsWith('.'))
+    .sort();
+}
+
+function listJson(absDir: string): string[] {
+  if (!existsSync(absDir)) return [];
+  return readdirSync(absDir)
+    .filter((name) => name.endsWith('.json') && !name.startsWith('.'))
+    .sort();
+}
+
+function workspaceDeps(pkgFile: string): string[] {
+  const pj = readJson(pkgFile);
+  const deps = {
+    ...(pj?.dependencies as Record<string, string> | undefined),
+    ...(pj?.devDependencies as Record<string, string> | undefined),
+  };
+  const names: string[] = [];
+  for (const [depName, ver] of Object.entries(deps ?? {})) {
+    if (typeof ver === 'string' && ver.startsWith('workspace:')) names.push(depName);
+  }
+  return names;
+}
+
+function addWorkspaceDependsOn(
+  nodes: Map<string, KnowledgeNode>,
+  edges: KnowledgeEdge[],
+  seenEdges: Set<string>,
+  root: string
+): void {
+  const byLabel = new Map<string, KnowledgeNode>();
+  for (const n of nodes.values()) {
+    if (n.kind === 'package' || n.kind === 'engine') {
+      byLabel.set(n.label, n);
+    }
+  }
+  for (const n of nodes.values()) {
+    if (!n.path || (n.kind !== 'package' && n.kind !== 'engine')) continue;
+    const pkgFile = join(root, n.path, 'package.json');
+    if (!existsSync(pkgFile)) continue;
+    for (const depName of workspaceDeps(pkgFile)) {
+      const other = byLabel.get(depName);
+      if (other && other.id !== n.id) {
+        addEdge(edges, seenEdges, n.id, other.id, 'depends_on');
+      }
+    }
+  }
+}
+
 /**
  * Constrói Knowledge Graph básico a partir do layout do repo.
  */
@@ -126,10 +218,30 @@ export function buildKnowledgeGraph(options: BuildKnowledgeOptions): KnowledgeGr
   if (existsSync(join(root, 'docs', 'adr'))) {
     const adr = addNode(nodes, 'doc', 'docs/adr', 'ADRs', 'docs/adr');
     if (adr) addEdge(edges, seenEdges, project.id, adr.id, 'documents');
+    const adrFiles = listMarkdown(join(root, 'docs', 'adr')).slice(0, MAX_ADR_FILES);
+    for (const file of adrFiles) {
+      if (nodes.size >= maxNodes) break;
+      const rel = `docs/adr/${file}`;
+      const n = addNode(nodes, 'doc', rel, file, rel);
+      if (n) {
+        addEdge(edges, seenEdges, project.id, n.id, 'documents');
+        if (adr) addEdge(edges, seenEdges, adr.id, n.id, 'contains');
+      }
+    }
+    if (listMarkdown(join(root, 'docs', 'adr')).length > MAX_ADR_FILES) {
+      signals.push('capped:adrFiles');
+    }
   }
 
-  // Packages / engines / apps (monorepo)
-  for (const bucket of ['packages', 'engines', 'apps'] as const) {
+  let workspaceGlobs: string[] = [];
+  const wsFile = join(root, 'pnpm-workspace.yaml');
+  if (existsSync(wsFile)) {
+    workspaceGlobs = parsePnpmWorkspacePackageGlobs(readFileSync(wsFile, 'utf8'));
+    signals.push(`pnpm-workspace:${workspaceGlobs.length}`);
+  }
+  const buckets = [...DEFAULT_BUCKETS, ...extraBucketsFromGlobs(workspaceGlobs)];
+
+  for (const bucket of buckets) {
     const bucketAbs = join(root, bucket);
     const kids = listDirs(bucketAbs);
     if (kids.length === 0) continue;
@@ -148,35 +260,21 @@ export function buildKnowledgeGraph(options: BuildKnowledgeOptions): KnowledgeGr
       const n = addNode(nodes, kind, rel, label, rel);
       if (n && bucketNode) {
         addEdge(edges, seenEdges, bucketNode.id, n.id, 'contains');
-        // depends_on workspace:* from package.json
-        const pj = readJson(pkgFile);
-        const deps = {
-          ...(pj?.dependencies as Record<string, string> | undefined),
-          ...(pj?.devDependencies as Record<string, string> | undefined),
-        };
-        for (const [depName, ver] of Object.entries(deps ?? {})) {
-          if (typeof ver !== 'string' || !ver.startsWith('workspace:')) continue;
-          // find node by label match
-          for (const other of nodes.values()) {
-            if (other.label === depName && other.id !== n.id) {
-              addEdge(edges, seenEdges, n.id, other.id, 'depends_on');
-            }
-          }
-        }
       }
     }
   }
 
-  // Policies
-  if (existsSync(join(root, 'policies', 'aios.policies.json'))) {
-    const pol = addNode(
-      nodes,
-      'policy',
-      'policies/aios.policies.json',
-      'aios.policies',
-      'policies/aios.policies.json'
-    );
+  addWorkspaceDependsOn(nodes, edges, seenEdges, root);
+
+  const policyFiles = listJson(join(root, 'policies')).slice(0, MAX_POLICY_FILES);
+  for (const file of policyFiles) {
+    if (nodes.size >= maxNodes) break;
+    const rel = `policies/${file}`;
+    const pol = addNode(nodes, 'policy', rel, file.replace(/\.json$/u, ''), rel);
     if (pol) addEdge(edges, seenEdges, project.id, pol.id, 'documents');
+  }
+  if (listJson(join(root, 'policies')).length > MAX_POLICY_FILES) {
+    signals.push('capped:policyFiles');
   }
 
   // Workspaces registry

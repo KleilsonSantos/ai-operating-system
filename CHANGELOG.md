@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🧠 Heuristic Knowledge Graph depth — two-pass `workspace:*` edges, `pnpm-workspace.yaml` buckets, ADR and policy file nodes (#295)
+
 ### Changed
 
 - ✅ Unit tests for the 4 builtin agent plugins (`architecture`, `appsec`, `docs`, `qa`) (#292)
