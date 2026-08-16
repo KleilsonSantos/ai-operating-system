@@ -15,16 +15,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@aios/status": "workspace:*",
-    "@aios/shared": "workspace:*",
-    "@aios/workspace": "workspace:*",
+    "@aios/documentation": "workspace:*",
+    "@aios/governance": "workspace:*",
+    "@aios/memory": "workspace:*",
+    "@aios/operational-state": "workspace:*",
     "@aios/policy": "workspace:*",
     "@aios/prompt": "workspace:*",
     "@aios/provider": "workspace:*",
-    "@aios/memory": "workspace:*",
-    "@aios/documentation": "workspace:*",
-    "@aios/governance": "workspace:*",
-    "@aios/operational-state": "workspace:*",
+    "@aios/shared": "workspace:*",
+    "@aios/status": "workspace:*",
+    "@aios/workspace": "workspace:*",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
@@ -32,10 +32,10 @@
     "@types/node": "^26.1.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
-    "@vitejs/plugin-react": "^4.6.0",
+    "@vitejs/plugin-react": "^6.0.5",
     "concurrently": "^9.2.0",
     "typescript": "^5.9.2",
-    "vite": "^7.0.4",
+    "vite": "^8.2.1",
     "vitest": "^3.2.4"
   }
 }

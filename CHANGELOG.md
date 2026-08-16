@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Changed
+
+- ⬆️ `@aios/console`: Vite 7 → 8 (Rolldown) and `@vitejs/plugin-react` 4 → 6 (#267)
+
 ## [0.36.0] - 2026-08-16
 
 ### Added
