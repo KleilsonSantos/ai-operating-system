@@ -18,6 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag       | Description                                                                                    |
 | --------- | ---------------------------------------------------------------------------------------------- |
+| `v0.33.0` | Model router by capability class + context budget (ADR-0025 / #276)                            |
 | `v0.32.0` | Execution contract (ADR-0024) + Agent Catalog trending + nanoid 3.3.18 (#261 / #253 / #255)    |
 | `v0.31.0` | Console Agent Catalog MVP + nanoid pin (#250 / #247)                                           |
 | `v0.30.0` | @aios-platform npm + provider resilience (#241)                                                |

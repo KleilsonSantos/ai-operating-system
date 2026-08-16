@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.33.0] - 2026-08-15
+
 ### Added
 
 - 🧭 Model router by capability class (`fast` / `coding` / `reasoning` / `arbitration`) — `routeModel` (`@aios/shared`, re-exported from `@aios/provider`) + `PipelineResponse.run.model` (#276 / ADR-0025)
