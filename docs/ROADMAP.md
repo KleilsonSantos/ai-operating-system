@@ -81,7 +81,8 @@ Agents become first-class, discoverable, reusable building blocks. Four pillars:
 Thin runtime on the existing pipeline — not a second orchestrator. [ADR-0024](./adr/0024-execution-state-capability-registry.md) · #261.
 
 - [x] Phase 1 foundation — `PipelineResponse.run` + MCP capability allowlist + registry-selected plugins (flag + fallback)
-- [ ] Phase 2 — model router by capability class, context budget, skill packs (not authorized here)
+- [x] Phase 2 (thin) — model router by capability class + context budget (#276 / ADR-0025)
+- [ ] Skill packs (not authorized here)
 
 ## Out of scope (on purpose)
 

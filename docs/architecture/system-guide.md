@@ -50,9 +50,9 @@ Details: [`engines/policy/README.md`](../../engines/policy/README.md).
 
 ### Context Engine (`@aios/context`) — issue #7
 
-`gatherContext({ repoPath, scope? })` → `{ repoPath, scope, snippets[], signals[] }`.
+`gatherContext({ repoPath, scope?, budget? })` → `{ repoPath, scope, snippets[], signals[], budget? }`.
 
-Typed snippets: `doc` · `code` · `manifest` (truncated content). Scope is a path relative to the repo root.
+Typed snippets: `doc` · `code` · `manifest` (truncated content). Scope is a path relative to the repo root. Named budget (`tight` / `standard` / `wide`) from intent/risk/cost; secret-like paths are denied ([ADR-0025](../adr/0025-model-router-context-budget.md)).
 
 Injection: `runWorkflow(intent, { context })` appends `context:<path>` and `context.injected:N`.
 
@@ -74,7 +74,7 @@ Short request in chat; policies injected without the CLI. Guide: [`docs/guides/c
 
 ### CLI/API contract (`@aios/pipeline`) — issue #9
 
-`runPipeline({ input, repoPath?, workspaceId?, scope?, policiesPath?, pluginSource? })` → `PipelineResponse` with `contractVersion: "1"` and additive `run` (execution state). MCP `aios_*` tools are privilege-gated ([ADR-0024](../adr/0024-execution-state-capability-registry.md)).
+`runPipeline({ input, repoPath?, workspaceId?, scope?, policiesPath?, pluginSource?, costBudget?, risk? })` → `PipelineResponse` with `contractVersion: "1"` and additive `run` (execution state + `run.model` route). MCP `aios_*` tools are privilege-gated ([ADR-0024](../adr/0024-execution-state-capability-registry.md)). Router: [ADR-0025](../adr/0025-model-router-context-budget.md).
 
 CLI (`@aios/cli`) is a thin client of this contract (`--workspace`). Integrators depend on `@aios/pipeline` + `@aios/shared` — [ADR-0003](../adr/0003-pipeline-integration-contract.md).
 
@@ -96,7 +96,7 @@ Local store `.aios/memory/{workspaceId}.json` · `remember`/`recall` · MCP `aio
 
 ### Multi-provider (`@aios/provider`) — issue #67
 
-`AIProvider` + Ollama + OpenAI-compatible + Anthropic · MCP `aios_provider_*` · chat usage → `.aios/metrics/events.jsonl` (`chatWithMetrics`, ADR-0019) · Prometheus text scrape (`GET /metrics` / `--metrics-prometheus`, ADR-0021) · [ADR-0009](../adr/0009-multi-provider-ollama.md) · [ADR-0016](../adr/0016-openai-compatible-provider.md) · [ADR-0017](../adr/0017-anthropic-provider.md). Does not replace the IDE LLM.
+`AIProvider` + Ollama + OpenAI-compatible + Anthropic · `routeModel` by capability class (ADR-0025; default bind = local ollama) · MCP `aios_provider_*` (`capabilityClass` opt-in) · chat usage → `.aios/metrics/events.jsonl` (`chatWithMetrics`, ADR-0019) · Prometheus text scrape (`GET /metrics` / `--metrics-prometheus`, ADR-0021) · [ADR-0009](../adr/0009-multi-provider-ollama.md) · [ADR-0016](../adr/0016-openai-compatible-provider.md) · [ADR-0017](../adr/0017-anthropic-provider.md). Does not replace the IDE LLM.
 
 ### Governance console (`@aios/console` / `@aios/status`) — issue #71
 

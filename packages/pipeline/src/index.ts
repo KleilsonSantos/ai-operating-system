@@ -6,7 +6,7 @@ import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { resolveIntent } from '@aios/intent';
 import { loadPolicies, applyPolicies } from '@aios/policy';
-import { gatherContext } from '@aios/context';
+import { gatherContext, resolveContextBudget } from '@aios/context';
 import { runWorkflow } from '@aios/orchestration';
 import { evaluateQuality } from '@aios/quality-gate';
 import { resolveWorkspace, loadWorkspaces } from '@aios/workspace';
@@ -14,11 +14,14 @@ import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge';
 import { recall } from '@aios/memory';
 import {
   PIPELINE_CONTRACT_VERSION,
+  resolveCallerPrivilege,
+  routeModel,
   type PipelineArtifact,
   type PipelineRequest,
   type PipelineResponse,
   type PipelineRun,
   type PipelineStep,
+  type RouteDecision,
 } from '@aios/shared';
 
 export { PIPELINE_CONTRACT_VERSION };
@@ -137,9 +140,22 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
     configPath: request.policiesPath,
   });
   const applied = applyPolicies(policyBundle.rules);
+  const privilege = request.privilege ?? resolveCallerPrivilege();
+  const budget = resolveContextBudget({
+    intentKind: intent.kind,
+    risk: request.risk,
+    costBudget: request.costBudget,
+  });
+  const route = routeModel({
+    intentKind: intent.kind,
+    risk: request.risk,
+    privilege,
+    costBudget: request.costBudget,
+  });
   const context = gatherContext({
     repoPath,
     scope: request.scope,
+    budget,
   });
   const knowledge = summarizeKnowledge(buildKnowledgeGraph({ repoPath }));
 
@@ -174,6 +190,7 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
     skipped: workflow.skipped,
   });
 
+  const usedBytes = context.snippets.reduce((sum, s) => sum + s.bytes, 0);
   const run = buildPipelineRun({
     intentKind: intent.kind,
     workspaceId: workspaceMeta?.id ?? memoryWorkspaceId,
@@ -189,6 +206,7 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
     memoryAttached: Boolean(memoryMeta),
     verdictPassed: verdict.passed,
     verdictReasons: verdict.blockers,
+    route,
   });
 
   return {
@@ -206,6 +224,12 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
       snippetCount: context.snippets.length,
       paths: context.snippets.map((s) => s.path),
       signals: context.signals,
+      budget: {
+        tier: budget.tier,
+        maxSnippets: budget.maxSnippets,
+        maxTotalBytes: budget.maxTotalBytes,
+        usedBytes,
+      },
     },
     ...(workspaceMeta ? { workspace: workspaceMeta } : {}),
     knowledge,
@@ -235,6 +259,7 @@ function buildPipelineRun(input: {
   memoryAttached: boolean;
   verdictPassed: boolean;
   verdictReasons: string[];
+  route: RouteDecision;
 }): PipelineRun {
   const runId = randomUUID();
   const steps: PipelineStep[] = [
@@ -248,6 +273,12 @@ function buildPipelineRun(input: {
       stepId: stepId('context'),
       kind: 'context',
       status: input.contextPaths.length > 0 ? 'ok' : 'skip',
+    },
+    {
+      stepId: stepId('route'),
+      kind: 'route',
+      status: 'ok',
+      detail: `${input.route.capabilityClass}:${input.route.providerId}/${input.route.modelId}`,
     },
     { stepId: stepId('knowledge'), kind: 'knowledge', status: 'ok' },
     {
@@ -289,6 +320,11 @@ function buildPipelineRun(input: {
     policyIds: [...input.policyIds],
     agentIds: [...input.ran],
     skillIds: [],
+    model: {
+      providerId: input.route.providerId,
+      modelId: input.route.modelId,
+      capabilityClass: input.route.capabilityClass,
+    },
     steps,
     artifacts: input.contextPaths.slice(0, 12),
     verdict: {

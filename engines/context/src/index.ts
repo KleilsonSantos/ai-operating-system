@@ -4,7 +4,15 @@
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
-import type { ContextBundle, ContextSnippet, ContextSnippetKind } from '@aios/shared';
+import type {
+  ContextBudget,
+  ContextBundle,
+  ContextSnippet,
+  ContextSnippetKind,
+  IntentKind,
+  RouteCostBudget,
+  RouteRisk,
+} from '@aios/shared';
 
 export type GatherContextOptions = {
   /** Diretório de partida (cwd / path absoluto). Raiz sobe até .git / workspace. */
@@ -17,7 +25,64 @@ export type GatherContextOptions = {
   maxSnippets?: number;
   maxBytesPerFile?: number;
   maxTotalBytes?: number;
+  /** Named budget (ADR-0025). Explicit max* fields still win. */
+  budget?: ContextBudget;
+  /** Deny secret-like paths (default true). */
+  denySecrets?: boolean;
 };
+
+const TIGHT_BUDGET: ContextBudget = {
+  tier: 'tight',
+  maxSnippets: 6,
+  maxBytesPerFile: 2_000,
+  maxTotalBytes: 16_000,
+};
+
+const STANDARD_BUDGET: ContextBudget = {
+  tier: 'standard',
+  maxSnippets: 12,
+  maxBytesPerFile: 4_000,
+  maxTotalBytes: 40_000,
+};
+
+const WIDE_BUDGET: ContextBudget = {
+  tier: 'wide',
+  maxSnippets: 16,
+  maxBytesPerFile: 4_000,
+  maxTotalBytes: 48_000,
+};
+
+/** Policy-sized context window — never a full-repo dump. */
+export function resolveContextBudget(input: {
+  intentKind: IntentKind;
+  risk?: RouteRisk;
+  costBudget?: RouteCostBudget;
+}): ContextBudget {
+  if (input.costBudget === 'low' || input.intentKind === 'unknown' || input.risk === 'high') {
+    return { ...TIGHT_BUDGET };
+  }
+  if (
+    input.intentKind === 'implement.feature' ||
+    input.intentKind === 'fix.bug' ||
+    input.intentKind === 'review.change'
+  ) {
+    return { ...WIDE_BUDGET };
+  }
+  return { ...STANDARD_BUDGET };
+}
+
+/** Secret-like relative paths — fail closed, do not send to the model. */
+export function isDeniedContextPath(relPath: string): boolean {
+  const lower = relPath.toLowerCase().replace(/\\/g, '/');
+  const base = lower.split('/').pop() ?? '';
+  if (base === '.env' || base.startsWith('.env.')) return true;
+  if (/\.(pem|key|p12|pfx)$/.test(base)) return true;
+  if (base === 'credentials.json' || base === 'id_rsa' || base === 'id_ed25519') return true;
+  if (lower === 'secrets' || lower.startsWith('secrets/') || lower.includes('/secrets/')) {
+    return true;
+  }
+  return false;
+}
 
 const IGNORE_DIRS = new Set([
   'node_modules',
@@ -161,13 +226,15 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
   const options: GatherContextOptions =
     typeof repoPathOrOptions === 'string' ? { repoPath: repoPathOrOptions } : repoPathOrOptions;
 
-  const maxSnippets = options.maxSnippets ?? 12;
-  const maxBytesPerFile = options.maxBytesPerFile ?? 4_000;
-  const maxTotalBytes = options.maxTotalBytes ?? 40_000;
+  const budget = options.budget ?? STANDARD_BUDGET;
+  const maxSnippets = options.maxSnippets ?? budget.maxSnippets;
+  const maxBytesPerFile = options.maxBytesPerFile ?? budget.maxBytesPerFile;
+  const maxTotalBytes = options.maxTotalBytes ?? budget.maxTotalBytes;
+  const denySecrets = options.denySecrets !== false;
 
   const repoPath = resolveRepoRoot(options.repoPath);
   const scope = normalizeScope(options.scope);
-  const signals: string[] = [`repoRoot:${repoPath}`, `scope:${scope}`];
+  const signals: string[] = [`repoRoot:${repoPath}`, `scope:${scope}`, `budget:${budget.tier}`];
 
   const scopeAbs = scope === '.' ? repoPath : resolve(repoPath, scope);
 
@@ -177,6 +244,7 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
       scope,
       snippets: [],
       signals: [...signals, 'scope-missing'],
+      budget,
     };
   }
 
@@ -210,6 +278,10 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
     if (seen.has(rel)) continue;
     seen.add(rel);
     const base = abs.split(sep).pop() ?? '';
+    if (denySecrets && isDeniedContextPath(rel)) {
+      signals.push(`denied:${rel}`);
+      continue;
+    }
     const kind = kindFor(base, rel);
     if (!kind) continue;
     // sob escopo `.`, limitar código à raiz / src raso para não inundar
@@ -260,7 +332,7 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
 
   signals.push(`snippets:${snippets.length}`, `bytes:${total}`);
 
-  return { repoPath, scope, snippets, signals };
+  return { repoPath, scope, snippets, signals, budget };
 }
 
 /** @deprecated tipo movido para @aios/shared — re-export */

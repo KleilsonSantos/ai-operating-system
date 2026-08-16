@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { afterEach, describe, expect, it } from 'vitest';
-import { gatherContext } from '../src/index.ts';
+import { gatherContext, isDeniedContextPath, resolveContextBudget } from '../src/index.ts';
 
 const temps: string[] = [];
 
@@ -101,6 +101,53 @@ describe('gatherContext', () => {
     expect(big).toBeDefined();
     expect(big!.content).toContain('[truncated]');
     expect(big!.bytes).toBeLessThanOrEqual(120);
+  });
+
+  it('resolveContextBudget: unknown/low-cost/high-risk → tight', () => {
+    expect(resolveContextBudget({ intentKind: 'unknown' }).tier).toBe('tight');
+    expect(resolveContextBudget({ intentKind: 'analyze.project', costBudget: 'low' }).tier).toBe(
+      'tight'
+    );
+    expect(resolveContextBudget({ intentKind: 'analyze.project', risk: 'high' }).tier).toBe(
+      'tight'
+    );
+  });
+
+  it('resolveContextBudget: analyze → standard; implement/review → wide', () => {
+    expect(resolveContextBudget({ intentKind: 'analyze.project' }).tier).toBe('standard');
+    expect(resolveContextBudget({ intentKind: 'implement.feature' }).tier).toBe('wide');
+    expect(resolveContextBudget({ intentKind: 'review.change' }).tier).toBe('wide');
+  });
+
+  it('isDeniedContextPath covers secrets and keys, not ordinary docs', () => {
+    expect(isDeniedContextPath('.env')).toBe(true);
+    expect(isDeniedContextPath('.env.local')).toBe(true);
+    expect(isDeniedContextPath('certs/server.pem')).toBe(true);
+    expect(isDeniedContextPath('secrets/token.md')).toBe(true);
+    expect(isDeniedContextPath('credentials.json')).toBe(true);
+    expect(isDeniedContextPath('docs/FOUNDATION.md')).toBe(false);
+    expect(isDeniedContextPath('README.md')).toBe(false);
+  });
+
+  it('omite credentials.json e sinaliza denied', () => {
+    const root = fixtureRoot();
+    writeFileSync(join(root, 'credentials.json'), '{"token":"nope"}');
+    mkdirSync(join(root, 'secrets'));
+    writeFileSync(join(root, 'secrets', 'token.md'), 'secret');
+    const bundle = gatherContext({ repoPath: root, maxSnippets: 50 });
+    expect(bundle.snippets.every((s) => s.path !== 'credentials.json')).toBe(true);
+    expect(bundle.snippets.every((s) => !s.path.startsWith('secrets/'))).toBe(true);
+    expect(bundle.signals.some((s) => s.startsWith('denied:'))).toBe(true);
+    expect(bundle.budget?.tier).toBe('standard');
+  });
+
+  it('aplica budget tight (maxSnippets)', () => {
+    const root = fixtureRoot();
+    const tight = resolveContextBudget({ intentKind: 'unknown' });
+    const bundle = gatherContext({ repoPath: root, budget: tight });
+    expect(bundle.budget?.tier).toBe('tight');
+    expect(bundle.snippets.length).toBeLessThanOrEqual(tight.maxSnippets);
+    expect(bundle.signals).toContain('budget:tight');
   });
 
   it('ignora node_modules', () => {
