@@ -18,6 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag       | Description                                                                                    |
 | --------- | ---------------------------------------------------------------------------------------------- |
+| `v0.37.0` | Context Engine KG neighbors (#301) + Vite 8 console (#267)                                     |
 | `v0.36.0` | Heuristic Knowledge Graph depth (#295) + builtin plugin unit tests (#292)                      |
 | `v0.35.0` | Central pipeline hook bus (ADR-0027 / #288)                                                    |
 | `v0.34.0` | Skill packs for the Prompt Engine (ADR-0026 / #284)                                            |
