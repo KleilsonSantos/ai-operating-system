@@ -43,6 +43,7 @@ describe('compilePrompt', () => {
     expect(out.intent.kind).toBe('analyze.project');
     expect(out.brief).toContain('AIOS brief');
     expect(out.brief).toContain('official-docs');
+    expect(out.brief).not.toContain('- neighbors:');
     expect(out.stats.mustPolicyCount).toBeGreaterThan(0);
     expect(out.stats.briefChars).toBeGreaterThan(100);
     expect(out.skills).toEqual([]);
@@ -76,5 +77,36 @@ describe('compilePrompt', () => {
     expect(out.stats.skillCount).toBe(1);
     expect(out.brief).toContain('## Skills');
     expect(out.brief).toContain('governed-brief');
+  });
+
+  it('names Knowledge Graph neighbors when scope is set', () => {
+    const root = mkdtempSync(join(tmpdir(), 'aios-prompt-kg-'));
+    temps.push(root);
+    writeFileSync(join(root, 'package.json'), '{"name":"p"}');
+    mkdirSync(join(root, 'packages', 'shared'), { recursive: true });
+    mkdirSync(join(root, 'engines', 'policy'), { recursive: true });
+    mkdirSync(join(root, 'docs', 'adr'), { recursive: true });
+    writeFileSync(
+      join(root, 'packages', 'shared', 'package.json'),
+      JSON.stringify({ name: '@aios/shared', private: true })
+    );
+    writeFileSync(
+      join(root, 'engines', 'policy', 'package.json'),
+      JSON.stringify({
+        name: '@aios/policy',
+        private: true,
+        dependencies: { '@aios/shared': 'workspace:*' },
+      })
+    );
+    writeFileSync(join(root, 'docs', 'adr', '0003-policy-engine.md'), '# Policy engine\n');
+    const out = compilePrompt({
+      input: 'Analise meu projeto.',
+      repoPath: root,
+      scope: 'engines/policy',
+    });
+    expect(out.brief).toContain('scope: `engines/policy`');
+    expect(out.brief).toContain('packages/shared/package.json');
+    expect(out.brief).toContain('docs/adr/0003-policy-engine.md');
+    expect(out.brief).toContain('- neighbors:');
   });
 });

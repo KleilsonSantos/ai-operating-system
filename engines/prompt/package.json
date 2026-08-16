@@ -13,12 +13,13 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@aios/shared": "workspace:*",
+    "@aios/context": "workspace:*",
     "@aios/intent": "workspace:*",
-    "@aios/policy": "workspace:*",
-    "@aios/workspace": "workspace:*",
     "@aios/knowledge": "workspace:*",
-    "@aios/memory": "workspace:*"
+    "@aios/memory": "workspace:*",
+    "@aios/policy": "workspace:*",
+    "@aios/shared": "workspace:*",
+    "@aios/workspace": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

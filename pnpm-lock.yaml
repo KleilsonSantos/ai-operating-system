@@ -460,6 +460,9 @@ importers:
 
   engines/prompt:
     dependencies:
+      '@aios/context':
+        specifier: workspace:*
+        version: link:../context
       '@aios/intent':
         specifier: workspace:*
         version: link:../intent
