@@ -30,7 +30,7 @@ feature/* | fix/* | docs/* | chore/* | ci/*
 5. Commits: `type: <gitmoji> description`
 6. Local QA → PR → `sandbox` → PR → `main` → tag if releaseable
 
-Author: `Kleilson Santos <kdsdesign1@gmail.com>` — no `Co-authored-by: Cursor` / IDE trailers.
+Author and Committer: `Kleilson Santos <kdsdesign1@gmail.com>` — the same identity already used on `main`. **Never** `Co-authored-by: Cursor` / `cursoragent@cursor.com` / IDE trailers. PR bodies must not include “Made with Cursor”; attribution is the author, not the tool.
 
 ### Merges (required)
 

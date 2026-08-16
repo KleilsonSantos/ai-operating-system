@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Falha se commits do range tiverem subject sem gitmoji (CI).
+# Falha se commits do range tiverem subject sem gitmoji (CI)
+# ou trailer Co-authored-by de IDE/agente (Cursor).
 set -euo pipefail
 
 BASE_REF="${1:-origin/sandbox}"
@@ -15,6 +16,11 @@ while IFS= read -r line; do
   [[ -z "$line" ]] && continue
   hash="${line%% *}"
   subject="${line#* }"
+  body="$(git log -1 --format='%B' "$hash")"
+  if printf '%s' "$body" | grep -Ei 'Co-authored-by:.*Cursor|cursoragent@cursor\.com' >/dev/null; then
+    echo "FAIL $hash  IDE/agent Co-authored-by trailer (author is Kleilson Santos <kdsdesign1@gmail.com> only)"
+    fail=1
+  fi
   if [[ "$subject" =~ ^merge:\ 🔀 ]]; then
     continue
   fi

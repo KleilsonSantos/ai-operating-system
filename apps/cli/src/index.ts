@@ -13,7 +13,7 @@ import { getOperationalState } from '@aios/operational-state';
 import { resolveWorkspace } from '@aios/workspace';
 import { AgentRegistry } from '@aios-platform/agent-registry';
 
-function parseSkillIds(raw: string | undefined): string[] | undefined {
+function parseCsvIds(raw: string | undefined): string[] | undefined {
   if (!raw?.trim()) return undefined;
   const ids = raw
     .split(',')
@@ -31,6 +31,7 @@ function parseArgs(argv: string[]): {
   compilePromptOnly: boolean;
   briefOnly: boolean;
   skillIds?: string[];
+  hookIds?: string[];
   providerHealth: boolean;
   providerChat: boolean;
   governanceStatus: boolean;
@@ -57,6 +58,7 @@ function parseArgs(argv: string[]): {
   let compilePromptOnly = false;
   let briefOnly = false;
   let skillIds: string[] | undefined;
+  let hookIds: string[] | undefined;
   let providerHealth = false;
   let providerChat = false;
   let governanceStatus = false;
@@ -116,11 +118,19 @@ function parseArgs(argv: string[]): {
       continue;
     }
     if (a === '--skill-ids') {
-      skillIds = parseSkillIds(argv[++i]);
+      skillIds = parseCsvIds(argv[++i]);
       continue;
     }
     if (a.startsWith('--skill-ids=')) {
-      skillIds = parseSkillIds(a.slice('--skill-ids='.length));
+      skillIds = parseCsvIds(a.slice('--skill-ids='.length));
+      continue;
+    }
+    if (a === '--hook-ids') {
+      hookIds = parseCsvIds(argv[++i]);
+      continue;
+    }
+    if (a.startsWith('--hook-ids=')) {
+      hookIds = parseCsvIds(a.slice('--hook-ids='.length));
       continue;
     }
     if (a === '--brief-only') {
@@ -249,6 +259,7 @@ function parseArgs(argv: string[]): {
     compilePromptOnly,
     briefOnly,
     skillIds,
+    hookIds,
     providerHealth,
     providerChat,
     governanceStatus,
@@ -430,6 +441,7 @@ async function main(): Promise<void> {
     scope: args.scope,
     policiesPath: args.policiesPath,
     skillIds: args.skillIds,
+    hookIds: args.hookIds,
   });
 
   console.log(JSON.stringify(response, null, 2));

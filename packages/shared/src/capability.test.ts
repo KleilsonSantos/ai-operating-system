@@ -7,6 +7,7 @@ import {
   MCP_TOOL_PRIVILEGE,
   privilegeForMcpTool,
   resolveCallerPrivilege,
+  selectPipelineHooks,
 } from './index.ts';
 
 describe('resolveCallerPrivilege', () => {
@@ -20,6 +21,20 @@ describe('resolveCallerPrivilege', () => {
 
   it('ignores invalid env values', () => {
     expect(resolveCallerPrivilege({ AIOS_MCP_PRIVILEGE: 'ROOT' })).toBe('CONTROLLED_EXECUTION');
+  });
+});
+
+describe('selectPipelineHooks', () => {
+  it('defaults to none', () => {
+    expect(selectPipelineHooks(undefined)).toEqual({ selected: [], skippedIds: [] });
+    expect(selectPipelineHooks([])).toEqual({ selected: [], skippedIds: [] });
+  });
+
+  it('selects record.lifecycle and skips unknown ids', () => {
+    expect(selectPipelineHooks(['record.lifecycle', 'nope'])).toEqual({
+      selected: ['record.lifecycle'],
+      skippedIds: ['nope'],
+    });
   });
 });
 

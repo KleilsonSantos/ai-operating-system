@@ -34,7 +34,7 @@ import { authorizeMcpTool, deniedMcpPayload, isModelCapabilityClass } from '@aio
 export function createAiosMcpServer(): McpServer {
   const server = new McpServer({
     name: 'aios',
-    version: '0.34.0',
+    version: '0.35.0',
   });
 
   const registerRaw = server.registerTool.bind(server);
@@ -882,9 +882,13 @@ export function createAiosMcpServer(): McpServer {
           .array(z.string())
           .optional()
           .describe('Opt-in skill pack ids recorded on run.skillIds (ADR-0026). Default: none.'),
+        hookIds: z
+          .array(z.string())
+          .optional()
+          .describe('Opt-in hook ids recorded on run.hookIds (ADR-0027). Default: none.'),
       },
     },
-    async ({ input, repoPath, workspaceId, scope, policiesPath, skillIds }) => {
+    async ({ input, repoPath, workspaceId, scope, policiesPath, skillIds, hookIds }) => {
       try {
         const response = await runPipeline({
           input,
@@ -893,6 +897,7 @@ export function createAiosMcpServer(): McpServer {
           scope: scope || process.env.AIOS_SCOPE,
           policiesPath: policiesPath || process.env.AIOS_POLICIES_PATH,
           skillIds,
+          hookIds,
         });
         return {
           content: [

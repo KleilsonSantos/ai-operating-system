@@ -20,7 +20,7 @@ Regenerate: `pnpm sync:cursor-rules`
 - **no-deprecated-apis** (must): Do not introduce deprecated APIs/libs; prefer supported alternatives
 - **short-user-prompt** (must): Do not ask the user to repeat best practices in chat — they are already in these policies
 - **git-flow-sandbox** (must): Git flow: Issue → feature/* from sandbox → PR → sandbox → PR → main
-- **conventional-commits** (must): Commits: type: <gitmoji> … · merges via gh: always --subject/scripts/merge-pr.sh → merge: 🔀 PR #<n> — <branch> (forbid 'Merge pull request…') · author Kleilson Santos · no IDE Co-authored-by
+- **conventional-commits** (must): Commits: type: <gitmoji> … · merges via gh: always --subject/scripts/merge-pr.sh → merge: 🔀 PR #<n> — <branch> (forbid 'Merge pull request…') · author/committer Kleilson Santos <kdsdesign1@gmail.com> · no IDE Co-authored-by · no Made with Cursor on PR bodies
 - **agents-as-plugins** (must): Agents are plugins — do not expose direct agent calls in the primary UX
 - **resource-first** (must): Resource First (macOS): minimize CPU/RAM/disk/I/O/battery/processes/containers; efficiency is a requirement — see docs/policies/resource-aware-macos.md
 - **inspect-before-install** (must): Before installing/starting: check whether something is already installed, configured, running, or an equivalent reusable container/service
@@ -30,6 +30,7 @@ Regenerate: `pnpm sync:cursor-rules`
 - **artifact-lifecycle** (must): Before creating a file or directory: determine semantic domain, canonical location, lifecycle, and consumer; reuse an existing artifact when it already fulfills the purpose. Living docs use a stable name (Git, ADR, CHANGELOG hold history). Date in a filename only for a snapshot, incident, or evidence (docs/audits/). Do not use tmp/backup/final/latest/copy as versioning.
 - **model-route-by-capability** (must): Model routing selects a capability class (fast|coding|reasoning|arbitration), never a vendor. Operator binds class→provider via AIOS_ROUTE_* env. Default binding is local ollama (ADR-0025).
 - **skills-are-packs** (must): Skills are how, not who: optional Prompt Engine packs (id, purpose, allowedTools, failurePolicy). Default is none — do not load a catalog unless ids are requested. Do not invent a new agent or hook bus for a skill (ADR-0026).
+- **hooks-are-central-list** (must): Pipeline intercepts attach to the central hook list (before|after × policy|context|agent|gate). Default is none. Do not scatter ifs, invent a hook marketplace, or intercept MCP tools for a hook (ADR-0027).
 
 ## SHOULD
 

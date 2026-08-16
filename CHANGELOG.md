@@ -4,6 +4,16 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.35.0] - 2026-08-15
+
+### Added
+
+- 🪝 Central pipeline hook bus — opt-in `record.lifecycle` records `before`/`after` policy, context, agent, gate as `run` steps (#288 / ADR-0027)
+
+### Changed
+
+- 🔧 Git attribution stays `Kleilson Santos <kdsdesign1@gmail.com>`; IDE co-author trailers fail commit-lint
+
 ## [0.34.0] - 2026-08-15
 
 ### Added

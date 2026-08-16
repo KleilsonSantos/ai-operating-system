@@ -74,7 +74,7 @@ Short request in chat; policies injected without the CLI. Guide: [`docs/guides/c
 
 ### CLI/API contract (`@aios/pipeline`) — issue #9
 
-`runPipeline({ input, repoPath?, workspaceId?, scope?, policiesPath?, pluginSource?, costBudget?, risk?, skillIds? })` → `PipelineResponse` with `contractVersion: "1"` and additive `run` (execution state + `run.model` route + `run.skillIds`). MCP `aios_*` tools are privilege-gated ([ADR-0024](../adr/0024-execution-state-capability-registry.md)). Router: [ADR-0025](../adr/0025-model-router-context-budget.md). Skill packs: [ADR-0026](../adr/0026-skill-packs-prompt-engine.md).
+`runPipeline({ input, repoPath?, workspaceId?, scope?, policiesPath?, pluginSource?, costBudget?, risk?, skillIds?, hookIds? })` → `PipelineResponse` with `contractVersion: "1"` and additive `run` (execution state + `run.model` route + `run.skillIds` + `run.hookIds`). MCP `aios_*` tools are privilege-gated ([ADR-0024](../adr/0024-execution-state-capability-registry.md)). Router: [ADR-0025](../adr/0025-model-router-context-budget.md). Skill packs: [ADR-0026](../adr/0026-skill-packs-prompt-engine.md). Hooks: [ADR-0027](../adr/0027-pipeline-hook-bus.md).
 
 CLI (`@aios/cli`) is a thin client of this contract (`--workspace`). Integrators depend on `@aios/pipeline` + `@aios/shared` — [ADR-0003](../adr/0003-pipeline-integration-contract.md).
 

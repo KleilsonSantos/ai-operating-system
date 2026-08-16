@@ -42,6 +42,8 @@ describe('runPipeline', () => {
     expect(res.run?.intentKind).toBe('analyze.project');
     expect(res.run?.agentIds).toEqual(res.workflow.ran);
     expect(res.run?.skillIds).toEqual([]);
+    expect(res.run?.hookIds).toEqual([]);
+    expect(res.run?.steps.some((s) => s.kind === 'hook' && s.status === 'skip')).toBe(true);
     expect(res.run?.steps.some((s) => s.kind === 'classify' && s.status === 'ok')).toBe(true);
     expect(res.run?.steps.some((s) => s.kind === 'gate')).toBe(true);
     expect(res.run?.verdict?.passed).toBe(res.verdict.passed);
@@ -65,6 +67,40 @@ describe('runPipeline', () => {
         (s) => s.kind === 'skill' && s.status === 'ok' && s.detail === 'governed-brief'
       )
     ).toBe(true);
+  });
+
+  it('record.lifecycle emits a hook step per lifecycle point', async () => {
+    const repo = fixtureRepo();
+    const res = await runPipeline({
+      input: 'Analise meu projeto.',
+      repoPath: repo,
+      hookIds: ['record.lifecycle'],
+    });
+    expect(res.run?.hookIds).toEqual(['record.lifecycle']);
+    const hooks = res.run?.steps.filter((s) => s.kind === 'hook') ?? [];
+    expect(hooks).toHaveLength(8);
+    expect(hooks.every((s) => s.status === 'ok')).toBe(true);
+    expect(hooks.map((s) => s.detail)).toEqual([
+      'before.policy',
+      'after.policy',
+      'before.context',
+      'after.context',
+      'before.agent',
+      'after.agent',
+      'before.gate',
+      'after.gate',
+    ]);
+  });
+
+  it('skips unknown hook ids', async () => {
+    const repo = fixtureRepo();
+    const res = await runPipeline({
+      input: 'Analise meu projeto.',
+      repoPath: repo,
+      hookIds: ['nope'],
+    });
+    expect(res.run?.hookIds).toEqual([]);
+    expect(res.run?.steps.some((s) => s.kind === 'hook' && s.status === 'skip')).toBe(true);
   });
 
   it('costBudget=low força class fast e budget tight', async () => {
