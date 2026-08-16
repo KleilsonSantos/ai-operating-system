@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Changed
+
+- ✅ Unit tests for the 4 builtin agent plugins (`architecture`, `appsec`, `docs`, `qa`) (#292)
+
 ## [0.35.0] - 2026-08-15
 
 ### Added
