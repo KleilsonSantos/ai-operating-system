@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🪝 Central pipeline hook bus — opt-in `record.lifecycle` records `before`/`after` policy, context, agent, gate as `run` steps (#288 / ADR-0027)
+
 ## [0.34.0] - 2026-08-15
 
 ### Added

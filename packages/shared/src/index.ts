@@ -776,10 +776,64 @@ export type PipelineRequest = {
   privilege?: Privilege;
   /** Opt-in skill pack ids recorded on `run.skillIds` (ADR-0026). Default: none. */
   skillIds?: string[];
+  /** Opt-in hook ids recorded on `run.hookIds` (ADR-0027). Default: none. */
+  hookIds?: string[];
 };
 
+/** Central lifecycle points — intercepts attach here (ADR-0027). Default: none. */
+export const PIPELINE_HOOK_POINTS = [
+  'before.policy',
+  'after.policy',
+  'before.context',
+  'after.context',
+  'before.agent',
+  'after.agent',
+  'before.gate',
+  'after.gate',
+] as const;
+
+export type PipelineHookPoint = (typeof PIPELINE_HOOK_POINTS)[number];
+
+export const BUILTIN_PIPELINE_HOOKS = ['record.lifecycle'] as const;
+
+export type BuiltinPipelineHookId = (typeof BUILTIN_PIPELINE_HOOKS)[number];
+
+export function selectPipelineHooks(requestedIds?: string[]): {
+  selected: BuiltinPipelineHookId[];
+  skippedIds: string[];
+} {
+  if (!requestedIds?.length) {
+    return { selected: [], skippedIds: [] };
+  }
+  const known = new Set<string>(BUILTIN_PIPELINE_HOOKS);
+  const selected: BuiltinPipelineHookId[] = [];
+  const skippedIds: string[] = [];
+  const seen = new Set<string>();
+  for (const raw of requestedIds) {
+    const id = raw.trim();
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    if (known.has(id)) selected.push(id as BuiltinPipelineHookId);
+    else skippedIds.push(id);
+  }
+  return { selected, skippedIds };
+}
+
+export function recordsLifecycleHooks(selected: readonly string[]): boolean {
+  return selected.includes('record.lifecycle');
+}
+
 export type PipelineStepKind =
-  'classify' | 'policy' | 'context' | 'route' | 'skill' | 'knowledge' | 'memory' | 'agent' | 'gate';
+  | 'classify'
+  | 'policy'
+  | 'context'
+  | 'route'
+  | 'skill'
+  | 'knowledge'
+  | 'memory'
+  | 'agent'
+  | 'hook'
+  | 'gate';
 
 export type PipelineStepStatus = 'ok' | 'skip' | 'fail' | 'denied';
 
@@ -806,6 +860,7 @@ export type PipelineRun = {
   policyIds: string[];
   agentIds: string[];
   skillIds: string[];
+  hookIds: string[];
   /** Capability-class route — no chat is invoked (ADR-0025). */
   model?: { providerId: string; modelId: string; capabilityClass: ModelCapabilityClass };
   steps: PipelineStep[];

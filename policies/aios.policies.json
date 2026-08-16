@@ -91,6 +91,11 @@
       "severity": "must"
     },
     {
+      "id": "hooks-are-central-list",
+      "description": "Pipeline intercepts attach to the central hook list (before|after × policy|context|agent|gate). Default is none. Do not scatter ifs, invent a hook marketplace, or intercept MCP tools for a hook (ADR-0027).",
+      "severity": "must"
+    },
+    {
       "id": "justify-resource-impact",
       "description": "Infra suggestions must state why, alternatives, and impact on hardware/maintenance/consumption",
       "severity": "should"

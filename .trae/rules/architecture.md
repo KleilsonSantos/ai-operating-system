@@ -24,3 +24,4 @@ When the task affects architecture, product boundaries, or engine responsibiliti
 - Living docs use a stable name. Date in a filename only for snapshots under `docs/audits/` (or incident/evidence). `.github/modernize/` plans are historical; ROADMAP + ADRs win.
 - Model routing selects a capability class (`fast` | `coding` | `reasoning` | `arbitration`), never a vendor (`model-route-by-capability` / ADR-0025).
 - Skills are packs for the Prompt Engine (`skills-are-packs` / ADR-0026). Default is none. Do not invent a new agent or hook bus for a skill.
+- Pipeline intercepts attach to the central hook list (`hooks-are-central-list` / ADR-0027). Default is none.
