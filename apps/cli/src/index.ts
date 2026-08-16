@@ -425,6 +425,7 @@ async function main(): Promise<void> {
       workspaceId: args.workspaceId,
       policiesPath: args.policiesPath,
       skillIds: args.skillIds,
+      scope: args.scope,
     });
     if (args.briefOnly) {
       console.log(compiled.brief);

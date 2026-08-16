@@ -34,7 +34,7 @@ import { authorizeMcpTool, deniedMcpPayload, isModelCapabilityClass } from '@aio
 export function createAiosMcpServer(): McpServer {
   const server = new McpServer({
     name: 'aios',
-    version: '0.37.0',
+    version: '0.38.0',
   });
 
   const registerRaw = server.registerTool.bind(server);
@@ -149,9 +149,13 @@ export function createAiosMcpServer(): McpServer {
           .array(z.string())
           .optional()
           .describe('Opt-in skill pack ids (ADR-0026). Default: none.'),
+        scope: z
+          .string()
+          .optional()
+          .describe('Repo-relative path; names KG neighbors in the brief (#305).'),
       },
     },
-    async ({ input, workspaceId, repoPath, memoryLimit, skillIds }) => {
+    async ({ input, workspaceId, repoPath, memoryLimit, skillIds, scope }) => {
       try {
         const compiled = compilePrompt({
           input,
@@ -159,6 +163,7 @@ export function createAiosMcpServer(): McpServer {
           repoPath: repoPath || process.env.AIOS_REPO,
           memoryLimit,
           skillIds,
+          scope,
         });
         return {
           content: [

@@ -31,6 +31,10 @@ The dominant cost in Cursor/Claude/Copilot today is **repeating** policies, pref
 - Brief is still heuristic (no LLM re-ranking)
 - Memory only enters when `workspaceId` is present
 
+### Later refinement (#305)
+
+When `scope` is set, the brief adds a capped neighbor path list (visitor badge) from the heuristic KG. Counts remain one line. Still no LLM re-ranking.
+
 ## Rejected alternatives
 
 | Option                       | Reason                                             |
