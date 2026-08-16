@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.37.0] - 2026-08-16
+
 ### Added
 
 - 🗺️ Context Engine ranks Knowledge Graph neighbors for a scoped gather (workspace deps + matching ADRs) (#301)
