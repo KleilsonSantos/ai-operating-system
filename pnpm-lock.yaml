@@ -264,6 +264,9 @@ importers:
 
   engines/context:
     dependencies:
+      '@aios/knowledge':
+        specifier: workspace:*
+        version: link:../knowledge
       '@aios/shared':
         specifier: workspace:*
         version: link:../../packages/shared

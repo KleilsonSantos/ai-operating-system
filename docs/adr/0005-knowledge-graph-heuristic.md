@@ -37,6 +37,7 @@ Still heuristic (no embeddings / store):
 1. Two-pass `workspace:*` `depends_on` (scan order no longer drops edges).
 2. Extra top-level buckets from `pnpm-workspace.yaml` `packages:` globs (`tools/*`, …).
 3. Individual `docs/adr/*.md` and `policies/*.json` nodes (capped).
+4. Context Engine (`gatherContext`) ranks `workspace:*` neighbors and matching ADR files for a non-root `scope` (#301).
 
 ## Rejected alternatives
 

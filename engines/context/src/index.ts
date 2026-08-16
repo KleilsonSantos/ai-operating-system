@@ -1,9 +1,10 @@
 /**
  * Context Engine — recupera docs/código relevantes do repositório.
- * Fase 1: coleta heurística por path (sem embeddings / LLM).
+ * Path heuristic + Knowledge Graph neighbors for `scope` (no embeddings / LLM).
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
+import { buildKnowledgeGraph } from '@aios/knowledge';
 import type {
   ContextBudget,
   ContextBundle,
@@ -188,6 +189,67 @@ function priority(kind: ContextSnippetKind, relPath: string): number {
   return 10;
 }
 
+const MAX_KG_NEIGHBORS = 12;
+const KG_SCORE_BOOST = 55;
+
+function expandNeighborPath(root: string, graphPath: string): string[] {
+  const rel = graphPath.replace(/\\/g, '/');
+  const abs = join(root, rel);
+  if (existsSync(abs)) {
+    try {
+      if (statSync(abs).isFile()) return [rel];
+    } catch {
+      return [];
+    }
+  }
+  const out: string[] = [];
+  for (const name of ['package.json', 'README.md'] as const) {
+    const child = `${rel}/${name}`;
+    if (existsSync(join(root, child))) out.push(child);
+  }
+  return out;
+}
+
+/**
+ * Relative files linked to `scope` via the heuristic Knowledge Graph.
+ * Empty when scope is the repo root (no single focus node).
+ */
+export function knowledgeNeighborRelPaths(repoPath: string, scope: string): string[] {
+  const normalized = normalizeScope(scope);
+  if (normalized === '.') return [];
+  const graph = buildKnowledgeGraph({ repoPath });
+  const focus =
+    graph.nodes.find((n) => n.path === normalized) ??
+    graph.nodes.find((n) => n.path && n.path.startsWith(`${normalized}/`));
+  if (!focus) return [];
+
+  const byId = new Map(graph.nodes.map((n) => [n.id, n]));
+  const neighborIds = new Set<string>();
+  for (const edge of graph.edges) {
+    if (edge.from !== focus.id) continue;
+    if (edge.kind === 'depends_on' || edge.kind === 'documents' || edge.kind === 'contains') {
+      neighborIds.add(edge.to);
+    }
+  }
+
+  const token = normalized.split('/').pop() ?? '';
+  const rels: string[] = [];
+  for (const id of neighborIds) {
+    const node = byId.get(id);
+    if (!node?.path) continue;
+    rels.push(...expandNeighborPath(repoPath, node.path));
+  }
+  if (token.length >= 3) {
+    for (const node of graph.nodes) {
+      if (node.kind !== 'doc' || !node.path?.startsWith('docs/adr/')) continue;
+      if (!node.path.toLowerCase().includes(token.toLowerCase())) continue;
+      rels.push(...expandNeighborPath(repoPath, node.path));
+    }
+  }
+
+  return [...new Set(rels)].slice(0, MAX_KG_NEIGHBORS);
+}
+
 function listFiles(dir: string, root: string, out: string[]): void {
   let entries;
   try {
@@ -250,6 +312,7 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
 
   const files: string[] = [];
   listFiles(scopeAbs, repoPath, files);
+  const kgNeighborSet = new Set<string>();
 
   // Se escopo é subpasta, também puxa manifests/docs da raiz (âncora do projeto)
   if (scope !== '.') {
@@ -260,6 +323,15 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
     const traeRulesDir = join(repoPath, '.trae', 'rules');
     if (existsSync(traeRulesDir)) {
       listFiles(traeRulesDir, repoPath, files);
+    }
+    const neighborRels = knowledgeNeighborRelPaths(repoPath, scope);
+    if (neighborRels.length > 0) {
+      signals.push(`kg-neighbors:${neighborRels.length}`);
+      for (const rel of neighborRels) {
+        kgNeighborSet.add(rel);
+        const abs = join(repoPath, rel);
+        if (existsSync(abs)) files.push(abs);
+      }
     }
   }
 
@@ -293,7 +365,7 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
       abs,
       rel,
       kind,
-      score: priority(kind, rel),
+      score: priority(kind, rel) + (kgNeighborSet.has(rel) ? KG_SCORE_BOOST : 0),
     });
   }
 
