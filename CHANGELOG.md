@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🗺️ Context Engine ranks Knowledge Graph neighbors for a scoped gather (workspace deps + matching ADRs) (#301)
+
 ### Changed
 
 - ⬆️ `@aios/console`: Vite 7 → 8 (Rolldown) and `@vitejs/plugin-react` 4 → 6 (#267)

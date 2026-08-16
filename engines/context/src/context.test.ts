@@ -157,4 +157,47 @@ describe('gatherContext', () => {
     const bundle = gatherContext({ repoPath: root, maxSnippets: 50 });
     expect(bundle.snippets.every((s) => !s.path.includes('node_modules'))).toBe(true);
   });
+
+  it('ranks Knowledge Graph neighbors above unrelated in-scope code', () => {
+    const root = fixtureRoot();
+    mkdirSync(join(root, 'packages', 'shared'), { recursive: true });
+    mkdirSync(join(root, 'engines', 'policy', 'src'), { recursive: true });
+    mkdirSync(join(root, 'docs', 'adr'), { recursive: true });
+    writeFileSync(
+      join(root, 'packages', 'shared', 'package.json'),
+      JSON.stringify({ name: '@aios/shared', private: true })
+    );
+    writeFileSync(join(root, 'packages', 'shared', 'README.md'), '# Shared\n');
+    writeFileSync(
+      join(root, 'engines', 'policy', 'package.json'),
+      JSON.stringify({
+        name: '@aios/policy',
+        private: true,
+        dependencies: { '@aios/shared': 'workspace:*' },
+      })
+    );
+    writeFileSync(
+      join(root, 'engines', 'policy', 'src', 'zzzz-noise.ts'),
+      'export const noise = true\n'
+    );
+    writeFileSync(join(root, 'docs', 'adr', '0003-policy-engine.md'), '# Policy engine\n');
+
+    const bundle = gatherContext({
+      repoPath: root,
+      scope: 'engines/policy',
+      maxSnippets: 12,
+    });
+    const paths = bundle.snippets.map((s) => s.path);
+    expect(paths).toContain('packages/shared/package.json');
+    expect(paths).toContain('docs/adr/0003-policy-engine.md');
+    expect(bundle.signals.some((s) => s.startsWith('kg-neighbors:'))).toBe(true);
+
+    const sharedIdx = paths.indexOf('packages/shared/package.json');
+    const adrIdx = paths.indexOf('docs/adr/0003-policy-engine.md');
+    const noiseIdx = paths.indexOf('engines/policy/src/zzzz-noise.ts');
+    expect(sharedIdx).toBeGreaterThanOrEqual(0);
+    expect(adrIdx).toBeGreaterThanOrEqual(0);
+    expect(noiseIdx).toBeGreaterThan(sharedIdx);
+    expect(noiseIdx).toBeGreaterThan(adrIdx);
+  });
 });
