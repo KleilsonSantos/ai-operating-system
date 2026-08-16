@@ -46,6 +46,13 @@ function isSafeAction(id: string): id is SafeActionId {
   return (SAFE_ACTIONS as readonly string[]).includes(id);
 }
 
+/** Literal client copy — must not read `Error` (CWE-209 / CodeQL js/stack-trace-exposure). */
+export const SAFE_ACTION_INTERNAL_ERROR = 'internal error';
+
+function logSafeActionFailure(action: SafeActionId, err: unknown): void {
+  console.error(`[console] safe-action ${action} failed`, err);
+}
+
 export async function runSafeAction(request: SafeActionRequest): Promise<SafeActionResponse> {
   const started = Date.now();
   const homePath = request.homePath;
@@ -183,12 +190,13 @@ export async function runSafeAction(request: SafeActionRequest): Promise<SafeAct
 
     return { ok, action, latencyMs, result };
   } catch (err) {
+    logSafeActionFailure(action, err);
     return {
       ok: false,
       action,
       latencyMs: Date.now() - started,
       result: null,
-      error: err instanceof Error ? err.message : String(err),
+      error: SAFE_ACTION_INTERNAL_ERROR,
     };
   }
 }
