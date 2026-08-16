@@ -42,7 +42,7 @@
     },
     {
       "id": "conventional-commits",
-      "description": "Commits: type: <gitmoji> … · merges via gh: always --subject/scripts/merge-pr.sh → merge: 🔀 PR #<n> — <branch> (forbid 'Merge pull request…') · author Kleilson Santos · no IDE Co-authored-by",
+      "description": "Commits: type: <gitmoji> … · merges via gh: always --subject/scripts/merge-pr.sh → merge: 🔀 PR #<n> — <branch> (forbid 'Merge pull request…') · author/committer Kleilson Santos <kdsdesign1@gmail.com> · no IDE Co-authored-by · no Made with Cursor on PR bodies",
       "severity": "must"
     },
     {

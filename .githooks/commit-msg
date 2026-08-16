@@ -27,7 +27,10 @@ if n:
     cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).rstrip() + "\n"
     with open(path, "w", encoding="utf-8") as f:
         f.write(cleaned)
-    print(f"commit-msg: removido(s) {n} trailer(s) de IDE/agente (Cursor)", file=sys.stderr)
+    print(
+        f"commit-msg: removido(s) {n} trailer(s) de IDE/agente — autoria permanece Kleilson Santos <kdsdesign1@gmail.com>",
+        file=sys.stderr,
+    )
 PY
 
 subject="$(head -n 1 "$MSG_FILE" | tr -d '\r')"
