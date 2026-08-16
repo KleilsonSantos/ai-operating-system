@@ -22,14 +22,14 @@ import {
 import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge';
 import { remember, recall, clearMemory, listMemoryWorkspaces } from '@aios/memory';
 import { compilePrompt } from '@aios/prompt';
-import { getProvider, listProviderIds } from '@aios/provider';
+import { getProvider, listProviderIds, routeModel } from '@aios/provider';
 import { getGovernanceStatus, chatWithMetrics, loadMetricsSnapshot } from '@aios/status';
 import { auditDocumentation, searchPkb } from '@aios/documentation';
 import { auditGovernance, recordDecision } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
 import { resolve } from 'node:path';
 import { AgentRegistry } from '@aios-platform/agent-registry';
-import { authorizeMcpTool, deniedMcpPayload } from '@aios/shared';
+import { authorizeMcpTool, deniedMcpPayload, isModelCapabilityClass } from '@aios/shared';
 
 export function createAiosMcpServer(): McpServer {
   const server = new McpServer({
@@ -811,23 +811,37 @@ export function createAiosMcpServer(): McpServer {
         'Cheap/local chat via AIProvider (default Ollama). Use for drafts/summaries — coding stays in Cursor (#67).',
       inputSchema: {
         message: z.string().describe('User message'),
-        provider: z.string().optional().describe('Provider id (default ollama)'),
-        model: z.string().optional().describe('Model name (default AIOS_OLLAMA_MODEL)'),
+        provider: z.string().optional().describe('Provider id (default ollama, or routed class)'),
+        model: z.string().optional().describe('Model name (default from provider or route)'),
+        capabilityClass: z
+          .enum(['fast', 'coding', 'reasoning', 'arbitration'])
+          .optional()
+          .describe('Route by capability class when provider is omitted (ADR-0025)'),
         system: z.string().optional().describe('Optional system prompt'),
         baseUrl: z.string().optional(),
         temperature: z.number().optional(),
       },
     },
-    async ({ message, provider, model, system, baseUrl, temperature }) => {
+    async ({ message, provider, model, system, baseUrl, temperature, capabilityClass }) => {
       try {
         const messages = [
           ...(system ? [{ role: 'system' as const, content: system }] : []),
           { role: 'user' as const, content: message },
         ];
+        let providerId = provider || 'ollama';
+        let modelId = model;
+        if (!provider && capabilityClass && isModelCapabilityClass(capabilityClass)) {
+          const routed = routeModel({
+            intentKind: 'unknown',
+            capabilityClass,
+          });
+          providerId = routed.providerId;
+          modelId = model || routed.modelId;
+        }
         const out = await chatWithMetrics({
-          providerId: provider || 'ollama',
+          providerId,
           baseUrl,
-          request: { model, messages, temperature },
+          request: { model: modelId, messages, temperature },
           source: 'mcp',
         });
         return {

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   authorizeMcpTool,
   deniedMcpPayload,
+  isModelCapabilityClass,
   MCP_TOOL_CATALOG,
   MCP_TOOL_PRIVILEGE,
   privilegeForMcpTool,
@@ -74,6 +75,11 @@ describe('authorizeMcpTool', () => {
       error: 'policy.denied',
       tool: 'aios_workspace_remove',
     });
+  });
+
+  it('accepts capability classes and rejects vendors', () => {
+    expect(isModelCapabilityClass('fast')).toBe(true);
+    expect(isModelCapabilityClass('openai')).toBe(false);
   });
 
   it('covers every catalogued tool', () => {
