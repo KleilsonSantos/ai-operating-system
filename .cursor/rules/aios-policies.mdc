@@ -29,6 +29,7 @@ Regenerate: `pnpm sync:cursor-rules`
 - **docs-language-en** (must): Product docs (docs/**, ADRs, README, AGENTS, CHANGELOG prose) must be US English — ADR-0018 / docs/guides/documentation-language.md; chat with the owner may stay PT; AIOS product-doc migration completed (#142)
 - **artifact-lifecycle** (must): Before creating a file or directory: determine semantic domain, canonical location, lifecycle, and consumer; reuse an existing artifact when it already fulfills the purpose. Living docs use a stable name (Git, ADR, CHANGELOG hold history). Date in a filename only for a snapshot, incident, or evidence (docs/audits/). Do not use tmp/backup/final/latest/copy as versioning.
 - **model-route-by-capability** (must): Model routing selects a capability class (fast|coding|reasoning|arbitration), never a vendor. Operator binds class→provider via AIOS_ROUTE_* env. Default binding is local ollama (ADR-0025).
+- **skills-are-packs** (must): Skills are how, not who: optional Prompt Engine packs (id, purpose, allowedTools, failurePolicy). Default is none — do not load a catalog unless ids are requested. Do not invent a new agent or hook bus for a skill (ADR-0026).
 
 ## SHOULD
 

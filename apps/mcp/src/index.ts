@@ -34,7 +34,7 @@ import { authorizeMcpTool, deniedMcpPayload, isModelCapabilityClass } from '@aio
 export function createAiosMcpServer(): McpServer {
   const server = new McpServer({
     name: 'aios',
-    version: '0.33.1',
+    version: '0.34.0',
   });
 
   const registerRaw = server.registerTool.bind(server);
@@ -145,15 +145,20 @@ export function createAiosMcpServer(): McpServer {
         workspaceId: z.string().optional(),
         repoPath: z.string().optional(),
         memoryLimit: z.number().optional(),
+        skillIds: z
+          .array(z.string())
+          .optional()
+          .describe('Opt-in skill pack ids (ADR-0026). Default: none.'),
       },
     },
-    async ({ input, workspaceId, repoPath, memoryLimit }) => {
+    async ({ input, workspaceId, repoPath, memoryLimit, skillIds }) => {
       try {
         const compiled = compilePrompt({
           input,
           workspaceId: workspaceId || process.env.AIOS_WORKSPACE,
           repoPath: repoPath || process.env.AIOS_REPO,
           memoryLimit,
+          skillIds,
         });
         return {
           content: [
@@ -165,6 +170,7 @@ export function createAiosMcpServer(): McpServer {
                   intent: compiled.intent,
                   workspaceId: compiled.workspaceId,
                   repoPath: compiled.repoPath,
+                  skills: compiled.skills,
                   brief: compiled.brief,
                 },
                 null,
@@ -872,9 +878,13 @@ export function createAiosMcpServer(): McpServer {
           .optional()
           .describe('Context scope relative to repo (e.g. engines/policy)'),
         policiesPath: z.string().optional().describe('Optional policies JSON path'),
+        skillIds: z
+          .array(z.string())
+          .optional()
+          .describe('Opt-in skill pack ids recorded on run.skillIds (ADR-0026). Default: none.'),
       },
     },
-    async ({ input, repoPath, workspaceId, scope, policiesPath }) => {
+    async ({ input, repoPath, workspaceId, scope, policiesPath, skillIds }) => {
       try {
         const response = await runPipeline({
           input,
@@ -882,6 +892,7 @@ export function createAiosMcpServer(): McpServer {
           workspaceId: workspaceId || process.env.AIOS_WORKSPACE,
           scope: scope || process.env.AIOS_SCOPE,
           policiesPath: policiesPath || process.env.AIOS_POLICIES_PATH,
+          skillIds,
         });
         return {
           content: [

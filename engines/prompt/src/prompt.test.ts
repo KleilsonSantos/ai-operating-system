@@ -45,5 +45,36 @@ describe('compilePrompt', () => {
     expect(out.brief).toContain('official-docs');
     expect(out.stats.mustPolicyCount).toBeGreaterThan(0);
     expect(out.stats.briefChars).toBeGreaterThan(100);
+    expect(out.skills).toEqual([]);
+    expect(out.stats.skillCount).toBe(0);
+    expect(out.brief).not.toContain('## Skills');
+  });
+
+  it('injeta skill pack no brief quando pedido', () => {
+    const root = mkdtempSync(join(tmpdir(), 'aios-prompt-skill-'));
+    temps.push(root);
+    writeFileSync(join(root, 'package.json'), '{"name":"p"}');
+    mkdirSync(join(root, 'skills'));
+    writeFileSync(
+      join(root, 'skills', 'aios.skills.json'),
+      JSON.stringify({
+        skills: [
+          {
+            id: 'governed-brief',
+            purpose: 'Stay on the brief',
+            allowedTools: ['aios_compile_prompt'],
+            failurePolicy: 'skip',
+          },
+        ],
+      })
+    );
+    const out = compilePrompt({
+      input: 'Analise meu projeto.',
+      repoPath: root,
+      skillIds: ['governed-brief'],
+    });
+    expect(out.stats.skillCount).toBe(1);
+    expect(out.brief).toContain('## Skills');
+    expect(out.brief).toContain('governed-brief');
   });
 });

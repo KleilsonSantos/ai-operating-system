@@ -346,6 +346,21 @@ export type MemoryStore = {
   entries: MemoryEntry[];
 };
 
+/** How, not who — optional pack for the Prompt Engine (ADR-0026). */
+export const SKILL_FAILURE_POLICIES = ['fail', 'skip', 'retry'] as const;
+
+export type SkillFailurePolicy = (typeof SKILL_FAILURE_POLICIES)[number];
+
+export type SkillManifest = {
+  id: string;
+  purpose: string;
+  allowedTools: string[];
+  failurePolicy: SkillFailurePolicy;
+  prerequisites?: string[];
+  contextRequirements?: string[];
+  validation?: string[];
+};
+
 /** Prompt Engine — brief governado (#59). */
 export type CompilePromptRequest = {
   input: string;
@@ -353,6 +368,10 @@ export type CompilePromptRequest = {
   repoPath?: string;
   policiesPath?: string;
   memoryLimit?: number;
+  /** Opt-in skill pack ids. Default: none. */
+  skillIds?: string[];
+  /** Override `skills/aios.skills.json` */
+  skillsPath?: string;
 };
 
 export type CompiledPrompt = {
@@ -362,11 +381,13 @@ export type CompiledPrompt = {
   repoPath: string;
   /** Texto pronto para o Agent (markdown curto) */
   brief: string;
+  skills: SkillManifest[];
   stats: {
     mustPolicyCount: number;
     memoryCount: number;
     knowledgeNodes: number;
     briefChars: number;
+    skillCount: number;
   };
 };
 
@@ -753,10 +774,12 @@ export type PipelineRequest = {
   costBudget?: RouteCostBudget;
   /** Optional privilege hint for routing (default: caller MCP privilege). */
   privilege?: Privilege;
+  /** Opt-in skill pack ids recorded on `run.skillIds` (ADR-0026). Default: none. */
+  skillIds?: string[];
 };
 
 export type PipelineStepKind =
-  'classify' | 'policy' | 'context' | 'route' | 'knowledge' | 'memory' | 'agent' | 'gate';
+  'classify' | 'policy' | 'context' | 'route' | 'skill' | 'knowledge' | 'memory' | 'agent' | 'gate';
 
 export type PipelineStepStatus = 'ok' | 'skip' | 'fail' | 'denied';
 
