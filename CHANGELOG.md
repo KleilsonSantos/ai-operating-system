@@ -4,13 +4,15 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.40.0] - 2026-08-18
+
 ### Added
 
 - 📈 Console Agent Catalog adoption time-series — daily `agent.execution` buckets (7d / 30d) via `@aios/status` (#324)
 
 ### Fixed
 
-- 🐛 Node 24 strip-types: rewrite provider parameter properties; run CLI/MCP/console API via `tsx` (`.js` → `.ts` specifiers)
+- 🐛 Node 24 strip-types: rewrite provider parameter properties; run CLI/MCP/console API via `tsx` (#324)
 
 ## [0.39.0] - 2026-08-18
 
