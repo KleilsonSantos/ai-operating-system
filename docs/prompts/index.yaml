@@ -2,7 +2,7 @@
 # Machine-readable; keep in sync with by-domain/**/*.md frontmatter.
 
 version: 1
-updated_at: 2026-08-15
+updated_at: 2026-08-18
 root: docs/prompts
 
 prompts:
@@ -21,6 +21,22 @@ prompts:
     status: active
     language: pt-BR
     tags: [documentation, repository-structure, naming, artifact-lifecycle, architecture-audit]
+
+  - id: prompt.documentation.git-artifact-traceability
+    path: by-domain/documentation/git-artifact-traceability.v1.md
+    domain: documentation
+    version: 1
+    status: active
+    language: pt-BR
+    tags: [documentation, git, traceability, migration, repository-governance]
+
+  - id: prompt.documentation.migration-scope-audit
+    path: by-domain/documentation/migration-scope-audit.v1.md
+    domain: documentation
+    version: 1
+    status: active
+    language: pt-BR
+    tags: [documentation, migration, repository-governance, artifact-lifecycle]
 
   - id: prompt.knowledge.project-knowledge-base-evolution
     path: by-domain/knowledge/project-knowledge-base-evolution.v1.md
@@ -45,3 +61,11 @@ prompts:
     status: active
     language: pt-BR
     tags: [agent-runtime, model-routing, execution-governance, skills, architecture]
+
+  - id: prompt.ai-engineering.audit-to-issue-generation
+    path: by-domain/ai-engineering/audit-to-issue-generation.v1.md
+    domain: ai-engineering
+    version: 1
+    status: active
+    language: pt-BR
+    tags: [ai-engineering, issues, audit, github, product-engineering]
