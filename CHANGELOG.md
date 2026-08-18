@@ -8,6 +8,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 - 📈 Console Agent Catalog adoption time-series — daily `agent.execution` buckets (7d / 30d) via `@aios/status` (#324)
 
+### Fixed
+
+- 🐛 Console API dev on Node 24 — use `tsx` instead of `--experimental-strip-types` (parameter properties in `@aios/provider`)
+
 ## [0.39.0] - 2026-08-18
 
 ### Added
