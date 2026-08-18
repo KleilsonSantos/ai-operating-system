@@ -111,7 +111,9 @@ function checksFromWorkflowRun() {
     `/repos/${repo}/commits/${sha}/check-runs?per_page=100`,
     '--paginate',
   ]);
-  const rows = Array.isArray(data) ? data.flatMap((p) => p.check_runs || []) : data.check_runs || [];
+  const rows = Array.isArray(data)
+    ? data.flatMap((p) => p.check_runs || [])
+    : data.check_runs || [];
   const events = [];
   for (const row of rows) {
     const conclusion = normalizeConclusion(row.conclusion || row.status);
