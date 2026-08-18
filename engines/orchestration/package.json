@@ -24,7 +24,7 @@
     "@aios/agent-qa": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.2.0",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   }
