@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📚 PKB intake — audit-to-issue-generation, git-artifact-traceability, migration-scope-audit (dedup pass from prompt-engineering-backup)
+
 ## [0.38.0] - 2026-08-16
 
 ### Added
