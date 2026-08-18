@@ -7,6 +7,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 ### Added
 
 - 📡 Delivery CI observability — `delivery.ci` JSONL events, Prometheus `aios_delivery_ci_*`, GHA artifact ingest, `record-delivery-ci.mjs` (ADR-0028)
+- 🧭 AI harness mapping — ADR-0029, architecture guide, agent framework boundaries (Phase A)
 
 ## [0.38.0] - 2026-08-16
 
