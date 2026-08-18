@@ -6,6 +6,7 @@ import {
   chatWithMetrics,
   getGovernanceStatus,
   loadMetricsSnapshot,
+  loadAgentAdoptionSeries,
   recordAgentExecution,
   recordMetricEvent,
   recordProviderChatMetric,
@@ -200,6 +201,45 @@ describe('getGovernanceStatus', () => {
     const row = snap.agentExecution?.byAgent.find((a) => a.agent === '@aios/agent-docs');
     expect(row?.count).toBe(2);
     expect(row?.count7d).toBe(1);
+  });
+
+  it('builds adoption series by UTC day for 7d and 30d windows', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'aios-status-adopt-'));
+    temps.push(root);
+    const now = Date.parse('2026-08-07T12:00:00.000Z');
+    mkdirSync(join(root, '.aios', 'metrics'), { recursive: true });
+    writeFileSync(
+      join(root, '.aios', 'metrics', 'events.jsonl'),
+      [
+        JSON.stringify({
+          kind: 'agent.execution',
+          agent: '@aios/agent-docs',
+          outcome: 'success',
+          at: '2026-08-07T10:00:00.000Z',
+        }),
+        JSON.stringify({
+          kind: 'agent.execution',
+          agent: '@aios/agent-docs',
+          outcome: 'success',
+          at: '2026-08-06T10:00:00.000Z',
+        }),
+        JSON.stringify({
+          kind: 'agent.execution',
+          agent: '@aios/agent-qa',
+          outcome: 'success',
+          at: '2026-07-15T10:00:00.000Z',
+        }),
+      ].join('\n') + '\n'
+    );
+    const snap = loadMetricsSnapshot({ homePath: root, nowMs: now });
+    expect(snap.agentExecution?.adoption7d?.total.reduce((a, b) => a + b, 0)).toBe(2);
+    expect(snap.agentExecution?.adoption30d?.total.reduce((a, b) => a + b, 0)).toBe(3);
+    expect(
+      snap.agentExecution?.adoption7d?.byAgent['@aios/agent-docs']?.reduce((a, b) => a + b, 0)
+    ).toBe(2);
+    const series = loadAgentAdoptionSeries({ homePath: root, days: 7, nowMs: now });
+    expect(series.days).toBe(7);
+    expect(series.buckets).toHaveLength(7);
   });
 
   it('includes Agent Catalog rows from the registry without executions', async () => {

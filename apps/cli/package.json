@@ -7,26 +7,27 @@
     "aios": "./src/index.ts"
   },
   "scripts": {
-    "dev": "node --experimental-strip-types ./src/index.ts",
+    "dev": "tsx ./src/index.ts",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "node -e \"process.exit(0)\"",
     "test": "node -e \"process.exit(0)\""
   },
   "dependencies": {
-    "@aios/pipeline": "workspace:*",
-    "@aios/prompt": "workspace:*",
-    "@aios/provider": "workspace:*",
-    "@aios/status": "workspace:*",
+    "@aios-platform/agent-registry": "workspace:*",
     "@aios/documentation": "workspace:*",
     "@aios/governance": "workspace:*",
     "@aios/operational-state": "workspace:*",
-    "@aios/workspace": "workspace:*",
+    "@aios/pipeline": "workspace:*",
+    "@aios/prompt": "workspace:*",
+    "@aios/provider": "workspace:*",
     "@aios/shared": "workspace:*",
-    "@aios-platform/agent-registry": "workspace:*"
+    "@aios/status": "workspace:*",
+    "@aios/workspace": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
+    "tsx": "^4.23.12",
     "typescript": "^5.9.2"
   }
 }

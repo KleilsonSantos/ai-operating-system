@@ -523,15 +523,17 @@ const PROVIDERS: Record<string, (opts?: ProviderOptions) => AIProvider> = {
  */
 export class ResilientProvider implements AIProvider {
   readonly id: string;
+  private readonly inner: AIProvider;
   private readonly circuit: CircuitBreaker;
   private readonly cfg: ReturnType<typeof resolveResilience>;
   private readonly sleep?: (ms: number) => Promise<void>;
 
   constructor(
-    private readonly inner: AIProvider,
+    inner: AIProvider,
     opts: ResilienceOptions = {},
     hooks?: { sleep?: (ms: number) => Promise<void>; now?: () => number }
   ) {
+    this.inner = inner;
     this.id = inner.id;
     this.cfg = resolveResilience(opts);
     this.circuit = new CircuitBreaker(

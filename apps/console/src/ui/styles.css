@@ -313,6 +313,135 @@ button:disabled {
   margin: 0.25rem 0 0.85rem;
 }
 
+.adoption-chart {
+  margin: 0 0 1rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 0.35rem;
+}
+
+.adoption-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.adoption-head h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.adoption-tabs {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.adoption-tabs button {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.adoption-tabs button.active,
+.adoption-tabs button[aria-selected='true'] {
+  background: var(--teal);
+  border-color: var(--teal-deep);
+  color: #fff;
+}
+
+.adoption-bars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(2rem, 1fr));
+  gap: 0.35rem;
+  align-items: end;
+  min-height: 5.5rem;
+  padding: 0.25rem 0 0.15rem;
+}
+
+.adoption-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  min-height: 5rem;
+  justify-content: flex-end;
+}
+
+.adoption-bar {
+  width: 100%;
+  max-width: 1.75rem;
+  background: linear-gradient(180deg, var(--teal) 0%, var(--teal-deep) 100%);
+  border-radius: 0.2rem 0.2rem 0.05rem 0.05rem;
+  min-height: 4px;
+}
+
+.adoption-bar-label {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.62rem;
+  color: rgba(15, 28, 26, 0.65);
+}
+
+.adoption-bar-value {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--teal-deep);
+  min-height: 0.85rem;
+}
+
+.adoption-agents {
+  list-style: none;
+  margin: 0.65rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.adoption-agents li {
+  display: grid;
+  grid-template-columns: minmax(5rem, 8rem) 1fr;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.78rem;
+}
+
+.adoption-agent-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgba(15, 28, 26, 0.78);
+}
+
+.adoption-spark {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 1.1rem;
+}
+
+.adoption-spark-bar {
+  flex: 1;
+  max-width: 0.55rem;
+  background: rgba(13, 107, 92, 0.55);
+  border-radius: 1px;
+  min-height: 2px;
+}
+
+.adoption-empty {
+  margin: 0 0 1rem;
+}
+
 .catalog-list {
   list-style: none;
   margin: 0;
