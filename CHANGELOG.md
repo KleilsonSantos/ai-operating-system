@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📋 PKB: catalog `prompt.ai-engineering.integral-e2e-evidence-audit` — toolchain plus usability, MCP tools, and other-project gates
+
 ## [0.40.0] - 2026-08-18
 
 ### Added
