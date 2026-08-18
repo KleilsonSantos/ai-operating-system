@@ -4,11 +4,17 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.39.0] - 2026-08-18
+
 ### Added
 
 - 🌳 Agent Registry transitive dependency resolver — `resolveDependencyTree`, CLI `--agent-tree` / `--agent-tree-root`, MCP `aios_list_agents` `dependencyTree` (#309)
 - 📡 Delivery CI observability — `delivery.ci` JSONL events, Prometheus `aios_delivery_ci_*`, GHA artifact ingest, `record-delivery-ci.mjs` (ADR-0028)
-- 🧭 AI harness mapping — ADR-0029, architecture guide, agent framework boundaries (Phase A)
+- 🧭 AI harness mapping — ADR-0029, architecture guide, agent framework boundaries (#321)
+
+### Changed
+
+- 🎨 lint-staged Prettier scope includes `.js`, `.cjs`, and `.mjs` (#314)
 
 ## [0.38.0] - 2026-08-16
 
