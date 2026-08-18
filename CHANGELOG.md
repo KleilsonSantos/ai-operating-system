@@ -6,7 +6,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Added
 
-- 📚 PKB intake — audit-to-issue-generation, git-artifact-traceability, migration-scope-audit (dedup pass from prompt-engineering-backup)
+- 📡 Delivery CI observability — `delivery.ci` JSONL events, Prometheus `aios_delivery_ci_*`, GHA artifact ingest, `record-delivery-ci.mjs` (ADR-0028)
 
 ## [0.38.0] - 2026-08-16
 
