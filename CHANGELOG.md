@@ -10,7 +10,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Fixed
 
-- 🐛 Console API dev on Node 24 — use `tsx` instead of `--experimental-strip-types` (parameter properties in `@aios/provider`)
+- 🐛 Node 24 strip-types: rewrite provider parameter properties; run CLI/MCP/console API via `tsx` (`.js` → `.ts` specifiers)
 
 ## [0.39.0] - 2026-08-18
 
