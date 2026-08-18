@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   escapePromLabel,
   loadMetricsSnapshot,
+  recordDeliveryCiMetric,
   recordProviderChatMetric,
   renderPrometheusMetrics,
 } from './index.ts';
@@ -67,5 +68,27 @@ describe('prometheus metrics', () => {
     expect(text).toContain('aios_provider_chat_requests_total{provider="openai"} 1');
     expect(text).toContain('aios_provider_chat_errors_total{provider="openai"} 1');
     expect(text).toContain('aios_provider_chat_tokens_total{provider="ollama"} 5');
+  });
+
+  it('aggregates delivery.ci by check, conclusion, and base_branch', () => {
+    const root = mkdtempSync(join(tmpdir(), 'aios-prom-delivery-'));
+    temps.push(root);
+    writeFileSync(join(root, 'package.json'), '{"name":"x"}');
+    recordDeliveryCiMetric(
+      { check: 'quality', conclusion: 'success', baseBranch: 'sandbox', pr: 313 },
+      { homePath: root }
+    );
+    recordDeliveryCiMetric(
+      { check: 'quality', conclusion: 'failure', baseBranch: 'main', pr: 314 },
+      { homePath: root }
+    );
+    const text = renderPrometheusMetrics({ homePath: root });
+    expect(text).toContain(
+      'aios_delivery_ci_total{check="quality",conclusion="success",base_branch="sandbox"} 1'
+    );
+    expect(text).toContain(
+      'aios_delivery_ci_total{check="quality",conclusion="failure",base_branch="main"} 1'
+    );
+    expect(text).toContain('aios_delivery_ci_errors_total 1');
   });
 });
