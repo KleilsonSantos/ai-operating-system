@@ -78,6 +78,28 @@ export type AgentExecutionByAgent = AgentExecutionTotals & {
   lastAt?: string;
 };
 
+export type DeliveryCiConclusion =
+  'success' | 'failure' | 'skipped' | 'cancelled' | 'pending' | 'unknown' | string;
+
+export type DeliveryCiMetricInput = {
+  check: string;
+  conclusion: DeliveryCiConclusion;
+  baseBranch: string;
+  pr?: number;
+  runId?: number | string;
+  commit?: string;
+  url?: string;
+  source?: string;
+};
+
+export type DeliveryCiByCheck = {
+  check: string;
+  conclusion: DeliveryCiConclusion;
+  baseBranch: string;
+  count: number;
+  errorCount: number;
+};
+
 export type MetricsSnapshot = {
   path: string;
   eventCount: number;
@@ -85,6 +107,11 @@ export type MetricsSnapshot = {
   byProvider: ProviderChatByProvider[];
   agentExecution?: AgentExecutionTotals & {
     byAgent: AgentExecutionByAgent[];
+  };
+  deliveryCi?: {
+    count: number;
+    errorCount: number;
+    byCheck: DeliveryCiByCheck[];
   };
 };
 
@@ -180,6 +207,15 @@ export function loadMetricsSnapshot(
     lastAt?: string;
   };
   const perAgent = new Map<string, AgentBucket>();
+  const deliveryTotal = { count: 0, errorCount: 0 };
+  type DeliveryBucket = { count: number; errorCount: number };
+  const perDelivery = new Map<string, DeliveryBucket>();
+
+  const deliveryKey = (check: string, conclusion: string, baseBranch: string) =>
+    `${check}\0${conclusion}\0${baseBranch}`;
+
+  const isDeliveryFailure = (conclusion: string) =>
+    conclusion === 'failure' || conclusion === 'cancelled' || conclusion === 'timed_out';
 
   try {
     const raw = readFileSync(path, 'utf8');
@@ -236,6 +272,30 @@ export function loadMetricsSnapshot(
         if (Number.isFinite(atMs) && nowMs - atMs <= window7dMs && nowMs - atMs >= 0) {
           bucket.count7d += 1;
         }
+        continue;
+      }
+      if (ev.kind === 'delivery.ci') {
+        const check = typeof ev.check === 'string' && ev.check.trim() ? ev.check.trim() : 'unknown';
+        const conclusion =
+          typeof ev.conclusion === 'string' && ev.conclusion.trim()
+            ? ev.conclusion.trim().toLowerCase()
+            : 'unknown';
+        const baseBranch =
+          typeof ev.baseBranch === 'string' && ev.baseBranch.trim()
+            ? ev.baseBranch.trim()
+            : 'unknown';
+        const key = deliveryKey(check, conclusion, baseBranch);
+        let bucket = perDelivery.get(key);
+        if (!bucket) {
+          bucket = { count: 0, errorCount: 0 };
+          perDelivery.set(key, bucket);
+        }
+        deliveryTotal.count += 1;
+        bucket.count += 1;
+        if (isDeliveryFailure(conclusion)) {
+          deliveryTotal.errorCount += 1;
+          bucket.errorCount += 1;
+        }
       }
     }
   } catch {
@@ -264,6 +324,23 @@ export function loadMetricsSnapshot(
     }))
     .sort((a, b) => a.agent.localeCompare(b.agent));
 
+  const byCheck = [...perDelivery.entries()]
+    .map(([key, b]) => {
+      const [check, conclusion, baseBranch] = key.split('\0');
+      return {
+        check: check || 'unknown',
+        conclusion: conclusion || 'unknown',
+        baseBranch: baseBranch || 'unknown',
+        count: b.count,
+        errorCount: b.errorCount,
+      };
+    })
+    .sort((a, b) =>
+      `${a.baseBranch}:${a.check}:${a.conclusion}`.localeCompare(
+        `${b.baseBranch}:${b.check}:${b.conclusion}`
+      )
+    );
+
   return {
     path,
     eventCount,
@@ -275,6 +352,14 @@ export function loadMetricsSnapshot(
             count: agentTotal.count,
             errorCount: agentTotal.errorCount,
             byAgent,
+          }
+        : undefined,
+    deliveryCi:
+      deliveryTotal.count > 0
+        ? {
+            count: deliveryTotal.count,
+            errorCount: deliveryTotal.errorCount,
+            byCheck,
           }
         : undefined,
   };
@@ -394,6 +479,31 @@ export function renderPrometheusMetrics(options: { homePath?: string } = {}): st
     }
   }
 
+  if (snap.deliveryCi) {
+    out.push(
+      '# HELP aios_delivery_ci_total GitHub check conclusions indexed as delivery.ci JSONL.'
+    );
+    out.push('# TYPE aios_delivery_ci_total counter');
+    if (snap.deliveryCi.byCheck.length === 0) {
+      out.push(promLine('aios_delivery_ci_total', 0));
+    } else {
+      for (const row of snap.deliveryCi.byCheck) {
+        out.push(
+          promLine('aios_delivery_ci_total', row.count, {
+            check: row.check,
+            conclusion: String(row.conclusion),
+            base_branch: row.baseBranch,
+          })
+        );
+      }
+    }
+    out.push(
+      '# HELP aios_delivery_ci_errors_total delivery.ci rows with failure-like conclusions.'
+    );
+    out.push('# TYPE aios_delivery_ci_errors_total counter');
+    out.push(promLine('aios_delivery_ci_errors_total', snap.deliveryCi.errorCount));
+  }
+
   return `${out.join('\n')}\n`;
 }
 
@@ -448,6 +558,27 @@ export function recordAgentExecution(
       ok,
       durationMs: input.durationMs,
       source: input.source,
+    },
+    options
+  );
+}
+
+/** Record a GitHub CI check conclusion (`kind: delivery.ci`) — ADR-0028. */
+export function recordDeliveryCiMetric(
+  input: DeliveryCiMetricInput,
+  options: { homePath?: string } = {}
+): string {
+  return recordMetricEvent(
+    {
+      kind: 'delivery.ci',
+      check: input.check,
+      conclusion: String(input.conclusion).toLowerCase(),
+      baseBranch: input.baseBranch,
+      pr: input.pr,
+      runId: input.runId,
+      commit: input.commit,
+      url: input.url,
+      source: input.source || 'local',
     },
     options
   );

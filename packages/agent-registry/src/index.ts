@@ -11,6 +11,21 @@ import { load as yamlLoad } from 'js-yaml';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 
+import {
+  resolveDependencyTree as buildDependencyTree,
+  type AgentDependencyTreeNode,
+} from './dependency-tree.js';
+
+export {
+  resolveDependencyTree,
+  buildAgentIndex,
+  formatDependencyIssues,
+  formatDependencyTreeText,
+  type AgentDependencyTreeNode,
+  type AgentDependencyIssue,
+  type ResolveDependencyTreeOptions,
+} from './dependency-tree.js';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const agentSchema = JSON.parse(
   readFileSync(path.join(__dirname, '../schema/agent.schema.json'), 'utf-8')
@@ -138,7 +153,10 @@ export class AgentRegistry {
           version: '0.0.0',
           displayName: 'QA Agent',
           description: 'Sugere e valida testes',
-          dependencies: { engines: ['context'] },
+          dependencies: {
+            engines: ['context'],
+            agents: [{ name: '@aios/agent-docs' }],
+          },
           metadata: { category: 'testing', tags: ['qa', 'tests'] },
         },
         source: 'builtin',
@@ -296,6 +314,14 @@ export class AgentRegistry {
   async getAgent(name: string): Promise<AgentEntry | undefined> {
     const agents = await this.listAgents();
     return agents.find((a) => a.manifest.name === name);
+  }
+
+  async resolveDependencyTreeForAgent(
+    rootName: string,
+    options?: { maxDepth?: number; listOptions?: Parameters<AgentRegistry['listAgents']>[0] }
+  ): Promise<AgentDependencyTreeNode | null> {
+    const agents = await this.listAgents(options?.listOptions);
+    return buildDependencyTree(rootName, agents, { maxDepth: options?.maxDepth });
   }
 
   async saveRegistry(agents: AgentEntry[]): Promise<void> {

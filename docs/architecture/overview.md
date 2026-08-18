@@ -2,6 +2,8 @@
 
 Source of truth for the product shape. Implementation arrives by phase ([ROADMAP](../ROADMAP.md)); this doc describes the **target**.
 
+Industry “AI harness” vocabulary maps to shipped engines in [harness-mapping.md](./harness-mapping.md) ([ADR-0029](../adr/0029-ai-harness-mapping.md)).
+
 ## Principle
 
 Agents are **plugins**. The user talks to AIOS; AIOS orchestrates.
