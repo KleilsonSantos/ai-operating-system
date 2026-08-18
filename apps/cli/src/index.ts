@@ -11,7 +11,7 @@ import { auditDocumentation, searchPkb } from '@aios/documentation';
 import { auditGovernance } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
 import { resolveWorkspace } from '@aios/workspace';
-import { AgentRegistry } from '@aios-platform/agent-registry';
+import { AgentRegistry, formatDependencyTreeText } from '@aios-platform/agent-registry';
 
 function parseCsvIds(raw: string | undefined): string[] | undefined {
   if (!raw?.trim()) return undefined;
@@ -48,6 +48,8 @@ function parseArgs(argv: string[]): {
   listAgentsMaintainer?: string;
   listAgentsName?: string;
   listAgentsJson: boolean;
+  listAgentsTree: boolean;
+  listAgentsTreeRoot?: string;
   providerId: string;
   model?: string;
 } {
@@ -75,6 +77,8 @@ function parseArgs(argv: string[]): {
   let listAgentsMaintainer: string | undefined;
   let listAgentsName: string | undefined;
   let listAgentsJson = false;
+  let listAgentsTree = false;
+  let listAgentsTreeRoot: string | undefined;
   let providerId = 'ollama';
   let model: string | undefined;
   const parts: string[] = [];
@@ -227,6 +231,20 @@ function parseArgs(argv: string[]): {
       listAgentsJson = true;
       continue;
     }
+    if (a === '--agent-tree') {
+      listAgentsTree = true;
+      continue;
+    }
+    if (a === '--agent-tree-root') {
+      listAgentsTree = true;
+      listAgentsTreeRoot = argv[++i];
+      continue;
+    }
+    if (a.startsWith('--agent-tree-root=')) {
+      listAgentsTree = true;
+      listAgentsTreeRoot = a.slice('--agent-tree-root='.length);
+      continue;
+    }
     if (a === '--provider') {
       providerId = argv[++i] || 'ollama';
       continue;
@@ -276,6 +294,8 @@ function parseArgs(argv: string[]): {
     listAgentsMaintainer,
     listAgentsName,
     listAgentsJson,
+    listAgentsTree,
+    listAgentsTreeRoot,
     providerId,
     model,
   };
@@ -323,23 +343,54 @@ async function main(): Promise<void> {
     const healthByAgent = new Map(
       (snap.agentExecution?.byAgent ?? []).map((row) => [row.agent, row])
     );
-    const enriched = agents.map((agent) => {
-      const metrics = healthByAgent.get(agent.manifest.name);
-      return {
-        ...agent,
-        healthScore: metrics?.healthScore,
-        executionCount: metrics?.count,
-      };
-    });
+    const treeTargets = args.listAgentsTreeRoot
+      ? agents.filter((a) => a.manifest.name === args.listAgentsTreeRoot)
+      : agents;
+    const enriched = await Promise.all(
+      agents.map(async (agent) => {
+        const metrics = healthByAgent.get(agent.manifest.name);
+        const row: Record<string, unknown> = {
+          ...agent,
+          healthScore: metrics?.healthScore,
+          executionCount: metrics?.count,
+        };
+        if (args.listAgentsTree) {
+          const includeTree =
+            !args.listAgentsTreeRoot || agent.manifest.name === args.listAgentsTreeRoot;
+          row.dependencyTree = includeTree
+            ? await registry.resolveDependencyTreeForAgent(agent.manifest.name)
+            : undefined;
+        }
+        return row;
+      })
+    );
     if (args.listAgentsJson) {
       console.log(JSON.stringify({ count: enriched.length, agents: enriched }, null, 2));
+    } else if (args.listAgentsTree && args.listAgentsTreeRoot && treeTargets.length === 0) {
+      console.error(`Agent not found: ${args.listAgentsTreeRoot}`);
+      process.exitCode = 1;
+    } else if (args.listAgentsTree) {
+      for (const agent of treeTargets) {
+        const tree = await registry.resolveDependencyTreeForAgent(agent.manifest.name);
+        if (!tree) {
+          console.error(`Agent not found: ${agent.manifest.name}`);
+          process.exitCode = 1;
+          continue;
+        }
+        console.log(`Dependency tree: ${agent.manifest.name}`);
+        for (const line of formatDependencyTreeText(tree)) {
+          console.log(line);
+        }
+        console.log();
+      }
     } else {
       console.log('Agents disponíveis:');
       console.log();
-      for (const agent of enriched) {
-        const health = typeof agent.healthScore === 'number' ? ` health=${agent.healthScore}%` : '';
-        const runs =
-          typeof agent.executionCount === 'number' ? ` runs=${agent.executionCount}` : '';
+      for (const agent of agents) {
+        const metrics = healthByAgent.get(agent.manifest.name);
+        const health =
+          typeof metrics?.healthScore === 'number' ? ` health=${metrics.healthScore}%` : '';
+        const runs = typeof metrics?.count === 'number' ? ` runs=${metrics.count}` : '';
         console.log(
           `  ${agent.manifest.displayName || agent.manifest.name} (${agent.manifest.version}) [${agent.source}]${health}${runs}`
         );

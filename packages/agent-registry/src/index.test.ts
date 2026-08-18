@@ -2,7 +2,12 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
-import { AgentRegistry } from './index.js';
+import {
+  AgentRegistry,
+  resolveDependencyTree,
+  formatDependencyIssues,
+  formatDependencyTreeText,
+} from './index.js';
 
 describe('AgentRegistry', () => {
   let tempDir: string;
@@ -96,5 +101,127 @@ describe('AgentRegistry', () => {
     const registry = new AgentRegistry({ registryPath, communityCatalogPath: catalogPath });
     const agents = await registry.listAgents({ includeLocal: false, includeCommunity: false });
     expect(agents.every((a) => a.source !== 'community')).toBe(true);
+  });
+
+  it('resolves builtin QA → Docs dependency tree', async () => {
+    const emptyCatalog = path.join(tempDir, 'empty-community.json');
+    await fs.writeFile(emptyCatalog, JSON.stringify({ agents: [] }));
+    const registry = new AgentRegistry({
+      registryPath,
+      communityCatalogPath: emptyCatalog,
+    });
+    const tree = await registry.resolveDependencyTreeForAgent('@aios/agent-qa', {
+      listOptions: { includeLocal: false, includeCommunity: false },
+    });
+    expect(tree).toBeDefined();
+    expect(tree?.children.some((c) => c.name === '@aios/agent-docs')).toBe(true);
+    expect(formatDependencyTreeText(tree!).join('\n')).toContain('Docs Agent');
+  });
+});
+
+describe('resolveDependencyTree', () => {
+  const agents = [
+    {
+      manifest: {
+        name: '@test/root',
+        version: '1.0.0',
+        dependencies: {
+          agents: [{ name: '@test/mid' }],
+        },
+      },
+      source: 'local' as const,
+    },
+    {
+      manifest: {
+        name: '@test/mid',
+        version: '1.0.0',
+        dependencies: {
+          agents: [{ name: '@test/leaf' }],
+        },
+      },
+      source: 'local' as const,
+    },
+    {
+      manifest: {
+        name: '@test/leaf',
+        version: '1.0.0',
+      },
+      source: 'local' as const,
+    },
+  ];
+
+  it('walks transitive agent dependencies', () => {
+    const tree = resolveDependencyTree('@test/root', agents);
+    expect(tree?.children[0]?.name).toBe('@test/mid');
+    expect(tree?.children[0]?.children[0]?.name).toBe('@test/leaf');
+  });
+
+  it('flags missing dependencies', () => {
+    const tree = resolveDependencyTree('@test/root', [
+      {
+        manifest: {
+          name: '@test/root',
+          version: '1.0.0',
+          dependencies: { agents: [{ name: '@test/missing' }] },
+        },
+        source: 'local',
+      },
+    ]);
+    expect(tree?.children[0]?.issues.some((i) => i.kind === 'missing')).toBe(true);
+    expect(formatDependencyIssues(tree!).some((l) => l.includes('missing'))).toBe(true);
+  });
+
+  it('detects cycles', () => {
+    const cyclic = [
+      {
+        manifest: {
+          name: '@test/a',
+          version: '1.0.0',
+          dependencies: { agents: [{ name: '@test/b' }] },
+        },
+        source: 'local' as const,
+      },
+      {
+        manifest: {
+          name: '@test/b',
+          version: '1.0.0',
+          dependencies: { agents: [{ name: '@test/a' }] },
+        },
+        source: 'local' as const,
+      },
+    ];
+    const tree = resolveDependencyTree('@test/a', cyclic);
+    const issues = formatDependencyIssues(tree!);
+    expect(issues.some((line) => line.startsWith('cycle:'))).toBe(true);
+  });
+
+  it('stops at max depth', () => {
+    const deep = [
+      {
+        manifest: {
+          name: '@test/d0',
+          version: '1.0.0',
+          dependencies: { agents: [{ name: '@test/d1' }] },
+        },
+        source: 'local' as const,
+      },
+      {
+        manifest: {
+          name: '@test/d1',
+          version: '1.0.0',
+          dependencies: { agents: [{ name: '@test/d2' }] },
+        },
+        source: 'local' as const,
+      },
+      {
+        manifest: {
+          name: '@test/d2',
+          version: '1.0.0',
+        },
+        source: 'local' as const,
+      },
+    ];
+    const tree = resolveDependencyTree('@test/d0', deep, { maxDepth: 1 });
+    expect(formatDependencyIssues(tree!).some((l) => l.includes('max depth'))).toBe(true);
   });
 });

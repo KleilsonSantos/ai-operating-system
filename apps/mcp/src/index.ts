@@ -89,9 +89,15 @@ export function createAiosMcpServer(): McpServer {
         tags: z.array(z.string()).optional().describe('Filter agents by tags'),
         maintainer: z.string().optional().describe('Filter agents by maintainer'),
         name: z.string().optional().describe('Filter agents by name (substring match)'),
+        dependencyTree: z
+          .boolean()
+          .optional()
+          .describe(
+            'When true, include transitive agent dependencyTree per row (cycles, missing deps, max depth)'
+          ),
       },
     },
-    async ({ tags, maintainer, name }) => {
+    async ({ tags, maintainer, name, dependencyTree }) => {
       try {
         const registry = new AgentRegistry();
         const agents = await registry.listAgentsFiltered({ tags, maintainer, name });
@@ -101,14 +107,22 @@ export function createAiosMcpServer(): McpServer {
         const healthByAgent = new Map(
           (snap.agentExecution?.byAgent ?? []).map((row) => [row.agent, row])
         );
-        const enriched = agents.map((agent) => {
-          const metrics = healthByAgent.get(agent.manifest.name);
-          return {
-            ...agent,
-            healthScore: metrics?.healthScore,
-            executionCount: metrics?.count,
-          };
-        });
+        const enriched = await Promise.all(
+          agents.map(async (agent) => {
+            const metrics = healthByAgent.get(agent.manifest.name);
+            const row: Record<string, unknown> = {
+              ...agent,
+              healthScore: metrics?.healthScore,
+              executionCount: metrics?.count,
+            };
+            if (dependencyTree) {
+              row.dependencyTree = await registry.resolveDependencyTreeForAgent(
+                agent.manifest.name
+              );
+            }
+            return row;
+          })
+        );
         return {
           content: [
             {

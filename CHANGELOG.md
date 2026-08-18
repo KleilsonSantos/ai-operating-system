@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🌳 Agent Registry transitive dependency resolver — `resolveDependencyTree`, CLI `--agent-tree` / `--agent-tree-root`, MCP `aios_list_agents` `dependencyTree` (#309)
+
 ## [0.38.0] - 2026-08-16
 
 ### Added
