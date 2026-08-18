@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { GovernanceStatus } from './types';
 import { TryItPanel } from './TryItPanel';
 import { formatConsumptionChip } from './consumption';
+import { AdoptionChart } from './AdoptionChart';
 
 type CatalogView = 'all' | 'top' | 'unhealthy';
 
@@ -35,6 +36,15 @@ export function App() {
   }, [refresh]);
 
   const catalogRows = status ? filterCatalogAgents(status.agents, catalogView) : [];
+  const topAgentNames = status
+    ? [...status.agents]
+        .filter((a) => (a.executions7d ?? a.executions ?? 0) > 0)
+        .sort(
+          (a, b) => (b.executions7d ?? b.executions ?? 0) - (a.executions7d ?? a.executions ?? 0)
+        )
+        .slice(0, 5)
+        .map((a) => a.name)
+    : [];
 
   const errors = status?.attention.filter((a) => a.severity === 'error').length ?? 0;
   const warns = status?.attention.filter((a) => a.severity === 'warn').length ?? 0;
@@ -261,6 +271,11 @@ export function App() {
               Registry agents joined with local <code>agent.execution</code> health. Top-used sorts
               by runs; Unhealthy shows health &lt; {UNHEALTHY_THRESHOLD}%.
             </p>
+            <AdoptionChart
+              adoption7d={status.metrics.agentExecution?.adoption7d}
+              adoption30d={status.metrics.agentExecution?.adoption30d}
+              topAgents={topAgentNames}
+            />
             <div className="catalog-tabs" role="tablist" aria-label="Catalog views">
               {(
                 [

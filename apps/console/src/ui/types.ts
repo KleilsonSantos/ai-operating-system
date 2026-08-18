@@ -68,6 +68,18 @@ export type GovernanceStatus = {
         count7d?: number;
         lastAt?: string;
       }>;
+      adoption7d?: {
+        days: number;
+        buckets: string[];
+        total: number[];
+        byAgent: Record<string, number[]>;
+      };
+      adoption30d?: {
+        days: number;
+        buckets: string[];
+        total: number[];
+        byAgent: Record<string, number[]>;
+      };
     };
   };
 };

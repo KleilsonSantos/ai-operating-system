@@ -12,6 +12,7 @@ import {
   PIPELINE_CONTRACT_VERSION,
   type AgentCatalogEntry,
   type AttentionItem,
+  type AgentAdoptionSeries,
   type ChatRequest,
   type ChatResponse,
   type ChatUsage,
@@ -78,6 +79,8 @@ export type AgentExecutionByAgent = AgentExecutionTotals & {
   lastAt?: string;
 };
 
+export type { AgentAdoptionSeries };
+
 export type DeliveryCiConclusion =
   'success' | 'failure' | 'skipped' | 'cancelled' | 'pending' | 'unknown' | string;
 
@@ -107,6 +110,8 @@ export type MetricsSnapshot = {
   byProvider: ProviderChatByProvider[];
   agentExecution?: AgentExecutionTotals & {
     byAgent: AgentExecutionByAgent[];
+    adoption7d?: AgentAdoptionSeries;
+    adoption30d?: AgentAdoptionSeries;
   };
   deliveryCi?: {
     count: number;
@@ -180,6 +185,52 @@ export function computeAgentHealthScore(input: {
   return Math.round(Math.min(100, Math.max(0, score * 100)));
 }
 
+function utcDayKey(ms: number): string {
+  const d = new Date(ms);
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function buildUtcDayBuckets(days: number, nowMs: number): string[] {
+  const anchor = new Date(nowMs);
+  const endUtc = Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth(), anchor.getUTCDate());
+  const buckets: string[] = [];
+  for (let i = days - 1; i >= 0; i--) {
+    buckets.push(utcDayKey(endUtc - i * 86400000));
+  }
+  return buckets;
+}
+
+function emptyAdoptionSeries(days: number, nowMs: number): AgentAdoptionSeries {
+  const buckets = buildUtcDayBuckets(days, nowMs);
+  return { days, buckets, total: buckets.map(() => 0), byAgent: {} };
+}
+
+function bumpAdoption(series: AgentAdoptionSeries, agent: string, dayKey: string): void {
+  const idx = series.buckets.indexOf(dayKey);
+  if (idx < 0) return;
+  series.total[idx] += 1;
+  if (!series.byAgent[agent]) {
+    series.byAgent[agent] = series.buckets.map(() => 0);
+  }
+  series.byAgent[agent][idx] += 1;
+}
+
+/** Daily adoption buckets from local `agent.execution` JSONL (#324). */
+export function loadAgentAdoptionSeries(
+  options: { homePath?: string; days?: 7 | 30; nowMs?: number } = {}
+): AgentAdoptionSeries {
+  const snap = loadMetricsSnapshot(options);
+  const days = options.days ?? 7;
+  const nowMs = options.nowMs ?? Date.now();
+  if (days === 30) {
+    return snap.agentExecution?.adoption30d ?? emptyAdoptionSeries(30, nowMs);
+  }
+  return snap.agentExecution?.adoption7d ?? emptyAdoptionSeries(7, nowMs);
+}
+
 /**
  * Read `.aios/metrics/events.jsonl` once (Resource-Aware).
  */
@@ -194,6 +245,9 @@ export function loadMetricsSnapshot(
 
   const nowMs = options.nowMs ?? Date.now();
   const window7dMs = 7 * 24 * 60 * 60 * 1000;
+  const window30dMs = 30 * 24 * 60 * 60 * 1000;
+  const adoption7d = emptyAdoptionSeries(7, nowMs);
+  const adoption30d = emptyAdoptionSeries(30, nowMs);
 
   let eventCount = 0;
   const total = emptyTotals();
@@ -269,8 +323,15 @@ export function loadMetricsSnapshot(
           bucket.lastAt = at;
         }
         const atMs = at ? Date.parse(at) : Number.NaN;
-        if (Number.isFinite(atMs) && nowMs - atMs <= window7dMs && nowMs - atMs >= 0) {
-          bucket.count7d += 1;
+        if (Number.isFinite(atMs) && nowMs - atMs >= 0) {
+          const ageMs = nowMs - atMs;
+          if (ageMs <= window7dMs) {
+            bucket.count7d += 1;
+            bumpAdoption(adoption7d, agent, utcDayKey(atMs));
+          }
+          if (ageMs <= window30dMs) {
+            bumpAdoption(adoption30d, agent, utcDayKey(atMs));
+          }
         }
         continue;
       }
@@ -352,6 +413,8 @@ export function loadMetricsSnapshot(
             count: agentTotal.count,
             errorCount: agentTotal.errorCount,
             byAgent,
+            adoption7d,
+            adoption30d,
           }
         : undefined,
     deliveryCi:

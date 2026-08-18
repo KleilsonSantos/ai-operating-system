@@ -63,12 +63,15 @@ export class CircuitBreaker {
   private failures = 0;
   private state: CircuitState = 'closed';
   private openedAt = 0;
+  private readonly failureThreshold: number;
+  private readonly cooldownMs: number;
+  private readonly now: () => number;
 
-  constructor(
-    private readonly failureThreshold: number,
-    private readonly cooldownMs: number,
-    private readonly now: () => number = () => Date.now()
-  ) {}
+  constructor(failureThreshold: number, cooldownMs: number, now: () => number = () => Date.now()) {
+    this.failureThreshold = failureThreshold;
+    this.cooldownMs = cooldownMs;
+    this.now = now;
+  }
 
   getState(): CircuitState {
     if (this.state === 'open' && this.now() - this.openedAt >= this.cooldownMs) {
