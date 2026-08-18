@@ -69,3 +69,11 @@ prompts:
     status: active
     language: pt-BR
     tags: [ai-engineering, issues, audit, github, product-engineering]
+
+  - id: prompt.ai-engineering.integral-e2e-evidence-audit
+    path: by-domain/ai-engineering/integral-e2e-evidence-audit.v1.md
+    domain: ai-engineering
+    version: 1
+    status: active
+    language: pt-BR
+    tags: [ai-engineering, audit, e2e, mcp, usability, integration, evidence]
