@@ -30,3 +30,23 @@ Cursor’s agent Shell seatbelt allowlists `github.com` (git) by default but **n
 This repo ships [`.cursor/sandbox.json`](../../.cursor/sandbox.json) allowing `api.github.com`. In Cursor: **Settings → Agents → Auto Run → Auto-Run Network Access** → `sandbox.json + Defaults` (or Allow All).
 
 Optional global allowlist for all workspaces: `~/.cursor/sandbox.json` with the same `networkPolicy.allow` entry.
+
+## Async CI babysit (ADR-0028)
+
+Long CI runs should not block chat. Prefer:
+
+1. Open PR → kickoff comment → **end turn** or continue other work.
+2. When checks settle (or on notification), ingest locally:
+
+   ```bash
+   node scripts/record-delivery-ci.mjs --pr <N>
+   ```
+
+   Appends `kind: delivery.ci` rows to `.aios/metrics/events.jsonl`.
+
+3. Inspect Prometheus text: `aios --metrics-prometheus` (or Console `GET /metrics`).
+4. GitHub Actions also uploads `delivery-ci-events-<run_id>` artifacts from [`.github/workflows/delivery-observability.yml`](../../.github/workflows/delivery-observability.yml) — optional download; not committed.
+
+Grafana is user-owned (ADR-0021). Example PromQL: `sum by (check, conclusion) (aios_delivery_ci_total)`.
+
+Details: [delivery-observability.md](./delivery-observability.md) · [ADR-0028](../adr/0028-delivery-ci-observability.md).

@@ -7,6 +7,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 ### Added
 
 - 🌳 Agent Registry transitive dependency resolver — `resolveDependencyTree`, CLI `--agent-tree` / `--agent-tree-root`, MCP `aios_list_agents` `dependencyTree` (#309)
+- 📡 Delivery CI observability — `delivery.ci` JSONL events, Prometheus `aios_delivery_ci_*`, GHA artifact ingest, `record-delivery-ci.mjs` (ADR-0028)
 
 ## [0.38.0] - 2026-08-16
 
