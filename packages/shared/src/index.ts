@@ -577,6 +577,17 @@ export type AgentCatalogEntry = {
   executions7d?: number;
 };
 
+/** Daily agent.execution buckets for adoption curves (#324). */
+export type AgentAdoptionSeries = {
+  days: number;
+  /** UTC day labels `YYYY-MM-DD`, oldest first. */
+  buckets: string[];
+  /** Total runs per bucket day. */
+  total: number[];
+  /** Per-agent runs per bucket (agents with at least one run in window). */
+  byAgent: Record<string, number[]>;
+};
+
 export type GovernanceStatus = {
   generatedAt: string;
   contractVersion: PipelineContractVersion;
@@ -632,6 +643,9 @@ export type GovernanceStatus = {
         count7d?: number;
         lastAt?: string;
       }>;
+      /** Daily run counts for the last N UTC days (#324). */
+      adoption7d?: AgentAdoptionSeries;
+      adoption30d?: AgentAdoptionSeries;
     };
   };
 };
