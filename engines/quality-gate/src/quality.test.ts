@@ -50,7 +50,7 @@ describe('evaluateQuality', () => {
     expect(v.blockers).toContain('agentsScheduled');
   });
 
-  it('unknown com zero agents passa', () => {
+  it('unknown com zero agents falha (knownIntent)', () => {
     const v = evaluateQuality([], {
       intent: {
         raw: 'oi',
@@ -59,7 +59,22 @@ describe('evaluateQuality', () => {
         signals: [],
       },
     });
-    expect(v.passed).toBe(true);
+    expect(v.passed).toBe(false);
+    expect(v.blockers).toContain('knownIntent');
+    expect(v.checks.knownIntent).toBe(false);
+  });
+
+  it('unknown com agents ainda falha (knownIntent)', () => {
+    const v = evaluateQuality([okAgent('architecture')], {
+      intent: {
+        raw: 'oi',
+        kind: 'unknown',
+        confidence: 0.1,
+        signals: [],
+      },
+    });
+    expect(v.passed).toBe(false);
+    expect(v.blockers).toContain('knownIntent');
   });
 
   it('bloqueia agent ok:false', () => {

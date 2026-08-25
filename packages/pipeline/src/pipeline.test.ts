@@ -114,12 +114,13 @@ describe('runPipeline', () => {
     expect(res.context.budget?.tier).toBe('tight');
   });
 
-  it('unknown não agenda plugins', async () => {
+  it('unknown não agenda plugins e falha o quality gate', async () => {
     const repo = fixtureRepo();
     const res = await runPipeline({ input: 'olá', repoPath: repo });
     expect(res.intent.kind).toBe('unknown');
     expect(res.workflow.ran).toEqual([]);
-    expect(res.verdict.passed).toBe(true);
+    expect(res.verdict.passed).toBe(false);
+    expect(res.verdict.blockers).toContain('knownIntent');
     expect(res.run?.agentIds).toEqual([]);
     expect(res.run?.steps.filter((s) => s.kind === 'agent').every((s) => s.status === 'skip')).toBe(
       true
