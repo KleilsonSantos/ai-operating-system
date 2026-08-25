@@ -9,6 +9,7 @@ With `evaluateQuality(results, { intent, context })`:
 | Check               | Fails when                              |
 | ------------------- | --------------------------------------- |
 | `agentsOk`          | any `ok: false`                         |
+| `knownIntent`       | `intent.kind === 'unknown'` (#336)      |
 | `agentsScheduled`   | missing agent from the intent matrix    |
 | `nonEmptyRun`       | known intent with no results            |
 | `contextPresent`    | `analyze.project` with no snippets      |

@@ -6,6 +6,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Fixed
 
+- 🐛 Quality gate fails `unknown` intent (blocker `knownIntent`) instead of a green empty run (#336)
 - 🐛 CLI `--help` / `-h` and unknown flags no longer run the pipeline (#335)
 
 ### Added
