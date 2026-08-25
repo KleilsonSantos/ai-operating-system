@@ -18,6 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag       | Description                                                                                          |
 | --------- | ---------------------------------------------------------------------------------------------------- |
+| `v0.40.1` | CLI `--help` / unknown flags (#335) + quality gate `knownIntent` (#336) + Vitest 4 (#348)            |
 | `v0.40.0` | Console adoption time-series (#324) + Node 24 CLI/MCP/console via tsx                                |
 | `v0.39.0` | Agent dependency resolver (#309) + delivery CI observability (ADR-0028) + harness mapping (ADR-0029) |
 | `v0.38.0` | Prompt Engine names KG neighbors in the brief (#305)                                                 |
