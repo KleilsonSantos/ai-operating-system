@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📋 Spike + proposed ADR-0030 — Visibility Plane correlation and optional Obsidian export (Phase 5c)
+
 ## [0.40.1] - 2026-08-25
 
 ### Fixed

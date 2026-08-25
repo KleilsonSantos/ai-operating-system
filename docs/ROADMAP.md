@@ -77,6 +77,15 @@ Agents become first-class, discoverable, reusable building blocks. Four pillars:
 **Status:** Phase 5b MVP complete for scaffolder, observability, community ingest loop, and first live topic hit (`v0.29.0`). Public npm scope `@aios-platform` (#236); remaining depth: Console Agent Catalog adoption graphs / trending tables, multi-level dependency resolver, optional `@aios/agent-template` package. Console Agent Catalog MVP (registry list + health join) shipped via #247.  
 **Target:** shipped as `v0.29.0` (do not backdate into 5a).
 
+## Phase 5c — Visibility & experience export (proposed)
+
+Spike + [ADR-0030](./adr/0030-visibility-plane-obsidian-export.md) · [#351](https://github.com/KleilsonSantos/ai-operating-system/issues/351) — correlate governance fragments; optional Obsidian export. Not a 17th engine.
+
+- [ ] Visibility Plane — `VisibilitySnapshot` correlates run ↔ KG ↔ operational state ↔ agent JSONL
+- [ ] MCP `aios_visibility` + CLI (read-only, on-demand)
+- [ ] Console Run trail / Topology view (client graph; no graph DB)
+- [ ] Obsidian vault export adapter (unidirectional, opt-in)
+
 ## Execution contract (incremental)
 
 Thin runtime on the existing pipeline — not a second orchestrator. [ADR-0024](./adr/0024-execution-state-capability-registry.md) · #261.
