@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Changed
+
+- ⬆️ Vitest 4.1.11 with matching `@vitest/coverage-v8` 4.1.11 (fixes mixed-version coverage crash from Dependabot #346)
+
 ### Fixed
 
 - 🐛 CLI `--help` / `-h` and unknown flags no longer run the pipeline (#335)
