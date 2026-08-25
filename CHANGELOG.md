@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Fixed
+
+- 🐛 CLI `--help` / `-h` and unknown flags no longer run the pipeline (#335)
+
 ### Added
 
 - 📋 PKB: catalog `prompt.ai-engineering.integral-e2e-evidence-audit` — toolchain plus usability, MCP tools, and other-project gates
