@@ -4,9 +4,18 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
-### Added
+## [0.40.1] - 2026-08-25
 
-- 📋 PKB: catalog `prompt.ai-engineering.integral-e2e-evidence-audit` — toolchain plus usability, MCP tools, and other-project gates
+### Fixed
+
+- 🐛 Quality gate fails `unknown` intent (blocker `knownIntent`) instead of a green empty run (#336)
+- 🐛 CLI `--help` / `-h` and unknown flags no longer run the pipeline (#335)
+
+### Changed
+
+- ⬆️ Vitest 4.1.11 with matching `@vitest/coverage-v8` 4.1.11 (#348)
+- 📋 PKB: catalog `prompt.ai-engineering.integral-e2e-evidence-audit` (#339)
+- Dependabot patches: vite, js-yaml, eslint, turbo (#342–#345)
 
 ## [0.40.0] - 2026-08-18
 

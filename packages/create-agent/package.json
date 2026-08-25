@@ -1,6 +1,6 @@
 {
   "name": "@aios-platform/create-agent",
-  "version": "0.40.0",
+  "version": "0.40.1",
   "type": "module",
   "description": "Scaffold an AIOS agent package (npm create @aios-platform/agent)",
   "bin": {
@@ -56,6 +56,6 @@
   "devDependencies": {
     "@types/node": "^26.2.0",
     "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.11"
   }
 }

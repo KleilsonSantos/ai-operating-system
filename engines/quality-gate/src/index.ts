@@ -13,6 +13,7 @@ export type EvaluateQualityOptions = {
 
 /**
  * Bloqueia resposta inconsistente:
+ * - intent `unknown` (pedido não reconhecido não é sucesso)
  * - algum agent `ok: false`
  * - intent conhecido sem nenhum agent rodando
  * - `analyze.project` sem snippets de contexto
@@ -38,11 +39,14 @@ export function evaluateQuality(
   const { intent, context } = options;
   const expected = agentsForIntent(intent.kind);
   const ranIds = new Set(results.map((r) => r.agentId));
+  const isUnknown = intent.kind === 'unknown';
 
-  checks.agentsScheduled =
-    intent.kind === 'unknown' ? results.length === 0 : expected.every((id) => ranIds.has(id));
+  // Unrecognized work must not look like a successful run (#336).
+  checks.knownIntent = !isUnknown;
 
-  checks.nonEmptyRun = intent.kind === 'unknown' ? true : results.length > 0;
+  checks.agentsScheduled = isUnknown ? true : expected.every((id) => ranIds.has(id));
+
+  checks.nonEmptyRun = isUnknown ? true : results.length > 0;
 
   checks.contextPresent =
     intent.kind !== 'analyze.project' ? true : Boolean(context && context.snippets.length > 0);
