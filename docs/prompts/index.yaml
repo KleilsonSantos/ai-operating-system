@@ -2,7 +2,7 @@
 # Machine-readable; keep in sync with by-domain/**/*.md frontmatter.
 
 version: 1
-updated_at: 2026-08-18
+updated_at: 2026-08-28
 root: docs/prompts
 
 prompts:
@@ -77,3 +77,40 @@ prompts:
     status: active
     language: pt-BR
     tags: [ai-engineering, audit, e2e, mcp, usability, integration, evidence]
+
+  - id: prompt.ai-engineering.aios-implementation-mission
+    path: by-domain/ai-engineering/aios-implementation-mission.v1.md
+    domain: ai-engineering
+    version: 1
+    status: active
+    language: pt-BR
+    tags:
+      - ai-engineering
+      - audit
+      - gap-analysis
+      - implementation-plan
+      - model-router
+      - provider
+      - mcp
+      - agents
+      - governance
+      - observability
+
+  - id: prompt.ai-engineering.aios-master-architecture
+    path: by-domain/ai-engineering/aios-master-architecture.v1.md
+    domain: ai-engineering
+    version: 1
+    status: active
+    language: pt-BR
+    tags:
+      - ai-engineering
+      - architecture
+      - vision
+      - model-router
+      - provider-agnostic
+      - agents
+      - mcp
+      - governance
+      - observability
+      - evaluation
+      - jarvis
