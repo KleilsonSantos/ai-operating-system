@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { inferRouteRisk, resolveCapabilityClass, routeModel } from './index.ts';
+import {
+  buildTaskProfile,
+  inferRouteRisk,
+  inferTaskComplexity,
+  resolveCapabilityClass,
+  routeModel,
+} from './index.ts';
 
 describe('resolveCapabilityClass', () => {
   it('maps analyze/review to reasoning', () => {
@@ -37,6 +43,12 @@ describe('resolveCapabilityClass', () => {
       'reasoning'
     );
   });
+
+  it('explicit SIMPLE complexity maps to fast', () => {
+    expect(resolveCapabilityClass({ intentKind: 'analyze.project', complexity: 'SIMPLE' })).toBe(
+      'fast'
+    );
+  });
 });
 
 describe('inferRouteRisk', () => {
@@ -56,6 +68,25 @@ describe('inferRouteRisk', () => {
   });
 });
 
+describe('buildTaskProfile / inferTaskComplexity', () => {
+  it('maps intents to master-architecture complexity tiers', () => {
+    expect(inferTaskComplexity({ intentKind: 'unknown' })).toBe('SIMPLE');
+    expect(inferTaskComplexity({ intentKind: 'explain.code' })).toBe('MEDIUM');
+    expect(inferTaskComplexity({ intentKind: 'analyze.project' })).toBe('COMPLEX');
+    expect(inferTaskComplexity({ intentKind: 'implement.feature' })).toBe('AGENTIC');
+    expect(inferTaskComplexity({ intentKind: 'fix.bug', privilege: 'PRIVILEGED' })).toBe(
+      'CRITICAL'
+    );
+  });
+
+  it('defaults privacy to internal and cost to normal', () => {
+    const p = buildTaskProfile({ intentKind: 'explain.code' });
+    expect(p.privacy).toBe('internal');
+    expect(p.costBudget).toBe('normal');
+    expect(p.complexity).toBe('MEDIUM');
+  });
+});
+
 describe('routeModel', () => {
   it('defaults every class to local ollama', () => {
     const d = routeModel({ intentKind: 'analyze.project' }, {});
@@ -63,6 +94,8 @@ describe('routeModel', () => {
     expect(d.modelId).toBe('llama3.2');
     expect(d.capabilityClass).toBe('reasoning');
     expect(d.reason).toContain('class:reasoning');
+    expect(d.taskProfile.complexity).toBe('COMPLEX');
+    expect(d.reason).toContain('complexity:COMPLEX');
   });
 
   it('binds class via env without putting a vendor in the request', () => {
@@ -90,5 +123,21 @@ describe('routeModel', () => {
     const d = routeModel({ intentKind: 'unknown' }, { AIOS_OLLAMA_MODEL: 'qwen2.5' });
     expect(d.providerId).toBe('ollama');
     expect(d.modelId).toBe('qwen2.5');
+  });
+
+  it('privacy=sensitive forces local ollama even when class binds to cloud', () => {
+    const d = routeModel(
+      { intentKind: 'explain.code', privacy: 'sensitive' },
+      {
+        AIOS_ROUTE_CODING_PROVIDER: 'openai',
+        AIOS_ROUTE_CODING_MODEL: 'gpt-4o-mini',
+        AIOS_OLLAMA_MODEL: 'llama3.2',
+      }
+    );
+    expect(d.capabilityClass).toBe('coding');
+    expect(d.providerId).toBe('ollama');
+    expect(d.modelId).toBe('llama3.2');
+    expect(d.taskProfile.privacy).toBe('sensitive');
+    expect(d.reason).toContain('privacy-local');
   });
 });

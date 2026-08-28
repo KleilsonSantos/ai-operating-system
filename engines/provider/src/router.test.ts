@@ -6,5 +6,6 @@ describe('provider routeModel re-export', () => {
     const d = routeModel({ intentKind: 'explain.code' }, {});
     expect(d.capabilityClass).toBe('coding');
     expect(d.providerId).toBe('ollama');
+    expect(d.taskProfile.complexity).toBe('MEDIUM');
   });
 });

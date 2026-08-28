@@ -49,6 +49,8 @@ describe('runPipeline', () => {
     expect(res.run?.verdict?.passed).toBe(res.verdict.passed);
     expect(res.run?.model?.capabilityClass).toBe('reasoning');
     expect(res.run?.model?.providerId).toBe('ollama');
+    expect(res.run?.model?.complexity).toBe('COMPLEX');
+    expect(res.run?.model?.privacy).toBe('internal');
     expect(res.run?.steps.some((s) => s.kind === 'route' && s.status === 'ok')).toBe(true);
     expect(res.context.budget?.tier).toBe('standard');
     expect(res.run?.steps.some((s) => s.kind === 'skill' && s.status === 'skip')).toBe(true);
