@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📋 PKB: catalog `prompt.ai-engineering.aios-master-architecture` + `prompt.ai-engineering.aios-implementation-mission`
+
 ## [0.41.0] - 2026-08-28
 
 ### Added
