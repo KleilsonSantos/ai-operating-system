@@ -33,7 +33,14 @@ export type {
 
 export type { CircuitState, ResilienceOptions } from './resilience.js';
 export { CircuitBreaker, isTransientError, resolveResilience, withRetry } from './resilience.js';
-export { inferRouteRisk, resolveCapabilityClass, routeModel } from './router.js';
+export {
+  buildTaskProfile,
+  inferRouteRisk,
+  inferTaskComplexity,
+  inferTaskPrivacy,
+  resolveCapabilityClass,
+  routeModel,
+} from './router.js';
 
 export type FetchLike = typeof fetch;
 

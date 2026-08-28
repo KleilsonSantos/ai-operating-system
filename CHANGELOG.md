@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🧭 TaskProfile on Model Router — complexity · privacy · cost; `sensitive` → local ollama (ADR-0031)
+
 ## [0.40.1] - 2026-08-25
 
 ### Fixed

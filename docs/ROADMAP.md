@@ -83,6 +83,7 @@ Thin runtime on the existing pipeline — not a second orchestrator. [ADR-0024](
 
 - [x] Phase 1 foundation — `PipelineResponse.run` + MCP capability allowlist + registry-selected plugins (flag + fallback)
 - [x] Phase 2 (thin) — model router by capability class + context budget (#276 / ADR-0025)
+- [x] TaskProfile — complexity / privacy / cost-aware routing; privacy-local binding (ADR-0031)
 - [x] Skill packs — optional Prompt Engine manifests (#284 / ADR-0026)
 - [x] Central hook bus — named lifecycle points on `runPipeline` (#288 / ADR-0027)
 

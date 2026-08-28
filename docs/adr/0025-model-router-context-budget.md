@@ -48,4 +48,5 @@ The product must stay a control plane. Routing must not lock Policy to OpenAI, A
 
 - [ADR-0009](./0009-multi-provider-ollama.md) — name lookup `getProvider` remains
 - [ADR-0024](./0024-execution-state-capability-registry.md)
+- [ADR-0031](./0031-task-profile-model-router.md) — TaskProfile complexity / privacy / cost
 - Audit: [`docs/audits/agent-runtime-evolution-analysis-2026-08.md`](../audits/agent-runtime-evolution-analysis-2026-08.md) items 6–7
