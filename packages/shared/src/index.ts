@@ -207,6 +207,23 @@ export type RouteRisk = 'low' | 'medium' | 'high';
 
 export type RouteCostBudget = 'low' | 'normal';
 
+/** Task complexity for deterministic routing (ADR-0031 · master-architecture §8). */
+export const TASK_COMPLEXITIES = ['SIMPLE', 'MEDIUM', 'COMPLEX', 'AGENTIC', 'CRITICAL'] as const;
+
+export type TaskComplexity = (typeof TASK_COMPLEXITIES)[number];
+
+/** Privacy tier — `sensitive` prefers local binding (ADR-0031 · master §19). */
+export const TASK_PRIVACY_LEVELS = ['public', 'internal', 'sensitive'] as const;
+
+export type TaskPrivacy = (typeof TASK_PRIVACY_LEVELS)[number];
+
+export type TaskProfile = {
+  complexity: TaskComplexity;
+  privacy: TaskPrivacy;
+  costBudget: RouteCostBudget;
+  risk: RouteRisk;
+};
+
 export type RouteRequest = {
   intentKind: IntentKind;
   risk?: RouteRisk;
@@ -214,6 +231,10 @@ export type RouteRequest = {
   costBudget?: RouteCostBudget;
   /** Force a class; binding to provider/model still comes from env. */
   capabilityClass?: ModelCapabilityClass;
+  /** Optional complexity override (ADR-0031). */
+  complexity?: TaskComplexity;
+  /** Optional privacy override — `sensitive` forces local ollama (ADR-0031). */
+  privacy?: TaskPrivacy;
 };
 
 export type RouteDecision = {
@@ -221,6 +242,8 @@ export type RouteDecision = {
   modelId: string;
   capabilityClass: ModelCapabilityClass;
   reason: string;
+  /** Deterministic task profile used for this decision (ADR-0031). */
+  taskProfile: TaskProfile;
 };
 
 export type ContextBudgetTier = 'tight' | 'standard' | 'wide';
@@ -234,6 +257,14 @@ export type ContextBudget = {
 
 export function isModelCapabilityClass(value: string): value is ModelCapabilityClass {
   return (MODEL_CAPABILITY_CLASSES as readonly string[]).includes(value);
+}
+
+export function isTaskComplexity(value: string): value is TaskComplexity {
+  return (TASK_COMPLEXITIES as readonly string[]).includes(value);
+}
+
+export function isTaskPrivacy(value: string): value is TaskPrivacy {
+  return (TASK_PRIVACY_LEVELS as readonly string[]).includes(value);
 }
 
 /** Snippet recuperado do repositório (Context Engine — #7). */
@@ -436,20 +467,57 @@ export function inferRouteRisk(req: Pick<RouteRequest, 'intentKind' | 'privilege
   return 'low';
 }
 
+/** Infer complexity from intent + risk (ADR-0031). Explicit `complexity` wins. */
+export function inferTaskComplexity(
+  req: Pick<RouteRequest, 'intentKind' | 'risk' | 'privilege' | 'complexity'>
+): TaskComplexity {
+  if (req.complexity) return req.complexity;
+  const risk = req.risk ?? inferRouteRisk(req);
+  if (risk === 'high') return 'CRITICAL';
+  switch (req.intentKind) {
+    case 'implement.feature':
+    case 'fix.bug':
+      return 'AGENTIC';
+    case 'analyze.project':
+    case 'review.change':
+      return 'COMPLEX';
+    case 'explain.code':
+      return 'MEDIUM';
+    default:
+      return 'SIMPLE';
+  }
+}
+
+/** Default privacy is `internal`; explicit override only (ADR-0031). */
+export function inferTaskPrivacy(req: Pick<RouteRequest, 'privacy'>): TaskPrivacy {
+  return req.privacy ?? 'internal';
+}
+
+/** Build the full task profile used by `routeModel` (ADR-0031). */
+export function buildTaskProfile(req: RouteRequest): TaskProfile {
+  const risk = req.risk ?? inferRouteRisk(req);
+  return {
+    complexity: inferTaskComplexity({ ...req, risk }),
+    privacy: inferTaskPrivacy(req),
+    costBudget: req.costBudget ?? 'normal',
+    risk,
+  };
+}
+
 export function resolveCapabilityClass(req: RouteRequest): ModelCapabilityClass {
   if (req.capabilityClass) return req.capabilityClass;
   if (req.costBudget === 'low') return 'fast';
 
-  const risk = req.risk ?? inferRouteRisk(req);
-  if (risk === 'high') return 'arbitration';
+  const profile = buildTaskProfile(req);
+  if (profile.risk === 'high' || profile.complexity === 'CRITICAL') return 'arbitration';
 
-  switch (req.intentKind) {
-    case 'explain.code':
-    case 'implement.feature':
-    case 'fix.bug':
+  switch (profile.complexity) {
+    case 'SIMPLE':
+      return 'fast';
+    case 'MEDIUM':
+    case 'AGENTIC':
       return 'coding';
-    case 'review.change':
-    case 'analyze.project':
+    case 'COMPLEX':
       return 'reasoning';
     default:
       return 'fast';
@@ -491,14 +559,32 @@ function bindCapabilityClass(
   return { providerId, modelId, signals };
 }
 
-/** Pure decision — no network, no chat (ADR-0025). */
+/** Pure decision — no network, no chat (ADR-0025 / ADR-0031). */
 export function routeModel(req: RouteRequest, env?: EnvMap): RouteDecision {
+  const taskProfile = buildTaskProfile(req);
   const capabilityClass = resolveCapabilityClass(req);
   const envMap = readEnv(env);
-  const bound = bindCapabilityClass(capabilityClass, envMap);
-  const risk = req.risk ?? inferRouteRisk(req);
-  const parts = [`class:${capabilityClass}`, `intent:${req.intentKind}`, `risk:${risk}`];
-  if (req.costBudget) parts.push(`cost:${req.costBudget}`);
+  let bound = bindCapabilityClass(capabilityClass, envMap);
+
+  // Privacy-aware: sensitive work stays on local ollama (master §19 / ADR-0031).
+  if (taskProfile.privacy === 'sensitive' && bound.providerId !== 'ollama') {
+    const localModel =
+      envMap.AIOS_OLLAMA_MODEL?.trim() || DEFAULT_ROUTE_BINDINGS[capabilityClass].modelId;
+    bound = {
+      providerId: 'ollama',
+      modelId: localModel,
+      signals: [...bound.signals, 'privacy-local'],
+    };
+  }
+
+  const parts = [
+    `class:${capabilityClass}`,
+    `intent:${req.intentKind}`,
+    `complexity:${taskProfile.complexity}`,
+    `privacy:${taskProfile.privacy}`,
+    `risk:${taskProfile.risk}`,
+  ];
+  if (taskProfile.costBudget !== 'normal') parts.push(`cost:${taskProfile.costBudget}`);
   if (req.capabilityClass) parts.push('forced-class');
   parts.push(...bound.signals);
 
@@ -507,6 +593,7 @@ export function routeModel(req: RouteRequest, env?: EnvMap): RouteDecision {
     modelId: bound.modelId,
     capabilityClass,
     reason: parts.join(' '),
+    taskProfile,
   };
 }
 
@@ -790,6 +877,10 @@ export type PipelineRequest = {
   costBudget?: RouteCostBudget;
   /** Optional privilege hint for routing (default: caller MCP privilege). */
   privilege?: Privilege;
+  /** Optional task complexity override (ADR-0031). */
+  complexity?: TaskComplexity;
+  /** Optional privacy override — `sensitive` forces local ollama (ADR-0031). */
+  privacy?: TaskPrivacy;
   /** Opt-in skill pack ids recorded on `run.skillIds` (ADR-0026). Default: none. */
   skillIds?: string[];
   /** Opt-in hook ids recorded on `run.hookIds` (ADR-0027). Default: none. */
@@ -877,8 +968,14 @@ export type PipelineRun = {
   agentIds: string[];
   skillIds: string[];
   hookIds: string[];
-  /** Capability-class route — no chat is invoked (ADR-0025). */
-  model?: { providerId: string; modelId: string; capabilityClass: ModelCapabilityClass };
+  /** Capability-class route — no chat is invoked (ADR-0025 / ADR-0031). */
+  model?: {
+    providerId: string;
+    modelId: string;
+    capabilityClass: ModelCapabilityClass;
+    complexity?: TaskComplexity;
+    privacy?: TaskPrivacy;
+  };
   steps: PipelineStep[];
   artifacts: PipelineArtifact[];
   verdict?: { passed: boolean; reasons: string[] };
