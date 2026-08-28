@@ -153,6 +153,8 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
     risk: request.risk,
     privilege,
     costBudget: request.costBudget,
+    complexity: request.complexity,
+    privacy: request.privacy,
   });
   const context = gatherContext({
     repoPath,
@@ -365,6 +367,8 @@ function buildPipelineRun(input: {
       providerId: input.route.providerId,
       modelId: input.route.modelId,
       capabilityClass: input.route.capabilityClass,
+      complexity: input.route.taskProfile.complexity,
+      privacy: input.route.taskProfile.privacy,
     },
     steps,
     artifacts: input.contextPaths.slice(0, 12),

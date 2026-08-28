@@ -6,6 +6,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Added
 
+- 🧭 TaskProfile on Model Router — complexity · privacy · cost; `sensitive` → local ollama (ADR-0031)
 - 📋 Spike + proposed ADR-0030 — Visibility Plane correlation and optional Obsidian export (Phase 5c)
 
 ## [0.40.1] - 2026-08-25
