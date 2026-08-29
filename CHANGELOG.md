@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Changed
+
+- ⬆️ CI: CodeQL Action `v3` → `v4` (Node 24 runtime; v3 deprecation Dec 2026) (#360)
+
 ### Added
 
 - 🧭 Interaction-quality policies — `anti-sycophancy`, `calibrated-claims`, `clarify-if-blocking`, `depth-on-demand` (+ Cursor sync) (#358)
