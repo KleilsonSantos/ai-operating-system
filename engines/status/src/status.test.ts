@@ -7,6 +7,7 @@ import {
   getGovernanceStatus,
   loadMetricsSnapshot,
   loadAgentAdoptionSeries,
+  listAgentExecutions,
   recordAgentExecution,
   recordMetricEvent,
   recordProviderChatMetric,
@@ -313,5 +314,17 @@ describe('getGovernanceStatus', () => {
       else process.env.AIOS_OPENAI_API_KEY = prevKey;
       globalThis.fetch = prevFetch;
     }
+  });
+});
+
+describe('listAgentExecutions', () => {
+  it('returns capped agent.execution rows newest-last', () => {
+    const root = mkdtempSync(join(tmpdir(), 'aios-status-list-'));
+    temps.push(root);
+    recordAgentExecution({ agent: 'a', outcome: 'success' }, { homePath: root });
+    recordAgentExecution({ agent: 'b', outcome: 'failure' }, { homePath: root });
+    const rows = listAgentExecutions({ homePath: root, limit: 10 });
+    expect(rows.map((r) => r.agent)).toEqual(['a', 'b']);
+    expect(rows.every((r) => r.kind === 'agent.execution')).toBe(true);
   });
 });

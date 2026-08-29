@@ -1,7 +1,8 @@
 # ADR-0030: Visibility Plane and Obsidian export adapter
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-08-25
+- **Accepted:** 2026-08-29
 - **Deciders:** Kleilson dos Santos
 - **Issue:** [#351](https://github.com/KleilsonSantos/ai-operating-system/issues/351)
 - **Spike:** [`docs/spikes/visibility-plane-obsidian-export.md`](../spikes/visibility-plane-obsidian-export.md)
@@ -38,12 +39,16 @@ type VisibilitySnapshot = {
   anchor: { runId?: string; scope?: string; workspaceId?: string };
   generatedAt: string;
   run?: PipelineRun;
+  runLookup?: 'provided' | 'unavailable';
   knowledge: KnowledgeGraphSummary & { matchedNodeIds?: string[] };
-  operational?: Pick<OperationalState, 'focus' | 'governance' | 'boundaries'>;
+  operational?: Pick<OperationalState, 'focus' | 'governance' | 'boundaries' | 'summary'>;
   agentExecutions?: AgentExecutionRecord[];
   policyRefs?: string[];
+  trail: VisibilityTrailItem[];
 };
 ```
+
+Shipped MVP (`@aios/visibility`): `correlateVisibility`, MCP `aios_visibility`, CLI `--visibility`. Console Run trail and Obsidian export remain follow-ups.
 
 Exact shape is additive; `contractVersion` on pipeline responses stays `"1"` unless a breaking change is justified elsewhere.
 
