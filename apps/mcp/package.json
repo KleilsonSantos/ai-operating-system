@@ -22,6 +22,7 @@
     "@aios/knowledge": "workspace:*",
     "@aios/memory": "workspace:*",
     "@aios/operational-state": "workspace:*",
+    "@aios/visibility": "workspace:*",
     "@aios/pipeline": "workspace:*",
     "@aios/policy": "workspace:*",
     "@aios/prompt": "workspace:*",

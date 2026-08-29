@@ -44,6 +44,7 @@ export const MCP_TOOL_CATALOG = [
   'aios_governance_audit',
   'aios_governance_record',
   'aios_operational_state',
+  'aios_visibility',
 ] as const;
 
 export type McpToolName = (typeof MCP_TOOL_CATALOG)[number];
@@ -64,6 +65,7 @@ export const MCP_TOOL_PRIVILEGE: Record<McpToolName, Privilege> = {
   aios_search_pkb: 'READ_ONLY',
   aios_governance_audit: 'READ_ONLY',
   aios_operational_state: 'READ_ONLY',
+  aios_visibility: 'READ_ONLY',
   aios_memory_remember: 'SAFE_WRITE',
   aios_memory_clear: 'SAFE_WRITE',
   aios_workspace_upsert: 'SAFE_WRITE',
@@ -979,6 +981,48 @@ export type PipelineRun = {
   steps: PipelineStep[];
   artifacts: PipelineArtifact[];
   verdict?: { passed: boolean; reasons: string[] };
+};
+
+/** One `agent.execution` JSONL row for Visibility Plane (ADR-0030). */
+export type AgentExecutionRecord = {
+  kind: 'agent.execution';
+  at: string;
+  agent: string;
+  version?: string;
+  outcome: string;
+  durationMs?: number;
+  source?: string;
+  ok?: boolean;
+};
+
+/** Human-readable trail entry derived from run steps / agent JSONL. */
+export type VisibilityTrailItem = {
+  kind: 'pipeline.step' | 'agent.execution' | 'policy';
+  id: string;
+  label: string;
+  at?: string;
+  status?: string;
+};
+
+/** Correlated governance snapshot (ADR-0030) — on-demand only. */
+export type VisibilitySnapshot = {
+  anchor: { runId?: string; scope?: string; workspaceId?: string };
+  generatedAt: string;
+  /** Present when caller injects a run; AIOS does not persist PipelineRun yet. */
+  run?: PipelineRun;
+  runLookup?: 'provided' | 'unavailable';
+  knowledge: {
+    nodeCount: number;
+    edgeCount: number;
+    kinds: Record<string, number>;
+    signals: string[];
+    matchedNodeIds?: string[];
+  };
+  operational?: Pick<OperationalState, 'focus' | 'governance' | 'boundaries' | 'summary'>;
+  agentExecutions?: AgentExecutionRecord[];
+  policyRefs?: string[];
+  /** Palatable execution labels for operators (chat / Console). */
+  trail: VisibilityTrailItem[];
 };
 
 /** Resposta estável do núcleo (stdout JSON do CLI = este shape). */

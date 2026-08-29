@@ -27,6 +27,7 @@ import { getGovernanceStatus, chatWithMetrics, loadMetricsSnapshot } from '@aios
 import { auditDocumentation, searchPkb } from '@aios/documentation';
 import { auditGovernance, recordDecision } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
+import { correlateVisibility } from '@aios/visibility';
 import { resolve } from 'node:path';
 import { AgentRegistry } from '@aios-platform/agent-registry';
 import { authorizeMcpTool, deniedMcpPayload, isModelCapabilityClass } from '@aios/shared';
@@ -758,6 +759,44 @@ export function createAiosMcpServer(): McpServer {
         const message = err instanceof Error ? err.message : String(err);
         return {
           content: [{ type: 'text', text: `aios_operational_state failed: ${message}` }],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  registerTool(
+    'aios_visibility',
+    {
+      title: 'Visibility Plane',
+      description:
+        'Correlate governance fragments into one VisibilitySnapshot: run (optional inject), KG, operational subset, agent.execution JSONL, policies, and a palatable trail. Requires runId and/or scope and/or workspaceId (ADR-0030). Read-only / on-demand.',
+      inputSchema: {
+        homePath: z.string().optional(),
+        repoPath: z.string().optional(),
+        runId: z.string().optional(),
+        scope: z.string().optional(),
+        workspaceId: z.string().optional(),
+        maxAgentExecutions: z.number().int().positive().max(500).optional(),
+      },
+    },
+    async ({ homePath, repoPath, runId, scope, workspaceId, maxAgentExecutions }) => {
+      try {
+        const snap = await correlateVisibility({
+          homePath: homePath || process.env.AIOS_HOME || process.cwd(),
+          repoPath,
+          runId,
+          scope,
+          workspaceId,
+          maxAgentExecutions,
+        });
+        return {
+          content: [{ type: 'text', text: JSON.stringify(snap, null, 2) }],
+        };
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        return {
+          content: [{ type: 'text', text: `aios_visibility failed: ${message}` }],
           isError: true,
         };
       }

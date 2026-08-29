@@ -10,6 +10,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Added
 
+- 🔭 Visibility Plane MVP — `@aios/visibility` `correlateVisibility` + MCP `aios_visibility` + CLI `--visibility`; ADR-0030 Accepted (#351)
 - 🧭 Interaction-quality policies — `anti-sycophancy`, `calibrated-claims`, `clarify-if-blocking`, `depth-on-demand` (+ Cursor sync) (#358)
 - 📋 PKB: catalog `prompt.ai-engineering.aios-master-architecture` + `prompt.ai-engineering.aios-implementation-mission`
 
