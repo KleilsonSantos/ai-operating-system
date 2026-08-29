@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Changed
+
+- ⬆️ CI: CodeQL Action `v3` → `v4` (Node 24 runtime; v3 deprecation Dec 2026) (#360)
+
 ### Added
 
 - 📋 PKB: catalog `prompt.ai-engineering.aios-master-architecture` + `prompt.ai-engineering.aios-implementation-mission`
