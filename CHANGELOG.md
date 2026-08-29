@@ -4,15 +4,17 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
-### Changed
-
-- ⬆️ CI: CodeQL Action `v3` → `v4` (Node 24 runtime; v3 deprecation Dec 2026) (#360)
+## [0.42.0] - 2026-08-29
 
 ### Added
 
 - 🔭 Visibility Plane MVP — `@aios/visibility` `correlateVisibility` + MCP `aios_visibility` + CLI `--visibility`; ADR-0030 Accepted (#351)
 - 🧭 Interaction-quality policies — `anti-sycophancy`, `calibrated-claims`, `clarify-if-blocking`, `depth-on-demand` (+ Cursor sync) (#358)
 - 📋 PKB: catalog `prompt.ai-engineering.aios-master-architecture` + `prompt.ai-engineering.aios-implementation-mission`
+
+### Changed
+
+- ⬆️ CI: CodeQL Action `v3` → `v4` (Node 24 runtime; v3 deprecation Dec 2026) (#360)
 
 ## [0.41.0] - 2026-08-28
 
