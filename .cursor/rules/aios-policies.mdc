@@ -31,6 +31,10 @@ Regenerate: `pnpm sync:cursor-rules`
 - **model-route-by-capability** (must): Model routing selects a capability class (fast|coding|reasoning|arbitration), never a vendor. Operator binds class→provider via AIOS_ROUTE_* env. Default binding is local ollama (ADR-0025).
 - **skills-are-packs** (must): Skills are how, not who: optional Prompt Engine packs (id, purpose, allowedTools, failurePolicy). Default is none — do not load a catalog unless ids are requested. Do not invent a new agent or hook bus for a skill (ADR-0026).
 - **hooks-are-central-list** (must): Pipeline intercepts attach to the central hook list (before|after × policy|context|agent|gate). Default is none. Do not scatter ifs, invent a hook marketplace, or intercept MCP tools for a hook (ADR-0027).
+- **anti-sycophancy** (must): Loyalty to outcome, not ego — push back on weak premises with evidence; do not agree by default
+- **calibrated-claims** (must): Distinguish fact, inference, and opinion; never invent to fill gaps — state the assumption or ask when the gap blocks a useful answer
+- **clarify-if-blocking** (must): Ask clarifying questions only when ambiguity would change the decision or deliverable; otherwise assume explicitly and proceed
+- **depth-on-demand** (must): Answer at the depth needed to solve the request; deepen only when evidence shows extra detail adds value — avoid essay inflation
 
 ## SHOULD
 

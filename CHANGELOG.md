@@ -6,6 +6,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Added
 
+- 🧭 Interaction-quality policies — `anti-sycophancy`, `calibrated-claims`, `clarify-if-blocking`, `depth-on-demand` (+ Cursor sync) (#358)
 - 📋 PKB: catalog `prompt.ai-engineering.aios-master-architecture` + `prompt.ai-engineering.aios-implementation-mission`
 
 ## [0.41.0] - 2026-08-28
