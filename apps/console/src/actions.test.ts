@@ -4,9 +4,14 @@ import { tmpdir } from 'node:os';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { runSafeAction, SAFE_ACTION_INTERNAL_ERROR } from './actions.ts';
 import { getProvider } from '@aios/provider';
+import { correlateVisibility } from '@aios/visibility';
 
 vi.mock('@aios/provider', () => ({
   getProvider: vi.fn(),
+}));
+
+vi.mock('@aios/visibility', () => ({
+  correlateVisibility: vi.fn(),
 }));
 
 const temps: string[] = [];
@@ -88,5 +93,39 @@ describe('runSafeAction', () => {
     });
     expect(out.ok).toBe(false);
     expect(out.error).toMatch(/Unknown action/);
+  });
+
+  it('visibility devolve VisibilitySnapshot.trail', async () => {
+    vi.mocked(correlateVisibility).mockResolvedValue({
+      anchor: { workspaceId: 'aios' },
+      generatedAt: '2026-08-29T00:00:00.000Z',
+      knowledge: { nodeCount: 1, edgeCount: 0, kinds: {}, signals: [] },
+      trail: [
+        {
+          kind: 'policy',
+          id: 'official-docs',
+          label: 'policy:official-docs',
+        },
+      ],
+      policyRefs: ['official-docs'],
+    });
+
+    const out = await runSafeAction({
+      action: 'visibility',
+      homePath: process.cwd(),
+      workspaceId: 'aios',
+      scope: 'engines/policy',
+    });
+    expect(out.ok).toBe(true);
+    expect(correlateVisibility).toHaveBeenCalledWith(
+      expect.objectContaining({
+        workspaceId: 'aios',
+        scope: 'engines/policy',
+        homePath: process.cwd(),
+      })
+    );
+    const trail = (out.result as { trail: Array<{ kind: string }> }).trail;
+    expect(trail).toHaveLength(1);
+    expect(trail[0]?.kind).toBe('policy');
   });
 });

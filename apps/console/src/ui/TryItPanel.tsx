@@ -63,6 +63,11 @@ const ACTIONS: ActionDef[] = [
     label: 'Operational state',
     hint: 'Snapshot unificado (#84) — sem voz/IDE',
   },
+  {
+    id: 'visibility',
+    label: 'Visibility trail',
+    hint: 'VisibilitySnapshot + trail — input = scope opcional (#365)',
+  },
 ];
 
 type ActionResult = {
@@ -93,6 +98,7 @@ export function TryItPanel({ workspaceId, onAfterAction }: Props) {
           action: actionId,
           workspaceId,
           input: input || undefined,
+          scope: actionId === 'visibility' ? input || undefined : undefined,
         }),
       });
       const data = (await res.json()) as ActionResult;
