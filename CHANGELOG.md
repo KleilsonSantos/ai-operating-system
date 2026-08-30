@@ -6,13 +6,13 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [0.47.1] - 2026-08-30
 
-### Changed
-
-- 📝 Publish guide: SemVer catch-up + `TOKEN_NPM` / OTP troubleshooting (#325)
-
 ### Added
 
 - 📚 RAG boundaries guide — PKB vs Memory vs Knowledge Graph (#328)
+
+### Changed
+
+- 📝 Publish guide: SemVer catch-up + `TOKEN_NPM` / OTP troubleshooting (#325)
 
 ## [0.47.0] - 2026-08-30
 
