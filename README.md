@@ -56,8 +56,10 @@ docs/
 
 ```bash
 pnpm install
+export AIOS_HOME=$PWD   # monorepo root — policies, memory, governance, metrics
 pnpm sync:cursor-rules   # policies → .cursor/rules (Cursor chat)
 pnpm --filter @aios/cli dev -- "Analyze my project."
+pnpm --filter @aios/cli dev -- --list-agents --json
 # console: AIOS_HOME=$PWD pnpm --filter @aios/console dev
 ```
 

@@ -96,6 +96,7 @@ Common options:
   --skill-ids <id,id>        Opt-in Prompt Engine skill packs
   --hook-ids <id,id>         Opt-in pipeline hooks
   --list-agents              List Agent Registry agents
+  --agents-json | --json     With --list-agents, print machine-readable JSON
   --audit-docs               Documentation audit
   --search-pkb               Search Prompt Knowledge Base
   --governance-status        Governance / attention status
@@ -113,6 +114,11 @@ Common options:
   --model <name>             Model override
   --contract-version         Print pipeline contract version (${PIPELINE_CONTRACT_VERSION})
   -h, --help                 Show this help
+
+Environment:
+  AIOS_HOME                  Monorepo root (set to repo root when using pnpm --filter @aios/cli;
+                             used for policies, memory, governance, metrics, visibility)
+  AIOS_REPO / AIOS_WORKSPACE / AIOS_SCOPE / AIOS_POLICIES_PATH
 
 Default input when none is given: "Analise meu projeto."
 Unknown flags (tokens starting with -) exit with code 1.
@@ -345,7 +351,7 @@ export function parseArgs(argv: string[]): CliArgs {
       listAgentsName = a.slice('--agent-name='.length);
       continue;
     }
-    if (a === '--agents-json') {
+    if (a === '--agents-json' || a === '--json') {
       listAgentsJson = true;
       continue;
     }

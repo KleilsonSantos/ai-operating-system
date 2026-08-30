@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Fixed
+
+- 🐛 CLI `--list-agents --json` (alias of `--agents-json`) + `AIOS_HOME` guidance (#379)
+
 ## [0.45.0] - 2026-08-29
 
 ### Added
