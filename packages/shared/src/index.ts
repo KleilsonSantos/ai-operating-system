@@ -95,7 +95,24 @@ export type CapabilityDecision = {
   required: Privilege;
   caller: Privilege;
   reason?: string;
+  /** Must-policy id that participated in a deny (#378) */
+  policyId?: string;
 };
+
+/** Must-policy: gated SAFE_WRITE MCP tools need operator consent env (#378). */
+export const MCP_SAFE_WRITE_CONSENT_POLICY_ID = 'mcp-safe-write-consent';
+
+/**
+ * SAFE_WRITE tools that require `AIOS_MCP_ALLOW_SAFE_WRITE=1` when
+ * `mcp-safe-write-consent` is an active must-policy.
+ */
+export const MCP_SAFE_WRITE_CONSENT_TOOLS = ['aios_memory_clear', 'aios_export_obsidian'] as const;
+
+export type McpSafeWriteConsentTool = (typeof MCP_SAFE_WRITE_CONSENT_TOOLS)[number];
+
+export function isMcpSafeWriteConsentTool(tool: string): tool is McpSafeWriteConsentTool {
+  return (MCP_SAFE_WRITE_CONSENT_TOOLS as readonly string[]).includes(tool);
+}
 
 export function isPrivilege(value: string): value is Privilege {
   return (PRIVILEGES as readonly string[]).includes(value);
@@ -118,10 +135,17 @@ export function privilegeForMcpTool(tool: string): Privilege {
  * Authorize an MCP tool. Privilege comes from env/operator — never from tool args.
  * `PRIVILEGED` also requires `AIOS_MCP_ALLOW_PRIVILEGED=1`.
  * `HUMAN_APPROVAL_REQUIRED` is always denied on the MCP surface in this phase.
+ * When must-policy `mcp-safe-write-consent` is active, gated SAFE_WRITE tools
+ * also require `AIOS_MCP_ALLOW_SAFE_WRITE=1` (#378).
  */
 export function authorizeMcpTool(
   tool: string,
-  options?: { env?: EnvMap; privilege?: Privilege }
+  options?: {
+    env?: EnvMap;
+    privilege?: Privilege;
+    /** Active must-policy ids (from Policy Engine). */
+    mustIds?: readonly string[];
+  }
 ): CapabilityDecision {
   const env = readEnv(options?.env);
   const caller = options?.privilege ?? resolveCallerPrivilege(env);
@@ -157,6 +181,21 @@ export function authorizeMcpTool(
     };
   }
 
+  if (
+    options?.mustIds?.includes(MCP_SAFE_WRITE_CONSENT_POLICY_ID) &&
+    isMcpSafeWriteConsentTool(tool) &&
+    env.AIOS_MCP_ALLOW_SAFE_WRITE !== '1'
+  ) {
+    return {
+      allowed: false,
+      tool,
+      required,
+      caller,
+      reason: 'mcp-safe-write-consent',
+      policyId: MCP_SAFE_WRITE_CONSENT_POLICY_ID,
+    };
+  }
+
   return { allowed: true, tool, required, caller };
 }
 
@@ -166,6 +205,7 @@ export function deniedMcpPayload(decision: CapabilityDecision): {
   required: Privilege;
   caller: Privilege;
   reason?: string;
+  policyId?: string;
 } {
   return {
     error: 'policy.denied',
@@ -173,6 +213,7 @@ export function deniedMcpPayload(decision: CapabilityDecision): {
     required: decision.required,
     caller: decision.caller,
     reason: decision.reason,
+    ...(decision.policyId ? { policyId: decision.policyId } : {}),
   };
 }
 

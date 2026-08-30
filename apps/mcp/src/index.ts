@@ -33,6 +33,15 @@ import { AgentRegistry } from '@aios-platform/agent-registry';
 import { authorizeMcpTool, deniedMcpPayload, isModelCapabilityClass } from '@aios/shared';
 import { readMonorepoVersion } from './version.ts';
 
+function mcpMustPolicyIds(): string[] {
+  const home = process.env.AIOS_HOME || process.cwd();
+  const bundle = loadPolicies({
+    cwd: home,
+    configPath: process.env.AIOS_POLICIES_PATH,
+  });
+  return applyPolicies(bundle.rules).mustIds;
+}
+
 export function createAiosMcpServer(): McpServer {
   const server = new McpServer({
     name: 'aios',
@@ -49,7 +58,7 @@ export function createAiosMcpServer(): McpServer {
       name as never,
       config as never,
       (async (args: unknown, extra: unknown) => {
-        const decision = authorizeMcpTool(String(name));
+        const decision = authorizeMcpTool(String(name), { mustIds: mcpMustPolicyIds() });
         if (!decision.allowed) {
           return {
             content: [
