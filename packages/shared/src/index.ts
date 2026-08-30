@@ -41,6 +41,7 @@ export const MCP_TOOL_CATALOG = [
   'aios_governance_status',
   'aios_audit_docs',
   'aios_search_pkb',
+  'aios_pkb_rebuild_vectors',
   'aios_governance_audit',
   'aios_governance_record',
   'aios_operational_state',
@@ -68,6 +69,7 @@ export const MCP_TOOL_PRIVILEGE: Record<McpToolName, Privilege> = {
   aios_operational_state: 'READ_ONLY',
   aios_visibility: 'READ_ONLY',
   aios_export_obsidian: 'SAFE_WRITE',
+  aios_pkb_rebuild_vectors: 'SAFE_WRITE',
   aios_memory_remember: 'SAFE_WRITE',
   aios_memory_clear: 'SAFE_WRITE',
   aios_workspace_upsert: 'SAFE_WRITE',
@@ -106,7 +108,11 @@ export const MCP_SAFE_WRITE_CONSENT_POLICY_ID = 'mcp-safe-write-consent';
  * SAFE_WRITE tools that require `AIOS_MCP_ALLOW_SAFE_WRITE=1` when
  * `mcp-safe-write-consent` is an active must-policy.
  */
-export const MCP_SAFE_WRITE_CONSENT_TOOLS = ['aios_memory_clear', 'aios_export_obsidian'] as const;
+export const MCP_SAFE_WRITE_CONSENT_TOOLS = [
+  'aios_memory_clear',
+  'aios_export_obsidian',
+  'aios_pkb_rebuild_vectors',
+] as const;
 
 export type McpSafeWriteConsentTool = (typeof MCP_SAFE_WRITE_CONSENT_TOOLS)[number];
 

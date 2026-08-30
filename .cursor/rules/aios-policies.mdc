@@ -35,7 +35,7 @@ Regenerate: `pnpm sync:cursor-rules`
 - **calibrated-claims** (must): Distinguish fact, inference, and opinion; never invent to fill gaps — state the assumption or ask when the gap blocks a useful answer
 - **clarify-if-blocking** (must): Ask clarifying questions only when ambiguity would change the decision or deliverable; otherwise assume explicitly and proceed
 - **depth-on-demand** (must): Answer at the depth needed to solve the request; deepen only when evidence shows extra detail adds value — avoid essay inflation
-- **mcp-safe-write-consent** (must): MCP SAFE_WRITE tools aios_memory_clear and aios_export_obsidian require AIOS_MCP_ALLOW_SAFE_WRITE=1 when this must-policy is loaded — proves policies can deny writes (#378)
+- **mcp-safe-write-consent** (must): MCP SAFE_WRITE tools aios_memory_clear, aios_export_obsidian, and aios_pkb_rebuild_vectors require AIOS_MCP_ALLOW_SAFE_WRITE=1 when this must-policy is loaded — proves policies can deny writes (#378 / #327)
 
 ## SHOULD
 
