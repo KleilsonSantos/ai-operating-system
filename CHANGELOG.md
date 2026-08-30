@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.47.1] - 2026-08-30
+
 ### Added
 
 - 📚 RAG boundaries guide — PKB vs Memory vs Knowledge Graph (#328)
