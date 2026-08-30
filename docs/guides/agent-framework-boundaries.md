@@ -61,3 +61,4 @@ These frameworks solve **general agent orchestration and RAG apps**. AIOS solves
 - [Harness mapping](../architecture/harness-mapping.md)
 - [Control plane vs Companion](./control-plane-companion.md)
 - [PKB evolution](../prompts/pkb-evolution.md)
+- [RAG boundaries — PKB vs Memory vs KG](./rag-boundaries.md) (#328)

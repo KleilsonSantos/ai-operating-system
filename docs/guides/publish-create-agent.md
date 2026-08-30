@@ -1,6 +1,6 @@
 # Publish `@aios-platform/create-agent` (npm)
 
-> Phase 5b · Issue [#233](https://github.com/KleilsonSantos/ai-operating-system/issues/233) · [ADR-0023](../adr/0023-agent-registry-marketplace.md)
+> Phase 5b · Issues [#233](https://github.com/KleilsonSantos/ai-operating-system/issues/233) · [#325](https://github.com/KleilsonSantos/ai-operating-system/issues/325) · [ADR-0023](../adr/0023-agent-registry-marketplace.md)
 
 > **Scope note:** the npm organization `aios` is not available. Public packages ship under **`@aios-platform`**. Workspace packages elsewhere may still use the `@aios/*` name until migrated.
 
@@ -14,10 +14,12 @@ npm create @aios-platform/agent@latest -- --name my-agent
 
 ## Prerequisites
 
-1. npm account with **publish** rights on the `@aios` organization.
-2. `npm login` (or `NPM_TOKEN` configured for the registry).
+1. npm account with **publish** rights on the **`@aios-platform`** scope.
+2. Auth (pick one):
+   - `TOKEN_NPM` in repo-root `.env` (read by `scripts/npm-publish-create-agent.sh`), or
+   - `npm login` / interactive OTP via `bash scripts/npm-publish-create-agent.sh --otp=######`
 3. Node `>=22.13`, pnpm via the repo `packageManager` field.
-4. Packages already on `main` (or the commit you intend to publish).
+4. Packages already on `main` at the SemVer you intend to publish (aggregate releases — do not invent ad-hoc versions).
 
 ## Package order
 
@@ -35,10 +37,18 @@ bash scripts/smoke-create-agent-pack.sh
 bash scripts/npm-publish-create-agent.sh --dry-run
 ```
 
-## Publish
+## Publish (SemVer catch-up)
+
+After a release on `main` (e.g. `v0.47.0`), npm may still show an older version until maintainers publish:
 
 ```bash
-bash scripts/npm-publish-create-agent.sh
+git checkout main && git pull
+npm view @aios-platform/agent-registry version   # often lags monorepo
+bash scripts/smoke-create-agent-pack.sh
+bash scripts/npm-publish-create-agent.sh --dry-run
+bash scripts/npm-publish-create-agent.sh          # or --otp=###### if 2FA
+npm view @aios-platform/agent-registry version
+npm view @aios-platform/create-agent version
 ```
 
 Equivalent manual steps:
@@ -56,6 +66,16 @@ pnpm --filter @aios-platform/create-agent publish --access public --no-git-check
 npm view @aios-platform/create-agent version
 npm create @aios-platform/agent@latest -- --name verify-smoke
 ```
+
+## Auth troubleshooting
+
+| Symptom                                       | Likely cause                                                              |
+| --------------------------------------------- | ------------------------------------------------------------------------- |
+| `401 Unauthorized` on `npm whoami` / publish  | Expired or revoked `TOKEN_NPM`; regenerate a **publish**-capable token    |
+| `404 Not Found` on `PUT …/@aios-platform%2f…` | Often auth failure disguised as 404 for scoped packages — fix token first |
+| 2FA challenge                                 | Classic tokens: pass `--otp=######` to the publish script                 |
+
+Do not commit tokens. Prefer a granular npm token limited to `@aios-platform` publish.
 
 ## Notes
 

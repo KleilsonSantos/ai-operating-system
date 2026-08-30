@@ -17,6 +17,8 @@ Related engines (do **not** duplicate here):
 | Heuristic knowledge graph                | `@aios/knowledge` · ADR-0005                |
 | External official references             | [`docs/references/`](../references/) (#133) |
 
+**SSOT / RAG boundaries** (PKB vs Memory vs KG): [`docs/guides/rag-boundaries.md`](../guides/rag-boundaries.md) (#328).
+
 Long-term evolution: [`pkb-evolution.md`](./pkb-evolution.md).
 
 ## Layout
