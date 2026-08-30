@@ -25,7 +25,7 @@ Canonical product truth remains: **code → FOUNDATION / ADRs / ROADMAP → poli
 | MCP tool that **references** catalog `id`s                        | Second policy / memory engine inside a RAG library                 |
 | Companion or IDE as a **consumer** of PKB search                  | Duplicating Memory or KG inside LlamaIndex/Pinecone as SSOT        |
 
-Evolution ladder (unchanged): [`pkb-evolution.md`](../prompts/pkb-evolution.md) steps 4–7 · spikes [#323](https://github.com/KleilsonSantos/ai-operating-system/issues/323) → ADR [#326](https://github.com/KleilsonSantos/ai-operating-system/issues/326) → MCP [#327](https://github.com/KleilsonSantos/ai-operating-system/issues/327).
+Evolution ladder (unchanged): [`pkb-evolution.md`](../prompts/pkb-evolution.md) steps 4–7 · spike recommendation **sqlite-vec-first** ([#323](https://github.com/KleilsonSantos/ai-operating-system/issues/323) · [spike](../spikes/pkb-semantic-search-sqlite-vec-vs-pgvector.md)) → ADR [#326](https://github.com/KleilsonSantos/ai-operating-system/issues/326) → MCP [#327](https://github.com/KleilsonSantos/ai-operating-system/issues/327).
 
 ## Operator mental model
 
