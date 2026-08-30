@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.47.3] - 2026-08-30
+
 ### Added
 
 - 📜 ADR-0032 — optional local PKB vector index (sqlite-vec) (#326)
