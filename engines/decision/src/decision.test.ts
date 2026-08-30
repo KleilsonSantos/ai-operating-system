@@ -33,4 +33,10 @@ describe('shouldRunAgent', () => {
     expect(shouldRunAgent('appsec', 'fix.bug')).toBe(true);
     expect(shouldRunAgent('qa', 'fix.bug')).toBe(true);
   });
+
+  it('audit.security agenda appsec primeiro', () => {
+    expect(agentsForIntent('audit.security')).toEqual(['appsec', 'architecture', 'qa']);
+    expect(shouldRunAgent('appsec', 'audit.security')).toBe(true);
+    expect(shouldRunAgent('docs', 'audit.security')).toBe(false);
+  });
 });

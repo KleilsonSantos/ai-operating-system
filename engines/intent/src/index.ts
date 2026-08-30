@@ -47,6 +47,25 @@ const RULES: Rule[] = [
     test: (t) =>
       /\b(bug|erro|error|exception|falha|quebr|broken|regression|ci\s*fail)\w*\b/.test(t),
   },
+  // --- audit.security (before analyze — "find security…" must not fall through to unknown) ---
+  {
+    kind: 'audit.security',
+    weight: 0.55,
+    signal: 'object:security|vulnerabilit|cve|owasp|appsec',
+    test: (t) =>
+      /\b(secur(e|ity)|seguran[cç]a|vulnerabilit\w*|cve|owasp|appsec|xss|sqli|injection|secret.?leak|hardening)\b/.test(
+        t
+      ),
+  },
+  {
+    kind: 'audit.security',
+    weight: 0.35,
+    signal: 'verb:find|scan|audit|check|procurar',
+    test: (t) =>
+      /\b(find|scan|audit|check|procur[ae]|procure|busca|buscar|detect|identify|identific)\w*\b/.test(
+        t
+      ) && /\b(secur(e|ity)|seguran[cç]a|vulnerabilit\w*|cve|owasp|appsec|threat|ameac)\b/.test(t),
+  },
   // --- analyze.project ---
   {
     kind: 'analyze.project',
@@ -172,5 +191,6 @@ export const INTENT_KINDS: IntentKind[] = [
   'review.change',
   'implement.feature',
   'fix.bug',
+  'audit.security',
   'unknown',
 ];

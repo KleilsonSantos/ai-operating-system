@@ -65,7 +65,8 @@ export function resolveContextBudget(input: {
   if (
     input.intentKind === 'implement.feature' ||
     input.intentKind === 'fix.bug' ||
-    input.intentKind === 'review.change'
+    input.intentKind === 'review.change' ||
+    input.intentKind === 'audit.security'
   ) {
     return { ...WIDE_BUDGET };
   }

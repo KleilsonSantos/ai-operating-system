@@ -43,6 +43,17 @@ describe('resolveIntent', () => {
     expect(intent.kind).toBe('fix.bug');
   });
 
+  it('classifica audit.security (en journey)', () => {
+    const intent = resolveIntent('Find security vulnerabilities.');
+    expect(intent.kind).toBe('audit.security');
+    expect(intent.confidence).toBeGreaterThanOrEqual(0.35);
+  });
+
+  it('classifica audit.security (pt)', () => {
+    const intent = resolveIntent('Auditar vulnerabilidades de segurança no projeto');
+    expect(intent.kind).toBe('audit.security');
+  });
+
   it('retorna unknown para input vazio', () => {
     const intent = resolveIntent('   ');
     expect(intent.kind).toBe('unknown');
@@ -66,6 +77,7 @@ describe('resolveIntent', () => {
     expect(INTENT_KINDS).toContain('review.change');
     expect(INTENT_KINDS).toContain('implement.feature');
     expect(INTENT_KINDS).toContain('fix.bug');
+    expect(INTENT_KINDS).toContain('audit.security');
     expect(INTENT_KINDS).toContain('unknown');
   });
 });

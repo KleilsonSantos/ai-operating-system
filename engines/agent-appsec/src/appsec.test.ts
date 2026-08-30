@@ -40,4 +40,9 @@ describe('runAppsecAgent', () => {
     const out = await runAppsecAgent(intent('review.change'));
     assert.ok(out.findings.includes('focus:review-auth-and-inputs'));
   });
+
+  it('adds security-audit focus on audit.security', async () => {
+    const out = await runAppsecAgent(intent('audit.security'));
+    assert.ok(out.findings.includes('focus:security-audit'));
+  });
 });
