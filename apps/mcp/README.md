@@ -6,19 +6,19 @@ Bridges Cursor / Companion / HTTP clients to the AIOS runtime (`runPipeline`, po
 
 ## Tools
 
-| Tool                                                                                   | Role                                                                                             |
-| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `aios_contract_version`                                                                | Pipeline contract version                                                                        |
-| `aios_compile_prompt`                                                                  | Governed brief (#59); optional `skillIds` (ADR-0026); optional `scope` names KG neighbors (#305) |
-| `aios_list_workspaces`                                                                 | Multi-repo registry (#43)                                                                        |
-| `aios_workspace_upsert` / `remove` / `validate`                                        | Workspace ops (#55)                                                                              |
-| `aios_run_across_workspaces`                                                           | Batch pipeline (#55)                                                                             |
-| `aios_build_knowledge`                                                                 | Knowledge Graph (#47)                                                                            |
-| `aios_memory_remember` / `recall` / `clear`                                            | Memory (#51)                                                                                     |
-| `aios_load_policies`                                                                   | Policies + constraints                                                                           |
-| `aios_governance_*` / `aios_audit_docs` / `aios_search_pkb` / `aios_operational_state` | Governance + docs/PKB + ops                                                                      |
-| `aios_provider_*`                                                                      | Provider health / models / chat                                                                  |
-| `aios_run_pipeline`                                                                    | Full core → `PipelineResponse`; optional `skillIds` / `hookIds`                                  |
+| Tool                                                                                                                | Role                                                                                             |
+| ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `aios_contract_version`                                                                                             | Pipeline contract version                                                                        |
+| `aios_compile_prompt`                                                                                               | Governed brief (#59); optional `skillIds` (ADR-0026); optional `scope` names KG neighbors (#305) |
+| `aios_list_workspaces`                                                                                              | Multi-repo registry (#43)                                                                        |
+| `aios_workspace_upsert` / `remove` / `validate`                                                                     | Workspace ops (#55)                                                                              |
+| `aios_run_across_workspaces`                                                                                        | Batch pipeline (#55)                                                                             |
+| `aios_build_knowledge`                                                                                              | Knowledge Graph (#47)                                                                            |
+| `aios_memory_remember` / `recall` / `clear`                                                                         | Memory (#51)                                                                                     |
+| `aios_load_policies`                                                                                                | Policies + constraints                                                                           |
+| `aios_governance_*` / `aios_audit_docs` / `aios_search_pkb` / `aios_pkb_rebuild_vectors` / `aios_operational_state` | Governance + docs/PKB + ops                                                                      |
+| `aios_provider_*`                                                                                                   | Provider health / models / chat                                                                  |
+| `aios_run_pipeline`                                                                                                 | Full core → `PipelineResponse`; optional `skillIds` / `hookIds`                                  |
 
 ## Stdio (default)
 
@@ -31,7 +31,7 @@ Prefer an **absolute `node` path** (Cursor GUI often lacks `nvm`/`pnpm`). Set `A
 
 Env: `AIOS_HOME`, `AIOS_REPO`, `AIOS_WORKSPACE`, `AIOS_SCOPE`, `AIOS_POLICIES_PATH`, `AIOS_WORKSPACES_PATH`, `AIOS_MCP_QUIET=1`, `AIOS_MCP_PRIVILEGE`, `AIOS_MCP_ALLOW_PRIVILEGED=1`, `AIOS_MCP_ALLOW_SAFE_WRITE=1`.
 
-**SAFE_WRITE consent (#378):** when must-policy `mcp-safe-write-consent` is loaded (default monorepo policies), `aios_memory_clear` and `aios_export_obsidian` are denied until `AIOS_MCP_ALLOW_SAFE_WRITE=1`. Other SAFE_WRITE tools (e.g. `aios_memory_remember`) stay privilege-gated only.
+**SAFE_WRITE consent (#378 / #327):** when must-policy `mcp-safe-write-consent` is loaded (default monorepo policies), `aios_memory_clear`, `aios_export_obsidian`, and `aios_pkb_rebuild_vectors` are denied until `AIOS_MCP_ALLOW_SAFE_WRITE=1`. Other SAFE_WRITE tools (e.g. `aios_memory_remember`) stay privilege-gated only.
 
 ## Streamable HTTP (opt-in)
 

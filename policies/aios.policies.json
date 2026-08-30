@@ -122,7 +122,7 @@
     },
     {
       "id": "mcp-safe-write-consent",
-      "description": "MCP SAFE_WRITE tools aios_memory_clear and aios_export_obsidian require AIOS_MCP_ALLOW_SAFE_WRITE=1 when this must-policy is loaded — proves policies can deny writes (#378)",
+      "description": "MCP SAFE_WRITE tools aios_memory_clear, aios_export_obsidian, and aios_pkb_rebuild_vectors require AIOS_MCP_ALLOW_SAFE_WRITE=1 when this must-policy is loaded — proves policies can deny writes (#378 / #327)",
       "severity": "must"
     }
   ]

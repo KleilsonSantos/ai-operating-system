@@ -4,6 +4,12 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.48.0] - 2026-08-30
+
+### Added
+
+- 🔎 PKB semantic search — optional local SQLite vector cache + MCP/CLI (`mode=semantic`, `aios_pkb_rebuild_vectors`) (#327)
+
 ## [0.47.3] - 2026-08-30
 
 ### Added

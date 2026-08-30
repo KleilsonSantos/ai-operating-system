@@ -7,7 +7,7 @@ import {
   renderPrometheusMetrics,
   loadMetricsSnapshot,
 } from '@aios/status';
-import { auditDocumentation, searchPkb } from '@aios/documentation';
+import { auditDocumentation, searchPkb, rebuildPkbVectorIndex } from '@aios/documentation';
 import { auditGovernance } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
 import { correlateVisibility, exportObsidian } from '@aios/visibility';
@@ -52,13 +52,35 @@ async function main(): Promise<void> {
     return;
   }
 
+  if (args.rebuildPkbVectors) {
+    const home = process.env.AIOS_HOME || process.cwd();
+    const mustIds = applyPolicies(
+      loadPolicies({ cwd: home, configPath: process.env.AIOS_POLICIES_PATH }).rules
+    ).mustIds;
+    const decision = authorizeMcpTool('aios_pkb_rebuild_vectors', { mustIds });
+    if (!decision.allowed) {
+      console.error(JSON.stringify(deniedMcpPayload(decision), null, 2));
+      process.exitCode = 1;
+      return;
+    }
+    const result = rebuildPkbVectorIndex({
+      homePath: home,
+      repoPath: resolveRepo(args),
+    });
+    console.log(JSON.stringify(result, null, 2));
+    if (!result.ok) process.exitCode = 1;
+    return;
+  }
+
   if (args.searchPkb) {
     const result = searchPkb({
       repoPath: resolveRepo(args),
+      homePath: process.env.AIOS_HOME || process.cwd(),
       query: args.input.trim() || undefined,
       tags: args.searchPkbTags,
       domain: args.searchPkbDomain,
       limit: args.searchPkbLimit,
+      mode: args.searchPkbSemantic ? 'semantic' : 'textual',
     });
     console.log(JSON.stringify(result, null, 2));
     return;

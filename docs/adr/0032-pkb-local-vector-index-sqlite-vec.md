@@ -51,6 +51,7 @@ Spike #323 compared **sqlite-vec** vs **pgvector** under Resource-Aware (ADR-001
 - Rebuild: scan `docs/prompts/by-domain/**/*.md` + `index.yaml` consistency checks
 - Stale index: compare content hash / `updated_at` → warn + rebuild hint
 - Capability: read-only search; rebuild/write may require SAFE_WRITE consent if exposed via MCP
+- **Shipped in #327 (MVP):** Node built-in `node:sqlite` stores float embeddings as JSON blobs; similarity is in-process cosine. Dedicated sqlite-vec native extension load is deferred (Resource-Aware packaging). Offline `hashEmbed` bag-of-tokens is the default embedder; provider/Ollama embeddings remain a later swap behind the same index file.
 
 ## References
 

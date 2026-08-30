@@ -2,7 +2,14 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { afterEach, describe, expect, it } from 'vitest';
-import { auditDocumentation, parsePkbFrontmatter, parsePkbIndexPaths, searchPkb } from './index.ts';
+import {
+  auditDocumentation,
+  parsePkbFrontmatter,
+  parsePkbIndexPaths,
+  searchPkb,
+  rebuildPkbVectorIndex,
+  hashEmbed,
+} from './index.ts';
 
 const temps: string[] = [];
 
@@ -119,7 +126,56 @@ status: active
     const root = seedRepo();
     const out = searchPkb({ repoPath: root, query: 'RAG' });
     expect(out.count).toBe(1);
+    expect(out.mode).toBe('textual');
     expect(out.hits[0]?.matches).toContain('body');
+  });
+
+  it('semantic without index falls back to textual', () => {
+    const root = seedRepo();
+    const home = mkdtempSync(join(tmpdir(), 'aios-pkb-home-'));
+    temps.push(home);
+    const out = searchPkb({
+      repoPath: root,
+      homePath: home,
+      query: 'RAG',
+      mode: 'semantic',
+    });
+    expect(out.mode).toBe('semantic');
+    expect(out.semantic?.used).toBe(false);
+    expect(out.semantic?.reason).toBe('index-missing');
+    expect(out.count).toBe(1);
+    expect(out.hits[0]?.matches).toContain('body');
+  });
+
+  it('rebuild + semantic ranks by cosine', () => {
+    const root = seedRepo();
+    const home = mkdtempSync(join(tmpdir(), 'aios-pkb-vec-'));
+    temps.push(home);
+    const rebuilt = rebuildPkbVectorIndex({ homePath: home, repoPath: root });
+    expect(rebuilt.ok).toBe(true);
+    expect(rebuilt.indexed).toBe(2);
+
+    const out = searchPkb({
+      repoPath: root,
+      homePath: home,
+      query: 'README audit documentation',
+      mode: 'semantic',
+      limit: 2,
+    });
+    expect(out.semantic?.used).toBe(true);
+    expect(out.count).toBe(2);
+    expect(out.hits[0]?.id).toBe('prompt.documentation.readme');
+    expect(out.hits[0]?.matches).toContain('semantic');
+  });
+});
+
+describe('hashEmbed', () => {
+  it('is deterministic and unit-length', () => {
+    const a = hashEmbed('hello world');
+    const b = hashEmbed('hello world');
+    expect(a).toEqual(b);
+    const norm = Math.sqrt(a.reduce((s, x) => s + x * x, 0));
+    expect(norm).toBeCloseTo(1, 5);
   });
 });
 
