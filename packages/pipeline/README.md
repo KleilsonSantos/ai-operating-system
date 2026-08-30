@@ -16,6 +16,7 @@ const response = await runPipeline({
 
 - Types: `PipelineRequest` / `PipelineResponse` in `@aios/shared`
 - Do not embed engines in other monorepos — use this package ([ADR-0003](../../docs/adr/0003-pipeline-integration-contract.md))
+- **Honesty (#377):** `response.capabilities.act` is `false` in default `runPipeline` (heuristic analysis only). Intents that imply write/ACT (`implement.feature`, `fix.bug`) fail the quality gate with blocker `actAvailable` and finding `act.unavailable` — they do **not** mean “code was applied”.
 
 ```bash
 pnpm --filter @aios/pipeline test

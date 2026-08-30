@@ -186,6 +186,26 @@ export type IntentKind =
   | 'audit.security'
   | 'unknown';
 
+/**
+ * Intents that imply a write/ACT step (code change or validate-of-diff).
+ * Default `runPipeline` is analysis-only — see `PipelineCapabilities.act` (#377).
+ */
+export const ACT_INTENT_KINDS = ['implement.feature', 'fix.bug'] as const;
+
+export type ActIntentKind = (typeof ACT_INTENT_KINDS)[number];
+
+export function impliesActIntent(kind: IntentKind): boolean {
+  return (ACT_INTENT_KINDS as readonly string[]).includes(kind);
+}
+
+/** Runtime capabilities advertised on each PipelineResponse (#377). */
+export type PipelineCapabilities = {
+  /** Governed write/ACT executor available for this run */
+  act: boolean;
+  /** Operator-facing reason when `act` is false */
+  reason?: string;
+};
+
 export type Intent = {
   /** Texto original do usuário */
   raw: string;
@@ -1079,6 +1099,11 @@ export type PipelineResponse = {
   };
   results: AgentResult[];
   verdict: QualityVerdict;
+  /**
+   * What the runtime can actually do this turn (#377).
+   * Today `act` is always false in default `runPipeline` (heuristic analysis only).
+   */
+  capabilities?: PipelineCapabilities;
   /** Additive execution record — omitted only by older producers. */
   run?: PipelineRun;
 };

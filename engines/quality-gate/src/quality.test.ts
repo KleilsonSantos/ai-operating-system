@@ -87,4 +87,42 @@ describe('evaluateQuality', () => {
     const v = evaluateQuality(results, { intent: intentAnalyze, context: ctx });
     expect(v.blockers).toContain('agentsOk');
   });
+
+  it('bloqueia implement.feature sem ACT executor (#377)', () => {
+    const results = [okAgent('architecture'), okAgent('appsec'), okAgent('docs'), okAgent('qa')];
+    const v = evaluateQuality(results, {
+      intent: {
+        raw: 'Implement the recommended improvement.',
+        kind: 'implement.feature',
+        confidence: 0.9,
+        signals: [],
+      },
+      actAvailable: false,
+    });
+    expect(v.passed).toBe(false);
+    expect(v.checks.actAvailable).toBe(false);
+    expect(v.blockers).toContain('actAvailable');
+  });
+
+  it('passa implement.feature quando actAvailable=true', () => {
+    const results = [okAgent('architecture'), okAgent('appsec'), okAgent('docs'), okAgent('qa')];
+    const v = evaluateQuality(results, {
+      intent: {
+        raw: 'Implement feature',
+        kind: 'implement.feature',
+        confidence: 0.9,
+        signals: [],
+      },
+      actAvailable: true,
+    });
+    expect(v.passed).toBe(true);
+    expect(v.checks.actAvailable).toBe(true);
+  });
+
+  it('analyze não exige ACT', () => {
+    const results = [okAgent('architecture'), okAgent('appsec'), okAgent('docs'), okAgent('qa')];
+    const v = evaluateQuality(results, { intent: intentAnalyze, context: ctx });
+    expect(v.checks.actAvailable).toBe(true);
+    expect(v.passed).toBe(true);
+  });
 });

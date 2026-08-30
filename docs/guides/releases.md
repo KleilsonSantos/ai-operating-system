@@ -18,6 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag       | Description                                                                                          |
 | --------- | ---------------------------------------------------------------------------------------------------- |
+| `v0.46.0` | Honest ACT UX (#377) + CLI `--list-agents --json` / `AIOS_HOME` (#379)                               |
 | `v0.45.0` | Intent `audit.security` for AppSec journeys (#376)                                                   |
 | `v0.44.0` | Obsidian unidirectional export (#366)                                                                |
 | `v0.43.0` | Console Run trail + `visibility` safe action (#365)                                                  |
