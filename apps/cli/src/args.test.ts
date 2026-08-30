@@ -62,6 +62,13 @@ describe('parseArgs', () => {
     expect(args.input).toBe('hello');
     expect(args.error).toBeUndefined();
   });
+
+  it('parses --visibility and --run-id', () => {
+    const args = parseArgs(['--visibility', '--scope', 'engines/policy', '--run-id', 'run-1']);
+    expect(args.visibility).toBe(true);
+    expect(args.scope).toBe('engines/policy');
+    expect(args.visibilityRunId).toBe('run-1');
+  });
 });
 
 describe('formatHelp', () => {

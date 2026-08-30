@@ -10,6 +10,7 @@ import {
 import { auditDocumentation, searchPkb } from '@aios/documentation';
 import { auditGovernance } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
+import { correlateVisibility } from '@aios/visibility';
 import { resolveWorkspace } from '@aios/workspace';
 import { AgentRegistry, formatDependencyTreeText } from '@aios-platform/agent-registry';
 import { formatHelp, parseArgs } from './args.ts';
@@ -175,6 +176,18 @@ async function main(): Promise<void> {
     });
     console.log(JSON.stringify(state, null, 2));
     if (state.health.errorCount > 0) process.exitCode = 1;
+    return;
+  }
+
+  if (args.visibility) {
+    const snap = await correlateVisibility({
+      homePath: process.env.AIOS_HOME || process.cwd(),
+      repoPath: args.repoPath,
+      workspaceId: args.workspaceId,
+      scope: args.scope,
+      runId: args.visibilityRunId,
+    });
+    console.log(JSON.stringify(snap, null, 2));
     return;
   }
 

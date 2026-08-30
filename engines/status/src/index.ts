@@ -11,6 +11,7 @@ import {
   MCP_TOOL_PRIVILEGE,
   PIPELINE_CONTRACT_VERSION,
   type AgentCatalogEntry,
+  type AgentExecutionRecord,
   type AttentionItem,
   type AgentAdoptionSeries,
   type ChatRequest,
@@ -624,6 +625,66 @@ export function recordAgentExecution(
     },
     options
   );
+}
+
+export type ListAgentExecutionsOptions = {
+  homePath?: string;
+  /** Max rows returned (newest last). Default 50. */
+  limit?: number;
+  /** Max bytes read from the end of events.jsonl. Default 256_000. */
+  maxBytes?: number;
+};
+
+/**
+ * Capped reader for `agent.execution` rows (Visibility Plane / ADR-0030).
+ * Scans only the tail of `.aios/metrics/events.jsonl` — Resource-Aware.
+ */
+export function listAgentExecutions(
+  options: ListAgentExecutionsOptions = {}
+): AgentExecutionRecord[] {
+  const home = resolve(options.homePath || process.env.AIOS_HOME || process.cwd());
+  const path = metricsPath(home);
+  const limit = Math.max(1, Math.min(options.limit ?? 50, 500));
+  const maxBytes = Math.max(4_096, Math.min(options.maxBytes ?? 256_000, 2_000_000));
+  if (!existsSync(path)) return [];
+
+  let raw: string;
+  try {
+    const buf = readFileSync(path);
+    raw =
+      buf.byteLength <= maxBytes
+        ? buf.toString('utf8')
+        : buf.subarray(buf.byteLength - maxBytes).toString('utf8');
+  } catch {
+    return [];
+  }
+
+  const collected: AgentExecutionRecord[] = [];
+  for (const line of raw.split('\n')) {
+    if (!line.trim()) continue;
+    let ev: Record<string, unknown>;
+    try {
+      ev = JSON.parse(line) as Record<string, unknown>;
+    } catch {
+      continue;
+    }
+    if (ev.kind !== 'agent.execution') continue;
+    const agent = typeof ev.agent === 'string' && ev.agent.trim() ? ev.agent.trim() : 'unknown';
+    const at = typeof ev.at === 'string' && ev.at ? ev.at : new Date(0).toISOString();
+    const outcome = typeof ev.outcome === 'string' ? ev.outcome : 'unknown';
+    collected.push({
+      kind: 'agent.execution',
+      at,
+      agent,
+      version: typeof ev.version === 'string' ? ev.version : undefined,
+      outcome,
+      durationMs: typeof ev.durationMs === 'number' ? ev.durationMs : undefined,
+      source: typeof ev.source === 'string' ? ev.source : undefined,
+      ok: typeof ev.ok === 'boolean' ? ev.ok : outcome === 'success',
+    });
+  }
+
+  return collected.length <= limit ? collected : collected.slice(collected.length - limit);
 }
 
 /** Record a GitHub CI check conclusion (`kind: delivery.ci`) — ADR-0028. */

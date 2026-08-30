@@ -21,6 +21,8 @@ export type CliArgs = {
   searchPkbLimit?: number;
   governanceAudit: boolean;
   operationalState: boolean;
+  visibility: boolean;
+  visibilityRunId?: string;
   listAgents: boolean;
   listAgentsTags: string[];
   listAgentsMaintainer?: string;
@@ -58,6 +60,7 @@ function emptyArgs(overrides: Partial<CliArgs> = {}): CliArgs {
     searchPkbTags: [],
     governanceAudit: false,
     operationalState: false,
+    visibility: false,
     listAgents: false,
     listAgentsTags: [],
     listAgentsJson: false,
@@ -93,6 +96,8 @@ Common options:
   --governance-status        Governance / attention status
   --governance-audit         Governance audit
   --operational-state        Operational state snapshot
+  --visibility               Visibility Plane snapshot (requires --scope, --workspace, and/or --run-id)
+  --run-id <id>              Optional run id for --visibility (run body must be injected later / unavailable)
   --metrics-prometheus       Prometheus text metrics
   --provider-health          Provider health check
   --provider-chat            Provider chat (uses input)
@@ -130,6 +135,8 @@ export function parseArgs(argv: string[]): CliArgs {
   let searchPkbLimit: number | undefined;
   let governanceAudit = false;
   let operationalState = false;
+  let visibility = false;
+  let visibilityRunId: string | undefined;
   let listAgentsFlag = false;
   const listAgentsTags: string[] = [];
   let listAgentsMaintainer: string | undefined;
@@ -270,6 +277,18 @@ export function parseArgs(argv: string[]): CliArgs {
       operationalState = true;
       continue;
     }
+    if (a === '--visibility') {
+      visibility = true;
+      continue;
+    }
+    if (a === '--run-id') {
+      visibilityRunId = argv[++i];
+      continue;
+    }
+    if (a.startsWith('--run-id=')) {
+      visibilityRunId = a.slice('--run-id='.length);
+      continue;
+    }
     if (a === '--list-agents') {
       listAgentsFlag = true;
       continue;
@@ -364,6 +383,8 @@ export function parseArgs(argv: string[]): CliArgs {
     searchPkbLimit,
     governanceAudit,
     operationalState,
+    visibility,
+    visibilityRunId,
     listAgents: listAgentsFlag,
     listAgentsTags,
     listAgentsMaintainer,
