@@ -31,11 +31,12 @@ import { correlateVisibility } from '@aios/visibility';
 import { resolve } from 'node:path';
 import { AgentRegistry } from '@aios-platform/agent-registry';
 import { authorizeMcpTool, deniedMcpPayload, isModelCapabilityClass } from '@aios/shared';
+import { readMonorepoVersion } from './version.ts';
 
 export function createAiosMcpServer(): McpServer {
   const server = new McpServer({
     name: 'aios',
-    version: '0.38.0',
+    version: readMonorepoVersion(),
   });
 
   const registerRaw = server.registerTool.bind(server);

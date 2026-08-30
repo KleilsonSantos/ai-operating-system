@@ -18,6 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag       | Description                                                                                          |
 | --------- | ---------------------------------------------------------------------------------------------------- |
+| `v0.42.1` | MCP SemVer sync + `@aios/core` Vitest (#337 / #338)                                                  |
 | `v0.42.0` | Visibility Plane MVP (ADR-0030) + interaction-quality policies (#351 / #358) + CodeQL v4 (#360)      |
 | `v0.41.0` | TaskProfile Model Router (ADR-0031) + Visibility Plane spike/ADR-0030 Proposed (#353 / #352)         |
 | `v0.40.1` | CLI `--help` / unknown flags (#335) + quality gate `knownIntent` (#336) + Vitest 4 (#348)            |
