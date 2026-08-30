@@ -27,7 +27,7 @@ import { getGovernanceStatus, chatWithMetrics, loadMetricsSnapshot } from '@aios
 import { auditDocumentation, searchPkb } from '@aios/documentation';
 import { auditGovernance, recordDecision } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
-import { correlateVisibility } from '@aios/visibility';
+import { correlateVisibility, exportObsidian } from '@aios/visibility';
 import { resolve } from 'node:path';
 import { AgentRegistry } from '@aios-platform/agent-registry';
 import { authorizeMcpTool, deniedMcpPayload, isModelCapabilityClass } from '@aios/shared';
@@ -798,6 +798,50 @@ export function createAiosMcpServer(): McpServer {
         const message = err instanceof Error ? err.message : String(err);
         return {
           content: [{ type: 'text', text: `aios_visibility failed: ${message}` }],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  registerTool(
+    'aios_export_obsidian',
+    {
+      title: 'Export Obsidian vault',
+      description:
+        'Opt-in unidirectional export of the heuristic Knowledge Graph to Markdown + YAML frontmatter + [[wikilinks]] (ADR-0030 / #366). Writes under outDir or .aios/export/obsidian — never mutates docs/adr/ or policies/. Vault is a view, not SSOT.',
+      inputSchema: {
+        homePath: z.string().optional(),
+        repoPath: z.string().optional(),
+        outDir: z
+          .string()
+          .optional()
+          .describe('Destination folder (default: <home>/.aios/export/obsidian)'),
+        scope: z.string().optional().describe('When fullGraph is false, filter nodes by path'),
+        fullGraph: z
+          .boolean()
+          .optional()
+          .describe('Export entire KG (default true). Set false with scope to filter.'),
+        runId: z.string().optional().describe('Optional runs/<id>.md note'),
+      },
+    },
+    async ({ homePath, repoPath, outDir, scope, fullGraph, runId }) => {
+      try {
+        const result = exportObsidian({
+          homePath: homePath || process.env.AIOS_HOME || process.cwd(),
+          repoPath,
+          outDir,
+          scope,
+          fullGraph,
+          runId,
+        });
+        return {
+          content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+        };
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        return {
+          content: [{ type: 'text', text: `aios_export_obsidian failed: ${message}` }],
           isError: true,
         };
       }

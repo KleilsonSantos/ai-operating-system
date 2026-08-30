@@ -23,6 +23,9 @@ export type CliArgs = {
   operationalState: boolean;
   visibility: boolean;
   visibilityRunId?: string;
+  exportObsidian: boolean;
+  exportOut?: string;
+  exportFullGraph: boolean;
   listAgents: boolean;
   listAgentsTags: string[];
   listAgentsMaintainer?: string;
@@ -61,6 +64,8 @@ function emptyArgs(overrides: Partial<CliArgs> = {}): CliArgs {
     governanceAudit: false,
     operationalState: false,
     visibility: false,
+    exportObsidian: false,
+    exportFullGraph: true,
     listAgents: false,
     listAgentsTags: [],
     listAgentsJson: false,
@@ -97,7 +102,10 @@ Common options:
   --governance-audit         Governance audit
   --operational-state        Operational state snapshot
   --visibility               Visibility Plane snapshot (requires --scope, --workspace, and/or --run-id)
-  --run-id <id>              Optional run id for --visibility (run body must be injected later / unavailable)
+  --run-id <id>              Optional run id for --visibility / --export-obsidian
+  --export-obsidian          Export KG (+ optional run note) to Obsidian Markdown (ADR-0030 / #366)
+  --out <dir>                Destination for --export-obsidian (default: .aios/export/obsidian)
+  --no-full-graph            With --export-obsidian + --scope, export only matched nodes
   --metrics-prometheus       Prometheus text metrics
   --provider-health          Provider health check
   --provider-chat            Provider chat (uses input)
@@ -137,6 +145,9 @@ export function parseArgs(argv: string[]): CliArgs {
   let operationalState = false;
   let visibility = false;
   let visibilityRunId: string | undefined;
+  let exportObsidian = false;
+  let exportOut: string | undefined;
+  let exportFullGraph = true;
   let listAgentsFlag = false;
   const listAgentsTags: string[] = [];
   let listAgentsMaintainer: string | undefined;
@@ -289,6 +300,22 @@ export function parseArgs(argv: string[]): CliArgs {
       visibilityRunId = a.slice('--run-id='.length);
       continue;
     }
+    if (a === '--export-obsidian') {
+      exportObsidian = true;
+      continue;
+    }
+    if (a === '--out') {
+      exportOut = argv[++i];
+      continue;
+    }
+    if (a.startsWith('--out=')) {
+      exportOut = a.slice('--out='.length);
+      continue;
+    }
+    if (a === '--no-full-graph') {
+      exportFullGraph = false;
+      continue;
+    }
     if (a === '--list-agents') {
       listAgentsFlag = true;
       continue;
@@ -385,6 +412,9 @@ export function parseArgs(argv: string[]): CliArgs {
     operationalState,
     visibility,
     visibilityRunId,
+    exportObsidian,
+    exportOut,
+    exportFullGraph,
     listAgents: listAgentsFlag,
     listAgentsTags,
     listAgentsMaintainer,

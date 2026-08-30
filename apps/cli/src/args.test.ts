@@ -69,6 +69,24 @@ describe('parseArgs', () => {
     expect(args.scope).toBe('engines/policy');
     expect(args.visibilityRunId).toBe('run-1');
   });
+
+  it('parses --export-obsidian and --out', () => {
+    const args = parseArgs([
+      '--export-obsidian',
+      '--out',
+      '/tmp/vault',
+      '--scope',
+      'engines/visibility',
+      '--no-full-graph',
+      '--run-id',
+      'r1',
+    ]);
+    expect(args.exportObsidian).toBe(true);
+    expect(args.exportOut).toBe('/tmp/vault');
+    expect(args.exportFullGraph).toBe(false);
+    expect(args.scope).toBe('engines/visibility');
+    expect(args.visibilityRunId).toBe('r1');
+  });
 });
 
 describe('formatHelp', () => {

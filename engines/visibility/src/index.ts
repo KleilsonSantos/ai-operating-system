@@ -1,6 +1,6 @@
 /**
  * Visibility Plane — correlate governance fragments (ADR-0030).
- * On-demand only (Resource-Aware). No graph DB, no Obsidian in this slice.
+ * On-demand only (Resource-Aware). Obsidian export is opt-in (#366).
  */
 import { resolve } from 'node:path';
 import type {
@@ -13,6 +13,14 @@ import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge';
 import { getOperationalState, type GetOperationalStateOptions } from '@aios/operational-state';
 import { loadPolicies, applyPolicies } from '@aios/policy';
 import { listAgentExecutions } from '@aios/status';
+
+export {
+  assertSafeObsidianOutDir,
+  exportObsidian,
+  noteBasename,
+  type ExportObsidianOptions,
+  type ExportObsidianResult,
+} from './export-obsidian.js';
 
 export type CorrelateVisibilityOptions = {
   homePath?: string;
