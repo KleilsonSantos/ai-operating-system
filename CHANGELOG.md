@@ -8,6 +8,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 - 🐛 CLI `--list-agents --json` (alias of `--agents-json`) + `AIOS_HOME` guidance (#379)
 
+### Changed
+
+- 🎯 Honest ACT UX — `capabilities.act=false` + gate blocker `actAvailable` for `implement.feature` / `fix.bug` when no write executor (#377)
+
 ## [0.45.0] - 2026-08-29
 
 ### Added

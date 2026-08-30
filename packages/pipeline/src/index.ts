@@ -14,6 +14,7 @@ import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge';
 import { recall } from '@aios/memory';
 import {
   PIPELINE_CONTRACT_VERSION,
+  impliesActIntent,
   recordsLifecycleHooks,
   resolveCallerPrivilege,
   routeModel,
@@ -188,10 +189,24 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
     homePath,
     pluginSource: request.pluginSource,
   });
-  const verdict = evaluateQuality(workflow.results, {
+
+  // Default runPipeline is analysis-only (heuristic plugins; no repo writes) — #377 / ADR-0024.
+  const capabilities: PipelineResponse['capabilities'] = {
+    act: false,
+    reason: 'Default runPipeline is analysis-only; no governed write/ACT executor',
+  };
+  const results =
+    impliesActIntent(intent.kind) && !capabilities.act
+      ? workflow.results.map((r, i) =>
+          i === 0 ? { ...r, findings: ['act.unavailable', ...r.findings] } : r
+        )
+      : workflow.results;
+
+  const verdict = evaluateQuality(results, {
     intent,
     context,
     skipped: workflow.skipped,
+    actAvailable: capabilities.act,
   });
 
   const usedBytes = context.snippets.reduce((sum, s) => sum + s.bytes, 0);
@@ -201,7 +216,7 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
     policyIds: applied.mustIds,
     ran: workflow.ran,
     skipped: workflow.skipped,
-    results: workflow.results,
+    results,
     contextPaths: context.snippets.map((s) => ({
       id: s.path,
       kind: s.kind,
@@ -244,8 +259,9 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
       ran: [...workflow.ran],
       skipped: [...workflow.skipped],
     },
-    results: workflow.results,
+    results,
     verdict,
+    capabilities,
     run,
   };
 }
