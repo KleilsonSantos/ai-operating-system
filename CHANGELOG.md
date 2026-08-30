@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.45.0] - 2026-08-29
+
 ### Added
 
 - ✨ Intent kind `audit.security` — security journeys schedule AppSec (#376)
