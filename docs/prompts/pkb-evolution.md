@@ -7,8 +7,8 @@ The Prompt Knowledge Base starts as an **organized Docs-as-Code collection**. Th
 1. Organized Markdown catalog + `index.yaml` ← **MVP (#134)**
 2. Automatic inventory (extend `aios_audit_docs` / `@aios/documentation` for `docs/prompts/**`) ← **shipped (#154)**
 3. Textual / tag search over frontmatter + body ← **shipped (#158)**
-4. Semantic search ← spike **#323** recommends **sqlite-vec-first** ([spike](../spikes/pkb-semantic-search-sqlite-vec-vs-pgvector.md)); ADR **#326** next
-5. Embeddings + vector store (separate ADR; Resource-Aware)
+4. Semantic search ← spike **#323** → [ADR-0032](../adr/0032-pkb-local-vector-index-sqlite-vec.md) (**Accepted**, #326); implement **#327**
+5. Embeddings + vector store (sqlite-vec under `.aios/` — ADR-0032; Resource-Aware)
 6. RAG over PKB (never replaces FOUNDATION / policies)
 7. MCP tools that _reference_ catalog entries (not a second policy engine)
 8. Specialized agents that _compose_ catalog templates

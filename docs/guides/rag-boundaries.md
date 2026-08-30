@@ -25,7 +25,7 @@ Canonical product truth remains: **code → FOUNDATION / ADRs / ROADMAP → poli
 | MCP tool that **references** catalog `id`s                        | Second policy / memory engine inside a RAG library                 |
 | Companion or IDE as a **consumer** of PKB search                  | Duplicating Memory or KG inside LlamaIndex/Pinecone as SSOT        |
 
-Evolution ladder (unchanged): [`pkb-evolution.md`](../prompts/pkb-evolution.md) steps 4–7 · spike recommendation **sqlite-vec-first** ([#323](https://github.com/KleilsonSantos/ai-operating-system/issues/323) · [spike](../spikes/pkb-semantic-search-sqlite-vec-vs-pgvector.md)) → ADR [#326](https://github.com/KleilsonSantos/ai-operating-system/issues/326) → MCP [#327](https://github.com/KleilsonSantos/ai-operating-system/issues/327).
+Evolution ladder (unchanged): [`pkb-evolution.md`](../prompts/pkb-evolution.md) steps 4–7 · spike **sqlite-vec-first** ([#323](https://github.com/KleilsonSantos/ai-operating-system/issues/323) · [spike](../spikes/pkb-semantic-search-sqlite-vec-vs-pgvector.md)) → [ADR-0032](../adr/0032-pkb-local-vector-index-sqlite-vec.md) Accepted (#326) → MCP [#327](https://github.com/KleilsonSantos/ai-operating-system/issues/327).
 
 ## Operator mental model
 
@@ -51,3 +51,4 @@ User intent
 - [Agent framework boundaries](./agent-framework-boundaries.md) (AIOS vs LangGraph/LlamaIndex)
 - [ADR-0029 harness mapping](../adr/0029-ai-harness-mapping.md)
 - [ADR-0030 Visibility / Obsidian](../adr/0030-visibility-plane-obsidian-export.md) — export is a **view**, not a fourth SSOT
+- [ADR-0032 PKB local vector index](../adr/0032-pkb-local-vector-index-sqlite-vec.md) — optional sqlite-vec cache for prompts only

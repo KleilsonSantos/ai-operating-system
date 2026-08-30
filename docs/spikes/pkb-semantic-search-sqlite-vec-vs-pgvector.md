@@ -3,7 +3,7 @@
 - **Issue:** [#323](https://github.com/KleilsonSantos/ai-operating-system/issues/323)
 - **Subject:** Local vector index for Prompt Knowledge Base (`docs/prompts/**`) only
 - **Date:** 2026-08-30
-- **ADR follow-up:** [#326](https://github.com/KleilsonSantos/ai-operating-system/issues/326) (optional local vector store)
+- **ADR follow-up:** [ADR-0032](../adr/0032-pkb-local-vector-index-sqlite-vec.md) (**Accepted**, #326)
 - **MCP follow-up:** [#327](https://github.com/KleilsonSantos/ai-operating-system/issues/327)
 - **Boundaries:** [rag-boundaries.md](../guides/rag-boundaries.md) (#328)
 - **Method:** Architecture + Resource-Aware comparison. **Did not** install Postgres, Docker Desktop, or sqlite-vec binaries in this spike (ADR-0011 / `inspect-before-install`).
@@ -73,12 +73,12 @@ Gate (issue #323): **no vector store in core** until an ADR + volume evidence.
 
 ## Decision for backlog
 
-| Issue | Action after this spike                                 |
-| ----- | ------------------------------------------------------- |
-| #323  | **Done** — recommendation = sqlite-vec-first            |
-| #326  | Draft ADR reflecting this recommendation                |
-| #327  | Implement only after #326 Accepted                      |
-| #325  | Unrelated — npm publish catch-up still blocked on token |
+| Issue | Action after this spike                                                          |
+| ----- | -------------------------------------------------------------------------------- |
+| #323  | **Done** — recommendation = sqlite-vec-first                                     |
+| #326  | **Done** — [ADR-0032](../adr/0032-pkb-local-vector-index-sqlite-vec.md) Accepted |
+| #327  | Implement semantic `aios_search_pkb` after this ADR                              |
+| #325  | Unrelated — npm publish catch-up still blocked on token                          |
 
 ## References
 
