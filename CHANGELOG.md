@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Changed
+
+- 📝 Publish guide: SemVer catch-up + `TOKEN_NPM` / OTP troubleshooting (#325)
+
 ## [0.47.0] - 2026-08-30
 
 ### Added
