@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.47.2] - 2026-08-30
+
 ### Added
 
 - 🧪 Spike: PKB semantic search — sqlite-vec vs pgvector (#323)

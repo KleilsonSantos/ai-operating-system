@@ -18,6 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag       | Description                                                                                          |
 | --------- | ---------------------------------------------------------------------------------------------------- |
+| `v0.47.2` | Spike: PKB semantic search sqlite-vec vs pgvector (#323)                                             |
 | `v0.47.1` | Docs: RAG boundaries (#328) + npm publish catch-up guide (#325)                                      |
 | `v0.47.0` | Must-policy MCP SAFE_WRITE consent (#378)                                                            |
 | `v0.46.0` | Honest ACT UX (#377) + CLI `--list-agents --json` / `AIOS_HOME` (#379)                               |
