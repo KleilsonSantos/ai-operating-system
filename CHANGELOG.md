@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🔒 Must-policy `mcp-safe-write-consent` gates MCP/CLI `aios_memory_clear` + `aios_export_obsidian` behind `AIOS_MCP_ALLOW_SAFE_WRITE=1` (#378)
+
 ## [0.46.0] - 2026-08-30
 
 ### Changed

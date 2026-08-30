@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-29T23:19:23.215Z",
+  "generatedAt": "2026-08-30T14:38:40.541Z",
   "source": "policies/aios.policies.json",
-  "policyCount": 24,
+  "policyCount": 25,
   "files": ["aios-policies.mdc", "aios-sdlc.mdc"]
 }

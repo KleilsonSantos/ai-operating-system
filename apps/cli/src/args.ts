@@ -119,6 +119,7 @@ Environment:
   AIOS_HOME                  Monorepo root (set to repo root when using pnpm --filter @aios/cli;
                              used for policies, memory, governance, metrics, visibility)
   AIOS_REPO / AIOS_WORKSPACE / AIOS_SCOPE / AIOS_POLICIES_PATH
+  AIOS_MCP_ALLOW_SAFE_WRITE  Set to 1 for --export-obsidian when must-policy mcp-safe-write-consent is loaded (#378)
 
 Default input when none is given: "Analise meu projeto."
 Unknown flags (tokens starting with -) exit with code 1.

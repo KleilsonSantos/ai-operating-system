@@ -20,6 +20,7 @@
     "@aios/operational-state": "workspace:*",
     "@aios/visibility": "workspace:*",
     "@aios/pipeline": "workspace:*",
+    "@aios/policy": "workspace:*",
     "@aios/prompt": "workspace:*",
     "@aios/provider": "workspace:*",
     "@aios/shared": "workspace:*",

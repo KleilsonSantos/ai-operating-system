@@ -19,7 +19,8 @@ The product must stay a **control plane**, not a coding-agent loop.
 
 1. **Execution state (additive).** `PipelineResponse.run` (`PipelineRun` / `PipelineStep`) is always populated by `runPipeline`. `contractVersion` stays `"1"`.
 2. **Capability allowlist.** Each MCP tool has a `Privilege`. Caller privilege comes from `AIOS_MCP_PRIVILEGE` (default `CONTROLLED_EXECUTION`). The model cannot pick privilege via tool arguments. `PRIVILEGED` also requires `AIOS_MCP_ALLOW_PRIVILEGED=1`. Unknown tools fail closed.
-3. **Registry-selected plugins.** Orchestration intersects Agent Registry names with known runners (`architecture` / `appsec` / `docs` / `qa`). Opt-in via `pluginSource: "registry"` or `AIOS_REGISTRY_PLUGINS=1`. Empty or failed selection falls back to the four builtin plugins (ADR-0023 backcompat). Community catalog entries are not executed.
+3. **Policy-backed SAFE_WRITE consent (#378).** Must-policy `mcp-safe-write-consent` (in `policies/aios.policies.json`) gates `aios_memory_clear` and `aios_export_obsidian`: they require `AIOS_MCP_ALLOW_SAFE_WRITE=1`. Privilege alone is not enough when that must-policy is loaded. CLI `--export-obsidian` uses the same `authorizeMcpTool` check (no MCP bypass).
+4. **Registry-selected plugins.** Orchestration intersects Agent Registry names with known runners (`architecture` / `appsec` / `docs` / `qa`). Opt-in via `pluginSource: "registry"` or `AIOS_REGISTRY_PLUGINS=1`. Empty or failed selection falls back to the four builtin plugins (ADR-0023 backcompat). Community catalog entries are not executed.
 
 ## Consequences
 
