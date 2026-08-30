@@ -4,6 +4,7 @@ import {
   deniedMcpPayload,
   impliesActIntent,
   isModelCapabilityClass,
+  MCP_SAFE_WRITE_CONSENT_POLICY_ID,
   MCP_TOOL_CATALOG,
   MCP_TOOL_PRIVILEGE,
   privilegeForMcpTool,
@@ -100,6 +101,35 @@ describe('authorizeMcpTool', () => {
       error: 'policy.denied',
       tool: 'aios_workspace_remove',
     });
+  });
+
+  it('denies gated SAFE_WRITE when mcp-safe-write-consent must-policy is active (#378)', () => {
+    const mustIds = [MCP_SAFE_WRITE_CONSENT_POLICY_ID];
+    const denied = authorizeMcpTool('aios_memory_clear', { env: {}, mustIds });
+    expect(denied.allowed).toBe(false);
+    expect(denied.reason).toBe('mcp-safe-write-consent');
+    expect(denied.policyId).toBe(MCP_SAFE_WRITE_CONSENT_POLICY_ID);
+    expect(deniedMcpPayload(denied).policyId).toBe(MCP_SAFE_WRITE_CONSENT_POLICY_ID);
+
+    const exportDenied = authorizeMcpTool('aios_export_obsidian', { env: {}, mustIds });
+    expect(exportDenied.allowed).toBe(false);
+
+    const rememberOk = authorizeMcpTool('aios_memory_remember', { env: {}, mustIds });
+    expect(rememberOk.allowed).toBe(true);
+  });
+
+  it('allows gated SAFE_WRITE with consent env when policy is active', () => {
+    const mustIds = [MCP_SAFE_WRITE_CONSENT_POLICY_ID];
+    const d = authorizeMcpTool('aios_memory_clear', {
+      env: { AIOS_MCP_ALLOW_SAFE_WRITE: '1' },
+      mustIds,
+    });
+    expect(d.allowed).toBe(true);
+  });
+
+  it('allows gated SAFE_WRITE when consent policy is not among mustIds', () => {
+    const d = authorizeMcpTool('aios_memory_clear', { env: {}, mustIds: ['trade-offs'] });
+    expect(d.allowed).toBe(true);
   });
 
   it('accepts capability classes and rejects vendors', () => {

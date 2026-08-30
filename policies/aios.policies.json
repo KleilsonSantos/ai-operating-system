@@ -119,6 +119,11 @@
       "id": "depth-on-demand",
       "description": "Answer at the depth needed to solve the request; deepen only when evidence shows extra detail adds value — avoid essay inflation",
       "severity": "must"
+    },
+    {
+      "id": "mcp-safe-write-consent",
+      "description": "MCP SAFE_WRITE tools aios_memory_clear and aios_export_obsidian require AIOS_MCP_ALLOW_SAFE_WRITE=1 when this must-policy is loaded — proves policies can deny writes (#378)",
+      "severity": "must"
     }
   ]
 }

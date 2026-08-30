@@ -12,6 +12,8 @@ import { auditGovernance } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
 import { correlateVisibility, exportObsidian } from '@aios/visibility';
 import { resolveWorkspace } from '@aios/workspace';
+import { loadPolicies, applyPolicies } from '@aios/policy';
+import { authorizeMcpTool, deniedMcpPayload } from '@aios/shared';
 import { AgentRegistry, formatDependencyTreeText } from '@aios-platform/agent-registry';
 import { formatHelp, parseArgs } from './args.ts';
 
@@ -192,8 +194,18 @@ async function main(): Promise<void> {
   }
 
   if (args.exportObsidian) {
+    const home = process.env.AIOS_HOME || process.cwd();
+    const mustIds = applyPolicies(
+      loadPolicies({ cwd: home, configPath: process.env.AIOS_POLICIES_PATH }).rules
+    ).mustIds;
+    const decision = authorizeMcpTool('aios_export_obsidian', { mustIds });
+    if (!decision.allowed) {
+      console.error(JSON.stringify(deniedMcpPayload(decision), null, 2));
+      process.exitCode = 1;
+      return;
+    }
     const result = exportObsidian({
-      homePath: process.env.AIOS_HOME || process.cwd(),
+      homePath: home,
       repoPath: args.repoPath,
       outDir: args.exportOut,
       fullGraph: args.exportFullGraph,
