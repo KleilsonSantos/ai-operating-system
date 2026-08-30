@@ -11,6 +11,7 @@ import { remember, recall } from '@aios/memory';
 import { auditDocumentation } from '@aios/documentation';
 import { auditGovernance } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
+import { correlateVisibility } from '@aios/visibility';
 
 export const SAFE_ACTIONS = [
   'contract',
@@ -23,6 +24,7 @@ export const SAFE_ACTIONS = [
   'audit_docs',
   'governance_audit',
   'operational_state',
+  'visibility',
 ] as const;
 
 export type SafeActionId = (typeof SAFE_ACTIONS)[number];
@@ -31,6 +33,8 @@ export type SafeActionRequest = {
   action: string;
   input?: string;
   workspaceId?: string;
+  /** Optional scope for Visibility Plane (ADR-0030 / #365). */
+  scope?: string;
   homePath: string;
 };
 
@@ -165,6 +169,17 @@ export async function runSafeAction(request: SafeActionRequest): Promise<SafeAct
         result = await getOperationalState({
           homePath,
           workspaceId,
+        });
+        break;
+      }
+
+      case 'visibility': {
+        const scope = request.scope?.trim() || undefined;
+        result = await correlateVisibility({
+          homePath,
+          repoPath: homePath,
+          workspaceId,
+          scope,
         });
         break;
       }

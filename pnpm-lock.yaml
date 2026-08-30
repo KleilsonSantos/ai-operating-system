@@ -135,6 +135,9 @@ importers:
       '@aios/status':
         specifier: workspace:*
         version: link:../../engines/status
+      '@aios/visibility':
+        specifier: workspace:*
+        version: link:../../engines/visibility
       '@aios/workspace':
         specifier: workspace:*
         version: link:../../engines/workspace

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { GovernanceStatus } from './types';
 import { TryItPanel } from './TryItPanel';
+import { RunTrailPanel } from './RunTrailPanel';
 import { formatConsumptionChip } from './consumption';
 import { AdoptionChart } from './AdoptionChart';
 
@@ -264,6 +265,8 @@ export function App() {
               </p>
             </section>
           </div>
+
+          <RunTrailPanel workspaceId={workspaceId} />
 
           <section className="panel catalog" aria-labelledby="catalog-h">
             <h2 id="catalog-h">Agent Catalog</h2>
