@@ -183,6 +183,7 @@ export type IntentKind =
   | 'review.change'
   | 'implement.feature'
   | 'fix.bug'
+  | 'audit.security'
   | 'unknown';
 
 export type Intent = {
@@ -464,7 +465,8 @@ export function inferRouteRisk(req: Pick<RouteRequest, 'intentKind' | 'privilege
   if (
     req.intentKind === 'implement.feature' ||
     req.intentKind === 'fix.bug' ||
-    req.intentKind === 'review.change'
+    req.intentKind === 'review.change' ||
+    req.intentKind === 'audit.security'
   ) {
     return 'medium';
   }
@@ -484,6 +486,7 @@ export function inferTaskComplexity(
       return 'AGENTIC';
     case 'analyze.project':
     case 'review.change':
+    case 'audit.security':
       return 'COMPLEX';
     case 'explain.code':
       return 'MEDIUM';

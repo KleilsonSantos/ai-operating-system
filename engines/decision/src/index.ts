@@ -13,6 +13,7 @@ export const AGENT_MATRIX: Record<IntentKind, readonly AgentId[]> = {
   'review.change': ['architecture', 'appsec', 'qa'],
   'implement.feature': ['architecture', 'appsec', 'docs', 'qa'],
   'fix.bug': ['architecture', 'appsec', 'qa'],
+  'audit.security': ['appsec', 'architecture', 'qa'],
   unknown: [],
 };
 

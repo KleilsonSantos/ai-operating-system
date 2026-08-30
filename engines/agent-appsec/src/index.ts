@@ -23,6 +23,9 @@ export async function runAppsecAgent(
   if (intent.kind === 'review.change') {
     findings.push('focus:review-auth-and-inputs');
   }
+  if (intent.kind === 'audit.security') {
+    findings.push('focus:security-audit');
+  }
   if (context?.snippets.length) {
     findings.push(`context.snippets:${context.snippets.length}`);
   }
