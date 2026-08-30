@@ -109,6 +109,7 @@ const server = createServer(async (req, res) => {
         action?: string;
         input?: string;
         workspaceId?: string;
+        scope?: string;
       };
       if (!body.action || typeof body.action !== 'string') {
         sendJson(res, 400, { error: 'body.action required' });
@@ -118,6 +119,7 @@ const server = createServer(async (req, res) => {
         action: body.action,
         input: body.input,
         workspaceId: body.workspaceId,
+        scope: body.scope,
         homePath,
       });
       const statusCode = out.error && !out.result ? 400 : 200;

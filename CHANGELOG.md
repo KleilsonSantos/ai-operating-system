@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- ✨ Console Run trail panel + safe action `visibility` (Visibility Plane / ADR-0030, #365)
+
 ## [0.42.1] - 2026-08-29
 
 ### Fixed
