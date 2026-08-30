@@ -48,7 +48,7 @@ type VisibilitySnapshot = {
 };
 ```
 
-Shipped MVP (`@aios/visibility`): `correlateVisibility`, MCP `aios_visibility`, CLI `--visibility`. Console Run trail and Obsidian export remain follow-ups.
+Shipped MVP (`@aios/visibility`): `correlateVisibility`, MCP `aios_visibility`, CLI `--visibility`, Console Run trail (#365), and Obsidian export (`exportObsidian` / `--export-obsidian` / `aios_export_obsidian`, #366).
 
 Exact shape is additive; `contractVersion` on pipeline responses stays `"1"` unless a breaking change is justified elsewhere.
 
