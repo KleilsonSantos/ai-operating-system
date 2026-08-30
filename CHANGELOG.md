@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.42.1] - 2026-08-29
+
 ### Fixed
 
 - 🐛 MCP `serverInfo.version` reads monorepo SemVer instead of hardcoded `0.38.0` (#337)
