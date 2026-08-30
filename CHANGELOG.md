@@ -4,6 +4,11 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Fixed
+
+- 🐛 MCP `serverInfo.version` reads monorepo SemVer instead of hardcoded `0.38.0` (#337)
+- 🐛 `@aios/core` test script runs Vitest smoke instead of `process.exit(0)` (#338)
+
 ## [0.42.0] - 2026-08-29
 
 ### Added
