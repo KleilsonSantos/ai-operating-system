@@ -87,13 +87,29 @@ describe('parseArgs', () => {
     expect(args.scope).toBe('engines/visibility');
     expect(args.visibilityRunId).toBe('r1');
   });
+
+  it('parses --list-agents with --json', () => {
+    const args = parseArgs(['--list-agents', '--json']);
+    expect(args.listAgents).toBe(true);
+    expect(args.listAgentsJson).toBe(true);
+    expect(args.error).toBeUndefined();
+  });
+
+  it('parses --list-agents with --agents-json', () => {
+    const args = parseArgs(['--list-agents', '--agents-json']);
+    expect(args.listAgents).toBe(true);
+    expect(args.listAgentsJson).toBe(true);
+  });
 });
 
 describe('formatHelp', () => {
-  it('mentions help and contract version', () => {
+  it('mentions help, contract version, list-agents json, and AIOS_HOME', () => {
     const text = formatHelp();
     expect(text).toContain('--help');
     expect(text).toContain(PIPELINE_CONTRACT_VERSION);
+    expect(text).toContain('--list-agents');
+    expect(text).toContain('--json');
+    expect(text).toContain('AIOS_HOME');
     expect(text).not.toMatch(/^\s*\{/);
   });
 });
