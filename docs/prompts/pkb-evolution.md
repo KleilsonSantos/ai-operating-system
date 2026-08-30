@@ -28,7 +28,7 @@ MVP stores them as versioned Markdown with shared frontmatter. New kinds = new `
 - **KISS / YAGNI** for runtime — no vector DB until an ADR + Resource-Aware justification
 - **Docs-as-Code** — reviewable in PRs like any other doc
 - **DRY** — link ADRs / FOUNDATION; do not paste policies into every prompt
-- **Clean boundaries** — PKB feeds agents; it does not become product SSOT
+- **Clean boundaries** — PKB feeds agents; it does not become product SSOT — see [RAG boundaries](../guides/rag-boundaries.md) (#328)
 
 ## Source of this vision
 
