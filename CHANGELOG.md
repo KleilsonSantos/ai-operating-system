@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.44.0] - 2026-08-29
+
 ### Added
 
 - ✨ Obsidian unidirectional export — `exportObsidian` + CLI `--export-obsidian` + MCP `aios_export_obsidian` (ADR-0030, #366)
