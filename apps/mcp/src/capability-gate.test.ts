@@ -16,6 +16,11 @@ describe('MCP capability gate', () => {
     assert.equal(payload.error, 'policy.denied');
   });
 
+  it('denies aios_pkb_rebuild_vectors when mcp-safe-write-consent must is active (#327)', () => {
+    const mustIds = [MCP_SAFE_WRITE_CONSENT_POLICY_ID];
+    assert.equal(isMcpToolAllowed('aios_pkb_rebuild_vectors', {}, mustIds), false);
+  });
+
   it('denies aios_memory_clear when mcp-safe-write-consent must is active (#378)', () => {
     const mustIds = [MCP_SAFE_WRITE_CONSENT_POLICY_ID];
     assert.equal(isMcpToolAllowed('aios_memory_clear', {}, mustIds), false);

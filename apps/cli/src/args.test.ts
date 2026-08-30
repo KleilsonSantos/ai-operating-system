@@ -70,6 +70,18 @@ describe('parseArgs', () => {
     expect(args.visibilityRunId).toBe('run-1');
   });
 
+  it('parses --search-pkb --semantic and --rebuild-pkb-vectors', () => {
+    const search = parseArgs(['--search-pkb', '--semantic', '--tag', 'docs', 'RAG query']);
+    expect(search.searchPkb).toBe(true);
+    expect(search.searchPkbSemantic).toBe(true);
+    expect(search.searchPkbTags).toEqual(['docs']);
+    expect(search.input).toBe('RAG query');
+
+    const rebuild = parseArgs(['--rebuild-pkb-vectors']);
+    expect(rebuild.rebuildPkbVectors).toBe(true);
+    expect(rebuild.input).toBe('');
+  });
+
   it('parses --export-obsidian and --out', () => {
     const args = parseArgs([
       '--export-obsidian',

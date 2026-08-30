@@ -19,6 +19,8 @@ export type CliArgs = {
   searchPkbTags: string[];
   searchPkbDomain?: string;
   searchPkbLimit?: number;
+  searchPkbSemantic: boolean;
+  rebuildPkbVectors: boolean;
   governanceAudit: boolean;
   operationalState: boolean;
   visibility: boolean;
@@ -61,6 +63,8 @@ function emptyArgs(overrides: Partial<CliArgs> = {}): CliArgs {
     auditDocs: false,
     searchPkb: false,
     searchPkbTags: [],
+    searchPkbSemantic: false,
+    rebuildPkbVectors: false,
     governanceAudit: false,
     operationalState: false,
     visibility: false,
@@ -98,7 +102,9 @@ Common options:
   --list-agents              List Agent Registry agents
   --agents-json | --json     With --list-agents, print machine-readable JSON
   --audit-docs               Documentation audit
-  --search-pkb               Search Prompt Knowledge Base
+  --search-pkb               Search Prompt Knowledge Base (query from remaining args)
+  --semantic                 With --search-pkb, opt-in semantic mode (ADR-0032 / #327)
+  --rebuild-pkb-vectors      Rebuild local .aios/pkb-vectors.sqlite cache (SAFE_WRITE consent)
   --governance-status        Governance / attention status
   --governance-audit         Governance audit
   --operational-state        Operational state snapshot
@@ -117,9 +123,9 @@ Common options:
 
 Environment:
   AIOS_HOME                  Monorepo root (set to repo root when using pnpm --filter @aios/cli;
-                             used for policies, memory, governance, metrics, visibility)
+                             used for policies, memory, governance, metrics, visibility, PKB vectors)
   AIOS_REPO / AIOS_WORKSPACE / AIOS_SCOPE / AIOS_POLICIES_PATH
-  AIOS_MCP_ALLOW_SAFE_WRITE  Set to 1 for --export-obsidian when must-policy mcp-safe-write-consent is loaded (#378)
+  AIOS_MCP_ALLOW_SAFE_WRITE  Set to 1 for --export-obsidian / --rebuild-pkb-vectors when must-policy mcp-safe-write-consent is loaded (#378 / #327)
 
 Default input when none is given: "Analise meu projeto."
 Unknown flags (tokens starting with -) exit with code 1.
@@ -148,6 +154,8 @@ export function parseArgs(argv: string[]): CliArgs {
   const searchPkbTags: string[] = [];
   let searchPkbDomain: string | undefined;
   let searchPkbLimit: number | undefined;
+  let searchPkbSemantic = false;
+  let rebuildPkbVectors = false;
   let governanceAudit = false;
   let operationalState = false;
   let visibility = false;
@@ -260,6 +268,14 @@ export function parseArgs(argv: string[]): CliArgs {
     }
     if (a === '--search-pkb') {
       searchPkbFlag = true;
+      continue;
+    }
+    if (a === '--semantic') {
+      searchPkbSemantic = true;
+      continue;
+    }
+    if (a === '--rebuild-pkb-vectors') {
+      rebuildPkbVectors = true;
       continue;
     }
     if (a === '--tag') {
@@ -397,7 +413,8 @@ export function parseArgs(argv: string[]): CliArgs {
   }
 
   return {
-    input: parts.join(' ').trim() || (searchPkbFlag ? '' : 'Analise meu projeto.'),
+    input:
+      parts.join(' ').trim() || (searchPkbFlag || rebuildPkbVectors ? '' : 'Analise meu projeto.'),
     scope: scope || process.env.AIOS_SCOPE,
     repoPath: repoPath || process.env.AIOS_REPO,
     workspaceId: workspaceId || process.env.AIOS_WORKSPACE,
@@ -415,6 +432,8 @@ export function parseArgs(argv: string[]): CliArgs {
     searchPkbTags,
     searchPkbDomain,
     searchPkbLimit,
+    searchPkbSemantic,
+    rebuildPkbVectors,
     governanceAudit,
     operationalState,
     visibility,

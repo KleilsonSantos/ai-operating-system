@@ -24,7 +24,7 @@ import { remember, recall, clearMemory, listMemoryWorkspaces } from '@aios/memor
 import { compilePrompt } from '@aios/prompt';
 import { getProvider, listProviderIds, routeModel } from '@aios/provider';
 import { getGovernanceStatus, chatWithMetrics, loadMetricsSnapshot } from '@aios/status';
-import { auditDocumentation, searchPkb } from '@aios/documentation';
+import { auditDocumentation, searchPkb, rebuildPkbVectorIndex } from '@aios/documentation';
 import { auditGovernance, recordDecision } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
 import { correlateVisibility, exportObsidian } from '@aios/visibility';
@@ -632,17 +632,18 @@ export function createAiosMcpServer(): McpServer {
     {
       title: 'Search Prompt Knowledge Base',
       description:
-        'Textual / tag search over docs/prompts/** frontmatter + body (PKB ladder step 3). No embeddings. Provide query and/or tags and/or domain.',
+        'Search docs/prompts/** (PKB). Default textual/tag. Optional mode=semantic uses local .aios/pkb-vectors.sqlite when present (ADR-0032); falls back to textual if missing. Provide query and/or tags and/or domain.',
       inputSchema: {
         query: z.string().optional(),
         tags: z.array(z.string()).optional(),
         domain: z.string().optional(),
         limit: z.number().int().positive().max(100).optional(),
+        mode: z.enum(['textual', 'semantic']).optional(),
         repoPath: z.string().optional(),
         workspaceId: z.string().optional(),
       },
     },
-    async ({ query, tags, domain, limit, repoPath, workspaceId }) => {
+    async ({ query, tags, domain, limit, mode, repoPath, workspaceId }) => {
       try {
         let root = resolve(repoPath || process.env.AIOS_REPO || process.cwd());
         if (!repoPath && workspaceId) {
@@ -653,10 +654,12 @@ export function createAiosMcpServer(): McpServer {
         }
         const result = searchPkb({
           repoPath: root,
+          homePath: process.env.AIOS_HOME || process.cwd(),
           query,
           tags,
           domain,
           limit,
+          mode,
         });
         return {
           content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
@@ -665,6 +668,44 @@ export function createAiosMcpServer(): McpServer {
         const message = err instanceof Error ? err.message : String(err);
         return {
           content: [{ type: 'text', text: `aios_search_pkb failed: ${message}` }],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  registerTool(
+    'aios_pkb_rebuild_vectors',
+    {
+      title: 'Rebuild PKB vector index',
+      description:
+        'Rebuild optional local PKB vector cache at {AIOS_HOME}/.aios/pkb-vectors.sqlite (ADR-0032 / #327). SAFE_WRITE; may require AIOS_MCP_ALLOW_SAFE_WRITE=1.',
+      inputSchema: {
+        repoPath: z.string().optional(),
+        workspaceId: z.string().optional(),
+      },
+    },
+    async ({ repoPath, workspaceId }) => {
+      try {
+        let root = resolve(repoPath || process.env.AIOS_REPO || process.cwd());
+        if (!repoPath && workspaceId) {
+          const ws = resolveWorkspace(workspaceId, {
+            cwd: process.env.AIOS_HOME || process.cwd(),
+          });
+          if (ws) root = ws.repoPath;
+        }
+        const result = rebuildPkbVectorIndex({
+          homePath: process.env.AIOS_HOME || process.cwd(),
+          repoPath: root,
+        });
+        return {
+          content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+          isError: !result.ok,
+        };
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        return {
+          content: [{ type: 'text', text: `aios_pkb_rebuild_vectors failed: ${message}` }],
           isError: true,
         };
       }
