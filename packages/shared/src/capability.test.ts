@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   authorizeMcpTool,
   deniedMcpPayload,
+  impliesActIntent,
   isModelCapabilityClass,
   MCP_TOOL_CATALOG,
   MCP_TOOL_PRIVILEGE,
@@ -9,6 +10,15 @@ import {
   resolveCallerPrivilege,
   selectPipelineHooks,
 } from './index.ts';
+
+describe('impliesActIntent', () => {
+  it('marks implement/fix as ACT-implying', () => {
+    expect(impliesActIntent('implement.feature')).toBe(true);
+    expect(impliesActIntent('fix.bug')).toBe(true);
+    expect(impliesActIntent('analyze.project')).toBe(false);
+    expect(impliesActIntent('audit.security')).toBe(false);
+  });
+});
 
 describe('resolveCallerPrivilege', () => {
   it('defaults to CONTROLLED_EXECUTION', () => {

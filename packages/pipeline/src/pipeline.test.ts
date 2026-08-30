@@ -123,12 +123,40 @@ describe('runPipeline', () => {
     expect(res.workflow.ran).toEqual([]);
     expect(res.verdict.passed).toBe(false);
     expect(res.verdict.blockers).toContain('knownIntent');
+    expect(res.capabilities?.act).toBe(false);
     expect(res.run?.agentIds).toEqual([]);
     expect(res.run?.steps.filter((s) => s.kind === 'agent').every((s) => s.status === 'skip')).toBe(
       true
     );
     expect(res.run?.model?.capabilityClass).toBe('fast');
     expect(res.context.budget?.tier).toBe('tight');
+  });
+
+  it('implement.feature is honest about missing ACT (#377)', async () => {
+    const repo = fixtureRepo();
+    const res = await runPipeline({
+      input: 'Implement the recommended improvement.',
+      repoPath: repo,
+    });
+    expect(res.intent.kind).toBe('implement.feature');
+    expect(res.capabilities?.act).toBe(false);
+    expect(res.capabilities?.reason).toMatch(/analysis-only/i);
+    expect(res.results[0]?.findings).toContain('act.unavailable');
+    expect(res.verdict.passed).toBe(false);
+    expect(res.verdict.blockers).toContain('actAvailable');
+    expect(res.verdict.checks.actAvailable).toBe(false);
+  });
+
+  it('analyze keeps capabilities.act=false without blocking', async () => {
+    const repo = fixtureRepo();
+    const res = await runPipeline({
+      input: 'Analise meu projeto.',
+      repoPath: repo,
+    });
+    expect(res.intent.kind).toBe('analyze.project');
+    expect(res.capabilities?.act).toBe(false);
+    expect(res.verdict.passed).toBe(true);
+    expect(res.verdict.blockers).not.toContain('actAvailable');
   });
 
   it('runAcrossWorkspaces resume N workspaces', async () => {

@@ -2,6 +2,7 @@
  * Quality Gate — valida o pacote antes de considerar a resposta OK (#8).
  */
 import type { AgentResult, ContextBundle, Intent, QualityVerdict } from '@aios/shared';
+import { impliesActIntent } from '@aios/shared';
 import { agentsForIntent } from '@aios/decision';
 
 export type EvaluateQualityOptions = {
@@ -9,6 +10,12 @@ export type EvaluateQualityOptions = {
   context?: ContextBundle;
   /** Agentes que o Decision pulou de propósito */
   skipped?: string[];
+  /**
+   * Whether a governed write/ACT executor is available (#377).
+   * When the intent implies ACT and this is not `true`, the gate blocks
+   * so implement/fix do not look like a successful code change.
+   */
+  actAvailable?: boolean;
 };
 
 /**
@@ -19,6 +26,7 @@ export type EvaluateQualityOptions = {
  * - `analyze.project` sem snippets de contexto
  * - agents obrigatórios faltando no resultado
  * - falta rastro `policies.injected` quando houve agents
+ * - ACT-implying intent without write executor (`actAvailable`)
  */
 export function evaluateQuality(
   results: AgentResult[],
@@ -36,7 +44,7 @@ export function evaluateQuality(
     return { passed: blockers.length === 0, checks, blockers };
   }
 
-  const { intent, context } = options;
+  const { intent, context, actAvailable } = options;
   const expected = agentsForIntent(intent.kind);
   const ranIds = new Set(results.map((r) => r.agentId));
   const isUnknown = intent.kind === 'unknown';
@@ -58,8 +66,16 @@ export function evaluateQuality(
     results.length === 0
       ? true
       : results.every((r) =>
-          r.findings.some((f) => !f.startsWith('policies.') && !f.startsWith('context.injected'))
+          r.findings.some(
+            (f) =>
+              !f.startsWith('policies.') &&
+              !f.startsWith('context.injected') &&
+              !f.startsWith('act.')
+          )
         );
+
+  // Analysis-only runtime: ACT intents must not claim code-change success (#377).
+  checks.actAvailable = impliesActIntent(intent.kind) ? actAvailable === true : true;
 
   const blockers = Object.entries(checks)
     .filter(([, ok]) => !ok)
