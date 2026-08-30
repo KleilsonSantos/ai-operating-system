@@ -84,7 +84,7 @@ Spike + [ADR-0030](./adr/0030-visibility-plane-obsidian-export.md) (Accepted) ·
 - [x] Visibility Plane — `VisibilitySnapshot` correlates run ↔ KG ↔ operational state ↔ agent JSONL (`@aios/visibility`)
 - [x] MCP `aios_visibility` + CLI `--visibility` (read-only, on-demand)
 - [x] Console Run trail / Topology view (client graph; no graph DB)
-- [ ] Obsidian vault export adapter (unidirectional, opt-in)
+- [x] Obsidian vault export adapter (unidirectional, opt-in)
 
 ## Execution contract (incremental)
 
