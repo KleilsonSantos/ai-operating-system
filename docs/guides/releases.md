@@ -18,6 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag       | Description                                                                                          |
 | --------- | ---------------------------------------------------------------------------------------------------- |
+| `v0.48.2` | Owner pt-BR glossary + product-purpose audit (#412)                                                  |
 | `v0.48.1` | Spike: Memory compression before FIFO (#322)                                                         |
 | `v0.48.0` | PKB semantic search MCP/CLI (#327)                                                                   |
 | `v0.47.3` | ADR-0032 optional PKB sqlite-vec index (#326)                                                        |
