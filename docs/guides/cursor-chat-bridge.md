@@ -19,6 +19,14 @@ pnpm sync:cursor-rules
 - `.cursor/rules/aios-policies.mdc`
 - `.cursor/rules/aios-sdlc.mdc`
 
+### Level 1b — Scoped rules (when editing matching paths)
+
+| Rule                | Globs                                                                                        | Role                                                                                                    |
+| ------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `aios-glossary.mdc` | `engines/**`, `packages/**`, `apps/**`, `policies/**`, `docs/adr/**`, `docs/architecture/**` | Keep [`owner/glossario-aios.md`](../../owner/glossario-aios.md) in sync (`glossary-sync` should-policy) |
+
+GitHub Copilot uses the mirror: [`.github/instructions/aios-glossary-maintenance.instructions.md`](../../.github/instructions/aios-glossary-maintenance.instructions.md).
+
 ## Level 2 — MCP server (`@aios/mcp`) — issue #38
 
 **Live** link to the runtime: the Agent calls tools.

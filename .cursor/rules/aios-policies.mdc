@@ -40,6 +40,7 @@ Regenerate: `pnpm sync:cursor-rules`
 ## SHOULD
 
 - **justify-resource-impact** (should): Infra suggestions must state why, alternatives, and impact on hardware/maintenance/consumption
+- **glossary-sync** (should): When adding or renaming an engine, agent, must/should policy, ADR, or architecture concept: update owner/glossario-aios.md (term block in the matching Etapa + one line in the A–Z index). Pure refactors with no new user-facing term need no glossary change. Not pipeline hooks — docs maintenance only.
 
 ## Chat behavior
 

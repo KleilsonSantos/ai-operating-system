@@ -13,6 +13,10 @@ There is an owner-facing, pt-BR, ADHD-friendly glossary of AIOS terminology at
 and do not recreate a second copy elsewhere (e.g. under `docs/guides/`) — reuse this one
 per the `artifact-lifecycle` policy.
 
+**Cursor (primary IDE):** scoped rule [`.cursor/rules/aios-glossary.mdc`](../../.cursor/rules/aios-glossary.mdc)
+(same `applyTo` paths as this file). **Policy Engine:** should-policy `glossary-sync` in
+`policies/aios.policies.json` → `pnpm sync:cursor-rules`. **Not** pipeline hooks (ADR-0027).
+
 When you add, remove, or materially change one of the following, check whether the
 glossary needs an update:
 
