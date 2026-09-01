@@ -4,6 +4,14 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.48.2] - 2026-09-01
+
+### Added
+
+- 📚 Owner pt-BR glossary (`owner/glossario-aios.md`) + product-purpose integral validation audit (#412)
+- 🤖 Glossary maintenance instructions (`.github/instructions/aios-glossary-maintenance.instructions.md`)
+- 📋 PKB registration: `product-purpose-integral-validation.v1.md`
+
 ## [0.48.1] - 2026-08-31
 
 ### Added

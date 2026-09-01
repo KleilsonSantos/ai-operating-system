@@ -70,3 +70,4 @@ See [`pkb-evolution.md`](../prompts/pkb-evolution.md) for the PKB ladder and [`a
 - [Architecture overview](./overview.md)
 - [Control plane vs Companion](../guides/control-plane-companion.md)
 - [FOUNDATION](../FOUNDATION.md)
+- [AIOS glossary (pt-BR, owner orientation, non-SSOT)](../../owner/glossario-aios.md)

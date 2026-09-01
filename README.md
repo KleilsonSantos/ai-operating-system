@@ -8,6 +8,8 @@
 
 **Docs language:** US English ([ADR-0018](./docs/adr/0018-documentation-language.md) · [guide](./docs/guides/documentation-language.md)).
 
+**Owner orientation (pt-BR, non-SSOT):** [`owner/glossario-aios.md`](./owner/glossario-aios.md) — ADHD-friendly glossary of product/AI terms.
+
 ---
 
 ## In one sentence
