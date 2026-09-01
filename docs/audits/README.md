@@ -13,7 +13,9 @@ Point-in-time engineering and documentation audits. **Not** product SSOT — fou
 
 Do not rename a dated snapshot to an undated living name. A later pass is a **new** dated file (or an update of this index), not a silent overwrite. Do not use `final` / `latest` / `v2` in the filename as versioning.
 
-| Report                                                                   | Date    |
-| ------------------------------------------------------------------------ | ------- |
-| [Document rationalization](./document-rationalization-audit-2026-08.md)  | 2026-08 |
-| [Agent runtime evolution](./agent-runtime-evolution-analysis-2026-08.md) | 2026-08 |
+| Report                                                                                                        | Date    |
+| ------------------------------------------------------------------------------------------------------------- | ------- |
+| [Document rationalization](./document-rationalization-audit-2026-08.md)                                       | 2026-08 |
+| [Agent runtime evolution](./agent-runtime-evolution-analysis-2026-08.md)                                      | 2026-08 |
+| [Product & purpose integral validation](./product-purpose-integral-validation-audit-2026-08.md)               | 2026-08 |
+| [Product & purpose integral validation — diagrams](./product-purpose-integral-validation-diagrams-2026-08.md) | 2026-08 |
