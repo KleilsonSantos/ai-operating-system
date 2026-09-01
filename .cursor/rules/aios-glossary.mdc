@@ -1,0 +1,36 @@
+---
+description: Manter glossário pt-BR do owner ao mudar engines, ADRs, policies ou arquitetura
+globs: engines/**,packages/**,apps/**,policies/**,docs/adr/**,docs/architecture/**
+alwaysApply: false
+---
+
+# Glossário AIOS (manutenção)
+
+Fonte canônica do glossário (pt-BR, não-SSOT): [`owner/glossario-aios.md`](../../owner/glossario-aios.md).
+
+Policy: **glossary-sync** (should) em `policies/aios.policies.json`. Espelho GitHub: [`.github/instructions/aios-glossary-maintenance.instructions.md`](../../.github/instructions/aios-glossary-maintenance.instructions.md).
+
+**Não use pipeline hooks** (ADR-0027) para isso — hooks são runtime do `runPipeline`, não manutenção de docs.
+
+## Quando atualizar
+
+Ao **adicionar, remover ou renomear** conceito visível ao owner:
+
+- Engine em `engines/**` ou pacote/app em `packages/**` / `apps/**`
+- Agente no `AGENT_MATRIX` / registry
+- Policy `must`/`should` em `policies/aios.policies.json`
+- ADR novo ou renomeação de conceito em `docs/adr/**`
+- Conceito novo em `docs/architecture/**`
+
+Refactor interno **sem** termo novo → **não** atualizar.
+
+## Como atualizar (append only)
+
+1. Bloco curto na **Etapa** certa: **Analogia** / **O que é** / **Para que serve** / **Não é**
+2. Uma linha na **Etapa 10 — Índice A–Z**
+3. Corpo em **pt-BR**; não mover o glossário para `docs/**` (ADR-0018)
+4. Não reescrever o arquivo inteiro por um termo
+
+## No PR
+
+Se este change introduz vocabulário novo, incluir `owner/glossario-aios.md` no mesmo PR ou avisar o owner.
