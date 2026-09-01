@@ -4,9 +4,11 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.48.3] - 2026-09-01
+
 ### Added
 
-- 🤖 Glossary sync: `glossary-sync` should-policy + Cursor scoped rule `aios-glossary.mdc` (bridge to `owner/glossario-aios.md`)
+- 🤖 Glossary sync: `glossary-sync` should-policy + Cursor scoped rule `aios-glossary.mdc` (#415)
 
 ## [0.48.2] - 2026-09-01
 
