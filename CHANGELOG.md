@@ -4,6 +4,11 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📚 Product & purpose integral validation audit + pt-BR diagrams companion (`docs/audits/product-purpose-integral-validation-*-2026-08.md`)
+- 🤖 Glossary maintenance instructions keeping `owner/glossario-aios.md` in sync with new engines/ADRs/policies (`.github/instructions/aios-glossary-maintenance.instructions.md`)
+
 ## [0.48.1] - 2026-08-31
 
 ### Added
