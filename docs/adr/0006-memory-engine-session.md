@@ -43,3 +43,4 @@ Phase 2 calls for a Memory Engine (session / project). Persistence must be simpl
 - [ROADMAP Phase 2](../ROADMAP.md)
 - [`engines/memory`](../../engines/memory/)
 - [ADR-0004](./0004-multi-repo-workspace-registry.md) · [ADR-0005](./0005-knowledge-graph-heuristic.md)
+- Spike (retention / FIFO): [memory-compression-before-fifo](../spikes/memory-compression-before-fifo.md) (#322) — keep hard FIFO by default; optional deterministic rollup only if product requires it

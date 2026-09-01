@@ -8,11 +8,12 @@
 
 ## Boundary table
 
-| Store                    | Engine / path                          | What it is                                                            | What it is **not**                     | Search today                       |
-| ------------------------ | -------------------------------------- | --------------------------------------------------------------------- | -------------------------------------- | ---------------------------------- |
-| **PKB**                  | `docs/prompts/**` + `index.yaml`       | Versioned reusable **prompt assets** (Docs-as-Code)                   | Product SSOT; policies; FOUNDATION     | Textual / tags (`aios_search_pkb`) |
-| **Memory**               | `@aios/memory` · `.aios/memory/*.json` | Session / project **preferences & decisions** keyed by `workspaceId`  | Prompt library; repo structure graph   | Substring / tag                    |
-| **Knowledge Graph (KG)** | `@aios/knowledge`                      | Deterministic **heuristic** Project → module/doc/policy relationships | Embedding index; chat transcript store | Structure / neighbors in context   |
+| Store      | Engine / path                          | What it is                                                           | What it is **not**                   | Search today                                                                                                          |
+| ---------- | -------------------------------------- | -------------------------------------------------------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| **PKB**    | `docs/prompts/**` + `index.yaml`       | Versioned reusable **prompt assets** (Docs-as-Code)                  | Product SSOT; policies; FOUNDATION   | Textual / tags (`aios_search_pkb`)                                                                                    |
+| **Memory** | `@aios/memory` · `.aios/memory/*.json` | Session / project **preferences & decisions** keyed by `workspaceId` | Prompt library; repo structure graph | Substring / tag; hard FIFO (default 50) — see [compression spike](../spikes/memory-compression-before-fifo.md) (#322) |
+
+| **Knowledge Graph (KG)** | `@aios/knowledge` | Deterministic **heuristic** Project → module/doc/policy relationships | Embedding index; chat transcript store | Structure / neighbors in context |
 
 Canonical product truth remains: **code → FOUNDATION / ADRs / ROADMAP → policies** (policies beat long prompts). See [`docs/prompts/README.md`](../prompts/README.md).
 
