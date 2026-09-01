@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.48.1] - 2026-08-31
+
 ### Added
 
 - 🧪 Spike: Memory compression before FIFO eviction (#322)
