@@ -29,7 +29,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@typescript-eslint/eslint-plugin": "^8.67.0",
-    "@typescript-eslint/parser": "^8.67.0",
+    "@typescript-eslint/parser": "^8.68.0",
     "@vitest/coverage-v8": "^4.1.11",
     "audit-ci": "^7.1.0",
     "eslint": "^10.9.0",
