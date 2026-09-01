@@ -585,3 +585,9 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 ## Manutenção
 
 Quando surgir termo novo (novo ADR/engine): acrescente **uma** linha na Etapa 10 e um bloco curto na etapa temática — sem reescrever o arquivo inteiro.
+
+**Quem lembra o agente de atualizar (não é pipeline hook):**
+
+1. Policy `glossary-sync` (should) → `pnpm sync:cursor-rules`
+2. Cursor: `.cursor/rules/aios-glossary.mdc` (globs nas pastas de engine/ADR/policy)
+3. GitHub Copilot: `.github/instructions/aios-glossary-maintenance.instructions.md`

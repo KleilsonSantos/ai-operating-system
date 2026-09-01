@@ -101,6 +101,11 @@
       "severity": "should"
     },
     {
+      "id": "glossary-sync",
+      "description": "When adding or renaming an engine, agent, must/should policy, ADR, or architecture concept: update owner/glossario-aios.md (term block in the matching Etapa + one line in the A–Z index). Pure refactors with no new user-facing term need no glossary change. Not pipeline hooks — docs maintenance only.",
+      "severity": "should"
+    },
+    {
       "id": "anti-sycophancy",
       "description": "Loyalty to outcome, not ego — push back on weak premises with evidence; do not agree by default",
       "severity": "must"
