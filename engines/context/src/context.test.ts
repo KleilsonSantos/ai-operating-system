@@ -83,6 +83,13 @@ describe('gatherContext', () => {
     expect(bundle.signals).toContain('scope-missing');
   });
 
+  it('scope com .. fora do repo → scope-escape', () => {
+    const root = fixtureRoot();
+    const bundle = gatherContext({ repoPath: root, scope: 'engines/demo/../../..' });
+    expect(bundle.snippets).toEqual([]);
+    expect(bundle.signals).toContain('scope-escape');
+  });
+
   it('API string compatível', () => {
     const root = fixtureRoot();
     const bundle = gatherContext(root);

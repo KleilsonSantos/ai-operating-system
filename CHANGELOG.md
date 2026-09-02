@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Fixed
+
+- 🔒 Context Engine: sandbox `--scope` within repo root (reject absolute paths, `..` escape, symlink leak) — audit P2 (#412)
+
 ## [0.48.5] - 2026-09-02
 
 ### Fixed
