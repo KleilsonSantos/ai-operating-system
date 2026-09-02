@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Changed
+
+- 📝 Publish guide: auth precedence (`TOKEN_NPM` vs `npm login`), 401/403 matrix, false-positive “expired token” note; registry catch-up 0.48.3
+
 ## [0.48.3] - 2026-09-01
 
 ### Added

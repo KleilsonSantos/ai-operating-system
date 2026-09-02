@@ -78,7 +78,7 @@ Gate (issue #323): **no vector store in core** until an ADR + volume evidence.
 | #323  | **Done** — recommendation = sqlite-vec-first                                     |
 | #326  | **Done** — [ADR-0032](../adr/0032-pkb-local-vector-index-sqlite-vec.md) Accepted |
 | #327  | Implement semantic `aios_search_pkb` after this ADR                              |
-| #325  | Unrelated — npm publish catch-up still blocked on token                          |
+| #325  | Closed — npm publish catch-up (#325); see `docs/guides/publish-create-agent.md`  |
 
 ## References
 

@@ -18,7 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag       | Description                                                                                          |
 | --------- | ---------------------------------------------------------------------------------------------------- |
-| `v0.48.3` | Glossary-sync policy + Cursor scoped rule (#415)                                                     |
+| `v0.48.3` | Glossary-sync policy + Cursor scoped rule (#415); npm `@aios-platform/*` catch-up to 0.48.3          |
 | `v0.48.2` | Owner pt-BR glossary + product-purpose audit (#412)                                                  |
 | `v0.48.1` | Spike: Memory compression before FIFO (#322)                                                         |
 | `v0.48.0` | PKB semantic search MCP/CLI (#327)                                                                   |
