@@ -17,8 +17,10 @@ minimumReleaseAgeExclude:
 # with "default is not a function". Lift the consumer to minimatch@10 instead, which
 # natively depends on brace-expansion >=5.0.8.
 overrides:
-  # GHSA-7p8r-x3mc-p8w7 — host confusion via backslash authority
-  fast-uri: 3.1.5
+  # GHSA-5jgf / GHSA-f65p / GHSA-fph4 / GHSA-jqff — SSRF / host confusion (need >=3.1.6)
+  fast-uri: 3.1.6
+  # GHSA-x5fp / GHSA-4mjr — qs array-limit bypass + DoS via isBuffer (need >=6.16.0)
+  qs: 6.16.0
   '@hono/node-server': 2.0.10
   # GHSA-8j4g-w8fx-2239 — ReDoS in CORS middleware
   hono: 4.12.34

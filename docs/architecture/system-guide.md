@@ -52,7 +52,7 @@ Details: [`engines/policy/README.md`](../../engines/policy/README.md).
 
 `gatherContext({ repoPath, scope?, budget? })` → `{ repoPath, scope, snippets[], signals[], budget? }`.
 
-Typed snippets: `doc` · `code` · `manifest` (truncated content). Scope is a path relative to the repo root. Named budget (`tight` / `standard` / `wide`) from intent/risk/cost; secret-like paths are denied ([ADR-0025](../adr/0025-model-router-context-budget.md)). Non-root `scope` also ranks Knowledge Graph neighbors (`workspace:*`, matching ADR files) ahead of unrelated in-scope code (#301 / ADR-0005).
+Typed snippets: `doc` · `code` · `manifest` (truncated content). Scope is a path relative to the repo root; absolute paths and `..` escape are rejected (`scope-absolute` / `scope-escape` signals, no file reads). Named budget (`tight` / `standard` / `wide`) from intent/risk/cost; secret-like paths are denied ([ADR-0025](../adr/0025-model-router-context-budget.md)). Non-root `scope` also ranks Knowledge Graph neighbors (`workspace:*`, matching ADR files) ahead of unrelated in-scope code (#301 / ADR-0005).
 
 Injection: `runWorkflow(intent, { context })` appends `context:<path>` and `context.injected:N`.
 
