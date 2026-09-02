@@ -31,7 +31,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: node scripts/record-delivery-ci.mjs --workflow-run
       - name: Upload delivery-ci artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: delivery-ci-events-${{ github.event.workflow_run.id }}
           path: delivery-ci-events.jsonl

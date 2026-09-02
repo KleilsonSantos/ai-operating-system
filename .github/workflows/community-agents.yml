@@ -34,7 +34,7 @@ jobs:
         run: node scripts/community-agents-ingest.mjs --out packages/agent-registry/data/community-catalog.json
 
       - name: Upload community catalog artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: community-catalog
           path: packages/agent-registry/data/community-catalog.json
