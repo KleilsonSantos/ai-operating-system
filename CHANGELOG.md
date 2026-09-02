@@ -7,6 +7,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 ### Fixed
 
 - 🔒 Context Engine: sandbox `--scope` within repo root (reject absolute paths, `..` escape, symlink leak) — audit P2 (#412)
+- 🔒 `pnpm audit`: bump overrides `fast-uri@3.1.6` + `qs@6.16.0` (transitive via ajv / MCP Express)
 
 ## [0.48.5] - 2026-09-02
 
