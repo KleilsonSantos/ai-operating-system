@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🧪 Memory: remember→recall journey tests (disk session boundary, query/tag, workspace isolation, compress env) — audit P2 (#412)
+
 ## [0.48.6] - 2026-09-02
 
 ### Fixed
