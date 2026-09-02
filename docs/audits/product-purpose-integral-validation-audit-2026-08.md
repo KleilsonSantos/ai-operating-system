@@ -116,7 +116,9 @@ Origin: repo docs/manifests, ranked. Filter: budget tiers (`tight`/`standard`/`w
 
 ## 17. Memory Validation
 
-Store path exists (`.aios/memory/{workspaceId}.json`), unit-tested, but the default journey shows `memory: skip` (empty on this fresh workspace) — create/recall cycle **NOT VERIFIED live** this session.
+Store path exists (`.aios/memory/{workspaceId}.json`), unit-tested. The original audit session showed `memory: skip` on a fresh workspace (empty store) — create/recall was **NOT VERIFIED live** that day.
+
+**Follow-up (2026-09-02):** automated journey tests in `@aios/memory` (`memory-journey.test.ts`) verify remember → on-disk JSON → recall across option-object “sessions”, query/tag filters, workspace isolation, and `AIOS_MEMORY_COMPRESS=1` rollup re-read. Pipeline inject of recalled memory is covered in `@aios/pipeline` (`workspaceId` + pre-seeded note). Remaining gap for a _manual_ empty-workspace CLI journey is expected until an operator seeds memory.
 
 ## 18. Knowledge Validation
 
@@ -175,31 +177,31 @@ Raw files: `cli-analyze.json`, `cli-implement.json`, `cli-governance-status.json
 
 ## 29. Gap Matrix (P0–P4)
 
-| Priority | Gap                                                                                                      |
-| -------- | -------------------------------------------------------------------------------------------------------- |
-| P1       | MCP tool + Console live sessions not exercised this pass (unit-only)                                     |
-| P2       | Memory/Prompt/Skill/Hook subsystems idle on default journey — no live create/recall/compile evidence     |
-| P2       | Security probes (prompt injection, path traversal on `--out`, privilege escalation) not attempted        |
-| P3       | CLI language inconsistency (EN flags vs PT-BR agent/status strings)                                      |
-| P4       | Cross-provider (Ollama vs OpenAI-compatible/Anthropic) comparison not run (Resource-Aware, low priority) |
+| Priority | Gap                                                                                                                                                        |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P1       | MCP tool + Console live sessions not exercised this pass (unit-only)                                                                                       |
+| P2       | Memory/Prompt/Skill/Hook idle on default journey — Memory create/recall now covered by journey tests (2026-09-02); Prompt/Skill/Hook still idle-on-default |
+| P2       | Security probes: path traversal `--out` + `--scope` closed in v0.48.5/v0.48.6; prompt-injection still open                                                 |
+| P3       | CLI language inconsistency (EN flags vs PT-BR agent/status strings)                                                                                        |
+| P4       | Cross-provider (Ollama vs OpenAI-compatible/Anthropic) comparison not run (Resource-Aware, low priority)                                                   |
 
 ## 30. Scorecard (0–10)
 
-| Area                              | Score | Basis                                                         |
-| --------------------------------- | ----- | ------------------------------------------------------------- |
-| Architecture fidelity             | 9     | `run.steps` trace matches documented flow exactly             |
-| Governance (real behavior change) | 9     | proven block on ACT intent + MCP consent gate                 |
-| Policy engine                     | 8     | real, tested, live-injected                                   |
-| Context engine                    | 8     | budgets + secret-deny verified in source                      |
-| Knowledge graph                   | 7     | heuristic but real, capped, live                              |
-| Memory                            | 5     | exists, tested, not exercised live                            |
-| Provider                          | 5     | resilient failure handling; no live success path this session |
-| MCP                               | 5     | solid unit coverage; no live client round-trip this session   |
-| Console                           | 4     | unit tests only; not launched                                 |
-| CLI DX                            | 8     | clean help, exit codes, JSON                                  |
-| Test suite health                 | 9     | ~241/241 passing at last full run                             |
-| Documentation accuracy            | 8     | very low drift found                                          |
-| Security posture                  | 6     | good deny-lists; injection/traversal untested                 |
+| Area                              | Score | Basis                                                                        |
+| --------------------------------- | ----- | ---------------------------------------------------------------------------- |
+| Architecture fidelity             | 9     | `run.steps` trace matches documented flow exactly                            |
+| Governance (real behavior change) | 9     | proven block on ACT intent + MCP consent gate                                |
+| Policy engine                     | 8     | real, tested, live-injected                                                  |
+| Context engine                    | 8     | budgets + secret-deny verified in source                                     |
+| Knowledge graph                   | 7     | heuristic but real, capped, live                                             |
+| Memory                            | 7     | journey remember→recall + pipeline inject (2026-09-02); score was 5 at audit |
+| Provider                          | 5     | resilient failure handling; no live success path this session                |
+| MCP                               | 5     | solid unit coverage; no live client round-trip this session                  |
+| Console                           | 4     | unit tests only; not launched                                                |
+| CLI DX                            | 8     | clean help, exit codes, JSON                                                 |
+| Test suite health                 | 9     | ~241/241 passing at last full run                                            |
+| Documentation accuracy            | 8     | very low drift found                                                         |
+| Security posture                  | 7     | deny-lists + outDir/scope sandbox shipped; prompt-injection still open       |
 
 ## 31. Critical Findings
 
