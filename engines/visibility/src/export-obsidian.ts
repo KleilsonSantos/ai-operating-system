@@ -2,8 +2,8 @@
  * Unidirectional Obsidian vault export (ADR-0030 / #366).
  * Opt-in · on-demand · never mutates docs/adr/ or policies/.
  */
-import { mkdirSync, writeFileSync } from 'node:fs';
-import { dirname, join, relative, resolve, sep } from 'node:path';
+import { mkdirSync, realpathSync, writeFileSync } from 'node:fs';
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import type { KnowledgeEdge, KnowledgeGraph, KnowledgeNode, PipelineRun } from '@aios/shared';
 import { buildKnowledgeGraph } from '@aios/knowledge';
 
@@ -13,7 +13,8 @@ export type ExportObsidianOptions = {
   repoPath?: string;
   /**
    * Destination vault folder. Defaults to `<homePath>/.aios/export/obsidian`.
-   * Must not land inside `docs/adr/` or `policies/`.
+   * Relative paths are anchored to `homePath` (not process cwd) and must stay under it.
+   * Absolute paths are allowed (e.g. external Obsidian vault). Must not overlap `docs/adr/` or `policies/`.
    */
   outDir?: string;
   /** Export every KG node (default true). When false + scope, filter to matched paths. */
@@ -60,6 +61,38 @@ function isUnder(child: string, parent: string): boolean {
   return c === p || c.startsWith(p + sep);
 }
 
+/** Canonical path; follows symlinks when any ancestor exists (ENOENT-safe for new out dirs). */
+function canonicalPath(path: string): string {
+  try {
+    return realpathSync.native(path);
+  } catch (err: unknown) {
+    const code = (err as NodeJS.ErrnoException)?.code;
+    if (code === 'ENOENT') {
+      const parent = dirname(path);
+      if (parent === path) return resolve(path);
+      return join(canonicalPath(parent), basename(path));
+    }
+    return resolve(path);
+  }
+}
+
+/**
+ * Resolve export destination. Relative `outDir` is anchored to `homePath`, not process cwd
+ * (CLI `--out` / MCP `outDir` must not depend on shell location).
+ */
+export function resolveObsidianOutDir(homePath: string, outDir?: string): string {
+  const home = resolve(homePath);
+  if (!outDir) return join(home, '.aios', 'export', 'obsidian');
+  if (isAbsolute(outDir)) return resolve(outDir);
+  const resolved = resolve(home, outDir);
+  if (!isUnder(resolved, home)) {
+    throw new Error(
+      `exportObsidian: relative outDir must stay under homePath (${home}); got ${resolved}`
+    );
+  }
+  return resolved;
+}
+
 /**
  * Reject export roots that would overwrite canonical AIOS paths.
  */
@@ -67,15 +100,19 @@ export function assertSafeObsidianOutDir(
   outDir: string,
   roots: { homePath: string; repoPath: string }
 ): void {
-  const resolved = resolve(outDir);
+  const resolved = canonicalPath(resolve(outDir));
   const forbidden = [
     resolve(roots.homePath, 'docs', 'adr'),
     resolve(roots.homePath, 'policies'),
     resolve(roots.repoPath, 'docs', 'adr'),
     resolve(roots.repoPath, 'policies'),
   ];
+  const seen = new Set<string>();
   for (const f of forbidden) {
-    if (isUnder(resolved, f)) {
+    const canonical = canonicalPath(f);
+    if (seen.has(canonical)) continue;
+    seen.add(canonical);
+    if (isUnder(resolved, canonical)) {
       throw new Error(
         `exportObsidian: outDir must not overlap docs/adr/ or policies/ (got ${resolved})`
       );
@@ -227,7 +264,7 @@ function writeRelative(outDir: string, rel: string, body: string, written: strin
 export function exportObsidian(options: ExportObsidianOptions = {}): ExportObsidianResult {
   const homePath = resolveHome(options.homePath);
   const repoPath = resolve(options.repoPath || homePath);
-  const outDir = resolve(options.outDir || join(homePath, '.aios', 'export', 'obsidian'));
+  const outDir = resolveObsidianOutDir(homePath, options.outDir);
   assertSafeObsidianOutDir(outDir, { homePath, repoPath });
 
   if (options.run && options.runId && options.run.runId !== options.runId) {

@@ -29,6 +29,7 @@ Informal terms (“quantum visibility”, “polymorphic algorithm”) map to **
    - Markdown + YAML frontmatter + `[[wikilinks]]` from KG nodes/edges.
    - Optional per-run note when `runId` is provided.
    - Output under user `--out` or `.aios/export/obsidian/` — **never** overwrite canonical `docs/adr/` or `policies/`.
+   - **Safe export roots:** relative `outDir` (CLI `--out` / MCP `outDir`) is resolved against `homePath` / `AIOS_HOME`, not the shell cwd. `assertSafeObsidianOutDir` rejects targets under `docs/adr/` or `policies/` (including `..` traversal and symlink-resolved paths) before any file write.
 5. **Pipeline polymorphism stays in the spine.** Intent, capability router, hooks, and plugins ([ADR-0025](./0025-model-router-context-budget.md), [ADR-0027](./0027-pipeline-hook-bus.md), [ADR-0024](./0024-execution-state-capability-registry.md)) already provide behavioral variation. Future **intent workflow templates** extend `@aios/intent` — not a separate “polymorphic engine”.
 6. **SSOT boundaries unchanged.** Memory ([ADR-0006](./0006-memory-engine-session.md)), policies, FOUNDATION/ADRs remain authoritative. Obsidian vault is a **view**, not ingestion source.
 

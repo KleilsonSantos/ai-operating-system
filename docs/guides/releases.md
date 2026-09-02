@@ -18,6 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag       | Description                                                                                          |
 | --------- | ---------------------------------------------------------------------------------------------------- |
+| `v0.48.5` | Obsidian export safe outDir (home-anchored, traversal/symlink tests) — audit P2 (#412)               |
 | `v0.48.4` | Memory FIFO rollup (#322) + npm publish guide + delivery observability concurrency                   |
 | `v0.48.3` | Glossary-sync policy + Cursor scoped rule (#415); npm `@aios-platform/*` catch-up to 0.48.3          |
 | `v0.48.2` | Owner pt-BR glossary + product-purpose audit (#412)                                                  |
