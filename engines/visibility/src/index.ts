@@ -18,6 +18,7 @@ export {
   assertSafeObsidianOutDir,
   exportObsidian,
   noteBasename,
+  resolveObsidianOutDir,
   type ExportObsidianOptions,
   type ExportObsidianResult,
 } from './export-obsidian.js';

@@ -8,10 +8,10 @@
 
 ## Boundary table
 
-| Store      | Engine / path                          | What it is                                                           | What it is **not**                   | Search today                                                                                                          |
-| ---------- | -------------------------------------- | -------------------------------------------------------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| **PKB**    | `docs/prompts/**` + `index.yaml`       | Versioned reusable **prompt assets** (Docs-as-Code)                  | Product SSOT; policies; FOUNDATION   | Textual / tags (`aios_search_pkb`)                                                                                    |
-| **Memory** | `@aios/memory` · `.aios/memory/*.json` | Session / project **preferences & decisions** keyed by `workspaceId` | Prompt library; repo structure graph | Substring / tag; hard FIFO (default 50) — see [compression spike](../spikes/memory-compression-before-fifo.md) (#322) |
+| Store      | Engine / path                          | What it is                                                           | What it is **not**                   | Search today                                                                                                                                                                                                               |
+| ---------- | -------------------------------------- | -------------------------------------------------------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **PKB**    | `docs/prompts/**` + `index.yaml`       | Versioned reusable **prompt assets** (Docs-as-Code)                  | Product SSOT; policies; FOUNDATION   | Textual / tags (`aios_search_pkb`)                                                                                                                                                                                         |
+| **Memory** | `@aios/memory` · `.aios/memory/*.json` | Session / project **preferences & decisions** keyed by `workspaceId` | Prompt library; repo structure graph | Substring / tag; hard FIFO (default 50); opt-in deterministic rollup on eviction (`AIOS_MEMORY_COMPRESS=1`) — [ADR-0006](../adr/0006-memory-engine-session.md) / spike [#322](../spikes/memory-compression-before-fifo.md) |
 
 | **Knowledge Graph (KG)** | `@aios/knowledge` | Deterministic **heuristic** Project → module/doc/policy relationships | Embedding index; chat transcript store | Structure / neighbors in context |
 
