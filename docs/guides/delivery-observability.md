@@ -25,6 +25,14 @@ node scripts/record-delivery-ci.mjs --pr 313
 
 **GitHub Actions:** workflow `Delivery observability` on CI `workflow_run` completed → artifact `delivery-ci-events-<run_id>` (30-day retention).
 
+### Why many runs with the same name?
+
+Each **completed** CI run triggers one `Delivery observability` workflow (ADR-0028). Rapid merges (e.g. several Dependabot PRs) produce several lines in the Actions UI — not duplicate jobs, separate executions.
+
+**Concurrency (per branch):** the workflow uses `concurrency.group: delivery-ci-<branch>` with `cancel-in-progress: true` so only the **latest** ingest on that branch finishes when pushes arrive in a burst. Older queued runs are cancelled. For per-PR history during a burst, use local ingest: `node scripts/record-delivery-ci.mjs --pr <N>`.
+
+See [GitHub: workflow concurrency](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency).
+
 ## Prometheus / Grafana
 
 ```bash

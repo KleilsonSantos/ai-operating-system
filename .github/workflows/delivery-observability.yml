@@ -6,6 +6,13 @@ on:
     workflows: [CI]
     types: [completed]
 
+# Burst merges on the same branch fire one CI completion per push; without concurrency
+# the Actions UI shows many identical "Delivery observability" runs. Keep only the
+# latest ingest per branch (GitHub docs: workflow syntax → concurrency).
+concurrency:
+  group: delivery-ci-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
 jobs:
   ingest:
     if: >-
