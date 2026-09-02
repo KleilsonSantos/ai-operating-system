@@ -5,8 +5,10 @@
 #   bash scripts/npm-publish-create-agent.sh
 #   bash scripts/npm-publish-create-agent.sh --otp=123456
 #
-# Auth: TOKEN_NPM in .env (or existing npm login). Org scope: @aios-platform
-# Classic tokens may still need --otp= for publish (2FA).
+# Auth precedence:
+#   1. TOKEN_NPM in repo-root .env (GAT with Publish on @aios-platform; bypass-2FA avoids --otp)
+#   2. Else ~/.npmrc from npm login — publish usually needs --otp=###### (2FA)
+# Do not infer token health from npm login alone; see docs/guides/publish-create-agent.md
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
