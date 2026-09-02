@@ -4,6 +4,12 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.48.4] - 2026-09-02
+
+### Added
+
+- 🧠 Memory: opt-in FIFO rollup on eviction (`compressOnEvict` / `AIOS_MEMORY_COMPRESS=1`, tag `memory.rollup`) — spike #322
+
 ### Changed
 
 - 📝 Publish guide: auth precedence (`TOKEN_NPM` vs `npm login`), 401/403 matrix, false-positive “expired token” note; registry catch-up 0.48.3

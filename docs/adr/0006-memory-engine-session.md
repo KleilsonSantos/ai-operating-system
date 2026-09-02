@@ -12,7 +12,7 @@ Phase 2 calls for a Memory Engine (session / project). Persistence must be simpl
 ## Decision
 
 1. Engine **`@aios/memory`**: `remember` · `recall` · `clearMemory` · `listMemoryWorkspaces`.
-2. On-disk store: `{AIOS_HOME}/.aios/memory/{workspaceId}.json` (FIFO cap, default 50 entries).
+2. On-disk store: `{AIOS_HOME}/.aios/memory/{workspaceId}.json` (FIFO cap, default 50 entries). Optional opt-in deterministic rollup on eviction (`compressOnEvict` / `AIOS_MEMORY_COMPRESS=1`, tag `memory.rollup`) — spike #322.
 3. `.aios/` in `.gitignore` (local machine state).
 4. `PipelineResponse.memory` = short recall when `workspaceId` is present (disable with `includeMemory: false`).
 5. MCP: `aios_memory_remember` · `aios_memory_recall` · `aios_memory_clear`.
@@ -43,4 +43,4 @@ Phase 2 calls for a Memory Engine (session / project). Persistence must be simpl
 - [ROADMAP Phase 2](../ROADMAP.md)
 - [`engines/memory`](../../engines/memory/)
 - [ADR-0004](./0004-multi-repo-workspace-registry.md) · [ADR-0005](./0005-knowledge-graph-heuristic.md)
-- Spike (retention / FIFO): [memory-compression-before-fifo](../spikes/memory-compression-before-fifo.md) (#322) — keep hard FIFO by default; optional deterministic rollup only if product requires it
+- Spike (retention / FIFO): [memory-compression-before-fifo](../spikes/memory-compression-before-fifo.md) (#322) — hard FIFO by default; opt-in deterministic rollup (`compressOnEvict` / `AIOS_MEMORY_COMPRESS=1`)

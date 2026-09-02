@@ -86,7 +86,7 @@ Oldest rows are **deleted with no archive and no summary**. Issue #322 asks whet
 | ----- | ------------------------------------------------------------------------------------------- |
 | #322  | **Done** — recommendation = keep FIFO default; optional deterministic rollup only if needed |
 | —     | **Do not** open an ADR now                                                                  |
-| —     | **Optional later:** feature issue “opt-in Memory FIFO rollup” if product asks for it        |
+| —     | **Shipped:** opt-in Memory FIFO rollup (`compressOnEvict` / `AIOS_MEMORY_COMPRESS=1`)       |
 | #325  | Closed — npm `@aios-platform/*` catch-up (0.48.1 → 0.48.3, Sep 2026)                        |
 
 ## References
