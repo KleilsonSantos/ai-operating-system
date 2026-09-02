@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.48.4] - 2026-09-02
+
 ### Added
 
 - 🧠 Memory: opt-in FIFO rollup on eviction (`compressOnEvict` / `AIOS_MEMORY_COMPRESS=1`, tag `memory.rollup`) — spike #322
