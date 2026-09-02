@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Fixed
+
+- 🔒 Obsidian export: home-anchored `--out` / MCP `outDir` + adversarial path tests (traversal, symlinks) — audit P2 (#412)
+
 ## [0.48.4] - 2026-09-02
 
 ### Added
