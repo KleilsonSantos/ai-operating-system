@@ -13,6 +13,10 @@ import {
 import { join, resolve } from 'node:path';
 import type { MemoryEntry, MemoryStore } from '@aios/shared';
 
+const ROLLUP_TAG = 'memory.rollup';
+const CONTENT_MAX = 4000;
+const ROLLUP_BATCH_MAX = 10;
+
 export type MemoryOptions = {
   /** Diretório do store (default: `{home}/.aios/memory`) */
   storeDir?: string;
@@ -20,6 +24,11 @@ export type MemoryOptions = {
   homePath?: string;
   /** Cap de entradas por workspace (default 50, FIFO drop) */
   maxEntries?: number;
+  /**
+   * Opt-in: merge oldest evicted rows into one `memory.rollup` entry before FIFO slice.
+   * Env fallback: `AIOS_MEMORY_COMPRESS=1` (default off). Spike #322 / ADR-0006.
+   */
+  compressOnEvict?: boolean;
 };
 
 function defaultStoreDir(homePath?: string): string {
@@ -56,12 +65,81 @@ function readStore(file: string, workspaceId: string): MemoryStore {
   }
 }
 
-function writeStore(file: string, store: MemoryStore, maxEntries: number): void {
-  mkdirSync(resolve(file, '..'), { recursive: true });
-  let entries = store.entries;
-  if (entries.length > maxEntries) {
-    entries = entries.slice(entries.length - maxEntries);
+function newEntryId(): string {
+  return `m_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function compressOnEvictEnabled(options: MemoryOptions): boolean {
+  if (options.compressOnEvict !== undefined) return options.compressOnEvict;
+  const v = process.env.AIOS_MEMORY_COMPRESS?.trim().toLowerCase();
+  return v === '1' || v === 'true' || v === 'yes';
+}
+
+function mergeTags(entries: MemoryEntry[]): string[] {
+  const set = new Set<string>([ROLLUP_TAG]);
+  for (const e of entries) {
+    for (const t of e.tags ?? []) {
+      if (t && t !== ROLLUP_TAG) set.add(t);
+      if (set.size >= 8) break;
+    }
   }
+  return [...set];
+}
+
+function buildRollupBody(entries: MemoryEntry[]): string {
+  const lines = entries.map((e) => {
+    const snippet = e.content.replace(/\s+/g, ' ').trim().slice(0, 200);
+    return `- ${e.createdAt}: ${snippet}`;
+  });
+  let body = `[memory rollup — ${entries.length} entr${entries.length === 1 ? 'y' : 'ies'}]\n${lines.join('\n')}`;
+  if (body.length > CONTENT_MAX) {
+    body = body.slice(0, CONTENT_MAX - 1) + '…';
+  }
+  return body;
+}
+
+function buildRollupEntry(entries: MemoryEntry[]): MemoryEntry {
+  return {
+    id: newEntryId(),
+    content: buildRollupBody(entries),
+    createdAt: new Date().toISOString(),
+    tags: mergeTags(entries),
+  };
+}
+
+/** Apply FIFO cap; optional deterministic rollup of evicted tail (spike #322). */
+export function applyFifoRetention(
+  entries: MemoryEntry[],
+  maxEntries: number,
+  compressOnEvict: boolean
+): MemoryEntry[] {
+  if (entries.length <= maxEntries) return entries;
+  if (!compressOnEvict) {
+    return entries.slice(entries.length - maxEntries);
+  }
+
+  let next = [...entries];
+  while (next.length > maxEntries) {
+    const excess = next.length - maxEntries;
+    const batchSize = Math.min(excess, ROLLUP_BATCH_MAX);
+    const evicted = next.slice(0, batchSize);
+    const rollup = buildRollupEntry(evicted);
+    next = [...next.slice(batchSize), rollup];
+    if (next.length > maxEntries) {
+      next = next.slice(next.length - maxEntries);
+    }
+  }
+  return next;
+}
+
+function writeStore(
+  file: string,
+  store: MemoryStore,
+  maxEntries: number,
+  compressOnEvict: boolean
+): void {
+  mkdirSync(resolve(file, '..'), { recursive: true });
+  const entries = applyFifoRetention(store.entries, maxEntries, compressOnEvict);
   const next: MemoryStore = {
     workspaceId: store.workspaceId,
     updatedAt: new Date().toISOString(),
@@ -86,11 +164,12 @@ export function remember(
   if (!text) throw new Error('memory content required');
   const dir = resolveStoreDir(options);
   const max = options.maxEntries ?? 50;
+  const compress = compressOnEvictEnabled(options);
   const file = storePath(dir, workspaceId);
   const store = readStore(file, sanitizeId(workspaceId));
   const entry: MemoryEntry = {
-    id: `m_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`,
-    content: text.slice(0, 4000),
+    id: newEntryId(),
+    content: text.slice(0, CONTENT_MAX),
     createdAt: new Date().toISOString(),
   };
   if (options.tags?.length) {
@@ -100,7 +179,7 @@ export function remember(
       .slice(0, 8);
   }
   store.entries.push(entry);
-  writeStore(file, store, max);
+  writeStore(file, store, max, compress);
   return entry;
 }
 
