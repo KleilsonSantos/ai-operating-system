@@ -7,6 +7,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 ### Changed
 
 - 📝 Publish guide: auth precedence (`TOKEN_NPM` vs `npm login`), 401/403 matrix, false-positive “expired token” note; registry catch-up 0.48.3
+- ⚙️ Delivery observability: per-branch `concurrency` to reduce burst duplicate runs in Actions UI
 
 ## [0.48.3] - 2026-09-01
 

@@ -6,6 +6,13 @@ on:
     workflows: [CI]
     types: [completed]
 
+# Burst merges on the same branch fire one CI completion per push; without concurrency
+# the Actions UI shows many identical "Delivery observability" runs. Keep only the
+# latest ingest per branch (GitHub docs: workflow syntax → concurrency).
+concurrency:
+  group: delivery-ci-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
 jobs:
   ingest:
     if: >-
@@ -31,7 +38,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: node scripts/record-delivery-ci.mjs --workflow-run
       - name: Upload delivery-ci artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: delivery-ci-events-${{ github.event.workflow_run.id }}
           path: delivery-ci-events.jsonl
