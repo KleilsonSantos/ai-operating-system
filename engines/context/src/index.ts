@@ -2,8 +2,8 @@
  * Context Engine — recupera docs/código relevantes do repositório.
  * Path heuristic + Knowledge Graph neighbors for `scope` (no embeddings / LLM).
  */
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { dirname, join, relative, resolve, sep } from 'node:path';
+import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs';
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { buildKnowledgeGraph } from '@aios/knowledge';
 import type {
   ContextBudget,
@@ -148,6 +148,50 @@ function resolveRepoRoot(start: string): string {
   }
 }
 
+function isUnder(child: string, parent: string): boolean {
+  const c = resolve(child);
+  const p = resolve(parent);
+  return c === p || c.startsWith(p + sep);
+}
+
+/** True when `absPath` resolves under `repoPath` (symlink-aware when paths exist). */
+function isPathUnderRepo(absPath: string, repoPath: string): boolean {
+  try {
+    const canonical = realpathSync.native(absPath);
+    const repoCanonical = realpathSync.native(repoPath);
+    return isUnder(canonical, repoCanonical);
+  } catch {
+    return isUnder(absPath, repoPath);
+  }
+}
+
+export type ContextScopeValidation =
+  | { ok: true; scope: string; scopeAbs: string }
+  | { ok: false; scope: string; reason: 'scope-absolute' | 'scope-escape' | 'scope-missing' };
+
+/**
+ * Validate CLI/MCP `--scope` stays relative to the repo root (audit P2 / #412).
+ * Fail-closed: escape and absolute scopes never read files.
+ */
+export function validateContextScope(repoPath: string, scope?: string): ContextScopeValidation {
+  const repoRoot = resolve(repoPath);
+  const normalized = normalizeScope(scope);
+  if (normalized === '.') {
+    return { ok: true, scope: '.', scopeAbs: repoRoot };
+  }
+  if (scope && isAbsolute(scope)) {
+    return { ok: false, scope: normalized, reason: 'scope-absolute' };
+  }
+  const scopeAbs = resolve(repoRoot, normalized);
+  if (!isPathUnderRepo(scopeAbs, repoRoot)) {
+    return { ok: false, scope: normalized, reason: 'scope-escape' };
+  }
+  if (!existsSync(scopeAbs)) {
+    return { ok: false, scope: normalized, reason: 'scope-missing' };
+  }
+  return { ok: true, scope: normalized, scopeAbs };
+}
+
 function normalizeScope(scope: string | undefined): string {
   if (!scope || scope === '.' || scope === './') return '.';
   let normalized = scope;
@@ -262,6 +306,7 @@ function listFiles(dir: string, root: string, out: string[]): void {
     if (IGNORE_DIRS.has(entry.name)) continue;
     if (entry.name.startsWith('.') && !ALLOWED_HIDDEN_DIRS.has(entry.name)) continue;
     const full = join(dir, entry.name);
+    if (!isPathUnderRepo(full, root)) continue;
     if (entry.isDirectory()) {
       listFiles(full, root, out);
       continue;
@@ -289,27 +334,28 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
   const options: GatherContextOptions =
     typeof repoPathOrOptions === 'string' ? { repoPath: repoPathOrOptions } : repoPathOrOptions;
 
+  const repoPath = resolveRepoRoot(options.repoPath);
   const budget = options.budget ?? STANDARD_BUDGET;
   const maxSnippets = options.maxSnippets ?? budget.maxSnippets;
   const maxBytesPerFile = options.maxBytesPerFile ?? budget.maxBytesPerFile;
   const maxTotalBytes = options.maxTotalBytes ?? budget.maxTotalBytes;
   const denySecrets = options.denySecrets !== false;
 
-  const repoPath = resolveRepoRoot(options.repoPath);
-  const scope = normalizeScope(options.scope);
+  const scopeCheck = validateContextScope(repoPath, options.scope);
+  const scope = scopeCheck.scope;
   const signals: string[] = [`repoRoot:${repoPath}`, `scope:${scope}`, `budget:${budget.tier}`];
 
-  const scopeAbs = scope === '.' ? repoPath : resolve(repoPath, scope);
-
-  if (!existsSync(scopeAbs)) {
+  if (!scopeCheck.ok) {
     return {
       repoPath,
       scope,
       snippets: [],
-      signals: [...signals, 'scope-missing'],
+      signals: [...signals, scopeCheck.reason],
       budget,
     };
   }
+
+  const scopeAbs = scopeCheck.scopeAbs;
 
   const files: string[] = [];
   listFiles(scopeAbs, repoPath, files);
@@ -347,6 +393,7 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
   const seen = new Set<string>();
 
   for (const abs of files) {
+    if (!isPathUnderRepo(abs, repoPath)) continue;
     const rel = relative(repoPath, abs).split(sep).join('/');
     if (seen.has(rel)) continue;
     seen.add(rel);
@@ -384,6 +431,7 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
     try {
       const st = statSync(c.abs);
       if (!st.isFile() || st.size > 200_000) continue;
+      if (!isPathUnderRepo(c.abs, repoPath)) continue;
       raw = readFileSync(c.abs, 'utf8');
     } catch {
       continue;
