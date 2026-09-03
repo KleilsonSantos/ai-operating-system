@@ -1,6 +1,6 @@
 {
   "name": "@aios-platform/create-agent",
-  "version": "0.48.6",
+  "version": "0.48.8",
   "type": "module",
   "description": "Scaffold an AIOS agent package (npm create @aios-platform/agent)",
   "bin": {

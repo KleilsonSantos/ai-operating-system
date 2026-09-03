@@ -4,6 +4,18 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.48.8] - 2026-09-02
+
+### Added
+
+- 🔒 CI `issue-link`: work PRs → `sandbox` must reference a GitHub Issue (`Refs #N`); PR template + `git-flow-sandbox` policy (#435)
+
+## [0.48.7] - 2026-09-02
+
+### Added
+
+- 🧪 Memory: remember→recall journey tests (disk session boundary, query/tag, workspace isolation, compress env) — audit P2 (#412)
+
 ## [0.48.6] - 2026-09-02
 
 ### Fixed

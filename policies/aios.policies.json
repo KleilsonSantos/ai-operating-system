@@ -37,7 +37,7 @@
     },
     {
       "id": "git-flow-sandbox",
-      "description": "Git flow: Issue → feature/* from sandbox → PR → sandbox → PR → main",
+      "description": "Git flow: Issue → feature/* from sandbox → PR → sandbox → PR → main. Work PRs to sandbox MUST reference a GitHub Issue (Refs #N / #N); CI job issue-link enforces this (#435). Use Closes/Fixes/Resolves #N on promote to main (GitHub closing keywords only apply on the default branch).",
       "severity": "must"
     },
     {

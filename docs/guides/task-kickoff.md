@@ -11,6 +11,8 @@ gh issue comment <N> --repo KleilsonSantos/ai-operating-system \
   --body "🚀 Kickoff: branch \`<type>/<slug>\` created from \`sandbox\`."
 ```
 
+PR body for work branches → `sandbox` **must** include `Refs #<N>` (or `#<N>`). CI job `issue-link` fails otherwise (#435). On promote → `main`, prefer `Closes #<N>` ([GitHub linking docs](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue) — closing keywords only apply on the default branch).
+
 Before push: typecheck/lint/tests for the area you touched.
 
 Work branches target `sandbox`. After that merge, promote `sandbox` to `main` with a second PR. Merge **only** via:

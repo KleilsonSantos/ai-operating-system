@@ -1,6 +1,6 @@
 {
   "name": "@aios-platform/agent-registry",
-  "version": "0.48.6",
+  "version": "0.48.8",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",

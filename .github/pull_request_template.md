@@ -1,6 +1,12 @@
 ## Summary
 
-<!-- O que mudou e por quê -->
+<!-- What changed and why -->
+
+## Issue
+
+- Refs #<N> <!-- required for PRs → sandbox (CI job `issue-link`, #435) -->
+
+<!-- On promote sandbox → main, prefer: Closes #<N> (GitHub closing keywords only apply on default branch) -->
 
 ## Tipo de mudança
 
@@ -10,11 +16,13 @@
 - [ ] refactor
 - [ ] ci
 - [ ] chore
+- [ ] test
 
 ## Checklist
 
+- [ ] GitHub **Issue** opened (or reused) before this branch — kickoff comment with branch name
 - [ ] Branch semântica criada a partir de `sandbox`
-- [ ] Target correto para esta etapa: branch de trabalho → `sandbox`; promoção `sandbox` → `main`
+- [ ] Target correto: branch de trabalho → `sandbox`; promoção `sandbox` → `main`
 - [ ] `pnpm typecheck` passou (quando aplicável)
 - [ ] Documentação atualizada se o PR altera build/uso/arquitetura
 - [ ] `CHANGELOG.md` `[Unreleased]` atualizado (se mudança notável)
@@ -22,4 +30,4 @@
 
 ## Test plan
 
-<!-- Como validar -->
+<!-- How to validate -->

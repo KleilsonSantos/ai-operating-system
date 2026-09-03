@@ -17,6 +17,7 @@ Phase 2 calls for a Memory Engine (session / project). Persistence must be simpl
 4. `PipelineResponse.memory` = short recall when `workspaceId` is present (disable with `includeMemory: false`).
 5. MCP: `aios_memory_remember` · `aios_memory_recall` · `aios_memory_clear`.
 6. `contractVersion` stays `"1"`.
+7. Journey coverage: `@aios/memory` remember → disk → recall (query/tag/isolation/compress) plus pipeline `PipelineResponse.memory` when `workspaceId` is set.
 
 ## Consequences
 
