@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🧪 MCP: stdio live harness (`Client` + `StdioClientTransport`) — list-agents, capability deny, compile-prompt (audit P1 / #440)
+
 ## [0.48.8] - 2026-09-02
 
 ### Added
