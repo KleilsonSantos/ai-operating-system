@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🔒 CI `issue-link`: work PRs → `sandbox` must reference a GitHub Issue (`Refs #N`); PR template + `git-flow-sandbox` policy (#435)
+
 ## [0.48.7] - 2026-09-02
 
 ### Added

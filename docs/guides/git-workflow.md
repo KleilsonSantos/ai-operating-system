@@ -28,9 +28,22 @@ feature/* | fix/* | docs/* | chore/* | ci/*
 3. `git checkout -b feature/<slug>`
 4. Comment on the issue with the branch name
 5. Commits: `type: <gitmoji> description`
-6. Local QA → PR → `sandbox` → PR → `main` → tag if releaseable
+6. Local QA → PR → `sandbox` (body must include `Refs #N` or `#N` — CI job `issue-link`, #435) → PR → `main` (prefer `Closes #N`; GitHub closing keywords only apply on the **default** branch) → tag if releaseable
 
 Author and Committer: `Kleilson Santos <kdsdesign1@gmail.com>` — the same identity already used on `main`. **Never** `Co-authored-by: Cursor` / `cursoragent@cursor.com` / IDE trailers. PR bodies must not include “Made with Cursor”; attribution is the author, not the tool.
+
+### Issue link enforcement (#435)
+
+GitHub has **no** native branch-protection rule for “require linked issue”. AIOS enforces it with CI:
+
+| PR target        | Required                            | Why                                                                                                                                                                                                       |
+| ---------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sandbox`        | `Refs #N` / `#N` (issue must exist) | Work branch gate — `scripts/check-pr-issue-link.sh`                                                                                                                                                       |
+| `main` (promote) | Prefer `Closes #N` / `Fixes #N`     | [Official closing keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue) only auto-link/close when the PR targets the default branch |
+
+Bypass (rare): label `ci:no-issue-required`. Dependabot is skipped.
+
+**Owner action:** mark the `issue-link` status check as **required** on `sandbox` branch protection / ruleset.
 
 ### Merges (required)
 

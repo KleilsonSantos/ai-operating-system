@@ -19,7 +19,7 @@ Regenerate: `pnpm sync:cursor-rules`
 - **no-abandoned-libs** (must): Never use an abandoned library or one without clear maintenance
 - **no-deprecated-apis** (must): Do not introduce deprecated APIs/libs; prefer supported alternatives
 - **short-user-prompt** (must): Do not ask the user to repeat best practices in chat — they are already in these policies
-- **git-flow-sandbox** (must): Git flow: Issue → feature/* from sandbox → PR → sandbox → PR → main
+- **git-flow-sandbox** (must): Git flow: Issue → feature/* from sandbox → PR → sandbox → PR → main. Work PRs to sandbox MUST reference a GitHub Issue (Refs #N / #N); CI job issue-link enforces this (#435). Use Closes/Fixes/Resolves #N on promote to main (GitHub closing keywords only apply on the default branch).
 - **conventional-commits** (must): Commits: type: <gitmoji> … · merges via gh: always --subject/scripts/merge-pr.sh → merge: 🔀 PR #<n> — <branch> (forbid 'Merge pull request…') · author/committer Kleilson Santos <kdsdesign1@gmail.com> · no IDE Co-authored-by · no Made with Cursor on PR bodies
 - **agents-as-plugins** (must): Agents are plugins — do not expose direct agent calls in the primary UX
 - **resource-first** (must): Resource First (macOS): minimize CPU/RAM/disk/I/O/battery/processes/containers; efficiency is a requirement — see docs/policies/resource-aware-macos.md
