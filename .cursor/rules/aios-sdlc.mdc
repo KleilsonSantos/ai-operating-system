@@ -10,7 +10,7 @@ Para detalhes, consulte `.trae/rules/workflow.md`, `docs/guides/git-workflow.md`
 
 ## Git
 
-- Issue → branch semântico (`feature/*`, `fix/*`, `docs/*`, `chore/*`, `ci/*`) a partir de `sandbox` → PR para `sandbox` → PR de promoção `sandbox` → `main`
+- Issue → branch semântico (`feature/*`, `fix/*`, `docs/*`, `chore/*`, `ci/*`) a partir de `sandbox` → PR para `sandbox` (body: `Refs #N` — CI `issue-link`) → PR de promoção `sandbox` → `main` (`Closes #N`)
 - Não push force em `main`/`sandbox`
 - Commits só quando o humano pedir (exceto bootstrap autorizado)
 
