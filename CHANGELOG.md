@@ -4,6 +4,12 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.49.1] - 2026-09-13
+
+### Added
+
+- 🧪 Deterministic selection eval harness — `integrations/evals/` (Intent → agents → capability class) + CI `pnpm evals` (#447)
+
 ## [0.49.0] - 2026-09-13
 
 ### Added

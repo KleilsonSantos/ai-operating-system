@@ -1,0 +1,11 @@
+{
+  "id": "analyze-project-pt",
+  "input": "Analise meu projeto.",
+  "expect": {
+    "intentKind": "analyze.project",
+    "capabilityClass": "reasoning",
+    "agents": {
+      "include": ["architecture", "appsec", "docs", "qa"]
+    }
+  }
+}

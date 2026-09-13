@@ -1,0 +1,11 @@
+{
+  "id": "implement-feature-en",
+  "input": "Implement a React auth hook",
+  "expect": {
+    "intentKind": "implement.feature",
+    "capabilityClass": "coding",
+    "agents": {
+      "include": ["architecture", "appsec", "docs", "qa"]
+    }
+  }
+}
