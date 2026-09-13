@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🔒 Untrusted content hygiene — shared heuristics; Context skips hostile snippets (`content-denied:`); Memory `remember` fail-closed (`memory.content_rejected:*`); ADR-0033 / spike (#447)
+
 ## [0.49.1] - 2026-09-13
 
 ### Added

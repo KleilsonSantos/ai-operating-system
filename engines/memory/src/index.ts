@@ -11,7 +11,7 @@ import {
   unlinkSync,
 } from 'node:fs';
 import { join, resolve } from 'node:path';
-import type { MemoryEntry, MemoryStore } from '@aios/shared';
+import { assertMemoryContentAllowed, type MemoryEntry, type MemoryStore } from '@aios/shared';
 
 const ROLLUP_TAG = 'memory.rollup';
 const CONTENT_MAX = 4000;
@@ -162,6 +162,7 @@ export function remember(
 ): MemoryEntry {
   const text = content.trim();
   if (!text) throw new Error('memory content required');
+  assertMemoryContentAllowed(text);
   const dir = resolveStoreDir(options);
   const max = options.maxEntries ?? 50;
   const compress = compressOnEvictEnabled(options);
