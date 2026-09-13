@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.48.9] - 2026-09-13
+
 ### Added
 
 - 📋 Delivery automation map — event → CI → agent next step (`docs/guides/delivery-automation.md`) (#448)
