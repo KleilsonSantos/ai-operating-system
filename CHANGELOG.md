@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.49.0] - 2026-09-13
+
 ### Added
 
 - 📦 PipelineRun store — `.aios/runs/<runId>.json` + `index.jsonl`; CLI `--list-runs` / `--replay` (#447)
