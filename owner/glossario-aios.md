@@ -531,6 +531,14 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **Para que serve** | Replay fino + Visibility lookup-first (harness P0).                                              |
 | **Não é**          | Banco; não é eval dourado nem LangGraph.                                                         |
 
+### Selection evals (`integrations/evals/` · #447)
+
+|              |                                                                       |
+| ------------ | --------------------------------------------------------------------- |
+| **Analogia** | Banco de provas do freio: fixtures fixas, sem juiz-LLM.               |
+| **O que é**  | Goldens Intent → `AGENT_MATRIX` → `routeModel`; CI `pnpm evals`.      |
+| **Não é**    | Segundo skill framework; não é checkpoint/resume; não é LLM-as-judge. |
+
 ---
 
 # Etapa 10 — Índice A–Z (consulta rápida)
@@ -570,6 +578,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **Run store**           | Persistência append-only de `PipelineRun` em `.aios/runs/` (#447)                   |
 | **Runtime gate**        | Ordem MacBook: unit → delivery gate → `ok infra` → commit                           |
 | **SAFE_WRITE**          | Escrita “segura” + às vezes consent env                                             |
+| **Selection evals**     | Goldens determinísticos Intent → agentes → capability class (`integrations/evals/`) |
 | **sandbox**             | Branch de integração pré-main                                                       |
 | **Semantic search**     | Busca por significado (vetor), não só palavra                                       |
 | **SemVer**              | Versão MAJOR.MINOR.PATCH                                                            |

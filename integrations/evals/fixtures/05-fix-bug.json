@@ -1,0 +1,12 @@
+{
+  "id": "fix-bug-pt",
+  "input": "Corrigir o bug no login",
+  "expect": {
+    "intentKind": "fix.bug",
+    "capabilityClass": "coding",
+    "agents": {
+      "include": ["architecture", "appsec", "qa"],
+      "exclude": ["docs"]
+    }
+  }
+}

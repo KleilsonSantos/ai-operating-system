@@ -1,0 +1,11 @@
+{
+  "id": "unknown-chitchat",
+  "input": "olá, tudo bem?",
+  "expect": {
+    "intentKind": "unknown",
+    "capabilityClass": "fast",
+    "agents": {
+      "exclude": ["architecture", "appsec", "docs", "qa"]
+    }
+  }
+}

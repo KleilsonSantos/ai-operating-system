@@ -1,0 +1,12 @@
+{
+  "id": "explain-code-pt",
+  "input": "Explique como funciona este módulo de auth",
+  "expect": {
+    "intentKind": "explain.code",
+    "capabilityClass": "coding",
+    "agents": {
+      "include": ["architecture", "docs"],
+      "exclude": ["appsec", "qa"]
+    }
+  }
+}

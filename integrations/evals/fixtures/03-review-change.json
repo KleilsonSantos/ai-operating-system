@@ -1,0 +1,12 @@
+{
+  "id": "review-change-en",
+  "input": "Please review this pull request diff",
+  "expect": {
+    "intentKind": "review.change",
+    "capabilityClass": "reasoning",
+    "agents": {
+      "include": ["architecture", "appsec", "qa"],
+      "exclude": ["docs"]
+    }
+  }
+}

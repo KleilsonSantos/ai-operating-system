@@ -1,0 +1,12 @@
+{
+  "id": "audit-security-pt",
+  "input": "Auditar vulnerabilidades de segurança no projeto",
+  "expect": {
+    "intentKind": "audit.security",
+    "capabilityClass": "reasoning",
+    "agents": {
+      "include": ["appsec"],
+      "exclude": ["docs"]
+    }
+  }
+}

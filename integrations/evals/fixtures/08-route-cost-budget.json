@@ -1,0 +1,14 @@
+{
+  "id": "analyze-low-cost-fast",
+  "input": "Analise meu projeto.",
+  "request": {
+    "costBudget": "low"
+  },
+  "expect": {
+    "intentKind": "analyze.project",
+    "capabilityClass": "fast",
+    "agents": {
+      "include": ["architecture"]
+    }
+  }
+}

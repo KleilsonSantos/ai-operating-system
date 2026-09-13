@@ -1,0 +1,12 @@
+{
+  "id": "audit-security-en",
+  "input": "Analyze Spring Boot dependencies for vulnerabilities",
+  "expect": {
+    "intentKind": "audit.security",
+    "capabilityClass": "reasoning",
+    "agents": {
+      "include": ["appsec", "architecture", "qa"],
+      "exclude": ["docs"]
+    }
+  }
+}
