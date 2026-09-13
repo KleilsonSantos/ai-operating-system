@@ -1,0 +1,150 @@
+{
+  "info": {
+    "name": "AIOS - MCP HTTP",
+    "description": "MCP Streamable HTTP only. Source: apps/mcp/src/http.ts and apps/mcp/README.md. The server is opt-in, loopback by default, and stateless.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "mcpBaseUrl", "value": "http://127.0.0.1:8791" },
+    { "key": "mcpProtocolVersion", "value": "2025-06-18" }
+  ],
+  "item": [
+    {
+      "name": "MCP-001 Health",
+      "request": { "method": "GET", "url": "{{mcpBaseUrl}}/health" },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('MCP HTTP transport', () => pm.expect(pm.response.json().transport).to.eql('streamable-http')); "
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "MCP-002 Initialize",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json, text/event-stream" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"initialize\",\n  \"params\": {\n    \"protocolVersion\": \"{{mcpProtocolVersion}}\",\n    \"capabilities\": {},\n    \"clientInfo\": {\n      \"name\": \"aios-postman\",\n      \"version\": \"1.0.0\"\n    }\n  }\n}"
+        },
+        "url": "{{mcpBaseUrl}}/mcp"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const raw = pm.response.text(); const body = pm.response.headers.get('Content-Type').includes('text/event-stream') ? JSON.parse(raw.split('data: ')[1].trim()) : JSON.parse(raw);",
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('JSON-RPC initialize result', () => { pm.expect(body.jsonrpc).to.eql('2.0'); pm.expect(body.result.protocolVersion).to.eql(pm.variables.get('mcpProtocolVersion')); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "MCP-003 List tools",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json, text/event-stream" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "MCP-Protocol-Version", "value": "{{mcpProtocolVersion}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 2,\n  \"method\": \"tools/list\",\n  \"params\": {}\n}"
+        },
+        "url": "{{mcpBaseUrl}}/mcp"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const raw = pm.response.text(); const body = pm.response.headers.get('Content-Type').includes('text/event-stream') ? JSON.parse(raw.split('data: ')[1].trim()) : JSON.parse(raw);",
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('tool list returned', () => pm.expect(body.result.tools).to.be.an('array'));",
+              "pm.test('contract tool exists', () => pm.expect(body.result.tools.map(tool => tool.name)).to.include('aios_contract_version')); "
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "MCP-004 Call contract tool",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json, text/event-stream" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "MCP-Protocol-Version", "value": "{{mcpProtocolVersion}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 3,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"aios_contract_version\",\n    \"arguments\": {}\n  }\n}"
+        },
+        "url": "{{mcpBaseUrl}}/mcp"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const raw = pm.response.text(); const body = pm.response.headers.get('Content-Type').includes('text/event-stream') ? JSON.parse(raw.split('data: ')[1].trim()) : JSON.parse(raw);",
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('tool content returned', () => pm.expect(body.result.content).to.be.an('array')); "
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "MCP-005 GET endpoint behavior",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "text/event-stream" }],
+        "url": "{{mcpBaseUrl}}/mcp"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('stateless server returns HTTP 405', () => pm.response.to.have.status(405));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "MCP-006 DELETE endpoint behavior",
+      "request": { "method": "DELETE", "url": "{{mcpBaseUrl}}/mcp" },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('stateless server returns HTTP 405', () => pm.response.to.have.status(405));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

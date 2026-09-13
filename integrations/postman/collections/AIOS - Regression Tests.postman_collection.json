@@ -1,0 +1,98 @@
+{
+  "info": {
+    "name": "AIOS - Regression Tests",
+    "description": "REG suite for stable contracts backed by the Console API README, source handlers, tests, and MCP HTTP implementation.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "consoleBaseUrl", "value": "http://127.0.0.1:8787" },
+    { "key": "mcpBaseUrl", "value": "http://127.0.0.1:8791" },
+    { "key": "mcpProtocolVersion", "value": "2025-06-18" }
+  ],
+  "item": [
+    {
+      "name": "REG-001 Contract version",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"action\": \"contract\"\n}" },
+        "url": "{{consoleBaseUrl}}/api/action"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('contractVersion is stable string', () => pm.expect(pm.response.json().result.contractVersion).to.eql('1')); "
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-002 Metrics API alias",
+      "request": { "method": "GET", "url": "{{consoleBaseUrl}}/api/metrics" },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Prometheus content type', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('text/plain')); "
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-003 Safe action catalog",
+      "request": { "method": "GET", "url": "{{consoleBaseUrl}}/api/actions" },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const actions = pm.response.json().actions;",
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('safe action catalog is an array', () => pm.expect(actions).to.be.an('array'));",
+              "pm.test('catalog contains core contract action', () => pm.expect(actions).to.include('contract')); "
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-004 MCP contract tool",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json, text/event-stream" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "MCP-Protocol-Version", "value": "{{mcpProtocolVersion}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"aios_contract_version\",\n    \"arguments\": {}\n  }\n}"
+        },
+        "url": "{{mcpBaseUrl}}/mcp"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const raw = pm.response.text(); const body = pm.response.headers.get('Content-Type').includes('text/event-stream') ? JSON.parse(raw.split('data: ')[1].trim()) : JSON.parse(raw);",
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('JSON-RPC result has content', () => pm.expect(body.result.content).to.be.an('array')); "
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

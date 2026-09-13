@@ -1,7 +1,7 @@
 # AIOS Harness Architecture Audit
 
 **Repository:** [KleilsonSantos/ai-operating-system](https://github.com/KleilsonSantos/ai-operating-system)  
-**Date:** 2026-09-12  
+**Date:** 2026-09-12 (drift pass 2026-09-12 — counts + PKB semantic per ADR-0032)  
 **Auditor role:** Principal AI Engineer · Staff Software Architect · AI Safety / Agent Evaluation Engineer  
 **Method:** Read-only source inspection — `engines/`, `packages/`, `apps/`, `policies/`, ADRs, tests, CI. No product code modified (prompt §39).
 
@@ -182,16 +182,17 @@ All four agents use regex/rules on paths and snippet content — not LLM reasoni
 
 **Status: IMPLEMENTADO** (heuristic + KG, no embeddings)
 
-| Capability       | Evidence                                                                                         |
-| ---------------- | ------------------------------------------------------------------------------------------------ |
-| Context assembly | `engines/context/src/index.ts` — `gatherContext()`                                               |
-| Budget tiers     | tight: 6 snippets / 16KB · standard: 12 / 40KB · wide: 16 / 48KB                                 |
-| Budget selection | `unknown`/`high` risk/`low` cost → tight; implement/fix/review/audit → wide                      |
-| Secret denylist  | `.env*`, `*.pem/key`, `credentials.json`, `secrets/`                                             |
-| Scope validation | Fail-closed on absolute paths and `..` escape                                                    |
-| KG neighbors     | `knowledgeNeighborRelPaths` — no embeddings ([`rag-boundaries.md`](../guides/rag-boundaries.md)) |
-| Session memory   | `.aios/memory/{workspaceId}.json` FIFO via `engines/memory/`                                     |
-| Traceability     | Snippet paths in `context.injected:N` findings                                                   |
+| Capability       | Evidence                                                                                                            |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Context assembly | `engines/context/src/index.ts` — `gatherContext()`                                                                  |
+| Budget tiers     | tight: 6 snippets / 16KB · standard: 12 / 40KB · wide: 16 / 48KB                                                    |
+| Budget selection | `unknown`/`high` risk/`low` cost → tight; implement/fix/review/audit → wide                                         |
+| Secret denylist  | `.env*`, `*.pem/key`, `credentials.json`, `secrets/`                                                                |
+| Scope validation | Fail-closed on absolute paths and `..` escape                                                                       |
+| KG neighbors     | `knowledgeNeighborRelPaths` — no embeddings in default context ([`rag-boundaries.md`](../guides/rag-boundaries.md)) |
+| PKB semantic     | PARCIAL (opt-in)                                                                                                    | MCP `aios_search_pkb` + `aios_pkb_rebuild_vectors` — [ADR-0032](../adr/0032-pkb-local-vector-index-sqlite-vec.md); **not** wired into `runPipeline` context |
+| Session memory   | `.aios/memory/{workspaceId}.json` FIFO via `engines/memory/`                                                        |
+| Traceability     | Snippet paths in `context.injected:N` findings                                                                      |
 
 **Gaps (§7):**
 
@@ -207,7 +208,7 @@ All four agents use regex/rules on paths and snippet content — not LLM reasoni
 
 | Capability                 | Status       | Evidence                                                                     |
 | -------------------------- | ------------ | ---------------------------------------------------------------------------- |
-| Declarative JSON           | IMPLEMENTADO | `policies/aios.policies.json` (25 rules) + defaults                          |
+| Declarative JSON           | IMPLEMENTADO | `policies/aios.policies.json` (26 rules) + defaults                          |
 | Walk-up discovery          | IMPLEMENTADO | `engines/policy/src/index.ts`                                                |
 | Severity must/should/may   | IMPLEMENTADO |                                                                              |
 | Brief injection            | PARCIAL      | `applyPolicies` → constraints string; orchestration tags `policies.injected` |
@@ -231,7 +232,7 @@ Machine-enforceable path today is primarily **MCP gate + quality gate structural
 
 | Attribute         | Status       | Evidence                                        |
 | ----------------- | ------------ | ----------------------------------------------- |
-| Identity          | IMPLEMENTADO | Fixed `MCP_TOOL_CATALOG` (23 tools)             |
+| Identity          | IMPLEMENTADO | Fixed `MCP_TOOL_CATALOG` (26 tools)             |
 | Schema            | IMPLEMENTADO | Zod at registration (`apps/mcp/src/index.ts`)   |
 | Permissions       | IMPLEMENTADO | 5 privilege ranks, `authorizeMcpTool()`         |
 | Risk level        | IMPLEMENTADO | Rank per tool in `packages/shared/src/index.ts` |
@@ -747,7 +748,7 @@ Policy load/merge, context assembly with budgets and denylist, MCP authorization
 
 - Full autonomous "AI OS" execution loop
 - Community agent **execution** (discovery only)
-- Semantic PKB/RAG in default context path
+- Semantic PKB/RAG in default `runPipeline` context path (MCP opt-in search exists — ADR-0032)
 - Interactive HITL approval flow
 - LLM-based agents in default `runPipeline`
 - Hook bus intercepts (trace-only `record.lifecycle`)

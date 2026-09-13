@@ -1,0 +1,189 @@
+{
+  "info": {
+    "name": "AIOS - Functional Tests",
+    "description": "FUNC suite for every safe action exposed by POST /api/action. Source: apps/console/src/actions.ts and apps/console/src/server.ts.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "consoleBaseUrl", "value": "http://127.0.0.1:8787" },
+    { "key": "workspaceId", "value": "aios" },
+    { "key": "input", "value": "Postman functional test" },
+    { "key": "scope", "value": "engines" }
+  ],
+  "item": [
+    {
+      "name": "01 - Read-only actions",
+      "item": [
+        {
+          "name": "FUNC-001 contract",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"action\": \"contract\"\n}" },
+            "url": "{{consoleBaseUrl}}/api/action"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 and ok', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().ok).to.eql(true); });",
+                  "pm.test('contract version returned', () => pm.expect(pm.response.json().result.contractVersion).to.be.a('string')); "
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "FUNC-002 validate_workspaces",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"action\": \"validate_workspaces\"\n}" },
+            "url": "{{consoleBaseUrl}}/api/action"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP response is JSON', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));",
+                  "pm.test('workspaces result is present', () => pm.expect(pm.response.json().result.workspaces).to.be.an('array')); "
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "FUNC-003 load_policies",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"action\": \"load_policies\"\n}" },
+            "url": "{{consoleBaseUrl}}/api/action"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('policies result is present', () => pm.expect(pm.response.json().result).to.be.an('object'));",
+                  "pm.test('policy count is numeric', () => pm.expect(pm.response.json().result.count).to.be.a('number')); "
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "FUNC-004 compile_brief",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"compile_brief\",\n  \"input\": \"{{input}}\",\n  \"workspaceId\": \"{{workspaceId}}\"\n}"
+            },
+            "url": "{{consoleBaseUrl}}/api/action"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('brief result is present', () => pm.expect(pm.response.json().result.brief).to.be.a('string'));",
+                  "pm.test('workspace is returned', () => pm.expect(pm.response.json().result.workspaceId).to.eql(pm.variables.get('workspaceId'))); "
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "FUNC-005 provider_ping",
+          "description": "Requires the configured Ollama provider. A provider health failure is an external dependency result, not necessarily a Console API failure.",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"action\": \"provider_ping\"\n}" },
+            "url": "{{consoleBaseUrl}}/api/action"
+          }
+        },
+        {
+          "name": "FUNC-006 memory_recall",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"memory_recall\",\n  \"workspaceId\": \"{{workspaceId}}\"\n}"
+            },
+            "url": "{{consoleBaseUrl}}/api/action"
+          }
+        },
+        {
+          "name": "FUNC-007 audit_docs",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"action\": \"audit_docs\"\n}" },
+            "url": "{{consoleBaseUrl}}/api/action"
+          }
+        },
+        {
+          "name": "FUNC-008 governance_audit",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"action\": \"governance_audit\"\n}" },
+            "url": "{{consoleBaseUrl}}/api/action"
+          }
+        },
+        {
+          "name": "FUNC-009 operational_state",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"operational_state\",\n  \"workspaceId\": \"{{workspaceId}}\"\n}"
+            },
+            "url": "{{consoleBaseUrl}}/api/action"
+          }
+        },
+        {
+          "name": "FUNC-010 visibility",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"visibility\",\n  \"workspaceId\": \"{{workspaceId}}\",\n  \"scope\": \"{{scope}}\"\n}"
+            },
+            "url": "{{consoleBaseUrl}}/api/action"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Local state write (manual)",
+      "description": "Not safe for production: writes to the local memory store. Run only with an isolated AIOS_HOME.",
+      "item": [
+        {
+          "name": "FUNC-011 memory_remember",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"memory_remember\",\n  \"input\": \"{{input}}\",\n  \"workspaceId\": \"{{workspaceId}}\"\n}"
+            },
+            "url": "{{consoleBaseUrl}}/api/action"
+          }
+        }
+      ]
+    }
+  ]
+}

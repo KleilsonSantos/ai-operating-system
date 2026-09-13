@@ -54,14 +54,20 @@ aios_run_pipeline
   └─ quality gate → response + run steps
 ```
 
+## Shipped opt-in (not default pipeline context)
+
+| Capability             | Shipped as                                    | Notes                                    |
+| ---------------------- | --------------------------------------------- | ---------------------------------------- |
+| PKB semantic search    | `aios_search_pkb` (`mode=semantic`), ADR-0032 | Local `.aios/pkb-vectors.sqlite`; opt-in |
+| Memory rollup on evict | `AIOS_MEMORY_COMPRESS=1` (`v0.48.4`)          | FIFO still default                       |
+
 ## What is intentionally deferred
 
-| Capability                           | Why deferred                                  | Next gate             |
-| ------------------------------------ | --------------------------------------------- | --------------------- |
-| Vector DB / embeddings               | Resource-Aware; Git SSOT sufficient today     | PKB spike + ADR       |
-| Memory compression                   | FIFO works; summarize-before-evict is a slice | Memory spike          |
-| External web ingestion (e.g. Scrapy) | Wrong stack in core monorepo                  | Optional external job |
-| n8n / Composio / CRM                 | Experience & integrations                     | Companion repo        |
+| Capability                           | Why deferred                      | Next gate             |
+| ------------------------------------ | --------------------------------- | --------------------- |
+| Embeddings in Context Engine / KG    | Heuristic KG + denylist by design | ADR if product needs  |
+| External web ingestion (e.g. Scrapy) | Wrong stack in core monorepo      | Optional external job |
+| n8n / Composio / CRM                 | Experience & integrations         | Companion repo        |
 
 See [`pkb-evolution.md`](../prompts/pkb-evolution.md) for the PKB ladder and [`agent-framework-boundaries.md`](../guides/agent-framework-boundaries.md) for AIOS vs third-party agent frameworks.
 
