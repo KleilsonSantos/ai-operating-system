@@ -70,6 +70,21 @@ describe('parseArgs', () => {
     expect(args.visibilityRunId).toBe('run-1');
   });
 
+  it('parses --list-runs and --replay (#447)', () => {
+    const listed = parseArgs(['--list-runs', '--limit', '5']);
+    expect(listed.listRuns).toBe(true);
+    expect(listed.searchPkbLimit).toBe(5);
+    expect(listed.input).toBe('');
+
+    const replay = parseArgs(['--replay', 'run-xyz']);
+    expect(replay.replayRunId).toBe('run-xyz');
+    expect(replay.input).toBe('');
+
+    const replayFlag = parseArgs(['--replay', '--run-id', 'from-flag']);
+    expect(replayFlag.replayRunId).toBe('');
+    expect(replayFlag.visibilityRunId).toBe('from-flag');
+  });
+
   it('parses --search-pkb --semantic and --rebuild-pkb-vectors', () => {
     const search = parseArgs(['--search-pkb', '--semantic', '--tag', 'docs', 'RAG query']);
     expect(search.searchPkb).toBe(true);

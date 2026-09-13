@@ -1080,7 +1080,7 @@ export type VisibilityTrailItem = {
 export type VisibilitySnapshot = {
   anchor: { runId?: string; scope?: string; workspaceId?: string };
   generatedAt: string;
-  /** Present when caller injects a run; AIOS does not persist PipelineRun yet. */
+  /** Present when a run is injected or loaded from `.aios/runs/` (#447). */
   run?: PipelineRun;
   runLookup?: 'provided' | 'unavailable';
   knowledge: {

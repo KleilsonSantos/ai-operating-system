@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { afterEach, describe, expect, it } from 'vitest';
 import type { PipelineRun } from '@aios/shared';
-import { recordAgentExecution } from '@aios/status';
+import { recordAgentExecution, persistPipelineRun } from '@aios/status';
 import { correlateVisibility } from './index.ts';
 
 const temps: string[] = [];
@@ -88,6 +88,40 @@ describe('correlateVisibility', () => {
     });
     expect(snap.runLookup).toBe('unavailable');
     expect(snap.run).toBeUndefined();
+  });
+
+  it('loads PipelineRun from .aios/runs when runId is given (#447)', async () => {
+    const home = miniHome();
+    const run: PipelineRun = {
+      runId: 'run-disk',
+      taskId: 'run-disk',
+      intentKind: 'analyze.project',
+      policyIds: ['official-docs'],
+      agentIds: ['architecture'],
+      skillIds: [],
+      hookIds: [],
+      steps: [
+        { stepId: 'intent', kind: 'intent', status: 'ok' },
+        { stepId: 'gate', kind: 'gate', status: 'ok' },
+      ],
+      artifacts: [],
+      verdict: { passed: true, reasons: [] },
+    };
+    persistPipelineRun(run, { homePath: home });
+
+    const snap = await correlateVisibility({
+      homePath: home,
+      repoPath: home,
+      runId: 'run-disk',
+      providerHealth: {
+        provider: 'ollama',
+        ok: true,
+        baseUrl: 'http://127.0.0.1:11434',
+      },
+    });
+    expect(snap.runLookup).toBe('provided');
+    expect(snap.run?.runId).toBe('run-disk');
+    expect(snap.trail.some((t) => t.kind === 'pipeline.step')).toBe(true);
   });
 
   it('accepts injected PipelineRun and builds step trail', async () => {

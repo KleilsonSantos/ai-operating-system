@@ -31,6 +31,7 @@ import { correlateVisibility, exportObsidian } from '@aios/visibility';
 import { resolve } from 'node:path';
 import { AgentRegistry } from '@aios-platform/agent-registry';
 import { authorizeMcpTool, deniedMcpPayload, isModelCapabilityClass } from '@aios/shared';
+import { recordMcpToolAudit } from '@aios/status';
 import { readMonorepoVersion } from './version.ts';
 
 function mcpMustPolicyIds(): string[] {
@@ -40,6 +41,25 @@ function mcpMustPolicyIds(): string[] {
     configPath: process.env.AIOS_POLICIES_PATH,
   });
   return applyPolicies(bundle.rules).mustIds;
+}
+
+function auditMcpDecision(decision: ReturnType<typeof authorizeMcpTool>, source = 'mcp'): void {
+  try {
+    recordMcpToolAudit(
+      {
+        tool: decision.tool,
+        allowed: decision.allowed,
+        required: decision.required,
+        caller: decision.caller,
+        reason: decision.reason,
+        policyId: decision.policyId,
+        source,
+      },
+      { homePath: process.env.AIOS_HOME || process.cwd() }
+    );
+  } catch {
+    /* never break MCP for audit I/O */
+  }
 }
 
 export function createAiosMcpServer(): McpServer {
@@ -59,6 +79,7 @@ export function createAiosMcpServer(): McpServer {
       config as never,
       (async (args: unknown, extra: unknown) => {
         const decision = authorizeMcpTool(String(name), { mustIds: mcpMustPolicyIds() });
+        auditMcpDecision(decision);
         if (!decision.allowed) {
           return {
             content: [

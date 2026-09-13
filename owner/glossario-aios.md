@@ -520,7 +520,16 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | ------------------ | -------------------------------------------------------------------------------- |
 | **Analogia**       | Tacômetro + caixa-preta de eventos.                                              |
 | **O que é**        | Métricas (`GET /metrics`, `--metrics-prometheus`) + eventos em `.aios/metrics/`. |
-| **Para que serve** | Consumo de provider, health de agentes, CI delivery (ADR-0028).                  |
+| **Para que serve** | Consumo de provider, health de agentes, CI delivery (ADR-0028), audit MCP.       |
+
+### Run store (`.aios/runs/` · #447)
+
+|                    |                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------ |
+| **Analogia**       | Caixa-preta de voo da esteira: cada `runPipeline` deixa um registro legível.                     |
+| **O que é**        | JSON por `runId` + `index.jsonl`; CLI `--list-runs` / `--replay`; opt-out `AIOS_PERSIST_RUNS=0`. |
+| **Para que serve** | Replay fino + Visibility lookup-first (harness P0).                                              |
+| **Não é**          | Banco; não é eval dourado nem LangGraph.                                                         |
 
 ---
 
@@ -558,6 +567,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **RAG**                 | Buscar + gerar (no AIOS: PKB)                                                       |
 | **release-coordinator** | Agente Copilot: checklist SemVer/promote/tag (sem auto-commit)                      |
 | **Resource-Aware**      | Poupar hardware; inspecionar antes de instalar                                      |
+| **Run store**           | Persistência append-only de `PipelineRun` em `.aios/runs/` (#447)                   |
 | **Runtime gate**        | Ordem MacBook: unit → delivery gate → `ok infra` → commit                           |
 | **SAFE_WRITE**          | Escrita “segura” + às vezes consent env                                             |
 | **sandbox**             | Branch de integração pré-main                                                       |

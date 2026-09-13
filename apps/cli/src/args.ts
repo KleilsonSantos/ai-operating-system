@@ -25,6 +25,8 @@ export type CliArgs = {
   operationalState: boolean;
   visibility: boolean;
   visibilityRunId?: string;
+  listRuns: boolean;
+  replayRunId?: string;
   exportObsidian: boolean;
   exportOut?: string;
   exportFullGraph: boolean;
@@ -68,6 +70,7 @@ function emptyArgs(overrides: Partial<CliArgs> = {}): CliArgs {
     governanceAudit: false,
     operationalState: false,
     visibility: false,
+    listRuns: false,
     exportObsidian: false,
     exportFullGraph: true,
     listAgents: false,
@@ -109,7 +112,10 @@ Common options:
   --governance-audit         Governance audit
   --operational-state        Operational state snapshot
   --visibility               Visibility Plane snapshot (requires --scope, --workspace, and/or --run-id)
-  --run-id <id>              Optional run id for --visibility / --export-obsidian
+  --run-id <id>              Optional run id for --visibility / --export-obsidian / --replay
+  --list-runs                List recent PipelineRun index rows from .aios/runs/ (#447)
+  --limit <n>                With --search-pkb or --list-runs, max rows (default 50)
+  --replay [id]              Print stored PipelineRun JSON (id from arg or --run-id) (#447)
   --export-obsidian          Export KG (+ optional run note) to Obsidian Markdown (ADR-0030 / #366)
   --out <dir>                Destination for --export-obsidian (default: .aios/export/obsidian)
   --no-full-graph            With --export-obsidian + --scope, export only matched nodes
@@ -125,6 +131,7 @@ Environment:
   AIOS_HOME                  Monorepo root (set to repo root when using pnpm --filter @aios/cli;
                              used for policies, memory, governance, metrics, visibility, PKB vectors)
   AIOS_REPO / AIOS_WORKSPACE / AIOS_SCOPE / AIOS_POLICIES_PATH
+  AIOS_PERSIST_RUNS          PipelineRun store under .aios/runs/ (default on; set 0/false/off to disable) (#447)
   AIOS_MCP_ALLOW_SAFE_WRITE  Set to 1 for --export-obsidian / --rebuild-pkb-vectors when must-policy mcp-safe-write-consent is loaded (#378 / #327)
 
 Default input when none is given: "Analise meu projeto."
@@ -160,6 +167,8 @@ export function parseArgs(argv: string[]): CliArgs {
   let operationalState = false;
   let visibility = false;
   let visibilityRunId: string | undefined;
+  let listRuns = false;
+  let replayRunId: string | undefined;
   let exportObsidian = false;
   let exportOut: string | undefined;
   let exportFullGraph = true;
@@ -315,6 +324,24 @@ export function parseArgs(argv: string[]): CliArgs {
       visibility = true;
       continue;
     }
+    if (a === '--list-runs') {
+      listRuns = true;
+      continue;
+    }
+    if (a === '--replay') {
+      const next = argv[i + 1];
+      if (next && !next.startsWith('-')) {
+        replayRunId = next;
+        i++;
+      } else {
+        replayRunId = '';
+      }
+      continue;
+    }
+    if (a.startsWith('--replay=')) {
+      replayRunId = a.slice('--replay='.length);
+      continue;
+    }
     if (a === '--run-id') {
       visibilityRunId = argv[++i];
       continue;
@@ -414,7 +441,10 @@ export function parseArgs(argv: string[]): CliArgs {
 
   return {
     input:
-      parts.join(' ').trim() || (searchPkbFlag || rebuildPkbVectors ? '' : 'Analise meu projeto.'),
+      parts.join(' ').trim() ||
+      (searchPkbFlag || rebuildPkbVectors || listRuns || replayRunId !== undefined
+        ? ''
+        : 'Analise meu projeto.'),
     scope: scope || process.env.AIOS_SCOPE,
     repoPath: repoPath || process.env.AIOS_REPO,
     workspaceId: workspaceId || process.env.AIOS_WORKSPACE,
@@ -438,6 +468,8 @@ export function parseArgs(argv: string[]): CliArgs {
     operationalState,
     visibility,
     visibilityRunId,
+    listRuns,
+    replayRunId,
     exportObsidian,
     exportOut,
     exportFullGraph,
