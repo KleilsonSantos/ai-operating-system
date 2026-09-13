@@ -6,6 +6,8 @@ import {
   chatWithMetrics,
   renderPrometheusMetrics,
   loadMetricsSnapshot,
+  listPipelineRuns,
+  loadPipelineRun,
 } from '@aios/status';
 import { auditDocumentation, searchPkb, rebuildPkbVectorIndex } from '@aios/documentation';
 import { auditGovernance } from '@aios/governance';
@@ -200,6 +202,34 @@ async function main(): Promise<void> {
     });
     console.log(JSON.stringify(state, null, 2));
     if (state.health.errorCount > 0) process.exitCode = 1;
+    return;
+  }
+
+  if (args.listRuns) {
+    const rows = listPipelineRuns({
+      homePath: process.env.AIOS_HOME || process.cwd(),
+      limit: args.searchPkbLimit,
+    });
+    console.log(JSON.stringify({ runs: rows, count: rows.length }, null, 2));
+    return;
+  }
+
+  if (args.replayRunId !== undefined) {
+    const runId = (args.replayRunId || args.visibilityRunId || '').trim();
+    if (!runId) {
+      console.error('replay: require a run id (--replay <id> or --run-id <id>)');
+      process.exitCode = 1;
+      return;
+    }
+    const stored = loadPipelineRun(runId, {
+      homePath: process.env.AIOS_HOME || process.cwd(),
+    });
+    if (!stored) {
+      console.error(JSON.stringify({ error: 'run.not_found', runId }, null, 2));
+      process.exitCode = 1;
+      return;
+    }
+    console.log(JSON.stringify(stored, null, 2));
     return;
   }
 

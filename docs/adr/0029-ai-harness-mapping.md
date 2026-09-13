@@ -30,7 +30,7 @@ AIOS already implements harness layers incrementally (Policy Engine, Prompt Engi
 | Memory & context            | Memory Engine + Context Engine + KG           | ✅      | JSON session memory; heuristic KG (ADR-0005)                                                                       |
 | Rules & policies            | Policy Engine                                 | ✅      | `policies/aios.policies.json`                                                                                      |
 | Verification / eval         | Quality Gate + governance audit               | ✅      | Pre-response gate; `aios_audit_*`                                                                                  |
-| Inputs & outputs            | Status metrics + JSONL events                 | ✅      | ADR-0019, ADR-0028                                                                                                 |
+| Inputs & outputs            | Status metrics + JSONL events + run store     | ✅      | ADR-0019, ADR-0028, #447                                                                                           |
 | Model routing               | Model router (capability classes)             | ✅      | ADR-0025; operator binds provider                                                                                  |
 | Semantic PKB / RAG          | `@aios/documentation` + MCP `aios_search_pkb` | ✅      | Opt-in local index ([ADR-0032](./0032-pkb-local-vector-index-sqlite-vec.md)); not in default `runPipeline` context |
 | Multi-agent crew frameworks | **Not in core**                               | ❌      | Use Agent Registry + pipeline; see boundary guide                                                                  |

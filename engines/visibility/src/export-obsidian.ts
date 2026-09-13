@@ -6,6 +6,7 @@ import { mkdirSync, realpathSync, writeFileSync } from 'node:fs';
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import type { KnowledgeEdge, KnowledgeGraph, KnowledgeNode, PipelineRun } from '@aios/shared';
 import { buildKnowledgeGraph } from '@aios/knowledge';
+import { loadPipelineRun } from '@aios/status';
 
 export type ExportObsidianOptions = {
   homePath?: string;
@@ -273,6 +274,12 @@ export function exportObsidian(options: ExportObsidianOptions = {}): ExportObsid
     );
   }
 
+  let run = options.run;
+  if (!run && options.runId) {
+    const stored = loadPipelineRun(options.runId, { homePath });
+    if (stored) run = stored.run;
+  }
+
   const generatedAt = new Date().toISOString();
   const fullGraph = options.fullGraph !== false;
   const raw = buildKnowledgeGraph({ repoPath });
@@ -306,12 +313,7 @@ export function exportObsidian(options: ExportObsidianOptions = {}): ExportObsid
   if (options.runId) {
     const safeRun = noteBasename(options.runId) || 'run';
     const rel = join('runs', `${safeRun}.md`);
-    writeRelative(
-      outDir,
-      rel,
-      runMarkdown({ runId: options.runId, run: options.run, generatedAt }),
-      written
-    );
+    writeRelative(outDir, rel, runMarkdown({ runId: options.runId, run, generatedAt }), written);
     runNote = rel.replace(/\\/g, '/').replace(/\.md$/, '');
   }
 

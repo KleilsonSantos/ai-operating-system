@@ -12,7 +12,7 @@ import type {
 import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge';
 import { getOperationalState, type GetOperationalStateOptions } from '@aios/operational-state';
 import { loadPolicies, applyPolicies } from '@aios/policy';
-import { listAgentExecutions } from '@aios/status';
+import { listAgentExecutions, loadPipelineRun } from '@aios/status';
 
 export {
   assertSafeObsidianOutDir,
@@ -30,7 +30,7 @@ export type CorrelateVisibilityOptions = {
   runId?: string;
   scope?: string;
   workspaceId?: string;
-  /** Inject a run — PipelineRun is not persisted yet (ADR-0024 response-only). */
+  /** Inject a run — or omit and pass `runId` to load from `.aios/runs/` (#447). */
   run?: PipelineRun;
   /** Cap agent.execution rows (default 50). */
   maxAgentExecutions?: number;
@@ -113,12 +113,17 @@ export async function correlateVisibility(
   const repoPath = resolve(options.repoPath || homePath);
   const generatedAt = new Date().toISOString();
 
-  const run = options.run;
-  const runLookup: VisibilitySnapshot['runLookup'] = run
-    ? 'provided'
-    : runId
-      ? 'unavailable'
-      : undefined;
+  let run = options.run;
+  let runLookup: VisibilitySnapshot['runLookup'] = run ? 'provided' : undefined;
+  if (!run && runId) {
+    const stored = loadPipelineRun(runId, { homePath });
+    if (stored) {
+      run = stored.run;
+      runLookup = 'provided';
+    } else {
+      runLookup = 'unavailable';
+    }
+  }
 
   if (run && runId && run.runId !== runId) {
     throw new Error(`correlateVisibility: run.runId (${run.runId}) !== runId (${runId})`);

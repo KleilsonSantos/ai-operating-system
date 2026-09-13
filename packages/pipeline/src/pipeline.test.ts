@@ -1,8 +1,9 @@
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { afterEach, describe, expect, it } from 'vitest';
 import { runPipeline, runAcrossWorkspaces, PIPELINE_CONTRACT_VERSION } from '../src/index.ts';
+import { loadPipelineRun } from '@aios/status';
 
 const temps: string[] = [];
 
@@ -54,6 +55,53 @@ describe('runPipeline', () => {
     expect(res.run?.steps.some((s) => s.kind === 'route' && s.status === 'ok')).toBe(true);
     expect(res.context.budget?.tier).toBe('standard');
     expect(res.run?.steps.some((s) => s.kind === 'skill' && s.status === 'skip')).toBe(true);
+  });
+
+  it('persists PipelineRun under AIOS_HOME/.aios/runs by default (#447)', async () => {
+    const repo = fixtureRepo();
+    const home = mkdtempSync(join(tmpdir(), 'aios-pipe-home-'));
+    temps.push(home);
+    const prevHome = process.env.AIOS_HOME;
+    const prevPersist = process.env.AIOS_PERSIST_RUNS;
+    process.env.AIOS_HOME = home;
+    delete process.env.AIOS_PERSIST_RUNS;
+    try {
+      const res = await runPipeline({
+        input: 'Analise meu projeto.',
+        repoPath: repo,
+      });
+      expect(res.run?.runId).toBeTruthy();
+      const stored = loadPipelineRun(res.run!.runId, { homePath: home });
+      expect(stored?.run.intentKind).toBe('analyze.project');
+      expect(existsSync(join(home, '.aios', 'runs', `${res.run!.runId}.json`))).toBe(true);
+    } finally {
+      if (prevHome === undefined) delete process.env.AIOS_HOME;
+      else process.env.AIOS_HOME = prevHome;
+      if (prevPersist === undefined) delete process.env.AIOS_PERSIST_RUNS;
+      else process.env.AIOS_PERSIST_RUNS = prevPersist;
+    }
+  });
+
+  it('skips run persistence when AIOS_PERSIST_RUNS=0', async () => {
+    const repo = fixtureRepo();
+    const home = mkdtempSync(join(tmpdir(), 'aios-pipe-nopersist-'));
+    temps.push(home);
+    const prevHome = process.env.AIOS_HOME;
+    const prevPersist = process.env.AIOS_PERSIST_RUNS;
+    process.env.AIOS_HOME = home;
+    process.env.AIOS_PERSIST_RUNS = '0';
+    try {
+      const res = await runPipeline({
+        input: 'Analise meu projeto.',
+        repoPath: repo,
+      });
+      expect(loadPipelineRun(res.run!.runId, { homePath: home })).toBeUndefined();
+    } finally {
+      if (prevHome === undefined) delete process.env.AIOS_HOME;
+      else process.env.AIOS_HOME = prevHome;
+      if (prevPersist === undefined) delete process.env.AIOS_PERSIST_RUNS;
+      else process.env.AIOS_PERSIST_RUNS = prevPersist;
+    }
   });
 
   it('records requested skill ids on run without loading a catalog', async () => {
