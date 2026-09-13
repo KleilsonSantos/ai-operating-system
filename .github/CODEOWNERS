@@ -1,0 +1,9 @@
+# Require owner review for supply-chain sensitive paths (GitHub CODEOWNERS).
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+/scripts/                    @KleilsonSantos
+/.github/workflows/          @KleilsonSantos
+/.github/CODEOWNERS          @KleilsonSantos
+/.githooks/                  @KleilsonSantos
+/.github/dependabot.yml      @KleilsonSantos
+/policies/                   @KleilsonSantos

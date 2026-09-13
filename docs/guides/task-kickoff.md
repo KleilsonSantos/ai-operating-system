@@ -13,7 +13,13 @@ gh issue comment <N> --repo KleilsonSantos/ai-operating-system \
 
 PR body for work branches → `sandbox` **must** include `Refs #<N>` (or `#<N>`). CI job `issue-link` fails otherwise (#435). On promote → `main`, prefer `Closes #<N>` ([GitHub linking docs](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue) — closing keywords only apply on the default branch).
 
-Before push: typecheck/lint/tests for the area you touched.
+Before push: typecheck/lint/tests for the area you touched, then local issue-link parity:
+
+```bash
+bash scripts/check-pr-delivery-gate.sh
+```
+
+Agent order (inspect → unit → delivery gate → optional `ok infra` → commit): [local-runtime-authorization.md](./local-runtime-authorization.md). Event map: [delivery-automation.md](./delivery-automation.md).
 
 Work branches target `sandbox`. After that merge, promote `sandbox` to `main` with a second PR. Merge **only** via:
 

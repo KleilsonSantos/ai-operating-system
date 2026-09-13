@@ -6,6 +6,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Added
 
+- 📋 Delivery automation map — event → CI → agent next step (`docs/guides/delivery-automation.md`) (#448)
+- 🔒 Local PR delivery gate — `scripts/check-pr-delivery-gate.sh` (+ selftest / CI) for issue-link parity before push (#448)
+- 🧭 Local runtime authorization — ordered MacBook agent gate + Cursor rule (`docs/guides/local-runtime-authorization.md`) (#448)
+- 🤖 Copilot agents `appsec-reviewer` + `release-coordinator` + `docs/guides/github-agents.md` catalog; `.github/CODEOWNERS` for supply-chain paths (#448)
 - 🧪 MCP: stdio live harness (`Client` + `StdioClientTransport`) — list-agents, capability deny, compile-prompt (audit P1 / #440)
 
 ## [0.48.8] - 2026-09-02

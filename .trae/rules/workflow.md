@@ -8,7 +8,9 @@ alwaysApply: false
 For Git flow, PR routing, merge policy, release promotion, and CI decisions, use these sources together:
 
 - [`docs/guides/git-workflow.md`](../../docs/guides/git-workflow.md)
+- [`docs/guides/delivery-automation.md`](../../docs/guides/delivery-automation.md) — event → CI → next action
 - [`docs/guides/task-kickoff.md`](../../docs/guides/task-kickoff.md)
+- [`docs/guides/local-runtime-authorization.md`](../../docs/guides/local-runtime-authorization.md) — MacBook agent gate
 - [`docs/guides/releases.md`](../../docs/guides/releases.md)
 - [`.github/pull_request_template.md`](../../.github/pull_request_template.md)
 - [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)
@@ -16,6 +18,7 @@ For Git flow, PR routing, merge policy, release promotion, and CI decisions, use
 - [`scripts/check-merge-tip.sh`](../../scripts/check-merge-tip.sh)
 - [`scripts/check-commit-messages.sh`](../../scripts/check-commit-messages.sh)
 - [`scripts/check-pr-issue-link.sh`](../../scripts/check-pr-issue-link.sh) — CI job `issue-link` (#435)
+- [`scripts/check-pr-delivery-gate.sh`](../../scripts/check-pr-delivery-gate.sh) — local issue-link parity before push
 
 ## Required Flow
 
