@@ -12,6 +12,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 - 🤖 Copilot agents `appsec-reviewer` + `release-coordinator` + `docs/guides/github-agents.md` catalog; `.github/CODEOWNERS` for supply-chain paths (#448)
 - 🧪 MCP: stdio live harness (`Client` + `StdioClientTransport`) — list-agents, capability deny, compile-prompt (audit P1 / #440)
 
+### Fixed
+
+- 🔒 `pnpm audit`: bump override `hono@4.13.7` (transitive via MCP SDK — GHSA-gqvv / GHSA-g6gw / GHSA-crvj) (#448)
+
 ## [0.48.8] - 2026-09-02
 
 ### Added

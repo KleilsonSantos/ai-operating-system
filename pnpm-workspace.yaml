@@ -22,8 +22,9 @@ overrides:
   # GHSA-x5fp / GHSA-4mjr — qs array-limit bypass + DoS via isBuffer (need >=6.16.0)
   qs: 6.16.0
   '@hono/node-server': 2.0.10
-  # GHSA-8j4g-w8fx-2239 — ReDoS in CORS middleware
-  hono: 4.12.34
+  # GHSA-gqvv / GHSA-g6gw / GHSA-crvj — toSSG path, parseBody DoS, fragment query (need >=4.13.5)
+  # also covers prior GHSA-8j4g CORS ReDoS pin
+  hono: 4.13.7
   # GHSA-mwp4 / GHSA-4xrf / GHSA-22jq — SSRF / trust-boundary via ip-address
   ip-address: 10.3.1
   # GHSA-fxqj-rqcc-2cmp — sourceMappingURL incomplete fix
