@@ -2,6 +2,8 @@
 
 Thin index of GitHub Actions check conclusions for local history and Prometheus — **not** a second CI system. SSOT for logs remains GitHub.
 
+Event → job → agent next step: [delivery-automation.md](./delivery-automation.md).
+
 ADR: [0028-delivery-ci-observability.md](../adr/0028-delivery-ci-observability.md)
 
 ## Event shape (`kind: delivery.ci`)

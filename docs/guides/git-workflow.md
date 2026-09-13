@@ -81,6 +81,8 @@ Repo security posture (alerts, CodeQL, secrets): [`SECURITY.md`](../../SECURITY.
 
 ## Related
 
+- [delivery-automation.md](./delivery-automation.md) — event → CI → next action map
+- [local-runtime-authorization.md](./local-runtime-authorization.md) — agent MacBook gate + delivery gate
 - [task-kickoff.md](./task-kickoff.md)
 - [releases.md](./releases.md)
 - [ADR-0002](../adr/0002-git-branching-strategy.md)
