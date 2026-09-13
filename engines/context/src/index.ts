@@ -5,6 +5,7 @@
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { buildKnowledgeGraph } from '@aios/knowledge';
+import { firstContentHygieneHit } from '@aios/shared';
 import type {
   ContextBudget,
   ContextBundle,
@@ -437,6 +438,12 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
       continue;
     }
     const content = truncate(raw, maxBytesPerFile);
+    const hygiene = firstContentHygieneHit(content);
+    if (hygiene) {
+      // Fail closed: do not feed hostile/secret-looking text into the prompt (#447).
+      signals.push(`content-denied:${c.rel}:${hygiene.code}:${hygiene.detail}`);
+      continue;
+    }
     const bytes = Buffer.byteLength(content, 'utf8');
     if (total + bytes > maxTotalBytes) {
       signals.push('capped:maxTotalBytes');

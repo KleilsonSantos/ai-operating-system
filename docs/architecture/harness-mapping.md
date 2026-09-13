@@ -25,20 +25,20 @@ User request
 
 ## Layer map
 
-| #   | Harness layer   | AIOS component                         | Primary ADR / doc        |
-| --- | --------------- | -------------------------------------- | ------------------------ |
-| 1   | User input      | CLI, `@aios/pipeline`, MCP tools       | ADR-0003                 |
-| 2   | System rules    | Policy Engine → brief injection        | Policies + ADR-0008      |
-| 3   | Skills / how    | Prompt Engine skill packs              | ADR-0026                 |
-| 4   | Tools           | MCP `@aios/mcp`, Agent Registry        | ADR-0023, ADR-0024       |
-| 5   | Context         | Context Engine + repo scope            | ROADMAP Phase 1          |
-| 6   | Knowledge graph | Heuristic KG                           | ADR-0005                 |
-| 7   | Memory          | Session/project JSON store             | ADR-0006                 |
-| 8   | Hooks           | Central pipeline hook list             | ADR-0027                 |
-| 9   | Model           | Capability router                      | ADR-0025, ADR-0009       |
-| 10  | Verification    | Quality Gate + governance audit        | ADR-0020                 |
-| 11  | Observability   | JSONL metrics + run store + Prometheus | ADR-0019, ADR-0028, #447 |
-| 12  | Prompt catalog  | PKB (`docs/prompts/`)                  | PKB evolution ladder     |
+| #   | Harness layer   | AIOS component                         | Primary ADR / doc         |
+| --- | --------------- | -------------------------------------- | ------------------------- |
+| 1   | User input      | CLI, `@aios/pipeline`, MCP tools       | ADR-0003                  |
+| 2   | System rules    | Policy Engine → brief injection        | Policies + ADR-0008       |
+| 3   | Skills / how    | Prompt Engine skill packs              | ADR-0026                  |
+| 4   | Tools           | MCP `@aios/mcp`, Agent Registry        | ADR-0023, ADR-0024        |
+| 5   | Context         | Context Engine + repo scope + hygiene  | ROADMAP Phase 1, ADR-0033 |
+| 6   | Knowledge graph | Heuristic KG                           | ADR-0005                  |
+| 7   | Memory          | Session/project JSON + write hygiene   | ADR-0006, ADR-0033        |
+| 8   | Hooks           | Central pipeline hook list             | ADR-0027                  |
+| 9   | Model           | Capability router                      | ADR-0025, ADR-0009        |
+| 10  | Verification    | Quality Gate + governance audit        | ADR-0020                  |
+| 11  | Observability   | JSONL metrics + run store + Prometheus | ADR-0019, ADR-0028, #447  |
+| 12  | Prompt catalog  | PKB (`docs/prompts/`)                  | PKB evolution ladder      |
 
 ## Request flow (simplified)
 
@@ -60,6 +60,7 @@ aios_run_pipeline
 | ---------------------- | --------------------------------------------- | ---------------------------------------- |
 | PKB semantic search    | `aios_search_pkb` (`mode=semantic`), ADR-0032 | Local `.aios/pkb-vectors.sqlite`; opt-in |
 | Memory rollup on evict | `AIOS_MEMORY_COMPRESS=1` (`v0.48.4`)          | FIFO still default                       |
+| Content hygiene        | Default on (`AIOS_CONTENT_HYGIENE`); ADR-0033 | Context skip + memory reject             |
 
 ## What is intentionally deferred
 

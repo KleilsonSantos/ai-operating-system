@@ -91,6 +91,118 @@ function readEnv(env?: EnvMap): EnvMap {
   return proc?.env ?? {};
 }
 
+/** Untrusted-text hygiene codes (#447 / ADR-0033). */
+export type ContentHygieneCode = 'injection' | 'secret_material' | 'control_chars';
+
+export type ContentHygieneHit = {
+  code: ContentHygieneCode;
+  detail: string;
+};
+
+/** Classic instruction-override / chat-template injection cues (case-insensitive). */
+const CONTENT_INJECTION_PATTERNS: Array<{ re: RegExp; detail: string }> = [
+  {
+    re: /\bignore\s+(all\s+)?(previous|prior|above)\s+instructions?\b/i,
+    detail: 'ignore-previous-instructions',
+  },
+  {
+    re: /\bdisregard\s+(all\s+)?(previous|prior|above)\s+(instructions?|context)\b/i,
+    detail: 'disregard-previous',
+  },
+  {
+    re: /\byou\s+are\s+now\s+(a|an|the)\b/i,
+    detail: 'role-reassignment',
+  },
+  {
+    re: /\b(system|developer)\s*:\s*you\b/i,
+    detail: 'system-role-spoof',
+  },
+  { re: /<<\s*SYS\s*>>/i, detail: 'llama-sys-tag' },
+  { re: /\[\/?INST\]/i, detail: 'inst-tag' },
+  { re: /<\|im_start\|>/i, detail: 'chatml-im-start' },
+  { re: /<\/?\|?(system|assistant)\|?>/i, detail: 'role-xml-tag' },
+];
+
+const CONTENT_SECRET_PATTERNS: Array<{ re: RegExp; detail: string }> = [
+  {
+    re: /-----BEGIN\s+(RSA\s+)?PRIVATE\s+KEY-----/i,
+    detail: 'pem-private-key',
+  },
+  {
+    re: /\b(AKIA|ASIA)[0-9A-Z]{16}\b/,
+    detail: 'aws-access-key-id',
+  },
+  {
+    re: /\bghp_[A-Za-z0-9]{36,}\b/,
+    detail: 'github-pat',
+  },
+  {
+    re: /\bsk-[A-Za-z0-9]{20,}\b/,
+    detail: 'openai-ish-secret',
+  },
+];
+
+/** Opt-out: `AIOS_CONTENT_HYGIENE=0|false|off|no` (debug only). */
+export function isContentHygieneEnabled(env?: EnvMap): boolean {
+  const v = (readEnv(env).AIOS_CONTENT_HYGIENE || '1').trim().toLowerCase();
+  return v !== '0' && v !== 'false' && v !== 'off' && v !== 'no';
+}
+
+/** C0 controls except tab/LF/CR — scanned without a control-char regex (eslint). */
+function hasAsciiControlChars(text: string): boolean {
+  for (let i = 0; i < text.length; i++) {
+    const c = text.charCodeAt(i);
+    if (c <= 0x1f && c !== 0x09 && c !== 0x0a && c !== 0x0d) return true;
+  }
+  return false;
+}
+
+/**
+ * Scan untrusted text for injection / secret / control-char signals.
+ * Empty string → no hits. Lives in this module so MCP strip-types can load it (ADR-0025).
+ */
+export function scanUntrustedText(text: string): ContentHygieneHit[] {
+  if (!text) return [];
+  const hits: ContentHygieneHit[] = [];
+
+  if (hasAsciiControlChars(text)) {
+    hits.push({ code: 'control_chars', detail: 'ascii-control' });
+  }
+
+  for (const p of CONTENT_INJECTION_PATTERNS) {
+    if (p.re.test(text)) {
+      hits.push({ code: 'injection', detail: p.detail });
+      break;
+    }
+  }
+
+  for (const p of CONTENT_SECRET_PATTERNS) {
+    if (p.re.test(text)) {
+      hits.push({ code: 'secret_material', detail: p.detail });
+      break;
+    }
+  }
+
+  return hits;
+}
+
+/** First hit, or undefined when clean / hygiene disabled. */
+export function firstContentHygieneHit(text: string, env?: EnvMap): ContentHygieneHit | undefined {
+  if (!isContentHygieneEnabled(env)) return undefined;
+  return scanUntrustedText(text)[0];
+}
+
+/**
+ * Fail closed for memory writes.
+ * Throws `memory.content_rejected:<code>:<detail>`.
+ */
+export function assertMemoryContentAllowed(text: string, env?: EnvMap): void {
+  const hit = firstContentHygieneHit(text, env);
+  if (hit) {
+    throw new Error(`memory.content_rejected:${hit.code}:${hit.detail}`);
+  }
+}
+
 export type CapabilityDecision = {
   allowed: boolean;
   tool: string;

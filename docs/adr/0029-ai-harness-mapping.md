@@ -27,7 +27,7 @@ AIOS already implements harness layers incrementally (Policy Engine, Prompt Engi
 | System instructions         | Policy Engine + Prompt brief                  | ✅      | Policies in `policies/`; brief from `@aios/prompt`                                                                 |
 | Skills / workflows          | Prompt Engine skill packs + `@aios/pipeline`  | ✅      | ADR-0026; not a second agent runtime                                                                               |
 | Tools & APIs                | MCP `@aios/mcp` + Agent Registry              | ✅      | Capability caps; agents as plugins                                                                                 |
-| Memory & context            | Memory Engine + Context Engine + KG           | ✅      | JSON session memory; heuristic KG (ADR-0005)                                                                       |
+| Memory & context            | Memory Engine + Context Engine + KG           | ✅      | JSON session memory; heuristic KG (ADR-0005); content hygiene ADR-0033                                             |
 | Rules & policies            | Policy Engine                                 | ✅      | `policies/aios.policies.json`                                                                                      |
 | Verification / eval         | Quality Gate + governance audit               | ✅      | Pre-response gate; `aios_audit_*`                                                                                  |
 | Inputs & outputs            | Status metrics + JSONL events + run store     | ✅      | ADR-0019, ADR-0028, #447                                                                                           |

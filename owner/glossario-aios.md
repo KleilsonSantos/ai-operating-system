@@ -539,6 +539,15 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **O que é**  | Goldens Intent → `AGENT_MATRIX` → `routeModel`; CI `pnpm evals`.      |
 | **Não é**    | Segundo skill framework; não é checkpoint/resume; não é LLM-as-judge. |
 
+### Content hygiene (ADR-0033 · #447)
+
+|                    |                                                                                               |
+| ------------------ | --------------------------------------------------------------------------------------------- |
+| **Analogia**       | Detector de metal na entrada: texto hostil/segredo não entra no contexto nem na memória.      |
+| **O que é**        | Heurísticas em `@aios/shared` (injection / secret / control-chars); default on.               |
+| **Para que serve** | Context pula snippet (`content-denied:`); Memory rejeita `remember` fail-closed.              |
+| **Não é**          | Produto anti-injection completo; não é juiz-LLM; opt-out só debug (`AIOS_CONTENT_HYGIENE=0`). |
+
 ---
 
 # Etapa 10 — Índice A–Z (consulta rápida)
@@ -553,6 +562,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **Capability class**    | Classe de modelo (fast/coding/…) não vendor                                         |
 | **CI**                  | Checagens automatizadas no GitHub                                                   |
 | **Console**             | UI de governança                                                                    |
+| **Content hygiene**     | Heurística fail-closed: context/memory não engolem injection/segredo (ADR-0033)     |
 | **Context Engine**      | Recorte do repo para a esteira                                                      |
 | **Delivery map**        | Evento Git → CI → próximo passo do agente                                           |
 | **Delivery gate**       | Paridade local do issue-link antes do push                                          |
