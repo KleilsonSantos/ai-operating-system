@@ -1,0 +1,25 @@
+{
+  "name": "@aios/evals",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Deterministic selection eval harness — intent → agents → capability class (#447).",
+  "scripts": {
+    "build": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "node -e \"process.exit(0)\"",
+    "test": "vitest run",
+    "evals": "vitest run"
+  },
+  "dependencies": {
+    "@aios/decision": "workspace:*",
+    "@aios/intent": "workspace:*",
+    "@aios/pipeline": "workspace:*",
+    "@aios/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0",
+    "typescript": "^5.9.2",
+    "vitest": "^4.1.11"
+  }
+}

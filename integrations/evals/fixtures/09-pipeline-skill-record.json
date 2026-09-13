@@ -1,0 +1,20 @@
+{
+  "id": "pipeline-skill-record",
+  "mode": "pipeline",
+  "input": "Analise meu projeto.",
+  "request": {
+    "skillIds": ["governed-brief"]
+  },
+  "expect": {
+    "intentKind": "analyze.project",
+    "capabilityClass": "reasoning",
+    "agents": {
+      "include": ["architecture"]
+    },
+    "skillIds": {
+      "selected": ["governed-brief"],
+      "rejected": ["docs-only"]
+    },
+    "act": false
+  }
+}

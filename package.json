@@ -19,6 +19,7 @@
     "format:check": "prettier --check .",
     "test": "node scripts/run-test-coverage.mjs",
     "test:coverage": "node scripts/run-test-coverage.mjs --coverage",
+    "evals": "pnpm --filter @aios/evals evals",
     "audit": "audit-ci --moderate",
     "prepare": "git config core.hooksPath .githooks || true",
     "sync:cursor-rules": "node scripts/sync-cursor-rules-from-policies.mjs",
