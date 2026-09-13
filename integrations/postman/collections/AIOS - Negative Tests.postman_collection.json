@@ -1,0 +1,128 @@
+{
+  "info": {
+    "name": "AIOS - Negative Tests",
+    "description": "NEG suite for error behavior verified in apps/console/src/server.ts and apps/mcp/src/http.ts. Status codes are based on the current implementation, not assumptions.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "consoleBaseUrl", "value": "http://127.0.0.1:8787" },
+    { "key": "mcpBaseUrl", "value": "http://127.0.0.1:8791" }
+  ],
+  "item": [
+    {
+      "name": "NEG-001 Missing action",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{}" },
+        "url": "{{consoleBaseUrl}}/api/action"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+              "pm.test('required field is named', () => pm.expect(pm.response.json().error).to.include('body.action required')); "
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "NEG-002 Invalid action",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"action\": \"not_a_real_action\"\n}" },
+        "url": "{{consoleBaseUrl}}/api/action"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+              "pm.test('error lists allowed actions', () => pm.expect(pm.response.json().error).to.include('Unknown action')); "
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "NEG-003 Invalid JSON",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{invalid" },
+        "url": "{{consoleBaseUrl}}/api/action"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 500 for current parser behavior', () => pm.response.to.have.status(500));",
+              "pm.test('internal error is sanitized', () => pm.expect(pm.response.json().error).to.eql('internal server error')); "
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "NEG-004 Unknown Console route",
+      "request": { "method": "GET", "url": "{{consoleBaseUrl}}/api/does-not-exist" },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 404', () => pm.response.to.have.status(404));",
+              "pm.test('not found error', () => pm.expect(pm.response.json().error).to.eql('not found')); "
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "NEG-005 MCP GET is not supported by stateless server",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "text/event-stream" }],
+        "url": "{{mcpBaseUrl}}/mcp"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 405', () => pm.response.to.have.status(405));",
+              "pm.test('JSON-RPC error response', () => pm.expect(pm.response.json().error.code).to.eql(-32000)); "
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "NEG-006 MCP DELETE is not supported by stateless server",
+      "request": { "method": "DELETE", "url": "{{mcpBaseUrl}}/mcp" },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 405', () => pm.response.to.have.status(405));",
+              "pm.test('JSON-RPC error response', () => pm.expect(pm.response.json().error.code).to.eql(-32000)); "
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

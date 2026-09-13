@@ -20,9 +20,9 @@ You write _"Analyze my project."_ — policies, context, agents, and quality gat
 
 | Item                  | Value                                                                                                                                                                                                                                                                     |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Phase                 | Phase 4 mature · Companion + control plane                                                                                                                                                                                                                                |
+| Phase                 | Phase 5c shipped · Visibility plane + control plane (see [`ROADMAP`](./docs/ROADMAP.md))                                                                                                                                                                                  |
 | Production            | `main` + SemVer tags                                                                                                                                                                                                                                                      |
-| Latest release        | [`v0.38.0`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.38.0)                                                                                                                                                                                   |
+| Latest release        | [`v0.48.8`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.48.8)                                                                                                                                                                                   |
 | Monorepo              | pnpm workspaces + Turborepo                                                                                                                                                                                                                                               |
 | Integration           | `sandbox` → `main` · [`@aios/pipeline`](./packages/pipeline/README.md) · [Cursor chat](./docs/guides/cursor-chat-bridge.md)                                                                                                                                               |
 | Foundation            | [`docs/FOUNDATION.md`](./docs/FOUNDATION.md)                                                                                                                                                                                                                              |
@@ -40,13 +40,16 @@ apps/cli/                 # Thin client → @aios/pipeline
 apps/mcp/                 # MCP stdio (+ opt-in HTTP) → Cursor / Companion
 apps/console/             # Governance UI Health + Attention (#71)
 packages/
-  shared/                 # Types + PipelineRequest/Response
-  core/                   # ai-core (events)
+  shared/                 # Types + MCP auth + model router
   pipeline/               # runPipeline — stable contract (#9)
+  agent-registry/         # Agent discovery + manifest schema
+  create-agent/           # Scaffold CLI for community agents
+  core/                   # Minimal stub (PipelineEvent); SSOT is @aios/pipeline
 engines/
   intent/ policy/ context/ decision/
   orchestration/ quality-gate/
   workspace/ knowledge/ memory/ prompt/ provider/ status/
+  visibility/ operational-state/
   documentation/ governance/
   agent-architecture/ agent-appsec/ agent-docs/ agent-qa/   # plugins
 docs/

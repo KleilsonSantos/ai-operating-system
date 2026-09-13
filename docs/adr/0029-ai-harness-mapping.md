@@ -21,19 +21,19 @@ AIOS already implements harness layers incrementally (Policy Engine, Prompt Engi
 
 ### Harness layer → AIOS mapping
 
-| Harness concern (industry)  | AIOS engine / artifact                       | Shipped | Notes                                              |
-| --------------------------- | -------------------------------------------- | ------- | -------------------------------------------------- |
-| User prompt                 | CLI / MCP / pipeline input                   | ✅      | `runPipeline`, `aios_compile_prompt`               |
-| System instructions         | Policy Engine + Prompt brief                 | ✅      | Policies in `policies/`; brief from `@aios/prompt` |
-| Skills / workflows          | Prompt Engine skill packs + `@aios/pipeline` | ✅      | ADR-0026; not a second agent runtime               |
-| Tools & APIs                | MCP `@aios/mcp` + Agent Registry             | ✅      | Capability caps; agents as plugins                 |
-| Memory & context            | Memory Engine + Context Engine + KG          | ✅      | JSON session memory; heuristic KG (ADR-0005)       |
-| Rules & policies            | Policy Engine                                | ✅      | `policies/aios.policies.json`                      |
-| Verification / eval         | Quality Gate + governance audit              | ✅      | Pre-response gate; `aios_audit_*`                  |
-| Inputs & outputs            | Status metrics + JSONL events                | ✅      | ADR-0019, ADR-0028                                 |
-| Model routing               | Model router (capability classes)            | ✅      | ADR-0025; operator binds provider                  |
-| Semantic PKB / RAG          | Deferred                                     | ⏳      | Ladder steps 4–6; ADR after spike                  |
-| Multi-agent crew frameworks | **Not in core**                              | ❌      | Use Agent Registry + pipeline; see boundary guide  |
+| Harness concern (industry)  | AIOS engine / artifact                        | Shipped | Notes                                                                                                              |
+| --------------------------- | --------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------ |
+| User prompt                 | CLI / MCP / pipeline input                    | ✅      | `runPipeline`, `aios_compile_prompt`                                                                               |
+| System instructions         | Policy Engine + Prompt brief                  | ✅      | Policies in `policies/`; brief from `@aios/prompt`                                                                 |
+| Skills / workflows          | Prompt Engine skill packs + `@aios/pipeline`  | ✅      | ADR-0026; not a second agent runtime                                                                               |
+| Tools & APIs                | MCP `@aios/mcp` + Agent Registry              | ✅      | Capability caps; agents as plugins                                                                                 |
+| Memory & context            | Memory Engine + Context Engine + KG           | ✅      | JSON session memory; heuristic KG (ADR-0005)                                                                       |
+| Rules & policies            | Policy Engine                                 | ✅      | `policies/aios.policies.json`                                                                                      |
+| Verification / eval         | Quality Gate + governance audit               | ✅      | Pre-response gate; `aios_audit_*`                                                                                  |
+| Inputs & outputs            | Status metrics + JSONL events                 | ✅      | ADR-0019, ADR-0028                                                                                                 |
+| Model routing               | Model router (capability classes)             | ✅      | ADR-0025; operator binds provider                                                                                  |
+| Semantic PKB / RAG          | `@aios/documentation` + MCP `aios_search_pkb` | ✅      | Opt-in local index ([ADR-0032](./0032-pkb-local-vector-index-sqlite-vec.md)); not in default `runPipeline` context |
+| Multi-agent crew frameworks | **Not in core**                               | ❌      | Use Agent Registry + pipeline; see boundary guide                                                                  |
 
 Guide with diagrams: [`docs/architecture/harness-mapping.md`](../architecture/harness-mapping.md).
 

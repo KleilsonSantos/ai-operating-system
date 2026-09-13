@@ -542,6 +542,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **FIFO**                | Descarta o mais antigo quando a fila enche                                          |
 | **FOUNDATION**          | Constituição do produto                                                             |
 | **Harness**             | Estrutura de controle em volta do modelo                                            |
+| **harness-\*-auditor**  | Agentes Copilot de auditoria de arquitetura (paralelos → synthesizer)               |
 | **Hook**                | Intercept before/after no pipeline                                                  |
 | **Intent**              | Classificação do pedido                                                             |
 | **KG**                  | Grafo heurístico do projeto                                                         |
