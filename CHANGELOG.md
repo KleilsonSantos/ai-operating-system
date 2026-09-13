@@ -4,6 +4,17 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.49.0] - 2026-09-13
+
+### Added
+
+- 📦 PipelineRun store — `.aios/runs/<runId>.json` + `index.jsonl`; CLI `--list-runs` / `--replay` (#447)
+- 🔒 MCP tool audit — `kind: mcp.tool` JSONL rows on allow and deny (`recordMcpToolAudit`) (#447)
+
+### Changed
+
+- 🔭 Visibility / Obsidian export load stored runs by `--run-id` when no run is injected (#447)
+
 ## [0.48.9] - 2026-09-13
 
 ### Added

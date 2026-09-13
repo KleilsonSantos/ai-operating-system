@@ -12,6 +12,7 @@ import { evaluateQuality } from '@aios/quality-gate';
 import { resolveWorkspace, loadWorkspaces } from '@aios/workspace';
 import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge';
 import { recall } from '@aios/memory';
+import { persistPipelineRun, shouldPersistPipelineRuns } from '@aios/status';
 import {
   PIPELINE_CONTRACT_VERSION,
   impliesActIntent,
@@ -229,6 +230,14 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
     skillIds: (request.skillIds ?? []).map((id) => id.trim()).filter(Boolean),
     hookIds: selectPipelineHooks(request.hookIds).selected,
   });
+
+  if (shouldPersistPipelineRuns()) {
+    try {
+      persistPipelineRun(run, { homePath });
+    } catch {
+      /* Resource-Aware: persistence must not fail the response */
+    }
+  }
 
   return {
     contractVersion: PIPELINE_CONTRACT_VERSION,

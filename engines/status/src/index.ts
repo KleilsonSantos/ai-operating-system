@@ -977,3 +977,40 @@ export async function getGovernanceStatus(
     },
   };
 }
+
+export {
+  persistPipelineRun,
+  loadPipelineRun,
+  listPipelineRuns,
+  shouldPersistPipelineRuns,
+  type PersistedPipelineRun,
+  type PipelineRunIndexEntry,
+} from './run-store.js';
+
+/** Append `kind: mcp.tool` audit row (#447). */
+export function recordMcpToolAudit(
+  input: {
+    tool: string;
+    allowed: boolean;
+    required?: string;
+    caller?: string;
+    reason?: string;
+    policyId?: string;
+    source?: string;
+  },
+  options: { homePath?: string } = {}
+): string {
+  return recordMetricEvent(
+    {
+      kind: 'mcp.tool',
+      tool: input.tool,
+      allowed: input.allowed,
+      required: input.required,
+      caller: input.caller,
+      reason: input.reason,
+      policyId: input.policyId,
+      source: input.source,
+    },
+    options
+  );
+}

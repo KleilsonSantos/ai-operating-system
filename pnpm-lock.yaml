@@ -707,6 +707,9 @@ importers:
       '@aios/shared':
         specifier: workspace:*
         version: link:../shared
+      '@aios/status':
+        specifier: workspace:*
+        version: link:../../engines/status
       '@aios/workspace':
         specifier: workspace:*
         version: link:../../engines/workspace
