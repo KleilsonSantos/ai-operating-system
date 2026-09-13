@@ -18,6 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag       | Description                                                                                          |
 | --------- | ---------------------------------------------------------------------------------------------------- |
+| `v0.48.9` | Delivery gates + Copilot AppSec/release + harness audit/Postman + hono pin (#448–#452)               |
 | `v0.48.8` | CI `issue-link` gate — require Issue `Refs #N` on PRs to `sandbox` (#435 / #436)                     |
 | `v0.48.7` | Memory remember→recall journey tests — audit P2 (#412 / #432)                                        |
 | `v0.48.6` | Context `--scope` sandbox + pnpm audit pins (`fast-uri`/`qs`) — #428/#429                            |

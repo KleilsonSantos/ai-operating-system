@@ -177,13 +177,13 @@ Raw files: `cli-analyze.json`, `cli-implement.json`, `cli-governance-status.json
 
 ## 29. Gap Matrix (P0–P4)
 
-| Priority | Gap                                                                                                                                                        |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| P1       | MCP tool + Console live sessions not exercised this pass (unit-only)                                                                                       |
-| P2       | Memory/Prompt/Skill/Hook idle on default journey — Memory create/recall now covered by journey tests (2026-09-02); Prompt/Skill/Hook still idle-on-default |
-| P2       | Security probes: path traversal `--out` + `--scope` closed in v0.48.5/v0.48.6; prompt-injection still open                                                 |
-| P3       | CLI language inconsistency (EN flags vs PT-BR agent/status strings)                                                                                        |
-| P4       | Cross-provider (Ollama vs OpenAI-compatible/Anthropic) comparison not run (Resource-Aware, low priority)                                                   |
+| Priority | Gap                                                                                                                                                                                                 |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P1       | MCP tool + Console live sessions not exercised this pass (unit-only) — **partial close (2026-09-02):** MCP stdio live harness in `@aios/mcp` (`stdio-live.test.ts` / #440); Console live still open |
+| P2       | Memory/Prompt/Skill/Hook idle on default journey — Memory create/recall now covered by journey tests (2026-09-02); Prompt/Skill/Hook still idle-on-default                                          |
+| P2       | Security probes: path traversal `--out` + `--scope` closed in v0.48.5/v0.48.6; prompt-injection still open                                                                                          |
+| P3       | CLI language inconsistency (EN flags vs PT-BR agent/status strings)                                                                                                                                 |
+| P4       | Cross-provider (Ollama vs OpenAI-compatible/Anthropic) comparison not run (Resource-Aware, low priority)                                                                                            |
 
 ## 30. Scorecard (0–10)
 
@@ -196,7 +196,7 @@ Raw files: `cli-analyze.json`, `cli-implement.json`, `cli-governance-status.json
 | Knowledge graph                   | 7     | heuristic but real, capped, live                                             |
 | Memory                            | 7     | journey remember→recall + pipeline inject (2026-09-02); score was 5 at audit |
 | Provider                          | 5     | resilient failure handling; no live success path this session                |
-| MCP                               | 5     | solid unit coverage; no live client round-trip this session                  |
+| MCP                               | 7     | unit + stdio live harness (#440, 2026-09-02); was 5 at original audit pass   |
 | Console                           | 4     | unit tests only; not launched                                                |
 | CLI DX                            | 8     | clean help, exit codes, JSON                                                 |
 | Test suite health                 | 9     | ~241/241 passing at last full run                                            |
@@ -211,9 +211,9 @@ Raw files: `cli-analyze.json`, `cli-implement.json`, `cli-governance-status.json
 
 ## 32. Recommended Priorities
 
-1. Run a live MCP client session and Console dev server in the next audit pass (not blocked technically — just out of this session's time budget).
-2. Add at least one live memory create→recall and one prompt-compile journey to close P2 gaps.
-3. Add basic adversarial input tests (`--scope ../../etc`, injected `.env` reference) to confirm the documented deny-lists hold under attack, not just clean input.
+1. ~~Run a live MCP client session~~ — MCP stdio live harness shipped (#440). Console dev server live pass still open for the next audit.
+2. Add at least one live memory create→recall and one prompt-compile journey to close P2 gaps. (Memory journey tests shipped 2026-09-02; prompt-compile covered via MCP live harness.)
+3. Add basic adversarial input tests (`--scope ../../etc`, injected `.env` reference) to confirm the documented deny-lists hold under attack, not just clean input. (`--scope` / Obsidian `--out` closed in v0.48.5/v0.48.6; prompt-injection still open.)
 
 ## 33. What Should Be Built Next
 

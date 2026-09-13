@@ -19,3 +19,4 @@ Do not rename a dated snapshot to an undated living name. A later pass is a **ne
 | [Agent runtime evolution](./agent-runtime-evolution-analysis-2026-08.md)                                      | 2026-08 |
 | [Product & purpose integral validation](./product-purpose-integral-validation-audit-2026-08.md)               | 2026-08 |
 | [Product & purpose integral validation — diagrams](./product-purpose-integral-validation-diagrams-2026-08.md) | 2026-08 |
+| [Harness architecture audit](./AIOS-HARNESS-ARCHITECTURE-AUDIT.md)                                            | 2026-09 |

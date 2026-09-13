@@ -1,0 +1,46 @@
+---
+description: MacBook resource gate — ordered audit → unit proof → delivery gate → infra → commit → async CI
+alwaysApply: true
+---
+
+# Local runtime authorization gate
+
+Full policy: [`docs/guides/local-runtime-authorization.md`](../../docs/guides/local-runtime-authorization.md)
+
+## Canonical order (do not skip)
+
+1. Inspect → 2. Audit → 3. Task gate → 4. **Unit/typecheck green for scope** → **4b. `check-pr-delivery-gate.sh`** → 5. Infra gate (if live needed) → 6. Live proof → 7. Commit-ready → 8. Commit (owner asks) → **9. Async CI babysit (ADR-0028); never merge on red `issue-link`**
+
+**Never** request infra before step 4 passes. **Never** push a PR → `sandbox` before step 4b passes. **Never** declare PR mergeable without green required checks.
+
+## Three gates
+
+| Gate | Trigger | After |
+| ---- | ------- | ----- |
+| Task | `ok` / `prossegue` | Inspect/plan accepted |
+| Infra | `ok infra` | Unit proof green; live Console/MCP/Ollama/Compose still needed |
+| Commit | owner explicitly asks | Steps 4–6 green for scope |
+
+## Delivery gate (step 4b)
+
+```bash
+bash scripts/check-pr-delivery-gate.sh
+```
+
+Draft PR only:
+
+```bash
+PR_BASE=sandbox PR_TITLE='…' PR_BODY='Refs #N' bash scripts/check-pr-delivery-gate.sh
+```
+
+## Infra (step 5+)
+
+Reuse running Ollama / Console `:8787` / MCP `:8791` first. Do not start Docker/Compose/new model pulls without `ok infra`.
+
+## Post-push (step 9)
+
+Prefer async: end turn after push; later `node scripts/record-delivery-ci.mjs --pr <N>`. Blocking `gh pr checks --watch` only if the owner asks. **Never merge while `issue-link` is red.** Merge via `bash scripts/merge-pr.sh <n>`.
+
+## Commit-ready ≠ commit
+
+Report ready-to-commit with checklist; wait for explicit owner commit request.

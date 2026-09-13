@@ -22,11 +22,12 @@ If a summary conflicts with `docs/FOUNDATION.md`, the foundation wins until an A
 
 ## Task Routing
 
-- **Workflow, PR, merge, release, CI**: start with `.trae/rules/workflow.md`, `docs/guides/git-workflow.md`, `docs/guides/task-kickoff.md`, `docs/guides/releases.md`, `.github/pull_request_template.md`, and `scripts/merge-pr.sh`.
+- **Workflow, PR, merge, release, CI**: start with `.trae/rules/workflow.md`, `docs/guides/git-workflow.md`, `docs/guides/delivery-automation.md`, `docs/guides/task-kickoff.md`, `docs/guides/local-runtime-authorization.md`, `docs/guides/releases.md`, `.github/pull_request_template.md`, and `scripts/merge-pr.sh`.
 - **Architecture and product scope**: start with `.trae/rules/architecture.md`, `docs/FOUNDATION.md`, `docs/architecture/overview.md`, and the relevant ADRs.
 - **Quality gates and repository automation**: start with `.trae/rules/quality-gates.md`, `.github/workflows/ci.yml`, `.githooks/`, `package.json`, `sonar-project.properties`, and `CONTRIBUTING.md`.
 - **Context engine work**: start with `.trae/rules/modules/context-engine.md` and `engines/context/src/`.
 - **PKB intake** (`PKB intake` / `catalogar prompt` / `guardar prompt`): catalog into `docs/prompts/` per [`docs/prompts/README.md`](./docs/prompts/README.md). Do not run the prompt unless the owner also authorizes a run.
+- **GitHub Copilot custom agents**: [`.github/agents/`](./.github/agents/) · [`docs/guides/github-agents.md`](./docs/guides/github-agents.md) — least-privilege IDE/GitHub surfaces (planner, reviewers, release, harness audit workers); not product UX agent calls. Long harness audit contract: VaultSpring PKB `prompt.delivery.aios-harness-architecture-audit`.
 
 ## Hard Constraints
 

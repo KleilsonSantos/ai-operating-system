@@ -27,6 +27,8 @@ pnpm --filter @aios/mcp dev
 # or Cursor via .cursor/mcp.json.example
 ```
 
+**Live harness (CI):** `pnpm --filter @aios/mcp test` includes `stdio-live.test.ts` — spawns this server over stdio with product `tsx` (same as `dev`) via the official SDK client and round-trips `aios_list_agents`, a capability deny (`aios_workspace_remove` → `policy.denied`), and `aios_compile_prompt` (#440 / audit P1).
+
 Prefer an **absolute `node` path** (Cursor GUI often lacks `nvm`/`pnpm`). Set `AIOS_HOME` to this monorepo.
 
 Env: `AIOS_HOME`, `AIOS_REPO`, `AIOS_WORKSPACE`, `AIOS_SCOPE`, `AIOS_POLICIES_PATH`, `AIOS_WORKSPACES_PATH`, `AIOS_MCP_QUIET=1`, `AIOS_MCP_PRIVILEGE`, `AIOS_MCP_ALLOW_PRIVILEGED=1`, `AIOS_MCP_ALLOW_SAFE_WRITE=1`.

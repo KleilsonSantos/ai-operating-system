@@ -1,0 +1,98 @@
+{
+  "info": {
+    "name": "AIOS - Workflows",
+    "description": "E2E/API workflow suite using the real Console API contract. The current API exposes synchronous actions, so the workflow validates discovery, execution, and response continuity rather than inventing an async job ID.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "consoleBaseUrl", "value": "http://127.0.0.1:8787" },
+    { "key": "workspaceId", "value": "aios" },
+    { "key": "input", "value": "Workflow validation input" }
+  ],
+  "item": [
+    {
+      "name": "WORKFLOW-001 Discover, execute, verify",
+      "item": [
+        {
+          "name": "01 - Health",
+          "request": { "method": "GET", "url": "{{consoleBaseUrl}}/api/health" },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('service ready', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().ok).to.eql(true); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 - Discover available actions",
+          "request": { "method": "GET", "url": "{{consoleBaseUrl}}/api/actions" },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('action catalog available', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().actions).to.include('compile_brief'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 - Execute compile_brief",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"compile_brief\",\n  \"input\": \"{{input}}\",\n  \"workspaceId\": \"{{workspaceId}}\"\n}"
+            },
+            "url": "{{consoleBaseUrl}}/api/action"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test('action executed', () => { pm.response.to.have.status(200); pm.expect(body.action).to.eql('compile_brief'); pm.expect(body.ok).to.eql(true); });",
+                  "pm.test('brief is returned', () => pm.expect(body.result.brief).to.be.a('string'));",
+                  "pm.collectionVariables.set('workflowWorkspaceId', body.result.workspaceId); "
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04 - Verify operational state",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"operational_state\",\n  \"workspaceId\": \"{{workflowWorkspaceId}}\"\n}"
+            },
+            "url": "{{consoleBaseUrl}}/api/action"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('operational state returned', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().result).to.be.an('object'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

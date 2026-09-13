@@ -93,6 +93,8 @@ jobs:
         run: |
           shellcheck --version
           shellcheck --shell=bash --severity=warning scripts/*.sh .githooks/*
+      - name: Delivery gate selftest (local issue-link parity)
+        run: bash scripts/check-pr-delivery-gate-selftest.sh
 
   codeql:
     runs-on: ubuntu-latest

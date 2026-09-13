@@ -470,6 +470,22 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **Analogia**                                                                        | Raio-X antes do merge (lint, typecheck, testes, security…). |
 | **Não confundir** com **Quality Gate** do _pipeline de IA_ (veredicto da resposta). |
 
+### Delivery automation map
+
+|                    |                                                                                          |
+| ------------------ | ---------------------------------------------------------------------------------------- |
+| **Analogia**       | Painel do aeroporto: evento GitHub → o que a CI faz → próximo passo do agente.           |
+| **O que é**        | Guia `docs/guides/delivery-automation.md` (índice; não substitui git-workflow/releases). |
+| **Para que serve** | Evitar improvisação de agente em PR/promote/SemVer.                                      |
+
+### Local runtime authorization / delivery gate
+
+|                    |                                                                                                        |
+| ------------------ | ------------------------------------------------------------------------------------------------------ |
+| **Analogia**       | Checklist de cockpit: inspecionar → unitário → gate de issue → só então `ok infra` → commit.           |
+| **O que é**        | Ordem obrigatória para agentes no MacBook + `scripts/check-pr-delivery-gate.sh` (paridade issue-link). |
+| **Para que serve** | Poupar hardware e falhas de CI por metadata; respeita Resource-Aware e ADR-0028 (CI async).            |
+
 ---
 
 # Etapa 9 — Workspace, Companion, Visibility
@@ -510,44 +526,50 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 
 # Etapa 10 — Índice A–Z (consulta rápida)
 
-| Termo                | Em uma linha                                                                        |
-| -------------------- | ----------------------------------------------------------------------------------- |
-| **ACT**              | Capacidade de _escrever/aplicar_ mudança — hoje honesta = false no pipeline default |
-| **ADR**              | Decisão arquitetural registrada                                                     |
-| **Agent**            | Plugin especializado (Architecture, AppSec, Docs, QA…)                              |
-| **Brief**            | Texto governado do Prompt Engine                                                    |
-| **Capability class** | Classe de modelo (fast/coding/…) não vendor                                         |
-| **CI**               | Checagens automatizadas no GitHub                                                   |
-| **Console**          | UI de governança                                                                    |
-| **Context Engine**   | Recorte do repo para a esteira                                                      |
-| **FIFO**             | Descarta o mais antigo quando a fila enche                                          |
-| **FOUNDATION**       | Constituição do produto                                                             |
-| **Harness**          | Estrutura de controle em volta do modelo                                            |
-| **Hook**             | Intercept before/after no pipeline                                                  |
-| **Intent**           | Classificação do pedido                                                             |
-| **KG**               | Grafo heurístico do projeto                                                         |
-| **MCP**              | Protocolo de tools para IDE/agentes                                                 |
-| **Memory**           | Caderno local por workspace                                                         |
-| **Monorepo**         | Vários pacotes num Git                                                              |
-| **PKB**              | Biblioteca versionada de prompts                                                    |
-| **Pipeline**         | Esteira `runPipeline`                                                               |
-| **Policy**           | Regra must/should persistente                                                       |
-| **Privilege**        | Nível de permissão da tool MCP                                                      |
-| **Provider**         | Backend LLM                                                                         |
-| **Quality Gate**     | Veredicto antes da resposta sair                                                    |
-| **RAG**              | Buscar + gerar (no AIOS: PKB)                                                       |
-| **Resource-Aware**   | Poupar hardware; inspecionar antes de instalar                                      |
-| **SAFE_WRITE**       | Escrita “segura” + às vezes consent env                                             |
-| **sandbox**          | Branch de integração pré-main                                                       |
-| **Semantic search**  | Busca por significado (vetor), não só palavra                                       |
-| **SemVer**           | Versão MAJOR.MINOR.PATCH                                                            |
-| **Skill**            | Pack “como” (não “quem”)                                                            |
-| **Spike**            | Investigação com recomendação                                                       |
-| **SSOT**             | Fonte canônica da verdade                                                           |
-| **Standalone**       | AIOS é produto próprio                                                              |
-| **TaskProfile**      | Perfil de roteamento (custo/privacy/…)                                              |
-| **Visibility**       | Correlação run/KG/estado; export opcional                                           |
-| **Workspace**        | Id → repo path                                                                      |
+| Termo                   | Em uma linha                                                                        |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| **ACT**                 | Capacidade de _escrever/aplicar_ mudança — hoje honesta = false no pipeline default |
+| **ADR**                 | Decisão arquitetural registrada                                                     |
+| **Agent**               | Plugin especializado (Architecture, AppSec, Docs, QA…)                              |
+| **appsec-reviewer**     | Agente Copilot: review AppSec de PR (não é o plugin `agent-appsec`)                 |
+| **Brief**               | Texto governado do Prompt Engine                                                    |
+| **Capability class**    | Classe de modelo (fast/coding/…) não vendor                                         |
+| **CI**                  | Checagens automatizadas no GitHub                                                   |
+| **Console**             | UI de governança                                                                    |
+| **Context Engine**      | Recorte do repo para a esteira                                                      |
+| **Delivery map**        | Evento Git → CI → próximo passo do agente                                           |
+| **Delivery gate**       | Paridade local do issue-link antes do push                                          |
+| **FIFO**                | Descarta o mais antigo quando a fila enche                                          |
+| **FOUNDATION**          | Constituição do produto                                                             |
+| **Harness**             | Estrutura de controle em volta do modelo                                            |
+| **harness-\*-auditor**  | Agentes Copilot de auditoria de arquitetura (paralelos → synthesizer)               |
+| **Hook**                | Intercept before/after no pipeline                                                  |
+| **Intent**              | Classificação do pedido                                                             |
+| **KG**                  | Grafo heurístico do projeto                                                         |
+| **MCP**                 | Protocolo de tools para IDE/agentes                                                 |
+| **Memory**              | Caderno local por workspace                                                         |
+| **Monorepo**            | Vários pacotes num Git                                                              |
+| **PKB**                 | Biblioteca versionada de prompts                                                    |
+| **Pipeline**            | Esteira `runPipeline`                                                               |
+| **Policy**              | Regra must/should persistente                                                       |
+| **Privilege**           | Nível de permissão da tool MCP                                                      |
+| **Provider**            | Backend LLM                                                                         |
+| **Quality Gate**        | Veredicto antes da resposta sair                                                    |
+| **RAG**                 | Buscar + gerar (no AIOS: PKB)                                                       |
+| **release-coordinator** | Agente Copilot: checklist SemVer/promote/tag (sem auto-commit)                      |
+| **Resource-Aware**      | Poupar hardware; inspecionar antes de instalar                                      |
+| **Runtime gate**        | Ordem MacBook: unit → delivery gate → `ok infra` → commit                           |
+| **SAFE_WRITE**          | Escrita “segura” + às vezes consent env                                             |
+| **sandbox**             | Branch de integração pré-main                                                       |
+| **Semantic search**     | Busca por significado (vetor), não só palavra                                       |
+| **SemVer**              | Versão MAJOR.MINOR.PATCH                                                            |
+| **Skill**               | Pack “como” (não “quem”)                                                            |
+| **Spike**               | Investigação com recomendação                                                       |
+| **SSOT**                | Fonte canônica da verdade                                                           |
+| **Standalone**          | AIOS é produto próprio                                                              |
+| **TaskProfile**         | Perfil de roteamento (custo/privacy/…)                                              |
+| **Visibility**          | Correlação run/KG/estado; export opcional                                           |
+| **Workspace**           | Id → repo path                                                                      |
 
 ---
 

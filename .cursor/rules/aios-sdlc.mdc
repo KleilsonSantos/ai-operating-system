@@ -6,7 +6,7 @@ alwaysApply: true
 # AIOS SDLC (este repositório)
 
 Use este arquivo como ponte curta para fluxo de entrega.
-Para detalhes, consulte `.trae/rules/workflow.md`, `docs/guides/git-workflow.md`, `docs/guides/task-kickoff.md`, `docs/guides/releases.md`, `.github/pull_request_template.md` e `scripts/merge-pr.sh`.
+Para detalhes, consulte `.trae/rules/workflow.md`, `docs/guides/git-workflow.md`, `docs/guides/delivery-automation.md`, `docs/guides/task-kickoff.md`, `docs/guides/local-runtime-authorization.md`, `docs/guides/releases.md`, `.github/pull_request_template.md` e `scripts/merge-pr.sh`.
 
 ## Git
 

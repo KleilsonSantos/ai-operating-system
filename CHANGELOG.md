@@ -4,6 +4,27 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.48.9] - 2026-09-13
+
+### Added
+
+- 📋 Delivery automation map — event → CI → agent next step (`docs/guides/delivery-automation.md`) (#448)
+- 🔒 Local PR delivery gate — `scripts/check-pr-delivery-gate.sh` (+ selftest / CI) for issue-link parity before push (#448)
+- 🧭 Local runtime authorization — ordered MacBook agent gate + Cursor rule (`docs/guides/local-runtime-authorization.md`) (#448)
+- 🤖 Copilot agents `appsec-reviewer` + `release-coordinator` + `docs/guides/github-agents.md` catalog; `.github/CODEOWNERS` for supply-chain paths (#448)
+- 📋 Harness architecture audit snapshot — `docs/audits/AIOS-HARNESS-ARCHITECTURE-AUDIT.md` (#450)
+- 🤖 Copilot harness audit workers (core, tools/MCP, obs/sec, synthesizer) (#450)
+- 🧪 Postman HTTP suites — Console `:8787` + MCP HTTP `:8791` under `integrations/postman/` (#450)
+- 🧪 MCP: stdio live harness (`Client` + `StdioClientTransport`) — list-agents, capability deny, compile-prompt (audit P1 / #440)
+
+### Changed
+
+- 📋 ADR-0029 / harness-mapping + audit drift: PKB semantic search marked shipped opt-in (ADR-0032); policy/MCP catalog counts (#450)
+
+### Fixed
+
+- 🔒 `pnpm audit`: bump override `hono@4.13.7` (transitive via MCP SDK — GHSA-gqvv / GHSA-g6gw / GHSA-crvj) (#448)
+
 ## [0.48.8] - 2026-09-02
 
 ### Added
