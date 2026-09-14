@@ -539,6 +539,15 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **O que é**  | Goldens Intent → `AGENT_MATRIX` → `routeModel`; CI `pnpm evals`.      |
 | **Não é**    | Segundo skill framework; não é checkpoint/resume; não é LLM-as-judge. |
 
+### Postman live-proof (`integrations/postman/` · #473)
+
+|                    |                                                                                            |
+| ------------------ | ------------------------------------------------------------------------------------------ |
+| **Analogia**       | Test-drive na rua: Console/MCP HTTP **ligados**, não bancada unitária.                     |
+| **O que é**        | Collections + `scripts/run-postman-audit-pack.sh` (Postman CLI; Smoke→Negative→Workflows). |
+| **Para que serve** | Smoke / auditorias / prova de borda HTTP após `ok infra`.                                  |
+| **Não é**          | Newman; não substitui evals/unit; não entra no CI `quality` default.                       |
+
 ### Content hygiene (ADR-0033 · #447)
 
 |                    |                                                                                               |
@@ -578,6 +587,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **Monorepo**            | Vários pacotes num Git                                                              |
 | **PKB**                 | Biblioteca versionada de prompts                                                    |
 | **Pipeline**            | Esteira `runPipeline`                                                               |
+| **Postman live-proof**  | Collections HTTP + audit pack (Postman CLI; não Newman; não substitui evals)        |
 | **Policy**              | Regra must/should persistente                                                       |
 | **Privilege**           | Nível de permissão da tool MCP                                                      |
 | **Provider**            | Backend LLM                                                                         |
