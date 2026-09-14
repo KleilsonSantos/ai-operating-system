@@ -53,6 +53,20 @@ function isSafeAction(id: string): id is SafeActionId {
 /** Literal client copy — must not read `Error` (CWE-209 / CodeQL js/stack-trace-exposure). */
 export const SAFE_ACTION_INTERNAL_ERROR = 'internal error';
 
+/**
+ * Stable client code when Memory rejects untrusted text (ADR-0033).
+ * Fixed string only — do not echo `memory.content_rejected:<code>:<detail>` to HTTP clients.
+ */
+export const MEMORY_CONTENT_REJECTED_CLIENT_ERROR = 'memory.content_rejected';
+
+function clientErrorForCaught(err: unknown): string {
+  const msg = err instanceof Error ? err.message : '';
+  if (msg.startsWith('memory.content_rejected:')) {
+    return MEMORY_CONTENT_REJECTED_CLIENT_ERROR;
+  }
+  return SAFE_ACTION_INTERNAL_ERROR;
+}
+
 function logSafeActionFailure(action: SafeActionId, err: unknown): void {
   console.error(`[console] safe-action ${action} failed`, err);
 }
@@ -211,7 +225,7 @@ export async function runSafeAction(request: SafeActionRequest): Promise<SafeAct
       action,
       latencyMs: Date.now() - started,
       result: null,
-      error: SAFE_ACTION_INTERNAL_ERROR,
+      error: clientErrorForCaught(err),
     };
   }
 }
