@@ -4,6 +4,16 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.49.3] - 2026-09-14
+
+### Added
+
+- 🧪 Postman live-proof pack — `scripts/run-postman-audit-pack.sh` (Postman CLI only; Smoke→Negative→Workflows) + `NEG-007` memory content hygiene on Console HTTP (#473)
+
+### Changed
+
+- 🔒 Console `memory_remember` maps ADR-0033 rejects to stable client error `memory.content_rejected` (no internal detail leak) (#473)
+
 ## [0.49.2] - 2026-09-13
 
 ### Added

@@ -18,6 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag       | Description                                                                                          |
 | --------- | ---------------------------------------------------------------------------------------------------- |
+| `v0.49.3` | Postman live-proof pack + Console `memory.content_rejected` client code (#473)                       |
 | `v0.49.2` | Untrusted content hygiene — context skip + memory reject (ADR-0033 / #447)                           |
 | `v0.49.1` | Selection eval harness — Intent → agents → capability class (#447)                                   |
 | `v0.49.0` | PipelineRun store + MCP tool audit + CLI replay (#447)                                               |

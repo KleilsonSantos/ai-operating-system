@@ -63,13 +63,13 @@ Classify live Console/MCP/Ollama/Compose results as **NOT VALIDATED** until step
 
 Ask the owner **only after step 4 passes**:
 
-| Category          | Examples                                                                         |
-| ----------------- | -------------------------------------------------------------------------------- |
-| Container runtime | `colima start`, `docker compose up`, `docker run`, `docker build`, `docker pull` |
-| AIOS processes    | `pnpm`/`tsx` Console API, MCP Streamable HTTP on `:8791`, background CLI daemons |
-| Local model       | Starting **new** Ollama process or pulling models when none is reusable          |
-| Process control   | `kill` / `pkill` on service ports owned by this work                             |
-| Live HTTP proof   | Smoke against agent-started Console/MCP HTTP (Postman or curl)                   |
+| Category          | Examples                                                                              |
+| ----------------- | ------------------------------------------------------------------------------------- |
+| Container runtime | `colima start`, `docker compose up`, `docker run`, `docker build`, `docker pull`      |
+| AIOS processes    | `pnpm`/`tsx` Console API, MCP Streamable HTTP on `:8791`, background CLI daemons      |
+| Local model       | Starting **new** Ollama process or pulling models when none is reusable               |
+| Process control   | `kill` / `pkill` on service ports owned by this work                                  |
+| Live HTTP proof   | Smoke / audit pack: `bash scripts/run-postman-audit-pack.sh` (± `--with-mcp`) or curl |
 
 Never: `docker compose down -v`, `docker system prune`, stopping unrelated containers, installing a second Ollama while one already serves.
 
