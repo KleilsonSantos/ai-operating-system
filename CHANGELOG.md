@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.49.5] - 2026-09-16
+
 ### Added
 
 - 🔒 MCP skill tool gate — when `skillIds` is set on a tool call, authorize against pack `allowedTools` union (`skill.denied`; ADR-0026) (#482)
