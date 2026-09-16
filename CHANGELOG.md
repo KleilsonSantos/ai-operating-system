@@ -4,6 +4,8 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.49.4] - 2026-09-15
+
 ### Added
 
 - 📦 Skill pack `multi-cloud-honesty` + catalog `skills/aios.skills.json` (opt-in; ADR-0026) (#478)
