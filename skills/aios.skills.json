@@ -1,0 +1,30 @@
+{
+  "skills": [
+    {
+      "id": "multi-cloud-honesty",
+      "purpose": "Analyze an external multi-cloud event lab (or similar) as a separate mission: label emulators honestly (LOCAL EMULATOR / OPEN SOURCE ALTERNATIVE), never claim AWS/Azure/GCP parity beyond adapters+tests, treat Floci Azure/GCP marketing as unvalidated, keep Magnitude and browser-agent UIs out of the AIOS control plane, and do not fuse lab runtime into AIOS (ADR-0001).",
+      "allowedTools": [
+        "aios_compile_prompt",
+        "aios_list_workspaces",
+        "aios_workspace_validate",
+        "aios_build_knowledge",
+        "aios_audit_docs",
+        "aios_run_pipeline"
+      ],
+      "failurePolicy": "skip",
+      "prerequisites": [
+        "workspaceId cloud-event-lab registered (or equivalent external path)",
+        "skillIds includes multi-cloud-honesty"
+      ],
+      "contextRequirements": [
+        "Prefer workspaceId=cloud-event-lab over inventing in-repo cloud adapters",
+        "Cite lab docs/ADRs; do not import LocalStack/Floci/Docker into AIOS packages"
+      ],
+      "validation": [
+        "No claim that Floci equals Azure or GCP",
+        "No Magnitude / browser-agent as AIOS core",
+        "Emulators labeled correctly when named"
+      ]
+    }
+  ]
+}

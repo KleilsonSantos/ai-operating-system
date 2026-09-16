@@ -14,7 +14,7 @@ Operator and IDE agents already consume `compilePrompt`. Repeating “allowed to
 ## Decision
 
 1. **How, not who.** A skill pack is `{ id, purpose, allowedTools, failurePolicy }` plus optional `prerequisites` / `contextRequirements` / `validation`. `failurePolicy` is `fail` | `skip` | `retry`. It is not an agent, not a marketplace listing, and not a clone of `review.change` or docs-writer.
-2. **Default is none.** `compilePrompt` and `runPipeline` do not read a catalog unless `skillIds` is requested. Unknown ids are skipped — they do not invent a pack. Catalog path: `skills/aios.skills.json` (walk-up), `AIOS_SKILLS_PATH`, or `skillsPath`. This repo does **not** ship an empty `skills/` directory.
+2. **Default is none.** `compilePrompt` and `runPipeline` do not read a catalog unless `skillIds` is requested. Unknown ids are skipped — they do not invent a pack. Catalog path: `skills/aios.skills.json` (walk-up from target `repoPath`, then `AIOS_HOME` / process `cwd`), `AIOS_SKILLS_PATH`, or `skillsPath`. Shipping a catalog file is optional; when present, packs stay opt-in. First in-repo example: `multi-cloud-honesty` (external lab analysis — see [external-lab-workspace.md](../guides/external-lab-workspace.md)).
 3. **Prompt Engine consumes the pack.** Selected manifests appear in `CompiledPrompt.skills`, `stats.skillCount`, and an optional `## Skills` section of the brief.
 4. **Pipeline records ids only.** `runPipeline` copies requested ids onto `PipelineResponse.run.skillIds` and emits a `skill` step (`ok` if any id, else `skip`). It does not depend on `@aios/prompt`. `contractVersion` stays `"1"`.
 5. **MCP / CLI opt-in.** `aios_compile_prompt` and `aios_run_pipeline` accept optional `skillIds`. CLI `--skill-ids=a,b`.
@@ -29,9 +29,10 @@ Operator and IDE agents already consume `compilePrompt`. Repeating “allowed to
 
 ### Trade-offs
 
-- Catalog is operator-owned; AIOS does not ship product packs in this slice
+- Catalog is thin and operator-extensible; in-repo packs are honesty/how examples, not a marketplace
 - Pipeline records ids; it does not enforce `allowedTools` at the MCP gate
 - `retry` is declarative only — no retry loop
+- Presence of `skills/` does not change default-none — callers must still pass `skillIds`
 
 ## Rejected alternatives
 

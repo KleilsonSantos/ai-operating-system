@@ -113,7 +113,18 @@ export function resolveSkillsPath(options: LoadSkillsOptions = {}): string | und
   if (env.AIOS_SKILLS_PATH) {
     return resolve(env.AIOS_SKILLS_PATH);
   }
-  return findSkillsFileUpwards(options.cwd ?? process.cwd());
+  const fromCwd = findSkillsFileUpwards(options.cwd ?? process.cwd());
+  if (fromCwd) return fromCwd;
+  // External workspace repoPath often has no skills/ — fall back to AIOS install / operator cwd
+  if (env.AIOS_HOME) {
+    const fromHome = findSkillsFileUpwards(env.AIOS_HOME);
+    if (fromHome) return fromHome;
+  }
+  const procCwd = process.cwd();
+  if (!options.cwd || resolve(options.cwd) !== resolve(procCwd)) {
+    return findSkillsFileUpwards(procCwd);
+  }
+  return undefined;
 }
 
 export function loadSkillCatalog(options: LoadSkillsOptions = {}): {

@@ -65,4 +65,26 @@ describe('loadSkills', () => {
     expect(out.skills).toHaveLength(1);
     expect(out.path).toContain('aios.skills.json');
   });
+
+  it('loads in-repo multi-cloud-honesty from monorepo catalog', () => {
+    const repoRoot = join(import.meta.dirname, '../../..');
+    const out = loadSkills(['multi-cloud-honesty'], { cwd: repoRoot });
+    expect(out.skippedIds).toEqual([]);
+    expect(out.skills).toHaveLength(1);
+    expect(out.skills[0]?.id).toBe('multi-cloud-honesty');
+    expect(out.skills[0]?.failurePolicy).toBe('skip');
+  });
+
+  it('falls back to AIOS_HOME when target cwd has no skills catalog', () => {
+    const aiosRoot = join(import.meta.dirname, '../../..');
+    const foreign = mkdtempSync(join(tmpdir(), 'aios-foreign-'));
+    temps.push(foreign);
+    const out = loadSkills(['multi-cloud-honesty'], {
+      cwd: foreign,
+      env: { AIOS_HOME: aiosRoot },
+    });
+    expect(out.skills).toHaveLength(1);
+    expect(out.skills[0]?.id).toBe('multi-cloud-honesty');
+    expect(out.path).toContain(join('skills', 'aios.skills.json'));
+  });
 });
