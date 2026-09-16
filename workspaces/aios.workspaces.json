@@ -5,6 +5,11 @@
       "name": "AI Operating System",
       "path": ".",
       "default": true
+    },
+    {
+      "id": "cloud-event-lab",
+      "name": "Cloud Event Lab (external)",
+      "path": "../cloud-event-lab"
     }
   ]
 }

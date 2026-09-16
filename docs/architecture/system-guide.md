@@ -80,7 +80,7 @@ CLI (`@aios/cli`) is a thin client of this contract (`--workspace`). Integrators
 
 ### Multi-repo (`@aios/workspace`) — issue #43 / #55
 
-Registry `workspaces/aios.workspaces.json` · resolve by `workspaceId` · upsert/validate · `runAcrossWorkspaces` · [ADR-0004](../adr/0004-multi-repo-workspace-registry.md) · [ADR-0007](../adr/0007-multi-repo-generic-ops.md).
+Registry `workspaces/aios.workspaces.json` · resolve by `workspaceId` · upsert/validate · `runAcrossWorkspaces` · [ADR-0004](../adr/0004-multi-repo-workspace-registry.md) · [ADR-0007](../adr/0007-multi-repo-generic-ops.md). External analyze-only lab: [external-lab-workspace.md](../guides/external-lab-workspace.md).
 
 ### Knowledge Graph (`@aios/knowledge`) — issue #47
 
