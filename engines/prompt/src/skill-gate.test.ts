@@ -2,7 +2,13 @@ import { mkdirSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { afterEach, describe, expect, it } from 'vitest';
-import { authorizeSkillTool, deniedSkillPayload, skillIdsFromArgs } from './skill-gate.ts';
+import {
+  authorizeSkillTool,
+  deniedSkillPayload,
+  effectiveSkillIds,
+  skillIdsFromArgs,
+  skillIdsFromEnv,
+} from './skill-gate.ts';
 
 const temps: string[] = [];
 
@@ -90,5 +96,43 @@ describe('skillIdsFromArgs', () => {
     expect(skillIdsFromArgs({ skillIds: [1, 'x'] })).toEqual(['x']);
     expect(skillIdsFromArgs({})).toBeUndefined();
     expect(skillIdsFromArgs(null)).toBeUndefined();
+  });
+});
+
+describe('skillIdsFromEnv / effectiveSkillIds', () => {
+  it('parses AIOS_MCP_SKILL_IDS', () => {
+    expect(skillIdsFromEnv({ AIOS_MCP_SKILL_IDS: ' multi-cloud-honesty , brief ' })).toEqual([
+      'multi-cloud-honesty',
+      'brief',
+    ]);
+    expect(skillIdsFromEnv({ AIOS_MCP_SKILL_IDS: '' })).toEqual([]);
+    expect(skillIdsFromEnv({})).toEqual([]);
+  });
+
+  it('unions env and args', () => {
+    expect(effectiveSkillIds({ skillIds: ['b'] }, { AIOS_MCP_SKILL_IDS: 'a,b' })).toEqual([
+      'a',
+      'b',
+    ]);
+    expect(effectiveSkillIds({}, { AIOS_MCP_SKILL_IDS: 'a' })).toEqual(['a']);
+    expect(effectiveSkillIds({ skillIds: ['x'] }, {})).toEqual(['x']);
+    expect(effectiveSkillIds({}, {})).toBeUndefined();
+  });
+
+  it('session env alone denies tools outside pack allowedTools', () => {
+    const root = mkdtempSync(join(tmpdir(), 'aios-sgate-'));
+    temps.push(root);
+    writeCatalog(root, [
+      {
+        id: 'brief-only',
+        purpose: 'compile only',
+        allowedTools: ['aios_compile_prompt'],
+        failurePolicy: 'skip',
+      },
+    ]);
+    const ids = effectiveSkillIds({}, { AIOS_MCP_SKILL_IDS: 'brief-only' });
+    const d = authorizeSkillTool('aios_list_workspaces', ids, { cwd: root });
+    expect(d.allowed).toBe(false);
+    expect(d.reason).toBe('skill.tool-denied');
   });
 });

@@ -125,3 +125,52 @@ describe('MCP stdio live harness', () => {
     assert.equal(body.reason, 'skill.none-resolved');
   });
 });
+
+describe('MCP stdio session skill env (#483)', () => {
+  let sessionClient: Client;
+
+  before(async () => {
+    const transport = new StdioClientTransport({
+      command: process.execPath,
+      args: [tsxCli, path.join(mcpRoot, 'src/index.ts')],
+      cwd: mcpRoot,
+      stderr: 'pipe',
+      env: {
+        AIOS_HOME: repoRoot,
+        AIOS_MCP_QUIET: '1',
+        AIOS_MCP_ALLOW_PRIVILEGED: '',
+        AIOS_MCP_ALLOW_SAFE_WRITE: '',
+        AIOS_MCP_PRIVILEGE: '',
+        // In-repo pack allows compile/pipeline/workspaces — not list_agents
+        AIOS_MCP_SKILL_IDS: 'multi-cloud-honesty',
+      },
+    });
+    sessionClient = new Client({ name: 'aios-mcp-session-skills', version: '0.0.0' });
+    await sessionClient.connect(transport);
+  });
+
+  after(async () => {
+    await sessionClient?.close();
+  });
+
+  it('denies tools outside session pack allowedTools', async () => {
+    const result = await sessionClient.callTool({ name: 'aios_list_agents', arguments: {} });
+    assert.equal(result.isError, true);
+    const body = JSON.parse(textPayload(result)) as {
+      error?: string;
+      reason?: string;
+      tool?: string;
+    };
+    assert.equal(body.error, 'skill.denied');
+    assert.equal(body.tool, 'aios_list_agents');
+    assert.equal(body.reason, 'skill.tool-denied');
+  });
+
+  it('allows aios_compile_prompt under multi-cloud-honesty session', async () => {
+    const result = await sessionClient.callTool({
+      name: 'aios_compile_prompt',
+      arguments: { input: 'health endpoint' },
+    });
+    assert.notEqual(result.isError, true);
+  });
+});

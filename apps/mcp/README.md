@@ -20,6 +20,8 @@ Bridges Cursor / Companion / HTTP clients to the AIOS runtime (`runPipeline`, po
 | `aios_provider_*`                                                                                                   | Provider health / models / chat                                                                                              |
 | `aios_run_pipeline`                                                                                                 | Full core → `PipelineResponse`; optional `skillIds` / `hookIds` (skill tool gate when `skillIds` set)                        |
 
+Optional session bind: `AIOS_MCP_SKILL_IDS=id,id` on the MCP process applies pack `allowedTools` to every tool call (union with per-call `skillIds`). Default off (#483). Do not set this in everyday Cursor config unless you intend to lock the session.
+
 ## Stdio (default)
 
 ```bash

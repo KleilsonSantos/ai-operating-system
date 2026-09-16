@@ -13,7 +13,7 @@ Default remains **none**: `compilePrompt` / `runPipeline` do not load the catalo
 
 When `workspaceId` points at an external repo, the skill catalog is still resolved from the **AIOS install** (`AIOS_SKILLS_PATH`, `AIOS_HOME`, or operator `cwd`) — packs are how the control plane behaves, not files inside the lab.
 
-MCP: if the tool call includes `skillIds`, the tool name must be in the pack’s `allowedTools` union or the call returns `skill.denied` ([ADR-0026](../adr/0026-skill-packs-prompt-engine.md) / #482).
+MCP: if the tool call includes `skillIds` **or** the MCP process has `AIOS_MCP_SKILL_IDS`, the tool name must be in the pack’s `allowedTools` union or the call returns `skill.denied` ([ADR-0026](../adr/0026-skill-packs-prompt-engine.md) / #482 / #483).
 
 ## Operator smoke
 

@@ -25,7 +25,7 @@ import {
   authorizeSkillTool,
   compilePrompt,
   deniedSkillPayload,
-  skillIdsFromArgs,
+  effectiveSkillIds,
 } from '@aios/prompt';
 import { getProvider, listProviderIds, routeModel } from '@aios/provider';
 import { getGovernanceStatus, chatWithMetrics, loadMetricsSnapshot } from '@aios/status';
@@ -96,8 +96,8 @@ export function createAiosMcpServer(): McpServer {
             isError: true,
           };
         }
-        // ADR-0026: when skillIds are on the call, tool must be in pack allowedTools union
-        const skillDecision = authorizeSkillTool(String(name), skillIdsFromArgs(args), {
+        // ADR-0026 / #482–#483: skillIds from args and/or AIOS_MCP_SKILL_IDS
+        const skillDecision = authorizeSkillTool(String(name), effectiveSkillIds(args), {
           cwd: process.env.AIOS_HOME || process.cwd(),
         });
         if (!skillDecision.allowed) {

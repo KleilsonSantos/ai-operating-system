@@ -7,6 +7,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 ### Added
 
 - 🔒 MCP skill tool gate — when `skillIds` is set on a tool call, authorize against pack `allowedTools` union (`skill.denied`; ADR-0026) (#482)
+- 🔒 MCP session skills — optional `AIOS_MCP_SKILL_IDS` unions with per-call `skillIds` for process-wide pack binding (#483)
 
 ## [0.49.4] - 2026-09-15
 

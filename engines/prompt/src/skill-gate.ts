@@ -105,3 +105,25 @@ export function skillIdsFromArgs(args: unknown): string[] | undefined {
   if (!Array.isArray(raw)) return undefined;
   return raw.filter((x): x is string => typeof x === 'string');
 }
+
+/**
+ * Process-level opt-in: `AIOS_MCP_SKILL_IDS=a,b` (comma/whitespace separated).
+ * Empty / unset → no session skills (default-none).
+ */
+export function skillIdsFromEnv(env?: LoadSkillsOptions['env']): string[] {
+  const map = env ?? (globalThis as { process?: { env?: LoadSkillsOptions['env'] } }).process?.env;
+  const raw = map?.AIOS_MCP_SKILL_IDS;
+  if (typeof raw !== 'string' || !raw.trim()) return [];
+  return normalizeIds(raw.split(/[,;\s]+/));
+}
+
+/** Union of session env ids and per-call args (order: env first, then args). */
+export function effectiveSkillIds(
+  args: unknown,
+  env?: LoadSkillsOptions['env']
+): string[] | undefined {
+  const fromEnv = skillIdsFromEnv(env);
+  const fromArgs = normalizeIds(skillIdsFromArgs(args));
+  const merged = normalizeIds([...fromEnv, ...fromArgs]);
+  return merged.length > 0 ? merged : undefined;
+}

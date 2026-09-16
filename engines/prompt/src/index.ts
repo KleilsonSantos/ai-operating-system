@@ -17,6 +17,8 @@ export {
   authorizeSkillTool,
   deniedSkillPayload,
   skillIdsFromArgs,
+  skillIdsFromEnv,
+  effectiveSkillIds,
   type SkillToolDecision,
   type SkillToolDenyReason,
 } from './skill-gate.js';
