@@ -108,4 +108,20 @@ describe('MCP stdio live harness', () => {
     assert.ok(body.brief !== undefined);
     assert.ok(body.stats !== undefined);
   });
+
+  it('denies aios_compile_prompt with skill.denied when skillIds resolve to none (#482)', async () => {
+    const result = await client.callTool({
+      name: 'aios_compile_prompt',
+      arguments: { input: 'health endpoint', skillIds: ['no-such-skill-pack'] },
+    });
+    assert.equal(result.isError, true);
+    const body = JSON.parse(textPayload(result)) as {
+      error?: string;
+      reason?: string;
+      tool?: string;
+    };
+    assert.equal(body.error, 'skill.denied');
+    assert.equal(body.tool, 'aios_compile_prompt');
+    assert.equal(body.reason, 'skill.none-resolved');
+  });
 });

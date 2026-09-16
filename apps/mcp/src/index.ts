@@ -21,7 +21,12 @@ import {
 } from '@aios/workspace';
 import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge';
 import { remember, recall, clearMemory, listMemoryWorkspaces } from '@aios/memory';
-import { compilePrompt } from '@aios/prompt';
+import {
+  authorizeSkillTool,
+  compilePrompt,
+  deniedSkillPayload,
+  skillIdsFromArgs,
+} from '@aios/prompt';
 import { getProvider, listProviderIds, routeModel } from '@aios/provider';
 import { getGovernanceStatus, chatWithMetrics, loadMetricsSnapshot } from '@aios/status';
 import { auditDocumentation, searchPkb, rebuildPkbVectorIndex } from '@aios/documentation';
@@ -86,6 +91,28 @@ export function createAiosMcpServer(): McpServer {
               {
                 type: 'text',
                 text: JSON.stringify(deniedMcpPayload(decision)),
+              },
+            ],
+            isError: true,
+          };
+        }
+        // ADR-0026: when skillIds are on the call, tool must be in pack allowedTools union
+        const skillDecision = authorizeSkillTool(String(name), skillIdsFromArgs(args), {
+          cwd: process.env.AIOS_HOME || process.cwd(),
+        });
+        if (!skillDecision.allowed) {
+          auditMcpDecision({
+            allowed: false,
+            tool: String(name),
+            required: decision.required,
+            caller: decision.caller,
+            reason: skillDecision.reason,
+          });
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(deniedSkillPayload(skillDecision)),
               },
             ],
             isError: true,

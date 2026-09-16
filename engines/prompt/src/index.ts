@@ -13,6 +13,14 @@ import type { CompiledPrompt, CompilePromptRequest, Intent, SkillManifest } from
 import { loadSkills } from './skills.js';
 
 export type { CompiledPrompt, CompilePromptRequest };
+export {
+  authorizeSkillTool,
+  deniedSkillPayload,
+  skillIdsFromArgs,
+  type SkillToolDecision,
+  type SkillToolDenyReason,
+} from './skill-gate.js';
+export { loadSkills, loadSkillCatalog, selectSkills, parseSkillCatalog } from './skills.js';
 
 function resolveRepo(request: CompilePromptRequest): {
   repoPath: string;

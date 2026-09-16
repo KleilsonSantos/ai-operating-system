@@ -18,6 +18,7 @@ Operator and IDE agents already consume `compilePrompt`. Repeating “allowed to
 3. **Prompt Engine consumes the pack.** Selected manifests appear in `CompiledPrompt.skills`, `stats.skillCount`, and an optional `## Skills` section of the brief.
 4. **Pipeline records ids only.** `runPipeline` copies requested ids onto `PipelineResponse.run.skillIds` and emits a `skill` step (`ok` if any id, else `skip`). It does not depend on `@aios/prompt`. `contractVersion` stays `"1"`.
 5. **MCP / CLI opt-in.** `aios_compile_prompt` and `aios_run_pipeline` accept optional `skillIds`. CLI `--skill-ids=a,b`.
+6. **MCP tool gate (thin).** When a tool call includes `skillIds`, the MCP wrapper authorizes the **tool name** against the union of selected packs' `allowedTools` (after the privilege gate — skills never expand privilege). Unknown ids are skipped; if none resolve, the call is denied (`skill.denied` / `skill.none-resolved`). Default remains none when `skillIds` is omitted. Session-wide lockdown without per-call `skillIds` is out of scope.
 
 ## Consequences
 
@@ -30,7 +31,8 @@ Operator and IDE agents already consume `compilePrompt`. Repeating “allowed to
 ### Trade-offs
 
 - Catalog is thin and operator-extensible; in-repo packs are honesty/how examples, not a marketplace
-- Pipeline records ids; it does not enforce `allowedTools` at the MCP gate
+- MCP enforces `allowedTools` only when `skillIds` is present on the call — agents can still invoke other tools without skill ids (brief remains advisory for those paths)
+- Pipeline records ids; it does not enforce `allowedTools` inside `runPipeline` steps
 - `retry` is declarative only — no retry loop
 - Presence of `skills/` does not change default-none — callers must still pass `skillIds`
 
