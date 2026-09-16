@@ -4,6 +4,15 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📦 Skill pack `multi-cloud-honesty` + catalog `skills/aios.skills.json` (opt-in; ADR-0026) (#478)
+- 🗂️ External workspace `cloud-event-lab` in registry + guide `docs/guides/external-lab-workspace.md` (analyze-only coupling) (#478)
+
+### Changed
+
+- 📦 Skill catalog resolve falls back to `AIOS_HOME` / process cwd when the target workspace has no `skills/` (external repos) (#478)
+
 ## [0.49.3] - 2026-09-14
 
 ### Added

@@ -56,7 +56,7 @@ If the Agent does **not list** `aios_*` tools (only sees MCPs from `~/.cursor/mc
 pnpm --filter @aios/mcp dev
 ```
 
-Workspaces: [`workspaces/aios.workspaces.json`](../../workspaces/aios.workspaces.json) · [ADR-0004](../adr/0004-multi-repo-workspace-registry.md).
+Workspaces: [`workspaces/aios.workspaces.json`](../../workspaces/aios.workspaces.json) · [ADR-0004](../adr/0004-multi-repo-workspace-registry.md). External lab (analyze-only): [external-lab-workspace.md](./external-lab-workspace.md) · skill `multi-cloud-honesty`.
 
 Details: [`apps/mcp/README.md`](../../apps/mcp/README.md) · contract [ADR-0003](../adr/0003-pipeline-integration-contract.md).
 
