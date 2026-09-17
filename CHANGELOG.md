@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🔧 Cursor Agent Shell: project `preToolUse` PATH inject + sandbox readonly `~/.nvm` / shared build cache; document harness noise vs `node` missing (#491)
+
 ## [0.49.6] - 2026-09-16
 
 ### Added

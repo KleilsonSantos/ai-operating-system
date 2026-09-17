@@ -35,9 +35,15 @@ Details: [git-workflow.md](./git-workflow.md).
 
 Cursor’s agent Shell seatbelt allowlists `github.com` (git) by default but **not** `api.github.com` (REST/GraphQL used by `gh`). A blocked API call is often misreported as “token in keyring is invalid” even when Terminal `gh auth status` is healthy.
 
-This repo ships [`.cursor/sandbox.json`](../../.cursor/sandbox.json) allowing `api.github.com`. In Cursor: **Settings → Agents → Auto Run → Auto-Run Network Access** → `sandbox.json + Defaults` (or Allow All).
+This repo ships [`.cursor/sandbox.json`](../../.cursor/sandbox.json) allowing `api.github.com`, plus readonly `~/.nvm` and shared build cache so sandboxed Shell can resolve Node without disabling the sandbox (#491). In Cursor: **Settings → Agents → Auto Run → Auto-Run Network Access** → `sandbox.json + Defaults` (or Allow All).
 
-Optional global allowlist for all workspaces: `~/.cursor/sandbox.json` with the same `networkPolicy.allow` entry.
+Optional global allowlist for all workspaces: copy via `bash scripts/install-cursor-sandbox-allowlist.sh` (or merge the same keys into `~/.cursor/sandbox.json`).
+
+### Agent Shell PATH (no login `.zshrc`)
+
+Agent Shell is **not** a login shell, so interactive `nvm` / Homebrew PATH may be missing → `command not found: node`. This repo injects a minimal PATH via [`.cursor/hooks.json`](../../.cursor/hooks.json) → [`.cursor/hooks/inject-agent-path.sh`](../../.cursor/hooks/inject-agent-path.sh) (`preToolUse` matcher `Shell`). Restart the Agent chat after pulling so hooks reload.
+
+**Ignore** chat stderr like `/usr/bin/base64: … Operation not permitted` or `dump_zsh_state: command not found` — Cursor harness noise, not AIOS or CI failure.
 
 ## Async CI babysit (ADR-0028)
 
