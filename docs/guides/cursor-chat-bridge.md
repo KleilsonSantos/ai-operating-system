@@ -48,7 +48,7 @@ GitHub Copilot uses the mirror: [`.github/instructions/aios-glossary-maintenance
 | `aios_search_pkb`                                  | PKB textual / tag search over `docs/prompts/**` (#158)            |
 | `aios_governance_audit` / `aios_governance_record` | Light audit + decision log (#80)                                  |
 
-Config example: [`.cursor/mcp.json.example`](../../.cursor/mcp.json.example) — use an **absolute `node` path** (Cursor GUI often lacks `pnpm`/`nvm` on PATH).
+Config example: [`.cursor/mcp.json.example`](../../.cursor/mcp.json.example) — use an **absolute `node` path** (Cursor GUI often lacks `pnpm`/`nvm` on PATH). Agent Shell PATH for repo tools is also injected by [`.cursor/hooks.json`](../../.cursor/hooks.json) (#491); see [`task-kickoff.md`](./task-kickoff.md).
 
 If the Agent does **not list** `aios_*` tools (only sees MCPs from `~/.cursor/mcp.json`), also copy the `aios` block into the **user-level** MCP file (`~/.cursor/mcp.json`), set `AIOS_HOME`, then Settings → MCP → Refresh / Reload Window → **new Agent chat**.
 

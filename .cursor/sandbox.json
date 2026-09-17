@@ -2,5 +2,7 @@
   "networkPolicy": {
     "default": "deny",
     "allow": ["api.github.com"]
-  }
+  },
+  "additionalReadonlyPaths": ["~/.nvm"],
+  "enableSharedBuildCache": true
 }
