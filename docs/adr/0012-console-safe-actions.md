@@ -12,12 +12,12 @@ The Health+Attention MVP (ADR-0010) shows state but does not prove value: the **
 ## Decision
 
 1. **Try it** column in `@aios/console` with **safe** actions that call existing engines.
-2. Local API `POST /api/action` `{ action, input?, workspaceId? }` → `{ ok, latencyMs, result }`.
+2. Local API `POST /api/action` `{ action, input?, workspaceId?, scope?, skillIds? }` → `{ ok, latencyMs, result }`.
 3. MVP actions:
    - `contract` — `PIPELINE_CONTRACT_VERSION`
    - `validate_workspaces` — `listValidatedWorkspaces`
    - `load_policies` — `loadPolicies` + mustIds
-   - `compile_brief` — `compilePrompt` (brief truncated if too long)
+   - `compile_brief` — `compilePrompt` (brief truncated if too long; optional `skillIds` per ADR-0026 / #487)
    - `provider_ping` — `getProvider().health()` (Ollama optional)
    - `memory_recall` / `memory_remember` — `@aios/memory`
 4. **Out of scope:** running agent plugins, Copilot-like chat, Grafana, new services (Resource-Aware / ADR-0011).

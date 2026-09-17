@@ -27,7 +27,7 @@ const ACTIONS: ActionDef[] = [
   {
     id: 'compile_brief',
     label: 'Gerar brief',
-    hint: 'Prompt Engine (economia de tokens)',
+    hint: 'Prompt Engine + optional skillIds (ADR-0026)',
     needsInput: true,
     placeholder: 'Pedido curto, ex.: Analise o engine status',
   },
@@ -86,11 +86,21 @@ type Props = {
 export function TryItPanel({ workspaceId, onAfterAction }: Props) {
   const [busy, setBusy] = useState<string | null>(null);
   const [input, setInput] = useState('');
+  const [skillIdsText, setSkillIdsText] = useState('');
   const [last, setLast] = useState<ActionResult | null>(null);
+
+  function parseSkillIds(): string[] | undefined {
+    const ids = skillIdsText
+      .split(/[,;\s]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    return ids.length ? ids : undefined;
+  }
 
   async function run(actionId: string) {
     setBusy(actionId);
     try {
+      const skillIds = actionId === 'compile_brief' ? parseSkillIds() : undefined;
       const res = await fetch('/api/action', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -99,6 +109,7 @@ export function TryItPanel({ workspaceId, onAfterAction }: Props) {
           workspaceId,
           input: input || undefined,
           scope: actionId === 'visibility' ? input || undefined : undefined,
+          ...(skillIds ? { skillIds } : {}),
         }),
       });
       const data = (await res.json()) as ActionResult;
@@ -131,6 +142,18 @@ export function TryItPanel({ workspaceId, onAfterAction }: Props) {
         <span>Input (brief / remember)</span>
         <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Opcional…" />
       </label>
+      <label className="field">
+        <span>Skill ids (compile brief only)</span>
+        <input
+          value={skillIdsText}
+          onChange={(e) => setSkillIdsText(e.target.value)}
+          placeholder="ex.: multi-cloud-honesty"
+          aria-describedby="skill-ids-hint"
+        />
+      </label>
+      <p id="skill-ids-hint" className="quiet">
+        Opt-in ADR-0026 — comma-separated; default none. Example: <code>multi-cloud-honesty</code>
+      </p>
       <ul className="try-list">
         {ACTIONS.map((a) => (
           <li key={a.id}>
