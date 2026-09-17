@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "command": ".cursor/hooks/inject-agent-path.sh",
+        "matcher": "Shell",
+        "timeout": 10
+      }
+    ]
+  }
+}

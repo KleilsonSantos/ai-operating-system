@@ -134,10 +134,21 @@ Blocking `gh pr checks --watch` only when the owner asks.
 | "commita" / "commit" / explicit ask               | Step 8                                                                     |
 | Decline or silence on infra                       | Report live items as NOT VALIDATED; no commit unless owner accepts the gap |
 
+## Cursor Agent Shell noise vs actionable failures
+
+| Symptom                                                  | Action                                                                                                       |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `command not found: node` / `pnpm` / `gh` on Agent Shell | PATH/sandbox — project hook + `.cursor/sandbox.json` (#491); retry with elevated perms only if still missing |
+| `base64` / `/dev/stdout: Operation not permitted`        | Ignore — Cursor harness under seatbelt                                                                       |
+| `dump_zsh_state: command not found`                      | Ignore — Cursor shell teardown helper                                                                        |
+
+Details: [`task-kickoff.md`](./task-kickoff.md) (Cursor agent sections).
+
 ## Related
 
 - [`resource-aware-macos.md`](../policies/resource-aware-macos.md)
 - [`delivery-automation.md`](./delivery-automation.md)
 - [`task-kickoff.md`](./task-kickoff.md)
 - [`git-workflow.md`](./git-workflow.md)
-- [`.cursor/sandbox.json`](../../.cursor/sandbox.json) — allow `api.github.com` for `gh`
+- [`.cursor/sandbox.json`](../../.cursor/sandbox.json) — `api.github.com` + readonly `~/.nvm` for Agent Shell (#491)
+- [`.cursor/hooks.json`](../../.cursor/hooks.json) — Shell `preToolUse` PATH inject (#491)

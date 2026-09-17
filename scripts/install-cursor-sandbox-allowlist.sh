@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Install ~/.cursor/sandbox.json from this repo (api.github.com allowlist for Cursor agent gh).
+# Install ~/.cursor/sandbox.json from this repo (api.github.com allowlist + nvm readonly for Agent Shell).
 # Usage: bash scripts/install-cursor-sandbox-allowlist.sh
+# Refs #491 — also copies additionalReadonlyPaths / enableSharedBuildCache when present.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
