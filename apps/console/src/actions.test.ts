@@ -150,4 +150,37 @@ describe('runSafeAction', () => {
     expect(trail).toHaveLength(1);
     expect(trail[0]?.kind).toBe('policy');
   });
+
+  it('compile_brief with skillIds loads multi-cloud-honesty from catalog (#487)', async () => {
+    const out = await runSafeAction({
+      action: 'compile_brief',
+      homePath: process.cwd(),
+      workspaceId: 'aios',
+      input: 'Audit emulator honesty',
+      skillIds: ['multi-cloud-honesty'],
+    });
+    expect(out.ok).toBe(true);
+    const result = out.result as {
+      skills: Array<{ id: string }>;
+      stats: { skillCount?: number };
+      brief: string;
+    };
+    expect(result.skills).toHaveLength(1);
+    expect(result.skills[0]?.id).toBe('multi-cloud-honesty');
+    expect(result.stats.skillCount).toBe(1);
+    // Brief may truncate before the Skills section; structured `skills` is the contract.
+  });
+
+  it('compile_brief without skillIds keeps default-none', async () => {
+    const out = await runSafeAction({
+      action: 'compile_brief',
+      homePath: process.cwd(),
+      workspaceId: 'aios',
+      input: 'Short brief',
+    });
+    expect(out.ok).toBe(true);
+    const result = out.result as { skills: unknown[]; stats: { skillCount?: number } };
+    expect(result.skills).toEqual([]);
+    expect(result.stats.skillCount ?? 0).toBe(0);
+  });
 });
