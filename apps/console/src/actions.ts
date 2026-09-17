@@ -35,6 +35,8 @@ export type SafeActionRequest = {
   workspaceId?: string;
   /** Optional scope for Visibility Plane (ADR-0030 / #365). */
   scope?: string;
+  /** Opt-in Prompt Engine skill pack ids (ADR-0026 / #487). Used by compile_brief. */
+  skillIds?: string[];
   homePath: string;
 };
 
@@ -126,9 +128,11 @@ export async function runSafeAction(request: SafeActionRequest): Promise<SafeAct
       case 'compile_brief': {
         const input =
           request.input?.trim() || 'Mostre um brief curto para validar o Prompt Engine.';
+        const skillIds = (request.skillIds ?? []).map((id) => id.trim()).filter(Boolean);
         const compiled = compilePrompt({
           input,
           workspaceId,
+          ...(skillIds.length ? { skillIds } : {}),
           // prefer registry resolution via workspaceId
         });
         const brief =
@@ -140,6 +144,7 @@ export async function runSafeAction(request: SafeActionRequest): Promise<SafeAct
           workspaceId: compiled.workspaceId,
           repoPath: compiled.repoPath,
           stats: compiled.stats,
+          skills: compiled.skills,
           brief,
         };
         break;

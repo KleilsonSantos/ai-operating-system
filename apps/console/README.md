@@ -19,13 +19,13 @@ Node **24+**: the API uses **`tsx`** (not `--experimental-strip-types`) because 
 
 ## API
 
-| Route                               | Description                                           |
-| ----------------------------------- | ----------------------------------------------------- |
-| `GET /api/status`                   | `GovernanceStatus`                                    |
-| `GET /metrics` · `GET /api/metrics` | Prometheus text (0.0.4) from JSONL                    |
-| `GET /api/actions`                  | List of safe actions                                  |
-| `POST /api/action`                  | `{ action, input?, workspaceId? }` → result + latency |
-| `GET /api/health`                   | API liveness                                          |
+| Route                               | Description                                                              |
+| ----------------------------------- | ------------------------------------------------------------------------ |
+| `GET /api/status`                   | `GovernanceStatus`                                                       |
+| `GET /metrics` · `GET /api/metrics` | Prometheus text (0.0.4) from JSONL                                       |
+| `GET /api/actions`                  | List of safe actions                                                     |
+| `POST /api/action`                  | `{ action, input?, workspaceId?, scope?, skillIds? }` → result + latency |
+| `GET /api/health`                   | API liveness                                                             |
 
 CLI (no console required): `aios --metrics-prometheus`
 

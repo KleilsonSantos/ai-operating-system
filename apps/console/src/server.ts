@@ -110,16 +110,21 @@ const server = createServer(async (req, res) => {
         input?: string;
         workspaceId?: string;
         scope?: string;
+        skillIds?: unknown;
       };
       if (!body.action || typeof body.action !== 'string') {
         sendJson(res, 400, { error: 'body.action required' });
         return;
       }
+      const skillIds = Array.isArray(body.skillIds)
+        ? body.skillIds.filter((id): id is string => typeof id === 'string')
+        : undefined;
       const out = await runSafeAction({
         action: body.action,
         input: body.input,
         workspaceId: body.workspaceId,
         scope: body.scope,
+        skillIds,
         homePath,
       });
       const statusCode = out.error && !out.result ? 400 : 200;

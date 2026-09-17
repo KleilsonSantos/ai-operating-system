@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 🎛️ Console Try-it optional `skillIds` on `compile_brief` (`POST /api/action` + UI field) (#487)
+
 ## [0.49.5] - 2026-09-16
 
 ### Added
