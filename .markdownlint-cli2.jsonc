@@ -7,7 +7,7 @@
     "MD024": { "siblings_only": true },
     "MD033": false,
     "MD041": { "front_matter_title": "" },
-    "MD060": false
+    "MD060": false,
   },
   "globs": ["**/*.md"],
   "ignores": [
@@ -20,7 +20,7 @@
     "LICENSE",
     "LICENSE*",
     "**/LICENSE",
-    "**/LICENSE*"
+    "**/LICENSE*",
   ],
   "overrides": [
     {
@@ -35,21 +35,21 @@
         "MD036": false,
         "MD041": false,
         "MD056": false,
-        "MD060": false
-      }
+        "MD060": false,
+      },
     },
     {
       "filter": [
         ".github/agents/**/*.md",
         ".github/pull_request_template.md",
-        ".github/ISSUE_TEMPLATE/**/*.md"
+        ".github/ISSUE_TEMPLATE/**/*.md",
       ],
       "combine": "merge",
       "config": {
         "MD013": false,
         "MD041": false,
-        "MD033": false
-      }
+        "MD033": false,
+      },
     },
     {
       "filter": ["docs/audits/**/*.md"],
@@ -58,16 +58,16 @@
         "MD013": false,
         "MD036": false,
         "MD056": false,
-        "MD060": false
-      }
+        "MD060": false,
+      },
     },
     {
       "filter": ["CHANGELOG.md"],
       "combine": "merge",
       "config": {
         "MD013": false,
-        "MD024": { "siblings_only": true }
-      }
-    }
-  ]
+        "MD024": { "siblings_only": true },
+      },
+    },
+  ],
 }
