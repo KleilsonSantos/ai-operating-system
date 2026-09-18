@@ -6,6 +6,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Added
 
+- 🖥️ Console Run trail: optional `runId` + Decisions section from `PipelineRun.decisions` (ADR-0034 / #508)
 - 🔧 Cursor Agent Shell: project `preToolUse` PATH inject + sandbox readonly `~/.nvm` / shared build cache; document harness noise vs `node` missing (#491)
 - 🧹 `.markdownlint.json` — `MD024.siblings_only` + `MD013` off so Keep a Changelog stops flooding the IDE (#494)
 

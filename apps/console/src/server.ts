@@ -110,6 +110,7 @@ const server = createServer(async (req, res) => {
         input?: string;
         workspaceId?: string;
         scope?: string;
+        runId?: string;
         skillIds?: unknown;
       };
       if (!body.action || typeof body.action !== 'string') {
@@ -124,6 +125,7 @@ const server = createServer(async (req, res) => {
         input: body.input,
         workspaceId: body.workspaceId,
         scope: body.scope,
+        runId: typeof body.runId === 'string' ? body.runId : undefined,
         skillIds,
         homePath,
       });

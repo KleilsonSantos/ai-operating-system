@@ -733,6 +733,19 @@ button:disabled {
   color: color-mix(in srgb, var(--warn, #c9a227) 85%, white);
 }
 
+.trail-row.kind-decision .trail-kind {
+  color: color-mix(in srgb, var(--accent, #5b8def) 55%, #c084fc);
+}
+
+.decisions-block {
+  margin: 1rem 0 1.25rem;
+}
+
+.decisions-block h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+
 @keyframes rise {
   from {
     opacity: 0;

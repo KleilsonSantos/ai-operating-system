@@ -35,6 +35,8 @@ export type SafeActionRequest = {
   workspaceId?: string;
   /** Optional scope for Visibility Plane (ADR-0030 / #365). */
   scope?: string;
+  /** Optional persisted PipelineRun id for Visibility / Decisions (#508 / ADR-0034). */
+  runId?: string;
   /** Opt-in Prompt Engine skill pack ids (ADR-0026 / #487). Used by compile_brief. */
   skillIds?: string[];
   homePath: string;
@@ -194,11 +196,13 @@ export async function runSafeAction(request: SafeActionRequest): Promise<SafeAct
 
       case 'visibility': {
         const scope = request.scope?.trim() || undefined;
+        const runId = request.runId?.trim() || undefined;
         result = await correlateVisibility({
           homePath,
           repoPath: homePath,
           workspaceId,
           scope,
+          runId,
         });
         break;
       }
