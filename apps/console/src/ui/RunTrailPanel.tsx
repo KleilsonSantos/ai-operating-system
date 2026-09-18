@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { VisibilitySnapshot, VisibilityTrailItem } from '@aios/shared';
+import { decisionRowsFromRun, formatDecisionLabel } from './decision-rows';
 
 type TrailFilter = 'all' | 'policy' | 'pipeline.step' | 'agent.execution' | 'decision';
 
@@ -27,6 +28,7 @@ function isSnapshot(value: unknown): value is VisibilitySnapshot {
 export function RunTrailPanel({ workspaceId }: Props) {
   const [filter, setFilter] = useState<TrailFilter>('all');
   const [scope, setScope] = useState('');
+  const [runId, setRunId] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [latencyMs, setLatencyMs] = useState<number | null>(null);
@@ -43,6 +45,7 @@ export function RunTrailPanel({ workspaceId }: Props) {
           action: 'visibility',
           workspaceId,
           scope: scope.trim() || undefined,
+          runId: runId.trim() || undefined,
         }),
       });
       const data = (await res.json()) as ActionResult;
@@ -64,7 +67,7 @@ export function RunTrailPanel({ workspaceId }: Props) {
     } finally {
       setBusy(false);
     }
-  }, [workspaceId, scope]);
+  }, [workspaceId, scope, runId]);
 
   useEffect(() => {
     void load();
@@ -76,12 +79,15 @@ export function RunTrailPanel({ workspaceId }: Props) {
     return trail.filter((t) => t.kind === filter);
   }, [snap, filter]);
 
+  const decisionRows = useMemo(() => decisionRowsFromRun(snap?.run?.decisions), [snap]);
+
   return (
     <section className="panel run-trail" aria-labelledby="trail-h">
       <h2 id="trail-h">Run trail</h2>
       <p className="quiet">
         Visibility Plane — policies, pipeline steps, decisions e <code>agent.execution</code>{' '}
-        correlacionados (ADR-0030 / ADR-0034). On-demand; sem agentes no UX.
+        correlacionados (ADR-0030 / ADR-0034). Informe um <code>runId</code> persistido para
+        carregar o ledger. On-demand; sem agentes no UX.
       </p>
 
       <div className="trail-controls">
@@ -91,6 +97,15 @@ export function RunTrailPanel({ workspaceId }: Props) {
             value={scope}
             onChange={(e) => setScope(e.target.value)}
             placeholder="ex.: engines/policy"
+          />
+        </label>
+        <label className="field">
+          <span>Run id (opcional)</span>
+          <input
+            value={runId}
+            onChange={(e) => setRunId(e.target.value)}
+            placeholder="ex.: run-…"
+            autoComplete="off"
           />
         </label>
         <button type="button" onClick={() => void load()} disabled={busy}>
@@ -145,8 +160,34 @@ export function RunTrailPanel({ workspaceId }: Props) {
           ) : null}
           {' · '}
           KG {snap.knowledge.nodeCount}n/{snap.knowledge.edgeCount}e · trail {snap.trail.length}
+          {decisionRows.length > 0 ? <> · decisions {decisionRows.length}</> : null}
         </p>
       )}
+
+      {decisionRows.length > 0 ? (
+        <div className="decisions-block" aria-labelledby="decisions-h">
+          <h3 id="decisions-h">Decisions</h3>
+          <p className="quiet">
+            Ledger tipado do <code>PipelineRun</code> (ADR-0034) — subject / outcome / value.
+          </p>
+          <ul className="trail-list decisions-list">
+            {decisionRows.map((row) => (
+              <li key={row.id} className="trail-row kind-decision">
+                <span className="trail-kind">{row.subject}</span>
+                <strong className="trail-label">{formatDecisionLabel(row)}</strong>
+                <span className="trail-status">{row.outcome}</span>
+                {row.stepId ? (
+                  <span className="trail-at">
+                    step <code>{row.stepId}</code>
+                  </span>
+                ) : (
+                  <span />
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
 
       {!busy && !error && rows.length === 0 ? (
         <p className="quiet">Nenhum item no trail para este filtro.</p>

@@ -151,6 +151,59 @@ describe('runSafeAction', () => {
     expect(trail[0]?.kind).toBe('policy');
   });
 
+  it('visibility passa runId para correlateVisibility (#508)', async () => {
+    vi.mocked(correlateVisibility).mockResolvedValue({
+      anchor: { workspaceId: 'aios', runId: 'run-1' },
+      generatedAt: '2026-09-18T00:00:00.000Z',
+      knowledge: { nodeCount: 0, edgeCount: 0, kinds: {}, signals: [] },
+      trail: [
+        {
+          kind: 'decision',
+          id: 'd1',
+          label: 'decision:route · selected · coding',
+          status: 'selected',
+        },
+      ],
+      policyRefs: [],
+      runLookup: 'provided',
+      run: {
+        runId: 'run-1',
+        taskId: 't1',
+        intentKind: 'explain.code',
+        policyIds: [],
+        agentIds: [],
+        skillIds: [],
+        hookIds: [],
+        steps: [],
+        decisions: [
+          {
+            id: 'd1',
+            subject: 'route',
+            outcome: 'selected',
+            value: 'coding',
+          },
+        ],
+        artifacts: [],
+      },
+    });
+
+    const out = await runSafeAction({
+      action: 'visibility',
+      homePath: process.cwd(),
+      workspaceId: 'aios',
+      runId: 'run-1',
+    });
+    expect(out.ok).toBe(true);
+    expect(correlateVisibility).toHaveBeenCalledWith(
+      expect.objectContaining({
+        runId: 'run-1',
+        workspaceId: 'aios',
+      })
+    );
+    const result = out.result as { run?: { decisions: unknown[] }; trail: unknown[] };
+    expect(result.run?.decisions).toHaveLength(1);
+  });
+
   it('compile_brief with skillIds loads multi-cloud-honesty from catalog (#487)', async () => {
     const out = await runSafeAction({
       action: 'compile_brief',
