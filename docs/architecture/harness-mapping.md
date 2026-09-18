@@ -52,6 +52,7 @@ aios_run_pipeline
   ├─ agent plugins (registry + deps)
   ├─ provider route (fast|coding|reasoning|…)
   └─ quality gate → response + run steps + DecisionRecord ledger (ADR-0034)
+  └─ read: MCP `aios_get_run_decisions` / CLI `--get-run-decisions` (#502)
 ```
 
 ## Shipped opt-in (not default pipeline context)

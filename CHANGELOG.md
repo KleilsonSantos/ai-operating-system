@@ -6,6 +6,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Added
 
+- 📒 MCP `aios_get_run_decisions` + CLI `--get-run-decisions` — read-only DecisionRecord ledger by `runId` (ADR-0034 / #502)
 - 🔧 Cursor Agent Shell: project `preToolUse` PATH inject + sandbox readonly `~/.nvm` / shared build cache; document harness noise vs `node` missing (#491)
 - 🧹 `.markdownlint.json` — `MD024.siblings_only` + `MD013` off so Keep a Changelog stops flooding the IDE (#494)
 

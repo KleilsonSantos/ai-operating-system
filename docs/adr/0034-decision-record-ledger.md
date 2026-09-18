@@ -14,7 +14,8 @@
 1. **Additive type on contract v1.** `DecisionRecord` (`subject`, `outcome`, `value`, optional `reason` / `stepId`) lives in `@aios/shared`. `PipelineRun.decisions` is always populated by `buildPipelineRun`.
 2. **SSOT on the run.** No new engine and no metrics dual-write (`kind: decision`). Persist via the existing run store (`.aios/runs/`).
 3. **Visibility surface.** Trail items may include `kind: 'decision'`; step labels may include `detail`. Obsidian run notes list Decisions when present.
-4. **Not governance notes.** Do not overload `engines/governance` `recordDecision` or `KNOWN_DECISION_KINDS`.
+4. **Read surface (#502).** MCP `aios_get_run_decisions` and CLI `--get-run-decisions` load the persisted run and return `decisions` (READ_ONLY; no second store).
+5. **Not governance notes.** Do not overload `engines/governance` `recordDecision` or `KNOWN_DECISION_KINDS`.
 
 ## Consequences
 
