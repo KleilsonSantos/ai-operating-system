@@ -51,7 +51,7 @@ aios_run_pipeline
   ├─ memory read (workspace scope)
   ├─ agent plugins (registry + deps)
   ├─ provider route (fast|coding|reasoning|…)
-  └─ quality gate → response + run steps
+  └─ quality gate → response + run steps + DecisionRecord ledger (ADR-0034)
 ```
 
 ## Shipped opt-in (not default pipeline context)

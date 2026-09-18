@@ -1,0 +1,18 @@
+{
+  "markdownlint.run": "onSave",
+  "files.associations": {
+    "LICENSE": "plaintext",
+    "LICENSE*": "plaintext"
+  },
+  "markdownlint.lintWorkspaceGlobs": [
+    "**/*.md",
+    "!**/node_modules/**",
+    "!**/dist/**",
+    "!**/coverage/**",
+    "!**/.tmp/**",
+    "!**/tmp/**",
+    "!docs/wiki/**",
+    "!LICENSE",
+    "!**/LICENSE"
+  ]
+}

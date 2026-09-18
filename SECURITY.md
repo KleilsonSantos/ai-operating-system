@@ -10,7 +10,7 @@
 
 **Do not open public issues for security vulnerabilities.**
 
-Send details to: **kleilson@icloud.com**
+Send details to: **[kleilson@icloud.com](mailto:kleilson@icloud.com)**
 
 Include a description, reproduction steps, impact, and suggested mitigation (if any).
 

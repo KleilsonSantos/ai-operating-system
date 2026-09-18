@@ -28,7 +28,16 @@ function sampleRun(runId = 'run-abc'): PipelineRun {
     agentIds: ['architecture'],
     skillIds: [],
     hookIds: [],
-    steps: [{ stepId: 'intent', kind: 'intent', status: 'ok' }],
+    steps: [{ stepId: 'classify-1', kind: 'classify', status: 'ok', detail: 'analyze.project' }],
+    decisions: [
+      {
+        id: 'intent:analyze.project',
+        subject: 'intent',
+        outcome: 'selected',
+        value: 'analyze.project',
+        stepId: 'classify-1',
+      },
+    ],
     artifacts: [],
     verdict: { passed: true, reasons: [] },
   };
@@ -59,7 +68,8 @@ describe('run store (#447)', () => {
       at: '2026-09-13T12:01:00.000Z',
     });
     const loaded = loadPipelineRun('run-1', { homePath: home });
-    expect(loaded?.run.steps[0]?.kind).toBe('intent');
+    expect(loaded?.run.steps[0]?.kind).toBe('classify');
+    expect(loaded?.run.decisions?.[0]?.subject).toBe('intent');
     expect(loadPipelineRun('../evil', { homePath: home })).toBeUndefined();
 
     const listed = listPipelineRuns({ homePath: home, limit: 10 });

@@ -111,7 +111,7 @@ Phase 5 enables agents as first-class, discoverable, reusable building blocks fo
 
 See `tasks.json` for detailed task graph.
 
-### Key epics:
+### Key epics
 
 | Epic              | Tasks   | Owner         | Week | Gate                     |
 | ----------------- | ------- | ------------- | ---- | ------------------------ |
@@ -174,7 +174,7 @@ See `tasks.json` for detailed task graph.
 
 ## Timeline
 
-```
+```text
 Week 1     Week 2     Week 3     Week 4
 M1|        M2 M3      M4 M5      M6
 ┌─┼─────────┼──┼───────┼──┼───────┼───┐

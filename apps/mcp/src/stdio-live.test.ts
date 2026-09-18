@@ -2,11 +2,11 @@
  * Live MCP stdio harness (audit P1).
  * Spawns the real server process and round-trips JSON-RPC via the official SDK client.
  * Does not import `./index.ts` (that module always calls main()).
- * Spawn uses product `tsx` (same as `pnpm --filter @aios/mcp dev`) — bare
- * `node --experimental-strip-types` fails on workspace `.js`→`.ts` imports.
+ * Spawn uses `node --import tsx` (not the `tsx` CLI) so the child does not open a
+ * tsx IPC unix socket — that listen fails with EPERM under Cursor Agent sandbox
+ * and breaks pre-commit `pnpm test`.
  */
 import assert from 'node:assert/strict';
-import { createRequire } from 'node:module';
 import path from 'node:path';
 import { after, before, describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -15,8 +15,18 @@ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 
 const mcpRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const repoRoot = path.resolve(mcpRoot, '../..');
-const require = createRequire(import.meta.url);
-const tsxCli = require.resolve('tsx/cli');
+const serverEntry = path.join(mcpRoot, 'src/index.ts');
+
+/** Prefer `--import tsx` over `tsx/cli` to avoid createIpcServer (EPERM in sandboxes). */
+function mcpStdioTransport(env: Record<string, string>): StdioClientTransport {
+  return new StdioClientTransport({
+    command: process.execPath,
+    args: ['--import', 'tsx', serverEntry],
+    cwd: mcpRoot,
+    stderr: 'pipe',
+    env,
+  });
+}
 
 function textPayload(result: unknown): string {
   const content = (result as { content?: Array<{ type: string; text?: string }> }).content;
@@ -29,19 +39,13 @@ describe('MCP stdio live harness', () => {
   let client: Client;
 
   before(async () => {
-    const transport = new StdioClientTransport({
-      command: process.execPath,
-      args: [tsxCli, path.join(mcpRoot, 'src/index.ts')],
-      cwd: mcpRoot,
-      stderr: 'pipe',
-      env: {
-        AIOS_HOME: repoRoot,
-        AIOS_MCP_QUIET: '1',
-        // Force default privilege surface (parent shell may export overrides).
-        AIOS_MCP_ALLOW_PRIVILEGED: '',
-        AIOS_MCP_ALLOW_SAFE_WRITE: '',
-        AIOS_MCP_PRIVILEGE: '',
-      },
+    const transport = mcpStdioTransport({
+      AIOS_HOME: repoRoot,
+      AIOS_MCP_QUIET: '1',
+      // Force default privilege surface (parent shell may export overrides).
+      AIOS_MCP_ALLOW_PRIVILEGED: '',
+      AIOS_MCP_ALLOW_SAFE_WRITE: '',
+      AIOS_MCP_PRIVILEGE: '',
     });
     const stderrChunks: Buffer[] = [];
     transport.stderr?.on('data', (chunk: Buffer) => {
@@ -130,20 +134,14 @@ describe('MCP stdio session skill env (#483)', () => {
   let sessionClient: Client;
 
   before(async () => {
-    const transport = new StdioClientTransport({
-      command: process.execPath,
-      args: [tsxCli, path.join(mcpRoot, 'src/index.ts')],
-      cwd: mcpRoot,
-      stderr: 'pipe',
-      env: {
-        AIOS_HOME: repoRoot,
-        AIOS_MCP_QUIET: '1',
-        AIOS_MCP_ALLOW_PRIVILEGED: '',
-        AIOS_MCP_ALLOW_SAFE_WRITE: '',
-        AIOS_MCP_PRIVILEGE: '',
-        // In-repo pack allows compile/pipeline/workspaces — not list_agents
-        AIOS_MCP_SKILL_IDS: 'multi-cloud-honesty',
-      },
+    const transport = mcpStdioTransport({
+      AIOS_HOME: repoRoot,
+      AIOS_MCP_QUIET: '1',
+      AIOS_MCP_ALLOW_PRIVILEGED: '',
+      AIOS_MCP_ALLOW_SAFE_WRITE: '',
+      AIOS_MCP_PRIVILEGE: '',
+      // In-repo pack allows compile/pipeline/workspaces — not list_agents
+      AIOS_MCP_SKILL_IDS: 'multi-cloud-honesty',
     });
     sessionClient = new Client({ name: 'aios-mcp-session-skills', version: '0.0.0' });
     await sessionClient.connect(transport);

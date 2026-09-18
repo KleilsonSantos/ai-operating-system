@@ -1,0 +1,73 @@
+// Markdownlint policy (SSOT for CLI + CI). IDE also reads `.markdownlint.json` (+ nested configs).
+// Guide: docs/guides/markdown-lint.md · Issue #498
+// Override objects require filter + config + combine (markdownlint-cli2 schema).
+{
+  "config": {
+    "MD013": false,
+    "MD024": { "siblings_only": true },
+    "MD033": false,
+    "MD041": { "front_matter_title": "" },
+    "MD060": false
+  },
+  "globs": ["**/*.md"],
+  "ignores": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/coverage/**",
+    "**/.tmp/**",
+    "**/tmp/**",
+    "docs/wiki/**",
+    "LICENSE",
+    "LICENSE*",
+    "**/LICENSE",
+    "**/LICENSE*"
+  ],
+  "overrides": [
+    {
+      "filter": ["docs/prompts/**/*.md"],
+      "combine": "merge",
+      "config": {
+        "MD013": false,
+        "MD001": false,
+        "MD025": false,
+        "MD028": false,
+        "MD029": false,
+        "MD036": false,
+        "MD041": false,
+        "MD056": false,
+        "MD060": false
+      }
+    },
+    {
+      "filter": [
+        ".github/agents/**/*.md",
+        ".github/pull_request_template.md",
+        ".github/ISSUE_TEMPLATE/**/*.md"
+      ],
+      "combine": "merge",
+      "config": {
+        "MD013": false,
+        "MD041": false,
+        "MD033": false
+      }
+    },
+    {
+      "filter": ["docs/audits/**/*.md"],
+      "combine": "merge",
+      "config": {
+        "MD013": false,
+        "MD036": false,
+        "MD056": false,
+        "MD060": false
+      }
+    },
+    {
+      "filter": ["CHANGELOG.md"],
+      "combine": "merge",
+      "config": {
+        "MD013": false,
+        "MD024": { "siblings_only": true }
+      }
+    }
+  ]
+}

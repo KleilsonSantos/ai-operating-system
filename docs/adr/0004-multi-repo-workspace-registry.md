@@ -13,11 +13,11 @@ Phase 2 calls for onboarding multiple repositories. The core already accepts `re
 
 1. **Canonical file** `workspaces/aios.workspaces.json` (or `aios.workspaces.json` at the root / walk-up), shape:
 
-```json
-{
-  "workspaces": [{ "id": "aios", "name": "AI Operating System", "path": ".", "default": true }]
-}
-```
+   ```json
+   {
+     "workspaces": [{ "id": "aios", "name": "AI Operating System", "path": ".", "default": true }]
+   }
+   ```
 
 2. **Engine** `@aios/workspace`: `loadWorkspaces` / `resolveWorkspace(id?)`.
 3. **`PipelineRequest.workspaceId`** (optional). Priority: explicit `repoPath` > workspace resolve > `cwd`.
