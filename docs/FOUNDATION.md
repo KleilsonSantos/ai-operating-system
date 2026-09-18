@@ -14,7 +14,7 @@ This FOUNDATION body is US English (migrated #124). New edits and sibling docs m
 
 ---
 
-# What AIOS is
+## What AIOS is
 
 The **AI Operating System (AIOS)** is a standalone product: a **governance platform for AI applied to software development**.
 
@@ -40,7 +40,7 @@ Run workflows.
 
 ---
 
-# Positioning
+## Positioning
 
 Projects today include:
 
@@ -57,7 +57,7 @@ None solves exactly what AIOS covers: **AI governance for software engineering**
 
 ---
 
-# Architecture
+## Architecture
 
 ```text
 AIOS
@@ -99,7 +99,7 @@ Agents become **plugins** only.
 
 ---
 
-# Main flow
+## Main flow
 
 Agents stop talking to you.
 
@@ -145,7 +145,7 @@ You never call an agent directly.
 
 ---
 
-# Automatic intent
+## Automatic intent
 
 Today you write:
 
@@ -207,7 +207,7 @@ All automatic.
 
 ---
 
-# Knowledge Graph
+## Knowledge Graph
 
 Instead of files alone, AIOS builds relationships:
 
@@ -247,7 +247,7 @@ That improves context retrieval.
 
 ---
 
-# Decision Engine
+## Decision Engine
 
 ```text
 Does this agent really need to participate?
@@ -263,7 +263,7 @@ Do not run it.
 
 ---
 
-# Quality Gate
+## Quality Gate
 
 Before the response leaves:
 
@@ -293,7 +293,7 @@ Send response
 
 ---
 
-# Policy Engine
+## Policy Engine
 
 You define the rules **once**.
 
@@ -315,7 +315,7 @@ You never need to rewrite them in every prompt.
 
 ---
 
-# Policies instead of long prompts
+## Policies instead of long prompts
 
 Today:
 
@@ -341,7 +341,7 @@ Because those rules are already registered as platform policies.
 
 ---
 
-# Phased evolution
+## Phased evolution
 
 - **Phase 1:** AIOS core — intent, policy, context, orchestration, plugins, and quality gate — validating architecture and flows.
 - **Phase 2:** reusable multi-repository platform, with Knowledge Graph and project memory.

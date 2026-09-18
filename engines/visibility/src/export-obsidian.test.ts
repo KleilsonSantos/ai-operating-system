@@ -89,6 +89,7 @@ describe('exportObsidian', () => {
             status: 'ok',
           },
         ],
+        decisions: [],
         artifacts: [],
       },
     });

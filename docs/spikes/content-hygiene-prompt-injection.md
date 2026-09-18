@@ -8,7 +8,7 @@
 
 ## Problem
 
-#447 acceptance includes a **security spike**: hostile / secret-looking text must not silently enter the model context or the durable memory store.
+Issue #447 acceptance includes a **security spike**: hostile / secret-looking text must not silently enter the model context or the durable memory store.
 
 **Facts (pre-slice):**
 

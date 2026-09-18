@@ -66,15 +66,25 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm lint
+      - run: pnpm lint:md
       - run: pnpm format:check
       - run: pnpm test:coverage
       - run: pnpm evals
       - run: pnpm build
       - name: Upload coverage to Codecov
+        # Official Codecov GitHub Actions pattern:
+        # https://docs.codecov.com/docs/adding-the-codecov-token
+        # Requires repo secret CODECOV_TOKEN (Settings → Secrets → Actions).
+        # IDE "Context access might be invalid" is from GitHub Actions extension when
+        # the secret is missing locally / not fetched — not a YAML syntax error
+        # (github/vscode-github-actions#222).
         uses: codecov/codecov-action@v5
+        continue-on-error: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           files: ./coverage/lcov.info
-          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
 
   security:
     runs-on: ubuntu-latest

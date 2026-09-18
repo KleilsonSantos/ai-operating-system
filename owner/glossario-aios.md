@@ -29,7 +29,7 @@
 
 ---
 
-# Etapa 1 — O produto em 5 ideias
+## Etapa 1 — O produto em 5 ideias
 
 ### AIOS (AI Operating System)
 
@@ -78,7 +78,7 @@
 
 ---
 
-# Etapa 2 — Verdade do produto (SSOT e documentos)
+## Etapa 2 — Verdade do produto (SSOT e documentos)
 
 ### SSOT (Single Source of Truth)
 
@@ -155,7 +155,7 @@
 
 ---
 
-# Etapa 3 — Arquitetura: engines, packages, apps
+## Etapa 3 — Arquitetura: engines, packages, apps
 
 ### Engine
 
@@ -223,7 +223,7 @@ Mapa: `docs/architecture/harness-mapping.md`.
 
 ---
 
-# Etapa 4 — Três “cérebros de conhecimento” (não misturar!)
+## Etapa 4 — Três “cérebros de conhecimento” (não misturar!)
 
 ```text
 ┌─────────────┐   ┌─────────────┐   ┌─────────────┐
@@ -297,7 +297,7 @@ Busca: textual/tags · opcional **semantic** (`mode=semantic`, índice local sql
 
 ---
 
-# Etapa 5 — MCP, ferramentas e privilégios
+## Etapa 5 — MCP, ferramentas e privilégios
 
 ### MCP (Model Context Protocol)
 
@@ -343,7 +343,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 
 ---
 
-# Etapa 6 — Prompt, skills, hooks, policies
+## Etapa 6 — Prompt, skills, hooks, policies
 
 ### Policy / Policy Engine
 
@@ -374,12 +374,12 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 
 ### Hook (ADR-0027)
 
-|                    |                                                                   |
-| ------------------ | ----------------------------------------------------------------- |
-| **Analogia**       | Sensor na esteira: _before/after_ policy                          | context | agent | gate. |
-| **O que é**        | Interceptação na lista central do pipeline.                       |
-| **Para que serve** | Extensão controlada do fluxo.                                     |
-| **Não é**          | `if` espalhado; não intercepta MCP tools como “hook marketplace”. |
+|                    |                                                                     |
+| ------------------ | ------------------------------------------------------------------- |
+| **Analogia**       | Sensor na esteira: _before/after_ em policy, context, agent e gate. |
+| **O que é**        | Interceptação na lista central do pipeline.                         |
+| **Para que serve** | Extensão controlada do fluxo.                                       |
+| **Não é**          | `if` espalhado; não intercepta MCP tools como “hook marketplace”.   |
 
 ### Intent
 
@@ -401,7 +401,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 
 ---
 
-# Etapa 7 — Modelos, providers, roteamento
+## Etapa 7 — Modelos, providers, roteamento
 
 ### Provider
 
@@ -439,7 +439,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 
 ---
 
-# Etapa 8 — Git, entrega, SemVer (o ritmo do projeto)
+## Etapa 8 — Git, entrega, SemVer (o ritmo do projeto)
 
 ### sandbox → main
 
@@ -465,10 +465,11 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 
 ### CI / quality gates (repo)
 
-|                                                                                     |                                                             |
-| ----------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| **Analogia**                                                                        | Raio-X antes do merge (lint, typecheck, testes, security…). |
-| **Não confundir** com **Quality Gate** do _pipeline de IA_ (veredicto da resposta). |
+|              |                                                             |
+| ------------ | ----------------------------------------------------------- |
+| **Analogia** | Raio-X antes do merge (lint, typecheck, testes, security…). |
+
+**Não confundir** com **Quality Gate** do _pipeline de IA_ (veredicto da resposta).
 
 ### Delivery automation map
 
@@ -488,7 +489,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 
 ---
 
-# Etapa 9 — Workspace, Companion, Visibility
+## Etapa 9 — Workspace, Companion, Visibility
 
 ### Workspace (ADR-0004)
 
@@ -531,6 +532,15 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **Para que serve** | Replay fino + Visibility lookup-first (harness P0).                                              |
 | **Não é**          | Banco; não é eval dourado nem LangGraph.                                                         |
 
+### DecisionRecord (ledger em `PipelineRun` · #497 / ADR-0034)
+
+|                    |                                                                                                    |
+| ------------------ | -------------------------------------------------------------------------------------------------- |
+| **Analogia**       | Livro de bordo: cada escolha da esteira (intent, rota, skill, agente, gate) com motivo estável.    |
+| **O que é**        | Array tipado `run.decisions` no mesmo `PipelineRun` (sem store paralelo; sem JSONL de governança). |
+| **Para que serve** | Auditoria “por que esta rota/skill/agente”; trail Visibility `kind: decision`.                     |
+| **Não é**          | `GovernanceDecision` (notas humanas ADR/policy); não é LLM-as-judge nem auto-trigger de skills.    |
+
 ### Selection evals (`integrations/evals/` · #447)
 
 |              |                                                                       |
@@ -559,7 +569,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 
 ---
 
-# Etapa 10 — Índice A–Z (consulta rápida)
+## Etapa 10 — Índice A–Z (consulta rápida)
 
 | Termo                   | Em uma linha                                                                        |
 | ----------------------- | ----------------------------------------------------------------------------------- |
@@ -575,6 +585,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **Context Engine**      | Recorte do repo para a esteira                                                      |
 | **Delivery map**        | Evento Git → CI → próximo passo do agente                                           |
 | **Delivery gate**       | Paridade local do issue-link antes do push                                          |
+| **DecisionRecord**      | Ledger tipado das escolhas do run (intent/rota/skill/agente/gate · ADR-0034)        |
 | **FIFO**                | Descarta o mais antigo quando a fila enche                                          |
 | **FOUNDATION**          | Constituição do produto                                                             |
 | **Harness**             | Estrutura de controle em volta do modelo                                            |
@@ -612,7 +623,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 
 ---
 
-# Etapa 11 — Como estudar sem overload (TDAH)
+## Etapa 11 — Como estudar sem overload (TDAH)
 
 1. **Dia 1:** Etapas 1–2 (produto + SSOT). Pare.
 2. **Dia 2:** Etapa 3 (engines) + diagrama do harness.

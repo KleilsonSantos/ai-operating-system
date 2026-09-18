@@ -61,7 +61,7 @@ Oldest rows are **deleted with no archive and no summary**. Issue #322 asks whet
 | LLM-on-evict couples local JSON durability to model availability and burns battery/CPU | Better narrative summaries — wrong layer for a session preference log   |
 | Keeps Memory job clear vs PKB semantic search (#327)                                   | Product still needs discipline: write short, tagged prefs intentionally |
 
-**Anti-patterns**
+### Anti-patterns
 
 - Summarizing Memory with a cloud API on every `remember` overflow “for quality”
 - Installing a memory framework because competitor demos show one

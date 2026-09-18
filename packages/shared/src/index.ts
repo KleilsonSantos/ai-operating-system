@@ -1138,6 +1138,25 @@ export type PipelineStep = {
   detail?: string;
 };
 
+/**
+ * Structured runtime choice for one `runPipeline` (ADR-0034).
+ * Not {@link GovernanceDecision} (human ADR/policy notes in governance JSONL).
+ */
+export type DecisionSubject = 'intent' | 'policy' | 'route' | 'skill' | 'agent' | 'gate';
+
+export type DecisionOutcome = 'selected' | 'skipped' | 'denied' | 'failed' | 'passed';
+
+export type DecisionRecord = {
+  id: string;
+  subject: DecisionSubject;
+  outcome: DecisionOutcome;
+  /** Stable machine value (intent kind, route key, skill/agent id, …). */
+  value: string;
+  reason?: string;
+  /** Links to {@link PipelineStep.stepId} when the choice maps to a step. */
+  stepId?: string;
+};
+
 export type PipelineArtifact = {
   id: string;
   kind: string;
@@ -1163,6 +1182,8 @@ export type PipelineRun = {
     privacy?: TaskPrivacy;
   };
   steps: PipelineStep[];
+  /** Typed decision ledger for the run (ADR-0034). Additive; empty array when none. */
+  decisions: DecisionRecord[];
   artifacts: PipelineArtifact[];
   verdict?: { passed: boolean; reasons: string[] };
 };
@@ -1179,9 +1200,9 @@ export type AgentExecutionRecord = {
   ok?: boolean;
 };
 
-/** Human-readable trail entry derived from run steps / agent JSONL. */
+/** Human-readable trail entry derived from run steps / agent JSONL / decisions. */
 export type VisibilityTrailItem = {
-  kind: 'pipeline.step' | 'agent.execution' | 'policy';
+  kind: 'pipeline.step' | 'agent.execution' | 'policy' | 'decision';
   id: string;
   label: string;
   at?: string;

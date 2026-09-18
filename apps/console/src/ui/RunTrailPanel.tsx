@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { VisibilitySnapshot, VisibilityTrailItem } from '@aios/shared';
 
-type TrailFilter = 'all' | 'policy' | 'pipeline.step' | 'agent.execution';
+type TrailFilter = 'all' | 'policy' | 'pipeline.step' | 'agent.execution' | 'decision';
 
 type ActionResult = {
   ok: boolean;
@@ -80,8 +80,8 @@ export function RunTrailPanel({ workspaceId }: Props) {
     <section className="panel run-trail" aria-labelledby="trail-h">
       <h2 id="trail-h">Run trail</h2>
       <p className="quiet">
-        Visibility Plane — policies, pipeline steps e <code>agent.execution</code> correlacionados
-        (ADR-0030). On-demand; sem agentes no UX.
+        Visibility Plane — policies, pipeline steps, decisions e <code>agent.execution</code>{' '}
+        correlacionados (ADR-0030 / ADR-0034). On-demand; sem agentes no UX.
       </p>
 
       <div className="trail-controls">
@@ -105,6 +105,7 @@ export function RunTrailPanel({ workspaceId }: Props) {
             ['all', 'Todos'],
             ['policy', 'Policies'],
             ['pipeline.step', 'Steps'],
+            ['decision', 'Decisions'],
             ['agent.execution', 'Agents'],
           ] as const
         ).map(([id, label]) => (

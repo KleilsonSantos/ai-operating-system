@@ -101,8 +101,24 @@ describe('correlateVisibility', () => {
       skillIds: [],
       hookIds: [],
       steps: [
-        { stepId: 'intent', kind: 'intent', status: 'ok' },
-        { stepId: 'gate', kind: 'gate', status: 'ok' },
+        { stepId: 'classify-1', kind: 'classify', status: 'ok', detail: 'analyze.project' },
+        { stepId: 'gate-1', kind: 'gate', status: 'ok' },
+      ],
+      decisions: [
+        {
+          id: 'intent:analyze.project',
+          subject: 'intent',
+          outcome: 'selected',
+          value: 'analyze.project',
+          stepId: 'classify-1',
+        },
+        {
+          id: 'gate:pass',
+          subject: 'gate',
+          outcome: 'passed',
+          value: 'pass',
+          stepId: 'gate-1',
+        },
       ],
       artifacts: [],
       verdict: { passed: true, reasons: [] },
@@ -135,14 +151,37 @@ describe('correlateVisibility', () => {
       skillIds: [],
       hookIds: [],
       steps: [
-        { stepId: 'intent', kind: 'intent', status: 'ok' },
+        { stepId: 'classify-1', kind: 'classify', status: 'ok', detail: 'analyze.project' },
         {
           stepId: 'agent:architecture',
           kind: 'agent',
           status: 'ok',
           agentId: 'architecture',
         },
-        { stepId: 'gate', kind: 'gate', status: 'ok' },
+        { stepId: 'gate-1', kind: 'gate', status: 'ok' },
+      ],
+      decisions: [
+        {
+          id: 'intent:analyze.project',
+          subject: 'intent',
+          outcome: 'selected',
+          value: 'analyze.project',
+          stepId: 'classify-1',
+        },
+        {
+          id: 'agent:architecture:ran',
+          subject: 'agent',
+          outcome: 'selected',
+          value: 'architecture',
+          stepId: 'agent:architecture',
+        },
+        {
+          id: 'gate:pass',
+          subject: 'gate',
+          outcome: 'passed',
+          value: 'pass',
+          stepId: 'gate-1',
+        },
       ],
       artifacts: [],
       verdict: { passed: true, reasons: [] },
@@ -163,5 +202,6 @@ describe('correlateVisibility', () => {
     expect(snap.run?.runId).toBe('run-1');
     expect(snap.runLookup).toBe('provided');
     expect(snap.trail.filter((t) => t.kind === 'pipeline.step').length).toBeGreaterThanOrEqual(3);
+    expect(snap.trail.some((t) => t.kind === 'decision' && t.label.includes('intent'))).toBe(true);
   });
 });
