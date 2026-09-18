@@ -18,6 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag       | Description                                                                                          |
 | --------- | ---------------------------------------------------------------------------------------------------- |
+| `v0.49.8` | MCP/CLI read DecisionRecord ledger by runId (#502)                                                   |
 | `v0.49.7` | DecisionRecord ledger + strict markdownlint + MCP stdio harness (#497 / #498)                        |
 | `v0.49.6` | Console Try-it optional `skillIds` on `compile_brief` (#487)                                         |
 | `v0.49.5` | MCP skill `allowedTools` gate + session `AIOS_MCP_SKILL_IDS` (#482 / #483)                           |
