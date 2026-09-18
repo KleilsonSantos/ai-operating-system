@@ -27,6 +27,8 @@ export type CliArgs = {
   visibilityRunId?: string;
   listRuns: boolean;
   replayRunId?: string;
+  /** When set (incl. empty string), CLI prints DecisionRecord ledger for run id. */
+  getRunDecisions: boolean;
   exportObsidian: boolean;
   exportOut?: string;
   exportFullGraph: boolean;
@@ -71,6 +73,7 @@ function emptyArgs(overrides: Partial<CliArgs> = {}): CliArgs {
     operationalState: false,
     visibility: false,
     listRuns: false,
+    getRunDecisions: false,
     exportObsidian: false,
     exportFullGraph: true,
     listAgents: false,
@@ -112,10 +115,11 @@ Common options:
   --governance-audit         Governance audit
   --operational-state        Operational state snapshot
   --visibility               Visibility Plane snapshot (requires --scope, --workspace, and/or --run-id)
-  --run-id <id>              Optional run id for --visibility / --export-obsidian / --replay
+  --run-id <id>              Optional run id for --visibility / --export-obsidian / --replay / --get-run-decisions
   --list-runs                List recent PipelineRun index rows from .aios/runs/ (#447)
   --limit <n>                With --search-pkb or --list-runs, max rows (default 50)
   --replay [id]              Print stored PipelineRun JSON (id from arg or --run-id) (#447)
+  --get-run-decisions        Print DecisionRecord ledger for a stored run (--run-id required) (#502 / ADR-0034)
   --export-obsidian          Export KG (+ optional run note) to Obsidian Markdown (ADR-0030 / #366)
   --out <dir>                Destination for --export-obsidian (default: .aios/export/obsidian)
   --no-full-graph            With --export-obsidian + --scope, export only matched nodes
@@ -169,6 +173,7 @@ export function parseArgs(argv: string[]): CliArgs {
   let visibilityRunId: string | undefined;
   let listRuns = false;
   let replayRunId: string | undefined;
+  let getRunDecisions = false;
   let exportObsidian = false;
   let exportOut: string | undefined;
   let exportFullGraph = true;
@@ -342,6 +347,10 @@ export function parseArgs(argv: string[]): CliArgs {
       replayRunId = a.slice('--replay='.length);
       continue;
     }
+    if (a === '--get-run-decisions') {
+      getRunDecisions = true;
+      continue;
+    }
     if (a === '--run-id') {
       visibilityRunId = argv[++i];
       continue;
@@ -442,7 +451,11 @@ export function parseArgs(argv: string[]): CliArgs {
   return {
     input:
       parts.join(' ').trim() ||
-      (searchPkbFlag || rebuildPkbVectors || listRuns || replayRunId !== undefined
+      (searchPkbFlag ||
+      rebuildPkbVectors ||
+      listRuns ||
+      getRunDecisions ||
+      replayRunId !== undefined
         ? ''
         : 'Analise meu projeto.'),
     scope: scope || process.env.AIOS_SCOPE,
@@ -470,6 +483,7 @@ export function parseArgs(argv: string[]): CliArgs {
     visibilityRunId,
     listRuns,
     replayRunId,
+    getRunDecisions,
     exportObsidian,
     exportOut,
     exportFullGraph,

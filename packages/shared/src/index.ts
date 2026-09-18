@@ -46,6 +46,7 @@ export const MCP_TOOL_CATALOG = [
   'aios_governance_record',
   'aios_operational_state',
   'aios_visibility',
+  'aios_get_run_decisions',
   'aios_export_obsidian',
 ] as const;
 
@@ -68,6 +69,7 @@ export const MCP_TOOL_PRIVILEGE: Record<McpToolName, Privilege> = {
   aios_governance_audit: 'READ_ONLY',
   aios_operational_state: 'READ_ONLY',
   aios_visibility: 'READ_ONLY',
+  aios_get_run_decisions: 'READ_ONLY',
   aios_export_obsidian: 'SAFE_WRITE',
   aios_pkb_rebuild_vectors: 'SAFE_WRITE',
   aios_memory_remember: 'SAFE_WRITE',
