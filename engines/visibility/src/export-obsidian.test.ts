@@ -99,6 +99,42 @@ describe('exportObsidian', () => {
     expect(runMd).toMatch(/s1/);
   });
 
+  it('writes Decisions section when run.decisions is non-empty (#502)', () => {
+    const home = miniRepo();
+    const out = join(home, 'vault-decisions');
+    const result = exportObsidian({
+      homePath: home,
+      repoPath: home,
+      outDir: out,
+      runId: 'run-dec-1',
+      run: {
+        runId: 'run-dec-1',
+        taskId: 'task-1',
+        intentKind: 'explain.code',
+        policyIds: [],
+        agentIds: ['docs'],
+        skillIds: [],
+        hookIds: [],
+        steps: [{ stepId: 's1', kind: 'agents', status: 'ok', agentId: 'docs' }],
+        decisions: [
+          {
+            id: 'd1',
+            subject: 'agent',
+            outcome: 'selected',
+            value: 'docs',
+            reason: 'intent matrix',
+            stepId: 's1',
+          },
+        ],
+        artifacts: [],
+      },
+    });
+    expect(result.runNote).toBe('runs/run-dec-1');
+    const runMd = readFileSync(join(out, 'runs', 'run-dec-1.md'), 'utf8');
+    expect(runMd).toMatch(/## Decisions/);
+    expect(runMd).toMatch(/`d1` · agent · selected · `docs` · intent matrix/);
+  });
+
   it('filters by scope when fullGraph is false', () => {
     const home = miniRepo();
     const result = exportObsidian({

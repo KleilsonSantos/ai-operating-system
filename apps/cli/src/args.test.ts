@@ -85,6 +85,13 @@ describe('parseArgs', () => {
     expect(replayFlag.visibilityRunId).toBe('from-flag');
   });
 
+  it('parses --get-run-decisions with --run-id', () => {
+    const args = parseArgs(['--get-run-decisions', '--run-id', 'run-dec-1']);
+    expect(args.getRunDecisions).toBe(true);
+    expect(args.visibilityRunId).toBe('run-dec-1');
+    expect(args.input).toBe('');
+  });
+
   it('parses --search-pkb --semantic and --rebuild-pkb-vectors', () => {
     const search = parseArgs(['--search-pkb', '--semantic', '--tag', 'docs', 'RAG query']);
     expect(search.searchPkb).toBe(true);

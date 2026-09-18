@@ -233,6 +233,34 @@ async function main(): Promise<void> {
     return;
   }
 
+  if (args.getRunDecisions) {
+    const runId = (args.visibilityRunId || '').trim();
+    if (!runId) {
+      console.error('get-run-decisions: require --run-id <id>');
+      process.exitCode = 1;
+      return;
+    }
+    const stored = loadPipelineRun(runId, {
+      homePath: process.env.AIOS_HOME || process.cwd(),
+    });
+    if (!stored) {
+      console.error(JSON.stringify({ error: 'run.not_found', runId }, null, 2));
+      process.exitCode = 1;
+      return;
+    }
+    console.log(
+      JSON.stringify(
+        {
+          runId: stored.run.runId,
+          decisions: stored.run.decisions ?? [],
+        },
+        null,
+        2
+      )
+    );
+    return;
+  }
+
   if (args.visibility) {
     const snap = await correlateVisibility({
       homePath: process.env.AIOS_HOME || process.cwd(),

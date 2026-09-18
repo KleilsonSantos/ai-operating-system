@@ -28,7 +28,12 @@ import {
   effectiveSkillIds,
 } from '@aios/prompt';
 import { getProvider, listProviderIds, routeModel } from '@aios/provider';
-import { getGovernanceStatus, chatWithMetrics, loadMetricsSnapshot } from '@aios/status';
+import {
+  getGovernanceStatus,
+  chatWithMetrics,
+  loadMetricsSnapshot,
+  loadPipelineRun,
+} from '@aios/status';
 import { auditDocumentation, searchPkb, rebuildPkbVectorIndex } from '@aios/documentation';
 import { auditGovernance, recordDecision } from '@aios/governance';
 import { getOperationalState } from '@aios/operational-state';
@@ -896,6 +901,58 @@ export function createAiosMcpServer(): McpServer {
         const message = err instanceof Error ? err.message : String(err);
         return {
           content: [{ type: 'text', text: `aios_visibility failed: ${message}` }],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  registerTool(
+    'aios_get_run_decisions',
+    {
+      title: 'Get PipelineRun DecisionRecord ledger',
+      description:
+        'Read-only DecisionRecord ledger for a persisted PipelineRun (ADR-0034 / #502). Loads `.aios/runs/<runId>.json` via the run store; returns `{ runId, decisions }` or `run.not_found`. Older runs without `decisions` yield `[]`.',
+      inputSchema: {
+        runId: z.string().min(1),
+        homePath: z.string().optional(),
+      },
+    },
+    async ({ runId, homePath }) => {
+      try {
+        const stored = loadPipelineRun(runId, {
+          homePath: homePath || process.env.AIOS_HOME || process.cwd(),
+        });
+        if (!stored) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify({ error: 'run.not_found', runId }, null, 2),
+              },
+            ],
+            isError: true,
+          };
+        }
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(
+                {
+                  runId: stored.run.runId,
+                  decisions: stored.run.decisions ?? [],
+                },
+                null,
+                2
+              ),
+            },
+          ],
+        };
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        return {
+          content: [{ type: 'text', text: `aios_get_run_decisions failed: ${message}` }],
           isError: true,
         };
       }
