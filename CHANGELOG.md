@@ -6,11 +6,16 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ### Added
 
+- 🔧 Cursor Agent Shell: project `preToolUse` PATH inject + sandbox readonly `~/.nvm` / shared build cache; document harness noise vs `node` missing (#491)
+- 🧹 `.markdownlint.json` — `MD024.siblings_only` + `MD013` off so Keep a Changelog stops flooding the IDE (#494)
+
+## [0.49.7] - 2026-09-18
+
+### Added
+
 - 📒 DecisionRecord ledger on `PipelineRun.decisions` (intent/policy/route/skill/agent/gate) + Visibility trail `kind: decision` + Obsidian Decisions section (ADR-0034 / #497)
 - 🧹 Strict markdownlint policy — `.markdownlint-cli2.jsonc` overrides, `.markdownlintignore`, `pnpm lint:md` + CI, guide `docs/guides/markdown-lint.md`; override `smol-toml@1.8.0` (GHSA-7w5x-hrqm-74c2) (#498)
 - 🧪 MCP stdio live harness spawns via `node --import tsx` (avoid tsx CLI IPC EPERM in Agent sandbox / pre-commit) (#497)
-- 🔧 Cursor Agent Shell: project `preToolUse` PATH inject + sandbox readonly `~/.nvm` / shared build cache; document harness noise vs `node` missing (#491)
-- 🧹 `.markdownlint.json` — `MD024.siblings_only` + `MD013` off so Keep a Changelog stops flooding the IDE (#494)
 
 ## [0.49.6] - 2026-09-16
 
