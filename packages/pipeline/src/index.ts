@@ -20,6 +20,7 @@ import {
   resolveCallerPrivilege,
   routeModel,
   selectPipelineHooks,
+  type DecisionRecord,
   type PipelineArtifact,
   type PipelineRequest,
   type PipelineResponse,
@@ -379,6 +380,8 @@ function buildPipelineRun(input: {
     steps.push(hook('after.gate'));
   }
 
+  const decisions = buildDecisionLedger(input, steps);
+
   return {
     runId,
     taskId: runId,
@@ -396,10 +399,116 @@ function buildPipelineRun(input: {
       privacy: input.route.taskProfile.privacy,
     },
     steps,
+    decisions,
     artifacts: input.contextPaths.slice(0, 12),
     verdict: {
       passed: input.verdictPassed,
       reasons: [...input.verdictReasons],
     },
   };
+}
+
+function stepOf(steps: PipelineStep[], kind: PipelineStep['kind']): PipelineStep | undefined {
+  return steps.find((s) => s.kind === kind);
+}
+
+/** Typed ledger of runtime choices — SSOT on the run, not a parallel JSONL store (ADR-0034). */
+function buildDecisionLedger(
+  input: {
+    intentKind: string;
+    policyIds: string[];
+    ran: string[];
+    skipped: string[];
+    verdictPassed: boolean;
+    verdictReasons: string[];
+    route: RouteDecision;
+    skillIds: string[];
+  },
+  steps: PipelineStep[]
+): DecisionRecord[] {
+  const decisions: DecisionRecord[] = [];
+  const classify = stepOf(steps, 'classify');
+  decisions.push({
+    id: `intent:${input.intentKind}`,
+    subject: 'intent',
+    outcome: 'selected',
+    value: input.intentKind,
+    stepId: classify?.stepId,
+  });
+
+  const policy = stepOf(steps, 'policy');
+  decisions.push({
+    id: `policy:${input.policyIds.length > 0 ? input.policyIds.join('+') : 'none'}`,
+    subject: 'policy',
+    outcome: input.policyIds.length > 0 ? 'selected' : 'skipped',
+    value: input.policyIds.length > 0 ? input.policyIds.join(',') : 'none',
+    stepId: policy?.stepId,
+  });
+
+  const route = stepOf(steps, 'route');
+  const routeValue = `${input.route.capabilityClass}:${input.route.providerId}/${input.route.modelId}`;
+  decisions.push({
+    id: `route:${routeValue}`,
+    subject: 'route',
+    outcome: 'selected',
+    value: routeValue,
+    reason: `complexity=${input.route.taskProfile.complexity};privacy=${input.route.taskProfile.privacy}`,
+    stepId: route?.stepId,
+  });
+
+  const skillStep = stepOf(steps, 'skill');
+  if (input.skillIds.length === 0) {
+    decisions.push({
+      id: 'skill:none',
+      subject: 'skill',
+      outcome: 'skipped',
+      value: 'none',
+      reason: 'no skillIds on request',
+      stepId: skillStep?.stepId,
+    });
+  } else {
+    for (const skillId of input.skillIds) {
+      decisions.push({
+        id: `skill:${skillId}`,
+        subject: 'skill',
+        outcome: 'selected',
+        value: skillId,
+        reason: 'explicit request.skillIds',
+        stepId: skillStep?.stepId,
+      });
+    }
+  }
+
+  for (const agentId of input.ran) {
+    const agentStep = steps.find((s) => s.kind === 'agent' && s.agentId === agentId);
+    decisions.push({
+      id: `agent:${agentId}:ran`,
+      subject: 'agent',
+      outcome: agentStep?.status === 'fail' ? 'failed' : 'selected',
+      value: agentId,
+      stepId: agentStep?.stepId,
+    });
+  }
+  for (const agentId of input.skipped) {
+    const agentStep = steps.find((s) => s.kind === 'agent' && s.agentId === agentId);
+    decisions.push({
+      id: `agent:${agentId}:skip`,
+      subject: 'agent',
+      outcome: 'skipped',
+      value: agentId,
+      stepId: agentStep?.stepId,
+    });
+  }
+
+  const gate = stepOf(steps, 'gate');
+  decisions.push({
+    id: `gate:${input.verdictPassed ? 'pass' : 'fail'}`,
+    subject: 'gate',
+    outcome: input.verdictPassed ? 'passed' : 'failed',
+    value: input.verdictPassed ? 'pass' : 'fail',
+    reason: input.verdictReasons.length > 0 ? input.verdictReasons.join(';') : undefined,
+    stepId: gate?.stepId,
+  });
+
+  return decisions;
 }

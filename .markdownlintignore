@@ -1,0 +1,13 @@
+# Legacy fallback only. Prefer `.markdownlint-cli2.jsonc` `ignores`.
+# vscode-markdownlint ≥0.56 removed `markdownlint.ignore` (DavidAnson #351).
+
+**/node_modules/**
+**/dist/**
+**/coverage/**
+**/.tmp/**
+**/tmp/**
+docs/wiki/**
+LICENSE
+LICENSE*
+**/LICENSE
+**/LICENSE*

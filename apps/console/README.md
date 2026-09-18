@@ -7,15 +7,15 @@ Not Grafana-first. Provider chat appends `.aios/metrics/events.jsonl` (`provider
 ## Dev
 
 ```bash
-q# at the monorepo root — required so metrics/registry resolve to this repo
+# at the monorepo root — required so metrics/registry resolve to this repo
 export AIOS_HOME=/path/to/ai-operating-system
 pnpm --filter @aios/console dev
 ```
 
 Node **24+**: the API uses **`tsx`** (not `--experimental-strip-types`) because strip-only mode rejects TypeScript parameter properties in `@aios/provider`.
 
-- UI: http://127.0.0.1:5173 (proxy `/api` → API)
-- API: http://127.0.0.1:8787 (`GET /api/status`, `POST /api/action`, `GET /metrics`)
+- UI: [http://127.0.0.1:5173](http://127.0.0.1:5173) (proxy `/api` → API)
+- API: [http://127.0.0.1:8787](http://127.0.0.1:8787) (`GET /api/status`, `POST /api/action`, `GET /metrics`)
 
 ## API
 

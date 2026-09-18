@@ -66,10 +66,11 @@ function buildTrail(input: {
   }
   if (input.run) {
     for (const step of input.run.steps) {
+      const base = step.agentId ? `step:${step.kind} · agent:${step.agentId}` : `step:${step.kind}`;
       trail.push({
         kind: 'pipeline.step',
         id: step.stepId,
-        label: step.agentId ? `step:${step.kind} · agent:${step.agentId}` : `step:${step.kind}`,
+        label: step.detail ? `${base} · ${step.detail}` : base,
         status: step.status,
         at: undefined,
       });
@@ -83,6 +84,16 @@ function buildTrail(input: {
           status: 'selected',
         });
       }
+    }
+    for (const d of input.run.decisions ?? []) {
+      trail.push({
+        kind: 'decision',
+        id: d.id,
+        label: d.reason
+          ? `decision:${d.subject} · ${d.outcome} · ${d.value} · ${d.reason}`
+          : `decision:${d.subject} · ${d.outcome} · ${d.value}`,
+        status: d.outcome,
+      });
     }
   }
   for (const ev of input.agentExecutions) {

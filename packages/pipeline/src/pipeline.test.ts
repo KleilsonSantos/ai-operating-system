@@ -44,6 +44,17 @@ describe('runPipeline', () => {
     expect(res.run?.agentIds).toEqual(res.workflow.ran);
     expect(res.run?.skillIds).toEqual([]);
     expect(res.run?.hookIds).toEqual([]);
+    expect(res.run?.decisions?.length).toBeGreaterThanOrEqual(4);
+    expect(
+      res.run?.decisions.some((d) => d.subject === 'intent' && d.value === 'analyze.project')
+    ).toBe(true);
+    expect(res.run?.decisions.some((d) => d.subject === 'route' && d.outcome === 'selected')).toBe(
+      true
+    );
+    expect(res.run?.decisions.some((d) => d.subject === 'skill' && d.outcome === 'skipped')).toBe(
+      true
+    );
+    expect(res.run?.decisions.some((d) => d.subject === 'gate')).toBe(true);
     expect(res.run?.steps.some((s) => s.kind === 'hook' && s.status === 'skip')).toBe(true);
     expect(res.run?.steps.some((s) => s.kind === 'classify' && s.status === 'ok')).toBe(true);
     expect(res.run?.steps.some((s) => s.kind === 'gate')).toBe(true);
@@ -112,6 +123,11 @@ describe('runPipeline', () => {
       skillIds: ['governed-brief'],
     });
     expect(res.run?.skillIds).toEqual(['governed-brief']);
+    expect(
+      res.run?.decisions.some(
+        (d) => d.subject === 'skill' && d.value === 'governed-brief' && d.outcome === 'selected'
+      )
+    ).toBe(true);
     expect(
       res.run?.steps.some(
         (s) => s.kind === 'skill' && s.status === 'ok' && s.detail === 'governed-brief'

@@ -121,13 +121,13 @@ Improves context retrieval ([knowledge-engine](./system-guide.md)).
 
 ## Decision + Quality Gate
 
-**Decision Engine**
+### Decision Engine
 
 ```text
 Does this agent really need to participate?  →  No  →  do not run
 ```
 
-**Quality Gate** (before output)
+### Quality Gate (before output)
 
 ```text
 Architecture OK → Security OK → Docs OK → References OK → Consistency OK → send

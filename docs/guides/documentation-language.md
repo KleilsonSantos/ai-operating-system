@@ -32,5 +32,6 @@ These are the same references used in ADR-0018. Prefer them over inventing a hou
 ## Related
 
 - Foundation: [`FOUNDATION.md`](../FOUNDATION.md) (US English)
+- Markdown structure (IDE/CI): [`markdown-lint.md`](./markdown-lint.md) (#498)
 - Agent contract: [`AGENTS.md`](../../AGENTS.md)
 - Policies: `policies/aios.policies.json` → `pnpm sync:cursor-rules`

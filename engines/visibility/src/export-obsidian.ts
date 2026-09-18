@@ -238,6 +238,17 @@ function runMarkdown(input: { runId: string; run?: PipelineRun; generatedAt: str
         (s) => `- \`${s.stepId}\` · ${s.kind} · ${s.status}${s.agentId ? ` · ${s.agentId}` : ''}`
       )
       .join('\n') || '_(run body unavailable — PipelineRun not persisted)_';
+  const decisions =
+    run?.decisions && run.decisions.length > 0
+      ? run.decisions
+          .map(
+            (d) =>
+              `- \`${d.id}\` · ${d.subject} · ${d.outcome} · \`${d.value}\`${
+                d.reason ? ` · ${d.reason}` : ''
+              }`
+          )
+          .join('\n')
+      : undefined;
 
   return (
     frontmatter({
@@ -248,7 +259,8 @@ function runMarkdown(input: { runId: string; run?: PipelineRun; generatedAt: str
     }) +
     `# Run ${runId}\n\n` +
     (run ? `Intent: \`${run.intentKind}\` · task: \`${run.taskId}\`\n\n` : '') +
-    `## Steps\n\n${steps}\n`
+    `## Steps\n\n${steps}\n` +
+    (decisions ? `\n## Decisions\n\n${decisions}\n` : '')
   );
 }
 

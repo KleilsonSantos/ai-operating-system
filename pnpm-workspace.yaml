@@ -33,3 +33,5 @@ overrides:
   # GHSA-2v37-7h3g-55p8 — nanoid infinite loop when size is zero
   nanoid: 3.3.18
   'glob@10>minimatch': 10.2.5
+  # GHSA-7w5x-hrqm-74c2 — smol-toml DoS via malformed TOML (markdownlint-cli2 pins 1.7.0)
+  smol-toml: 1.8.0

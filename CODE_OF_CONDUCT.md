@@ -17,4 +17,4 @@ We expect a respectful, inclusive, and professional environment for all contribu
 
 ## Enforcement
 
-Violations may be reported by email: **kleilson@icloud.com**.
+Violations may be reported by email: **[kleilson@icloud.com](mailto:kleilson@icloud.com)**.

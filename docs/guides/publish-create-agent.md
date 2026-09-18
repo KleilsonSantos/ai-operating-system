@@ -1,7 +1,6 @@
 # Publish `@aios-platform/create-agent` (npm)
 
 > Phase 5b · Issues [#233](https://github.com/KleilsonSantos/ai-operating-system/issues/233) · [#325](https://github.com/KleilsonSantos/ai-operating-system/issues/325) · [ADR-0023](../adr/0023-agent-registry-marketplace.md)
-
 > **Scope note:** the npm organization `aios` is not available. Public packages ship under **`@aios-platform`**. Workspace packages elsewhere may still use the `@aios/*` name until migrated.
 
 This guide is for **maintainers** publishing the scaffolder so anyone can run:
