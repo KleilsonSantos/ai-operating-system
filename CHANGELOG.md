@@ -4,15 +4,20 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
-### Changed
+### Added
 
-- 📖 Clarify market lookalikes vs AIOS harness — DecisionRecord ≠ decision NN; skill packs ≠ Claude plugins; Memory ≠ third-party mem SSOT ([agent-framework-boundaries.md](docs/guides/agent-framework-boundaries.md) / #517)
+- 🔧 Cursor Agent Shell: project `preToolUse` PATH inject + sandbox readonly `~/.nvm` / shared build cache; document harness noise vs `node` missing (#491)
+- 🧹 `.markdownlint.json` — `MD024.siblings_only` + `MD013` off so Keep a Changelog stops flooding the IDE (#494)
+
+## [0.49.10] - 2026-09-23
 
 ### Added
 
 - 🧪 Skill pack `check:*` exitCriteria → DecisionRecord on `runPipeline` when `skillIds` set (ADR-0026 amend / #520)
-- 🔧 Cursor Agent Shell: project `preToolUse` PATH inject + sandbox readonly `~/.nvm` / shared build cache; document harness noise vs `node` missing (#491)
-- 🧹 `.markdownlint.json` — `MD024.siblings_only` + `MD013` off so Keep a Changelog stops flooding the IDE (#494)
+
+### Changed
+
+- 📖 Clarify market lookalikes vs AIOS harness — DecisionRecord ≠ decision NN; skill packs ≠ Claude plugins; Memory ≠ third-party mem SSOT ([agent-framework-boundaries.md](docs/guides/agent-framework-boundaries.md) / #517)
 
 ## [0.49.9] - 2026-09-18
 
