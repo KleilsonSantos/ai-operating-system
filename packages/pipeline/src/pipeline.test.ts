@@ -115,7 +115,7 @@ describe('runPipeline', () => {
     }
   });
 
-  it('records requested skill ids on run without loading a catalog', async () => {
+  it('records requested skill ids; unknown catalog ids are skipped decisions (#520)', async () => {
     const repo = fixtureRepo();
     const res = await runPipeline({
       input: 'Analise meu projeto.',
@@ -125,7 +125,11 @@ describe('runPipeline', () => {
     expect(res.run?.skillIds).toEqual(['governed-brief']);
     expect(
       res.run?.decisions.some(
-        (d) => d.subject === 'skill' && d.value === 'governed-brief' && d.outcome === 'selected'
+        (d) =>
+          d.subject === 'skill' &&
+          d.value === 'governed-brief' &&
+          d.outcome === 'skipped' &&
+          d.reason?.includes('unknown skill id')
       )
     ).toBe(true);
     expect(
@@ -133,6 +137,29 @@ describe('runPipeline', () => {
         (s) => s.kind === 'skill' && s.status === 'ok' && s.detail === 'governed-brief'
       )
     ).toBe(true);
+  });
+
+  it('verifies multi-cloud-honesty exitCriteria when workspaceId present (#520)', async () => {
+    const repo = fixtureRepo();
+    const monorepoRoot = join(import.meta.dirname, '../../..');
+    const prevHome = process.env.AIOS_HOME;
+    process.env.AIOS_HOME = monorepoRoot;
+    try {
+      const res = await runPipeline({
+        input: 'Analise meu projeto.',
+        repoPath: repo,
+        workspaceId: 'cloud-event-lab',
+        skillIds: ['multi-cloud-honesty'],
+      });
+      const skillDecision = res.run?.decisions.find(
+        (d) => d.subject === 'skill' && d.value === 'multi-cloud-honesty'
+      );
+      expect(skillDecision?.outcome).toBe('passed');
+      expect(skillDecision?.reason).toMatch(/exitCriteria ok/);
+    } finally {
+      if (prevHome === undefined) delete process.env.AIOS_HOME;
+      else process.env.AIOS_HOME = prevHome;
+    }
   });
 
   it('record.lifecycle emits a hook step per lifecycle point', async () => {

@@ -13,6 +13,7 @@
       ],
       "failurePolicy": "skip",
       "prerequisites": [
+        "check:workspaceId",
         "workspaceId cloud-event-lab registered (or equivalent external path)",
         "skillIds includes multi-cloud-honesty"
       ],
@@ -21,6 +22,7 @@
         "Cite lab docs/ADRs; do not import LocalStack/Floci/Docker into AIOS packages"
       ],
       "validation": [
+        "check:repoPath",
         "No claim that Floci equals Azure or GCP",
         "No Magnitude / browser-agent as AIOS core",
         "Emulators labeled correctly when named"

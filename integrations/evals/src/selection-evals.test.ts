@@ -48,4 +48,16 @@ describe('selection eval harness (#447)', () => {
     expect(result.failures).toEqual([]);
     expect(result.ok).toBe(true);
   });
+
+  it('pipeline golden verifies skill exitCriteria DecisionRecord (#520)', async () => {
+    const task = loadGoldenTasks().find((t) => t.id === 'pipeline-skill-verify');
+    expect(task).toBeDefined();
+    const { repo, home } = miniRepo();
+    // Point AIOS_HOME at monorepo so multi-cloud-honesty catalog resolves
+    const monorepoRoot = join(import.meta.dirname, '../../..');
+    const result = await runGoldenTask(task!, { repoPath: repo, homePath: monorepoRoot });
+    expect(result.failures).toEqual([]);
+    expect(result.ok).toBe(true);
+    void home;
+  });
 });

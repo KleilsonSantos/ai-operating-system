@@ -28,6 +28,7 @@
 
 - Older on-disk runs may lack `decisions`; readers should treat missing as `[]`
 - Skill auto-trigger remains out of scope (ADR-0026: explicit `skillIds` only)
+- SkillManifest **verification** shipped as `check:*` exitCriteria → DecisionRecord (#520 / ADR-0026 amend) — still no auto-trigger
 
 ## Rejected alternatives
 
