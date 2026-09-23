@@ -13,6 +13,7 @@ import { resolveWorkspace, loadWorkspaces } from '@aios/workspace';
 import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge';
 import { recall } from '@aios/memory';
 import { persistPipelineRun, shouldPersistPipelineRuns } from '@aios/status';
+import { loadSkills, resolveSkillDecisions, type SkillResolutionDecision } from '@aios/prompt';
 import {
   PIPELINE_CONTRACT_VERSION,
   impliesActIntent,
@@ -212,6 +213,18 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
   });
 
   const usedBytes = context.snippets.reduce((sum, s) => sum + s.bytes, 0);
+  const skillIds = (request.skillIds ?? []).map((id) => id.trim()).filter(Boolean);
+  const skillBundle =
+    skillIds.length > 0
+      ? loadSkills(skillIds, {
+          cwd: repoPath,
+        })
+      : { skills: [], skippedIds: [] as string[] };
+  const skillResolutions = resolveSkillDecisions(skillIds, skillBundle.skills, {
+    workspaceId: workspaceMeta?.id ?? memoryWorkspaceId,
+    repoPath,
+    hasContextPaths: context.snippets.length > 0,
+  });
   const run = buildPipelineRun({
     intentKind: intent.kind,
     workspaceId: workspaceMeta?.id ?? memoryWorkspaceId,
@@ -228,7 +241,8 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
     verdictPassed: verdict.passed,
     verdictReasons: verdict.blockers,
     route,
-    skillIds: (request.skillIds ?? []).map((id) => id.trim()).filter(Boolean),
+    skillIds,
+    skillResolutions,
     hookIds: selectPipelineHooks(request.hookIds).selected,
   });
 
@@ -293,6 +307,7 @@ function buildPipelineRun(input: {
   verdictReasons: string[];
   route: RouteDecision;
   skillIds: string[];
+  skillResolutions: SkillResolutionDecision[];
   hookIds: string[];
 }): PipelineRun {
   const runId = randomUUID();
@@ -303,6 +318,9 @@ function buildPipelineRun(input: {
     status: 'ok',
     detail: point,
   });
+  const skillHardFail = input.skillResolutions.some((s) => s.hardFail);
+  const skillStepStatus: PipelineStep['status'] =
+    input.skillIds.length === 0 ? 'skip' : skillHardFail ? 'fail' : 'ok';
   const steps: PipelineStep[] = [
     { stepId: stepId('classify'), kind: 'classify', status: 'ok', detail: input.intentKind },
     ...(recordHooks ? [hook('before.policy')] : []),
@@ -334,7 +352,7 @@ function buildPipelineRun(input: {
     {
       stepId: stepId('skill'),
       kind: 'skill',
-      status: input.skillIds.length > 0 ? 'ok' : 'skip',
+      status: skillStepStatus,
       detail: input.skillIds.join(',') || undefined,
     },
     ...(recordHooks
@@ -423,6 +441,7 @@ function buildDecisionLedger(
     verdictReasons: string[];
     route: RouteDecision;
     skillIds: string[];
+    skillResolutions: SkillResolutionDecision[];
   },
   steps: PipelineStep[]
 ): DecisionRecord[] {
@@ -457,7 +476,7 @@ function buildDecisionLedger(
   });
 
   const skillStep = stepOf(steps, 'skill');
-  if (input.skillIds.length === 0) {
+  if (input.skillResolutions.length === 0) {
     decisions.push({
       id: 'skill:none',
       subject: 'skill',
@@ -467,13 +486,13 @@ function buildDecisionLedger(
       stepId: skillStep?.stepId,
     });
   } else {
-    for (const skillId of input.skillIds) {
+    for (const skill of input.skillResolutions) {
       decisions.push({
-        id: `skill:${skillId}`,
+        id: `skill:${skill.id}`,
         subject: 'skill',
-        outcome: 'selected',
-        value: skillId,
-        reason: 'explicit request.skillIds',
+        outcome: skill.outcome,
+        value: skill.id,
+        reason: skill.reason,
         stepId: skillStep?.stepId,
       });
     }
