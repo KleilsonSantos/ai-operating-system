@@ -250,12 +250,12 @@ Busca: textual/tags · opcional **semantic** (`mode=semantic`, índice local sql
 
 ### Memory Engine
 
-|                    |                                                            |
-| ------------------ | ---------------------------------------------------------- |
-| **Analogia**       | Caderno post-it do workspace: “prefiro PRs em sandbox”.    |
-| **O que é**        | JSON em `.aios/memory/{workspaceId}.json`, cap FIFO (~50). |
-| **Para que serve** | Preferências/decisões entre sessões **naquela máquina**.   |
-| **Não é**          | RAG de prompts; não sincroniza multi-máquina; não é KG.    |
+|                    |                                                                                              |
+| ------------------ | -------------------------------------------------------------------------------------------- |
+| **Analogia**       | Caderno post-it do workspace: “prefiro PRs em sandbox”.                                      |
+| **O que é**        | JSON em `.aios/memory/{workspaceId}.json`, cap FIFO (~50).                                   |
+| **Para que serve** | Preferências/decisões entre sessões **naquela máquina**.                                     |
+| **Não é**          | RAG de prompts; não sincroniza multi-máquina; não é KG; **não** é claude-mem/Mem0 como SSOT. |
 
 **FIFO:** fila “primeiro que entra, primeiro que sai” — entradas antigas **caem** quando passa do limite (spike #322: default = drop duro).
 
@@ -365,12 +365,12 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 
 ### Skill pack (ADR-0026)
 
-|                    |                                                                |
-| ------------------ | -------------------------------------------------------------- |
-| **Analogia**       | Kit “como fazer X” (ferramentas permitidas + falha).           |
-| **O que é**        | Pack opcional no Prompt Engine (`id`, purpose, allowedTools…). |
-| **Para que serve** | **How**, não **who** (who = agente). Default = nenhum.         |
-| **Não é**          | Novo agente; não é marketplace de hooks.                       |
+|                    |                                                                                                     |
+| ------------------ | --------------------------------------------------------------------------------------------------- |
+| **Analogia**       | Kit “como fazer X” (ferramentas permitidas + falha).                                                |
+| **O que é**        | Pack opcional no Prompt Engine (`id`, purpose, allowedTools…).                                      |
+| **Para que serve** | **How**, não **who** (who = agente). Default = nenhum.                                              |
+| **Não é**          | Novo agente; não é marketplace de hooks; **não** é plugin pack de Claude Code (`/plugin install…`). |
 
 ### Hook (ADR-0027)
 
@@ -539,7 +539,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **Analogia**       | Livro de bordo: cada escolha da esteira (intent, rota, skill, agente, gate) com motivo estável.                                                                                               |
 | **O que é**        | Array tipado `run.decisions` no mesmo `PipelineRun` (sem store paralelo; sem JSONL de governança).                                                                                            |
 | **Para que serve** | Auditoria “por que esta rota/skill/agente”; trail Visibility `kind: decision`; MCP `aios_get_run_decisions` / CLI `--get-run-decisions` (#502); Console Run trail Decisions + `runId` (#508). |
-| **Não é**          | `GovernanceDecision` (notas humanas ADR/policy); não é LLM-as-judge nem auto-trigger de skills.                                                                                               |
+| **Não é**          | `GovernanceDecision` (notas humanas ADR/policy); **não** é motor neural “decision-only” (Jev/Laya-style); não é LLM-as-judge nem auto-trigger de skills.                                      |
 
 ### Selection evals (`integrations/evals/` · #447)
 
@@ -585,7 +585,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **Context Engine**      | Recorte do repo para a esteira                                                      |
 | **Delivery map**        | Evento Git → CI → próximo passo do agente                                           |
 | **Delivery gate**       | Paridade local do issue-link antes do push                                          |
-| **DecisionRecord**      | Ledger tipado das escolhas do run (intent/rota/skill/agente/gate · ADR-0034)        |
+| **DecisionRecord**      | Ledger tipado das escolhas do run (≠ motor neural decision-only · ADR-0034)         |
 | **FIFO**                | Descarta o mais antigo quando a fila enche                                          |
 | **FOUNDATION**          | Constituição do produto                                                             |
 | **Harness**             | Estrutura de controle em volta do modelo                                            |
@@ -642,15 +642,16 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 
 ## Onde aprofundar (inglês canônico)
 
-| Tema           | Link                                   |
-| -------------- | -------------------------------------- |
-| Constituição   | `docs/FOUNDATION.md`                   |
-| Visão          | `docs/VISION.md`                       |
-| Fases          | `docs/ROADMAP.md`                      |
-| Harness        | `docs/architecture/harness-mapping.md` |
-| Fronteiras RAG | `docs/guides/rag-boundaries.md`        |
-| ADRs           | `docs/adr/`                            |
-| PKB            | `docs/prompts/README.md`               |
+| Tema           | Link                                                                |
+| -------------- | ------------------------------------------------------------------- |
+| Constituição   | `docs/FOUNDATION.md`                                                |
+| Visão          | `docs/VISION.md`                                                    |
+| Fases          | `docs/ROADMAP.md`                                                   |
+| Harness        | `docs/architecture/harness-mapping.md`                              |
+| Fronteiras     | `docs/guides/agent-framework-boundaries.md` (lookalikes de mercado) |
+| Fronteiras RAG | `docs/guides/rag-boundaries.md`                                     |
+| ADRs           | `docs/adr/`                                                         |
+| PKB            | `docs/prompts/README.md`                                            |
 
 ---
 

@@ -71,11 +71,12 @@ aios_run_pipeline
 | External web ingestion (e.g. Scrapy) | Wrong stack in core monorepo      | Optional external job |
 | n8n / Composio / CRM                 | Experience & integrations         | Companion repo        |
 
-See [`pkb-evolution.md`](../prompts/pkb-evolution.md) for the PKB ladder and [`agent-framework-boundaries.md`](../guides/agent-framework-boundaries.md) for AIOS vs third-party agent frameworks.
+See [`pkb-evolution.md`](../prompts/pkb-evolution.md) for the PKB ladder and [`agent-framework-boundaries.md`](../guides/agent-framework-boundaries.md) for AIOS vs third-party agent frameworks — including **market lookalikes** (decision-only models, Claude plugin skills, third-party memory, slash personas) that must not become product surface.
 
 ## Related reading
 
 - [Architecture overview](./overview.md)
 - [Control plane vs Companion](../guides/control-plane-companion.md)
+- [Agent framework boundaries](../guides/agent-framework-boundaries.md)
 - [FOUNDATION](../FOUNDATION.md)
 - [AIOS glossary (pt-BR, owner orientation, non-SSOT)](../../owner/glossario-aios.md)
