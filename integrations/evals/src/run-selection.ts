@@ -166,6 +166,21 @@ export async function runPipelineEval(
         pushFail(failures, task.id, `skillIds.rejected:${ban}`, false, true);
       }
     }
+    if (task.id === 'pipeline-skill-verify') {
+      const skillDecision = res.run?.decisions?.find(
+        (d) => d.subject === 'skill' && d.value === 'multi-cloud-honesty'
+      );
+      // Without workspaceId, check:workspaceId fails → skip policy on multi-cloud-honesty
+      if (!skillDecision || skillDecision.outcome !== 'skipped') {
+        pushFail(
+          failures,
+          task.id,
+          'decisions.skill.multi-cloud-honesty',
+          'skipped (exitCriteria)',
+          skillDecision
+        );
+      }
+    }
     return { id: task.id, ok: failures.length === 0, failures };
   } finally {
     if (prevPersist === undefined) delete process.env.AIOS_PERSIST_RUNS;

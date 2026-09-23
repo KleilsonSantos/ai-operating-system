@@ -730,6 +730,9 @@ importers:
       '@aios/policy':
         specifier: workspace:*
         version: link:../../engines/policy
+      '@aios/prompt':
+        specifier: workspace:*
+        version: link:../../engines/prompt
       '@aios/quality-gate':
         specifier: workspace:*
         version: link:../../engines/quality-gate

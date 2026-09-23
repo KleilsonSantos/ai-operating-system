@@ -1,0 +1,20 @@
+{
+  "id": "pipeline-skill-verify",
+  "mode": "pipeline",
+  "input": "Analise meu projeto.",
+  "request": {
+    "skillIds": ["multi-cloud-honesty"]
+  },
+  "expect": {
+    "intentKind": "analyze.project",
+    "capabilityClass": "reasoning",
+    "agents": {
+      "include": ["architecture"]
+    },
+    "skillIds": {
+      "selected": ["multi-cloud-honesty"],
+      "rejected": ["docs-only"]
+    },
+    "act": false
+  }
+}

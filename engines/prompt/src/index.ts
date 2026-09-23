@@ -23,6 +23,15 @@ export {
   type SkillToolDenyReason,
 } from './skill-gate.js';
 export { loadSkills, loadSkillCatalog, selectSkills, parseSkillCatalog } from './skills.js';
+export {
+  verifySkillPack,
+  resolveSkillDecisions,
+  collectCheckTokens,
+  parseCheckToken,
+  type SkillVerifyContext,
+  type SkillVerificationResult,
+  type SkillResolutionDecision,
+} from './skill-verify.js';
 
 function resolveRepo(request: CompilePromptRequest): {
   repoPath: string;

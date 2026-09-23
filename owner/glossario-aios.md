@@ -365,12 +365,13 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 
 ### Skill pack (ADR-0026)
 
-|                    |                                                                                                     |
-| ------------------ | --------------------------------------------------------------------------------------------------- |
-| **Analogia**       | Kit “como fazer X” (ferramentas permitidas + falha).                                                |
-| **O que é**        | Pack opcional no Prompt Engine (`id`, purpose, allowedTools…).                                      |
-| **Para que serve** | **How**, não **who** (who = agente). Default = nenhum.                                              |
-| **Não é**          | Novo agente; não é marketplace de hooks; **não** é plugin pack de Claude Code (`/plugin install…`). |
+|                    |                                                                                                                                |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Analogia**       | Kit “como fazer X” (ferramentas permitidas + falha).                                                                           |
+| **O que é**        | Pack opcional no Prompt Engine (`id`, purpose, allowedTools…).                                                                 |
+| **Para que serve** | **How**, não **who** (who = agente). Default = nenhum.                                                                         |
+| **Não é**          | Novo agente; não é marketplace de hooks; **não** é plugin pack de Claude Code (`/plugin install…`).                            |
+| **Exit criteria**  | Tokens `check:workspaceId` \| `check:repoPath` \| `check:context` → DecisionRecord (#520). Texto livre continua só documental. |
 
 ### Hook (ADR-0027)
 
