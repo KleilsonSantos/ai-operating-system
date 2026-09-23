@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Changed
+
+- 📖 Clarify market lookalikes vs AIOS harness — DecisionRecord ≠ decision NN; skill packs ≠ Claude plugins; Memory ≠ third-party mem SSOT ([agent-framework-boundaries.md](docs/guides/agent-framework-boundaries.md) / #517)
+
 ### Added
 
 - 🔧 Cursor Agent Shell: project `preToolUse` PATH inject + sandbox readonly `~/.nvm` / shared build cache; document harness noise vs `node` missing (#491)
