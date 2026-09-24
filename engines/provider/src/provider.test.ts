@@ -3,8 +3,10 @@ import {
   OllamaProvider,
   OpenAICompatibleProvider,
   AnthropicProvider,
+  chatWithRouteFailover,
   getProvider,
   listProviderIds,
+  routeModel,
 } from './index.ts';
 
 afterEach(() => {
@@ -12,18 +14,39 @@ afterEach(() => {
 });
 
 describe('listProviderIds / getProvider', () => {
-  it('lista ollama, openai e anthropic', () => {
+  it('lista ollama, openai, anthropic e aliases free-tier', () => {
     expect(listProviderIds()).toContain('ollama');
     expect(listProviderIds()).toContain('openai');
     expect(listProviderIds()).toContain('anthropic');
+    expect(listProviderIds()).toContain('openrouter');
+    expect(listProviderIds()).toContain('groq');
+    expect(listProviderIds()).toContain('gemini');
     const p = getProvider('ollama', { baseUrl: 'http://example.test' });
     expect(p.id).toBe('ollama');
     expect(getProvider('openai').id).toBe('openai');
     expect(getProvider('anthropic').id).toBe('anthropic');
+    expect(getProvider('openrouter', { apiKey: 'sk', resilience: false }).id).toBe('openrouter');
+    expect(getProvider('groq', { apiKey: 'sk', resilience: false }).id).toBe('groq');
+    expect(getProvider('gemini', { apiKey: 'sk', resilience: false }).id).toBe('gemini');
   });
 
   it('rejeita provider desconhecido', () => {
     expect(() => getProvider('cohere')).toThrow(/Unknown provider/);
+  });
+
+  it('aliases usam base URLs OpenAI-compat esperadas', async () => {
+    const fetchMock = vi.fn(async (url: string) => {
+      expect(String(url)).toMatch(/openrouter\.ai\/api\/v1\/models$/);
+      return Response.json({ data: [{ id: 'openrouter/free' }] });
+    });
+    const p = getProvider('openrouter', {
+      apiKey: 'sk-or',
+      fetch: fetchMock as typeof fetch,
+      resilience: false,
+    });
+    const h = await p.health();
+    expect(h.ok).toBe(true);
+    expect(h.baseUrl).toBe('https://openrouter.ai/api/v1');
   });
 });
 
@@ -218,5 +241,71 @@ describe('AnthropicProvider', () => {
       completionTokens: 2,
       totalTokens: 10,
     });
+  });
+});
+
+describe('chatWithRouteFailover', () => {
+  it('sem failover só tenta o primary', async () => {
+    const fetchMock = vi.fn(async () =>
+      Response.json({
+        model: 'gemini-2.5-flash',
+        choices: [{ message: { role: 'assistant', content: 'ok' } }],
+      })
+    );
+    const decision = routeModel(
+      { intentKind: 'explain.code' },
+      {
+        AIOS_ROUTE_CODING_PROVIDER: 'gemini',
+        AIOS_ROUTE_FALLBACK: 'groq,ollama',
+        AIOS_GEMINI_API_KEY: 'gk',
+      }
+    );
+    const out = await chatWithRouteFailover(
+      decision,
+      { messages: [{ role: 'user', content: 'hi' }] },
+      {
+        fetch: fetchMock as typeof fetch,
+        apiKey: 'test-key',
+        resilience: false,
+        failover: false,
+      }
+    );
+    expect(out.message.content).toBe('ok');
+    expect(out.provider).toBe('gemini');
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('com failover pula 429 para o próximo binding', async () => {
+    let calls = 0;
+    const fetchMock = vi.fn(async (url: string) => {
+      calls += 1;
+      if (String(url).includes('generativelanguage')) {
+        return new Response('rate limited', { status: 429 });
+      }
+      return Response.json({
+        model: 'openai/gpt-oss-20b',
+        choices: [{ message: { role: 'assistant', content: 'from-groq' } }],
+      });
+    });
+    const decision = routeModel(
+      { intentKind: 'explain.code' },
+      {
+        AIOS_ROUTE_CODING_PROVIDER: 'gemini',
+        AIOS_ROUTE_FALLBACK: 'groq',
+      }
+    );
+    const out = await chatWithRouteFailover(
+      decision,
+      { messages: [{ role: 'user', content: 'hi' }] },
+      {
+        fetch: fetchMock as typeof fetch,
+        apiKey: 'test-key',
+        resilience: false,
+        failover: true,
+      }
+    );
+    expect(out.message.content).toBe('from-groq');
+    expect(out.provider).toBe('groq');
+    expect(calls).toBeGreaterThanOrEqual(2);
   });
 });
