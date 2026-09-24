@@ -60,6 +60,7 @@ describe('attentionFromRunDecisions (#524)', () => {
     expect(items).toHaveLength(2);
     expect(items.map((i) => i.severity).sort()).toEqual(['error', 'warn']);
     expect(items.every((i) => i.detail.includes('runId=r1'))).toBe(true);
+    expect(items.every((i) => i.runId === 'r1')).toBe(true);
   });
 });
 

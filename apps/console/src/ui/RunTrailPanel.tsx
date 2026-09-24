@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { VisibilitySnapshot, VisibilityTrailItem } from '@aios/shared';
 import { decisionRowsFromRun, formatDecisionLabel } from './decision-rows';
 
@@ -14,6 +14,8 @@ type ActionResult = {
 
 type Props = {
   workspaceId: string;
+  /** When set (e.g. Attention Inspect), prefills run id and reloads trail (#528). */
+  focusRequest?: { runId: string; n: number } | null;
 };
 
 function isSnapshot(value: unknown): value is VisibilitySnapshot {
@@ -25,7 +27,7 @@ function isSnapshot(value: unknown): value is VisibilitySnapshot {
   );
 }
 
-export function RunTrailPanel({ workspaceId }: Props) {
+export function RunTrailPanel({ workspaceId, focusRequest }: Props) {
   const [filter, setFilter] = useState<TrailFilter>('all');
   const [scope, setScope] = useState('');
   const [runId, setRunId] = useState('');
@@ -34,44 +36,59 @@ export function RunTrailPanel({ workspaceId }: Props) {
   const [latencyMs, setLatencyMs] = useState<number | null>(null);
   const [snap, setSnap] = useState<VisibilitySnapshot | null>(null);
 
-  const load = useCallback(async () => {
-    setBusy(true);
-    setError(null);
-    try {
-      const res = await fetch('/api/action', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'visibility',
-          workspaceId,
-          scope: scope.trim() || undefined,
-          runId: runId.trim() || undefined,
-        }),
-      });
-      const data = (await res.json()) as ActionResult;
-      setLatencyMs(data.latencyMs);
-      if (!data.ok || data.error) {
+  const load = useCallback(
+    async (overrideRunId?: string) => {
+      setBusy(true);
+      setError(null);
+      const effectiveRunId = (overrideRunId ?? runId).trim() || undefined;
+      try {
+        const res = await fetch('/api/action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'visibility',
+            workspaceId,
+            scope: scope.trim() || undefined,
+            runId: effectiveRunId,
+          }),
+        });
+        const data = (await res.json()) as ActionResult;
+        setLatencyMs(data.latencyMs);
+        if (!data.ok || data.error) {
+          setSnap(null);
+          setError(data.error || 'visibility failed');
+          return;
+        }
+        if (!isSnapshot(data.result)) {
+          setSnap(null);
+          setError('invalid VisibilitySnapshot');
+          return;
+        }
+        setSnap(data.result);
+      } catch (err) {
         setSnap(null);
-        setError(data.error || 'visibility failed');
-        return;
+        setError(err instanceof Error ? err.message : String(err));
+      } finally {
+        setBusy(false);
       }
-      if (!isSnapshot(data.result)) {
-        setSnap(null);
-        setError('invalid VisibilitySnapshot');
-        return;
-      }
-      setSnap(data.result);
-    } catch (err) {
-      setSnap(null);
-      setError(err instanceof Error ? err.message : String(err));
-    } finally {
-      setBusy(false);
-    }
-  }, [workspaceId, scope, runId]);
+    },
+    [workspaceId, scope, runId]
+  );
+
+  const loadRef = useRef(load);
+  loadRef.current = load;
 
   useEffect(() => {
     void load();
   }, [load]);
+
+  useEffect(() => {
+    const id = focusRequest?.runId?.trim();
+    if (!id) return;
+    setRunId(id);
+    setFilter('decision');
+    void loadRef.current(id);
+  }, [focusRequest]);
 
   const rows = useMemo(() => {
     const trail = snap?.trail ?? [];
@@ -82,7 +99,7 @@ export function RunTrailPanel({ workspaceId }: Props) {
   const decisionRows = useMemo(() => decisionRowsFromRun(snap?.run?.decisions), [snap]);
 
   return (
-    <section className="panel run-trail" aria-labelledby="trail-h">
+    <section className="panel run-trail" aria-labelledby="trail-h" id="run-trail">
       <h2 id="trail-h">Run trail</h2>
       <p className="quiet">
         Visibility Plane — policies, pipeline steps, decisions e <code>agent.execution</code>{' '}
