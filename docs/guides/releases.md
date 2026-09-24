@@ -18,6 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag        | Description                                                                                          |
 | ---------- | ---------------------------------------------------------------------------------------------------- |
+| `v0.49.11` | DecisionRecord failed/denied → Console Attention skim (#524)                                         |
 | `v0.49.10` | Skill `check:*` exitCriteria → DecisionRecord (#520); market-lookalike boundaries (#517)             |
 | `v0.49.9`  | Console Run trail Decisions + runId (#508)                                                           |
 | `v0.49.8`  | MCP/CLI read DecisionRecord ledger by runId (#502)                                                   |

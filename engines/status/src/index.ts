@@ -27,6 +27,7 @@ import { listMemoryWorkspaces } from '@aios/memory';
 import { getProvider, listProviderIds } from '@aios/provider';
 import { auditGovernance } from '@aios/governance';
 import { AgentRegistry } from '@aios-platform/agent-registry';
+import { skimDecisionFailures } from './decision-attention.js';
 
 export type GetGovernanceStatusOptions = {
   homePath?: string;
@@ -762,6 +763,7 @@ function buildAttention(parts: {
   agentExecution?: NonNullable<GovernanceStatus['metrics']['agentExecution']>;
   eventCount: number;
   governanceFindings?: AttentionItem[];
+  decisionFindings?: AttentionItem[];
 }): AttentionItem[] {
   const items: AttentionItem[] = [];
 
@@ -850,6 +852,11 @@ function buildAttention(parts: {
     items.push(f);
   }
 
+  // DecisionRecord failures from run store (#524 / ADR-0034)
+  for (const f of parts.decisionFindings || []) {
+    items.push(f);
+  }
+
   const rank = { error: 0, warn: 1, info: 2 } as const;
   return items.sort((a, b) => rank[a.severity] - rank[b.severity]);
 }
@@ -935,6 +942,7 @@ export async function getGovernanceStatus(
     agentExecution,
     eventCount: metricsSnap.eventCount,
     governanceFindings: govAudit.findings,
+    decisionFindings: skimDecisionFailures({ homePath }),
   });
 
   let note: string;
@@ -986,6 +994,12 @@ export {
   type PersistedPipelineRun,
   type PipelineRunIndexEntry,
 } from './run-store.js';
+
+export {
+  skimDecisionFailures,
+  attentionFromRunDecisions,
+  type SkimDecisionFailuresOptions,
+} from './decision-attention.js';
 
 /** Append `kind: mcp.tool` audit row (#447). */
 export function recordMcpToolAudit(
