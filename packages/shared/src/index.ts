@@ -838,6 +838,8 @@ export type AttentionItem = {
   severity: AttentionSeverity;
   title: string;
   detail: string;
+  /** Optional PipelineRun id for Console Inspect → Run trail (#528). */
+  runId?: string;
 };
 
 /** Registry agent row joined with optional execution metrics (console catalog / #247). */

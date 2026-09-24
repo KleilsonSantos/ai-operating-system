@@ -44,6 +44,8 @@ export type GovernanceStatus = {
     severity: AttentionSeverity;
     title: string;
     detail: string;
+    /** When set, Console can Inspect → Run trail (#528). */
+    runId?: string;
   }>;
   metrics: {
     available: boolean;

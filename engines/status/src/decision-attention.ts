@@ -45,6 +45,7 @@ export function attentionFromRunDecisions(run: PipelineRun, at?: string): Attent
       ]
         .filter(Boolean)
         .join(' · '),
+      runId: run.runId,
     });
   }
   return items;
