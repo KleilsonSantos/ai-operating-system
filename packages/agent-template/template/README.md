@@ -1,6 +1,7 @@
 # {{DISPLAY_NAME}}
 
-AIOS agent plugin scaffolded with `@aios/create-agent` (Phase 5 / ADR-0023).
+AIOS agent plugin scaffolded with `@aios-platform/create-agent` (Phase 5 / ADR-0023).
+Template: `@aios-platform/agent-template`.
 
 ## Manifest
 

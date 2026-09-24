@@ -63,4 +63,10 @@ describe('scaffoldAgent', () => {
     await fs.mkdir(targetDir);
     await expect(scaffoldAgent({ name: 'dup', targetDir })).rejects.toThrow(/already exists/);
   });
+
+  it('uses @aios-platform/agent-template by default (#532)', async () => {
+    const { defaultTemplateDir } = await import('./scaffold.js');
+    const { resolveTemplateDir } = await import('@aios-platform/agent-template');
+    expect(defaultTemplateDir()).toBe(resolveTemplateDir());
+  });
 });

@@ -1,6 +1,6 @@
 # Writing an Agent
 
-> Phase 5 · [ADR-0023](../adr/0023-agent-registry-marketplace.md) · scaffold: [`@aios-platform/create-agent`](../../packages/create-agent/)
+> Phase 5 · [ADR-0023](../adr/0023-agent-registry-marketplace.md) · scaffold: [`@aios-platform/create-agent`](../../packages/create-agent/) · template: [`@aios-platform/agent-template`](../../packages/agent-template/)
 
 AIOS treats agents as **plugins**. You do not call them as the primary UX. The user sends an intent; Intent → Workflow → Orchestration selects agents → Quality Gate → response.
 
@@ -88,7 +88,7 @@ pnpm install
 pnpm test
 ```
 
-Maintainers: publish both packages with `bash scripts/npm-publish-create-agent.sh` (see [Publish create-agent](./publish-create-agent.md)). Local pack smoke: `bash scripts/smoke-create-agent-pack.sh`.
+Maintainers: publish registry → agent-template → create-agent with `bash scripts/npm-publish-create-agent.sh` (see [Publish create-agent](./publish-create-agent.md)). Local pack smoke: `bash scripts/smoke-create-agent-pack.sh`.
 
 ## I/O contract
 

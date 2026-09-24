@@ -22,14 +22,14 @@ npm create @aios-platform/agent@latest -- --name my-agent
 
 ## Package order
 
-`@aios-platform/create-agent` depends on `@aios-platform/agent-registry`. Publish **registry first**, then create-agent.
+`@aios-platform/create-agent` depends on `@aios-platform/agent-registry` and `@aios-platform/agent-template`. Publish **registry → agent-template → create-agent**.
 
-The template lives **inside** `@aios-platform/create-agent` (`template/`). A separate `@aios/agent-template` package is optional and deferred.
+The scaffold template ships as **`@aios-platform/agent-template`** (`template/` + `resolveTemplateDir()`). create-agent no longer embeds a copy (#532).
 
 ## Dry-run / local smoke
 
 ```bash
-# Pack both tarballs, install locally, run create-agent bin (no npm auth)
+# Pack registry + agent-template + create-agent tarballs, install locally, run create-agent bin (no npm auth)
 bash scripts/smoke-create-agent-pack.sh
 
 # Simulate publish metadata without uploading
@@ -104,14 +104,14 @@ Do not commit tokens. Prefer a granular npm token limited to `@aios-platform` **
 
 ### Registry catch-up status
 
-| Monorepo tag | `@aios-platform/agent-registry`   | `@aios-platform/create-agent`     |
-| ------------ | --------------------------------- | --------------------------------- |
-| `v0.48.3`    | **0.48.3** (published 2026-09-02) | **0.48.3** (published 2026-09-02) |
+| Monorepo tag | `@aios-platform/agent-registry`   | `@aios-platform/agent-template` | `@aios-platform/create-agent`     |
+| ------------ | --------------------------------- | ------------------------------- | --------------------------------- |
+| `v0.48.3`    | **0.48.3** (published 2026-09-02) | _(shipped in monorepo #532)_    | **0.48.3** (published 2026-09-02) |
 
-After each release on `main`, run `npm view @aios-platform/agent-registry version` — registry may lag until maintainers run the publish script.
+After each release on `main`, run `npm view @aios-platform/agent-registry version` — registry / template / create-agent may lag until maintainers run the publish script.
 
 ## Notes
 
-- Both packages use `publishConfig.access: public` (scoped packages default to restricted).
+- Packages use `publishConfig.access: public` (scoped packages default to restricted).
 - Version bumps follow SemVer release aggregation (`docs/guides/releases.md`) — do not publish ad-hoc versions off feature branches without a release plan.
 - Resource-Aware: prefer dry-run + pack smoke before a real publish; automated publish via trusted publishing (OIDC) is deferred — manual catch-up after `green` is the current process.
