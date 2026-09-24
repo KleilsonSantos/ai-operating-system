@@ -76,6 +76,15 @@
 | **Para que serve** | Orquestração central, políticas e quality gate únicos.                                                   |
 | **Não é**          | “Vários chats soltos cada um com sua regra”.                                                             |
 
+### Agent template (`@aios-platform/agent-template` · #532)
+
+|                    |                                                                                |
+| ------------------ | ------------------------------------------------------------------------------ |
+| **Analogia**       | Molde da peça na prateleira — o torno (`create-agent`) só aplica o molde.      |
+| **O que é**        | Pacote npm com `template/` + `resolveTemplateDir()` (escopo `@aios-platform`). |
+| **Para que serve** | SSOT dos ficheiros scaffold; create-agent depende dele (não embute cópia).     |
+| **Não é**          | Runtime do agente; não é marketplace HTTP; não é o plugin Copilot IDE.         |
+
 ---
 
 ## Etapa 2 — Verdade do produto (SSOT e documentos)
@@ -577,6 +586,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **ACT**                 | Capacidade de _escrever/aplicar_ mudança — hoje honesta = false no pipeline default |
 | **ADR**                 | Decisão arquitetural registrada                                                     |
 | **Agent**               | Plugin especializado (Architecture, AppSec, Docs, QA…)                              |
+| **agent-template**      | Pacote npm do molde scaffold (`@aios-platform/agent-template` · #532)               |
 | **appsec-reviewer**     | Agente Copilot: review AppSec de PR (não é o plugin `agent-appsec`)                 |
 | **Brief**               | Texto governado do Prompt Engine                                                    |
 | **Capability class**    | Classe de modelo (fast/coding/…) não vendor                                         |

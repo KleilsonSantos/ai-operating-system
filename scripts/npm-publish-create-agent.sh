@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Publish @aios-platform/agent-registry then @aios-platform/create-agent (order matters).
+# Publish @aios-platform/agent-registry, agent-template, then create-agent (order matters).
 # Usage:
 #   bash scripts/npm-publish-create-agent.sh --dry-run
 #   bash scripts/npm-publish-create-agent.sh
@@ -47,10 +47,14 @@ fi
 
 echo "==> Building packages"
 pnpm --filter @aios-platform/agent-registry build
+pnpm --filter @aios-platform/agent-template build
 pnpm --filter @aios-platform/create-agent build
 
 echo "==> Publishing @aios-platform/agent-registry ${DRY[*]:-} ${OTP[*]:-}"
 pnpm --filter @aios-platform/agent-registry publish --access public --no-git-checks "${DRY[@]}" "${OTP[@]}"
+
+echo "==> Publishing @aios-platform/agent-template ${DRY[*]:-} ${OTP[*]:-}"
+pnpm --filter @aios-platform/agent-template publish --access public --no-git-checks "${DRY[@]}" "${OTP[@]}"
 
 echo "==> Publishing @aios-platform/create-agent ${DRY[*]:-} ${OTP[*]:-}"
 pnpm --filter @aios-platform/create-agent publish --access public --no-git-checks "${DRY[@]}" "${OTP[@]}"

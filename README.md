@@ -44,6 +44,7 @@ packages/
   pipeline/               # runPipeline — stable contract (#9)
   agent-registry/         # Agent discovery + manifest schema
   create-agent/           # Scaffold CLI for community agents
+  agent-template/         # Canonical scaffold template files (#532)
   core/                   # Minimal stub (PipelineEvent); SSOT is @aios/pipeline
 engines/
   intent/ policy/ context/ decision/

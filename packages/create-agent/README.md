@@ -2,6 +2,8 @@
 
 Scaffold a new AIOS agent package (Phase 5b / [ADR-0023](../../docs/adr/0023-agent-registry-marketplace.md)).
 
+Template files come from [`@aios-platform/agent-template`](../agent-template/) (`resolveTemplateDir()`).
+
 ## Usage (npm)
 
 ```bash

@@ -1,17 +1,15 @@
 /**
- * Scaffold a new AIOS agent package from the built-in template.
- * Phase 5b / ADR-0023 · Issue #211
+ * Scaffold a new AIOS agent package from `@aios-platform/agent-template`.
+ * Phase 5b / ADR-0023 · Issue #211 · template extract #532
  */
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { AgentRegistry } from '@aios-platform/agent-registry';
+import { resolveTemplateDir } from '@aios-platform/agent-template';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-/** Default template root (sibling of src/). */
+/** Default template root (from `@aios-platform/agent-template`). */
 export function defaultTemplateDir(): string {
-  return path.join(__dirname, '..', 'template');
+  return resolveTemplateDir();
 }
 
 export interface ScaffoldOptions {
@@ -128,6 +126,8 @@ export async function scaffoldAgent(options: ScaffoldOptions): Promise<ScaffoldR
 
   for (const abs of templateFiles) {
     const rel = path.relative(templateDir, abs);
+    // Destination names match template names (create-vite / Yeoman style).
+    // Legacy `.tmpl` suffix still stripped if present.
     const destRel = rel.endsWith('.tmpl') ? rel.slice(0, -'.tmpl'.length) : rel;
     const dest = path.join(targetDir, destRel);
     await fs.mkdir(path.dirname(dest), { recursive: true });

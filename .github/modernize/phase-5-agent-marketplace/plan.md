@@ -56,7 +56,7 @@ Phase 5 enables agents as first-class, discoverable, reusable building blocks fo
 - [ ] Agent manifest validator
 - [ ] npm scaffolder: `npm create @aios-platform/agent@latest --name my-agent`
 - [ ] Dependency resolver (multi-level: agent → agent → engine)
-- [ ] Publish `@aios/agent-template` on npm
+- [x] Publish `@aios-platform/agent-template` on npm (package in monorepo #532; catch-up publish with create-agent script)
 - [ ] Documentation: "Writing an Agent"
 
 **Deliverables:** Template repo + validator + docs  
