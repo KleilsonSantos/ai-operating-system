@@ -14,6 +14,7 @@ export function App() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [catalogView, setCatalogView] = useState<CatalogView>('all');
+  const [trailFocus, setTrailFocus] = useState<{ runId: string; n: number } | null>(null);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -147,6 +148,24 @@ export function App() {
                       <span className="att-sev">{severityLabel(item.severity)}</span>
                       <strong>{item.title}</strong>
                       <p>{item.detail}</p>
+                      {item.runId ? (
+                        <div className="att-actions">
+                          <button
+                            type="button"
+                            className="att-inspect"
+                            onClick={() => {
+                              const id = item.runId;
+                              if (!id) return;
+                              setTrailFocus({ runId: id, n: Date.now() });
+                              document
+                                .getElementById('run-trail')
+                                ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }}
+                          >
+                            Inspect run
+                          </button>
+                        </div>
+                      ) : null}
                     </li>
                   ))}
                 </ul>
@@ -266,7 +285,7 @@ export function App() {
             </section>
           </div>
 
-          <RunTrailPanel workspaceId={workspaceId} />
+          <RunTrailPanel workspaceId={workspaceId} focusRequest={trailFocus} />
 
           <section className="panel catalog" aria-labelledby="catalog-h">
             <h2 id="catalog-h">Agent Catalog</h2>

@@ -15,7 +15,7 @@
 2. **SSOT on the run.** No new engine and no metrics dual-write (`kind: decision`). Persist via the existing run store (`.aios/runs/`).
 3. **Visibility surface.** Trail items may include `kind: 'decision'`; step labels may include `detail`. Obsidian run notes list Decisions when present.
 4. **Read surface (#502).** MCP `aios_get_run_decisions` and CLI `--get-run-decisions` load the persisted run and return `decisions` (READ_ONLY; no second store).
-5. **Attention skim (#524).** `getGovernanceStatus` may surface `failed` / `denied` DecisionRecords from a bounded run-store window into Console Attention (opt-out: `AIOS_DECISION_ATTENTION=0`). Still no metrics dual-write.
+5. **Attention skim (#524) + Inspect (#528).** `getGovernanceStatus` may surface `failed` / `denied` DecisionRecords from a bounded run-store window into Console Attention (opt-out: `AIOS_DECISION_ATTENTION=0`). Attention rows may carry typed `runId` so Console Inspect prefills Run trail. Still no metrics dual-write.
 6. **Not governance notes.** Do not overload `engines/governance` `recordDecision` or `KNOWN_DECISION_KINDS`.
 
 ## Consequences
