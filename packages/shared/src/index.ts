@@ -423,6 +423,12 @@ export type RouteRequest = {
   privacy?: TaskPrivacy;
 };
 
+/** One provider+model hop in a route chain (ADR-0035). */
+export type RouteBinding = {
+  providerId: ProviderId;
+  modelId: string;
+};
+
 export type RouteDecision = {
   providerId: ProviderId;
   modelId: string;
@@ -430,6 +436,11 @@ export type RouteDecision = {
   reason: string;
   /** Deterministic task profile used for this decision (ADR-0031). */
   taskProfile: TaskProfile;
+  /**
+   * Ordered fallbacks after the primary binding (ADR-0035).
+   * Decision-only — no network. Empty when `AIOS_ROUTE_FALLBACK` is unset.
+   */
+  fallbacks: RouteBinding[];
 };
 
 export type ContextBudgetTier = 'tight' | 'standard' | 'wide';
@@ -611,9 +622,35 @@ export type CompiledPrompt = {
 };
 
 /** Multi-provider MVP (#67) — LLM auxiliar (não substitui a IDE). */
-export type ProviderId = 'ollama' | 'openai' | 'anthropic';
+export type ProviderId = 'ollama' | 'openai' | 'anthropic' | 'openrouter' | 'groq' | 'gemini';
 
-const ROUTE_PROVIDER_IDS: readonly ProviderId[] = ['ollama', 'openai', 'anthropic'];
+const ROUTE_PROVIDER_IDS: readonly ProviderId[] = [
+  'ollama',
+  'openai',
+  'anthropic',
+  'openrouter',
+  'groq',
+  'gemini',
+];
+
+/** Default models when a class binds to an alias without an explicit model env. */
+const PROVIDER_DEFAULT_MODELS: Partial<Record<ProviderId, string>> = {
+  openai: 'gpt-4o-mini',
+  anthropic: 'claude-haiku-4-5',
+  openrouter: 'openrouter/free',
+  groq: 'openai/gpt-oss-20b',
+  gemini: 'gemini-2.5-flash',
+  ollama: 'llama3.2',
+};
+
+const PROVIDER_MODEL_ENV: Partial<Record<ProviderId, string>> = {
+  openai: 'AIOS_OPENAI_MODEL',
+  anthropic: 'AIOS_ANTHROPIC_MODEL',
+  openrouter: 'AIOS_OPENROUTER_MODEL',
+  groq: 'AIOS_GROQ_MODEL',
+  gemini: 'AIOS_GEMINI_MODEL',
+  ollama: 'AIOS_OLLAMA_MODEL',
+};
 
 const DEFAULT_ROUTE_BINDINGS: Record<
   ModelCapabilityClass,
@@ -637,6 +674,44 @@ const ROUTE_ENV_KEYS: Record<ModelCapabilityClass, { provider: string; model: st
 
 function isRouteProviderId(value: string): value is ProviderId {
   return (ROUTE_PROVIDER_IDS as readonly string[]).includes(value);
+}
+
+export function isProviderId(value: string): value is ProviderId {
+  return isRouteProviderId(value);
+}
+
+/**
+ * Parse `AIOS_ROUTE_FALLBACK` — comma-separated `provider` or `provider:model`.
+ * Invalid entries are skipped (signals collected by caller via return).
+ */
+export function parseRouteFallbackChain(
+  raw: string | undefined,
+  defaultModelFor: (providerId: ProviderId) => string
+): { bindings: RouteBinding[]; signals: string[] } {
+  const signals: string[] = [];
+  if (!raw?.trim()) {
+    return { bindings: [], signals };
+  }
+  const bindings: RouteBinding[] = [];
+  const seen = new Set<string>();
+  for (const part of raw.split(',')) {
+    const token = part.trim();
+    if (!token) continue;
+    const colon = token.indexOf(':');
+    const providerRaw = (colon === -1 ? token : token.slice(0, colon)).trim().toLowerCase();
+    const modelRaw = colon === -1 ? '' : token.slice(colon + 1).trim();
+    if (!isRouteProviderId(providerRaw)) {
+      signals.push(`fallback-invalid:${providerRaw || 'empty'}`);
+      continue;
+    }
+    const modelId = modelRaw || defaultModelFor(providerRaw);
+    const key = `${providerRaw}:${modelId}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    bindings.push({ providerId: providerRaw, modelId });
+  }
+  if (bindings.length) signals.push('env-fallback');
+  return { bindings, signals };
 }
 
 export function inferRouteRisk(req: Pick<RouteRequest, 'intentKind' | 'privilege'>): RouteRisk {
@@ -736,18 +811,20 @@ function bindCapabilityClass(
   if (rawModel) {
     modelId = rawModel;
     signals.push('env-model');
-  } else if (providerId === 'ollama' && envMap.AIOS_OLLAMA_MODEL?.trim()) {
-    modelId = envMap.AIOS_OLLAMA_MODEL.trim();
-  } else if (providerId === 'openai' && envMap.AIOS_OPENAI_MODEL?.trim()) {
-    modelId = envMap.AIOS_OPENAI_MODEL.trim();
-  } else if (providerId === 'anthropic' && envMap.AIOS_ANTHROPIC_MODEL?.trim()) {
-    modelId = envMap.AIOS_ANTHROPIC_MODEL.trim();
+  } else {
+    const modelEnvKey = PROVIDER_MODEL_ENV[providerId];
+    const fromProviderEnv = modelEnvKey ? envMap[modelEnvKey]?.trim() : undefined;
+    if (fromProviderEnv) {
+      modelId = fromProviderEnv;
+    } else if (PROVIDER_DEFAULT_MODELS[providerId]) {
+      modelId = PROVIDER_DEFAULT_MODELS[providerId]!;
+    }
   }
 
   return { providerId, modelId, signals };
 }
 
-/** Pure decision — no network, no chat (ADR-0025 / ADR-0031). */
+/** Pure decision — no network, no chat (ADR-0025 / ADR-0031 / ADR-0035). */
 export function routeModel(req: RouteRequest, env?: EnvMap): RouteDecision {
   const taskProfile = buildTaskProfile(req);
   const capabilityClass = resolveCapabilityClass(req);
@@ -765,6 +842,26 @@ export function routeModel(req: RouteRequest, env?: EnvMap): RouteDecision {
     };
   }
 
+  const defaultModelFor = (providerId: ProviderId): string => {
+    const modelEnvKey = PROVIDER_MODEL_ENV[providerId];
+    const fromEnv = modelEnvKey ? envMap[modelEnvKey]?.trim() : undefined;
+    return fromEnv || PROVIDER_DEFAULT_MODELS[providerId] || 'llama3.2';
+  };
+
+  const fallbackParsed = parseRouteFallbackChain(envMap.AIOS_ROUTE_FALLBACK, defaultModelFor);
+  bound.signals.push(...fallbackParsed.signals);
+
+  const primaryKey = `${bound.providerId}:${bound.modelId}`;
+  const fallbacks: RouteBinding[] =
+    taskProfile.privacy === 'sensitive'
+      ? []
+      : fallbackParsed.bindings.filter((b) => `${b.providerId}:${b.modelId}` !== primaryKey);
+
+  if (taskProfile.privacy === 'sensitive' && fallbackParsed.bindings.length) {
+    // Cloud fallbacks are incompatible with privacy-local (ADR-0031 / ADR-0035).
+    bound.signals.push('fallback-cleared-privacy');
+  }
+
   const parts = [
     `class:${capabilityClass}`,
     `intent:${req.intentKind}`,
@@ -775,6 +872,7 @@ export function routeModel(req: RouteRequest, env?: EnvMap): RouteDecision {
   if (taskProfile.costBudget !== 'normal') parts.push(`cost:${taskProfile.costBudget}`);
   if (req.capabilityClass) parts.push('forced-class');
   parts.push(...bound.signals);
+  if (fallbacks.length) parts.push(`fallbacks:${fallbacks.length}`);
 
   return {
     providerId: bound.providerId,
@@ -782,6 +880,7 @@ export function routeModel(req: RouteRequest, env?: EnvMap): RouteDecision {
     capabilityClass,
     reason: parts.join(' '),
     taskProfile,
+    fallbacks,
   };
 }
 

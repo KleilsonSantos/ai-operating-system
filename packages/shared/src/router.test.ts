@@ -140,4 +140,36 @@ describe('routeModel', () => {
     expect(d.taskProfile.privacy).toBe('sensitive');
     expect(d.reason).toContain('privacy-local');
   });
+
+  it('records AIOS_ROUTE_FALLBACK chain without network', () => {
+    const d = routeModel(
+      { intentKind: 'explain.code' },
+      {
+        AIOS_ROUTE_CODING_PROVIDER: 'gemini',
+        AIOS_ROUTE_FALLBACK: 'groq:openai/gpt-oss-20b,openrouter,ollama',
+      }
+    );
+    expect(d.providerId).toBe('gemini');
+    expect(d.modelId).toBe('gemini-2.5-flash');
+    expect(d.fallbacks).toEqual([
+      { providerId: 'groq', modelId: 'openai/gpt-oss-20b' },
+      { providerId: 'openrouter', modelId: 'openrouter/free' },
+      { providerId: 'ollama', modelId: 'llama3.2' },
+    ]);
+    expect(d.reason).toContain('env-fallback');
+    expect(d.reason).toContain('fallbacks:3');
+  });
+
+  it('clears cloud fallbacks when privacy=sensitive', () => {
+    const d = routeModel(
+      { intentKind: 'explain.code', privacy: 'sensitive' },
+      {
+        AIOS_ROUTE_CODING_PROVIDER: 'gemini',
+        AIOS_ROUTE_FALLBACK: 'groq,openrouter',
+      }
+    );
+    expect(d.providerId).toBe('ollama');
+    expect(d.fallbacks).toEqual([]);
+    expect(d.reason).toContain('fallback-cleared-privacy');
+  });
 });

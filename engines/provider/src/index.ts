@@ -1,5 +1,6 @@
 /**
  * Multi-provider — abstração AIProvider + Ollama local + OpenAI-compatible (#67 / #105).
+ * Free-tier aliases: openrouter / groq / gemini (#534 / ADR-0035).
  * Auxiliar para tarefas baratas — **não** substitui o LLM da IDE.
  * Resilience: retry + circuit breaker (#238).
  */
@@ -11,7 +12,10 @@ import type {
   ProviderHealth,
   ProviderId,
   ProviderModelInfo,
+  RouteBinding,
+  RouteDecision,
 } from '@aios/shared';
+import { isProviderId } from '@aios/shared';
 import {
   CircuitBreaker,
   isTransientError,
@@ -29,6 +33,8 @@ export type {
   ProviderHealth,
   ProviderId,
   ProviderModelInfo,
+  RouteBinding,
+  RouteDecision,
 };
 
 export type { CircuitState, ResilienceOptions } from './resilience.js';
@@ -38,6 +44,7 @@ export {
   inferRouteRisk,
   inferTaskComplexity,
   inferTaskPrivacy,
+  parseRouteFallbackChain,
   resolveCapabilityClass,
   routeModel,
 } from './router.js';
@@ -62,6 +69,11 @@ export type ProviderOptions = {
   fetch?: FetchLike;
   /** Request timeout ms (default 30_000) */
   timeoutMs?: number;
+  /**
+   * Provider id reported on health/chat (OpenAI-compatible aliases).
+   * Default `openai`.
+   */
+  id?: string;
 } & ResilienceOptions;
 
 /** @deprecated Prefer ProviderOptions — alias for Ollama. */
@@ -69,11 +81,66 @@ export type OllamaProviderOptions = ProviderOptions;
 
 const DEFAULT_OLLAMA_URL = 'http://127.0.0.1:11434';
 const DEFAULT_OLLAMA_MODEL = 'llama3.2';
-const DEFAULT_OPENAI_URL = 'https://api.openai.com/v1';
-const DEFAULT_OPENAI_MODEL = 'gpt-4o-mini';
 const DEFAULT_ANTHROPIC_URL = 'https://api.anthropic.com';
 const DEFAULT_ANTHROPIC_MODEL = 'claude-haiku-4-5';
 const ANTHROPIC_VERSION = '2023-06-01';
+
+/** OpenAI Chat Completions gateways used as thin aliases (ADR-0016 / ADR-0035). */
+export type OpenAICompatAliasId = 'openai' | 'openrouter' | 'groq' | 'gemini';
+
+type OpenAICompatDefaults = {
+  baseUrl: string;
+  model: string;
+  apiKeyEnvs: readonly string[];
+  baseUrlEnv: string;
+  modelEnv: string;
+};
+
+const OPENAI_COMPAT_DEFAULTS: Record<OpenAICompatAliasId, OpenAICompatDefaults> = {
+  openai: {
+    baseUrl: 'https://api.openai.com/v1',
+    model: 'gpt-4o-mini',
+    apiKeyEnvs: ['AIOS_OPENAI_API_KEY', 'OPENAI_API_KEY'],
+    baseUrlEnv: 'AIOS_OPENAI_BASE_URL',
+    modelEnv: 'AIOS_OPENAI_MODEL',
+  },
+  openrouter: {
+    baseUrl: 'https://openrouter.ai/api/v1',
+    model: 'openrouter/free',
+    apiKeyEnvs: ['AIOS_OPENROUTER_API_KEY', 'OPENROUTER_API_KEY'],
+    baseUrlEnv: 'AIOS_OPENROUTER_BASE_URL',
+    modelEnv: 'AIOS_OPENROUTER_MODEL',
+  },
+  groq: {
+    baseUrl: 'https://api.groq.com/openai/v1',
+    model: 'openai/gpt-oss-20b',
+    apiKeyEnvs: ['AIOS_GROQ_API_KEY', 'GROQ_API_KEY'],
+    baseUrlEnv: 'AIOS_GROQ_BASE_URL',
+    modelEnv: 'AIOS_GROQ_MODEL',
+  },
+  gemini: {
+    // Official OpenAI-compatible surface:
+    // https://ai.google.dev/gemini-api/docs/openai
+    baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai',
+    model: 'gemini-2.5-flash',
+    apiKeyEnvs: ['AIOS_GEMINI_API_KEY', 'GEMINI_API_KEY', 'GOOGLE_API_KEY'],
+    baseUrlEnv: 'AIOS_GEMINI_BASE_URL',
+    modelEnv: 'AIOS_GEMINI_MODEL',
+  },
+};
+
+function isOpenAICompatAliasId(value: string): value is OpenAICompatAliasId {
+  return value in OPENAI_COMPAT_DEFAULTS;
+}
+
+function resolveApiKey(envs: readonly string[], explicit?: string): string {
+  if (explicit !== undefined) return explicit;
+  for (const key of envs) {
+    const v = process.env[key];
+    if (v?.trim()) return v.trim();
+  }
+  return '';
+}
 
 function stripTrailingSlash(url: string): string {
   let normalized = url;
@@ -210,33 +277,37 @@ export class OllamaProvider implements AIProvider {
 
 /**
  * OpenAI Chat Completions + Models (HTTP) — também serve gateways compatíveis
- * (Groq, Azure OpenAI compat, etc.) via AIOS_OPENAI_BASE_URL (#105).
+ * (Groq, OpenRouter, Gemini OpenAI-compat, Azure, etc.) (#105 / #534).
  * @see https://developers.openai.com/api/docs/api-reference/chat
+ * @see https://ai.google.dev/gemini-api/docs/openai
  */
 export class OpenAICompatibleProvider implements AIProvider {
-  readonly id = 'openai' as const;
+  readonly id: string;
   readonly baseUrl: string;
   readonly defaultModel: string;
   private readonly apiKey: string;
+  private readonly apiKeyHint: string;
   private readonly fetchImpl: FetchLike;
   private readonly timeoutMs: number;
 
   constructor(opts: ProviderOptions = {}) {
+    const rawId = (opts.id || 'openai').trim().toLowerCase();
+    const alias: OpenAICompatAliasId = isOpenAICompatAliasId(rawId) ? rawId : 'openai';
+    const defaults = OPENAI_COMPAT_DEFAULTS[alias];
+    this.id = rawId || alias;
     this.baseUrl = stripTrailingSlash(
-      opts.baseUrl || process.env.AIOS_OPENAI_BASE_URL || DEFAULT_OPENAI_URL
+      opts.baseUrl || process.env[defaults.baseUrlEnv] || defaults.baseUrl
     );
-    this.defaultModel = opts.defaultModel || process.env.AIOS_OPENAI_MODEL || DEFAULT_OPENAI_MODEL;
-    this.apiKey =
-      opts.apiKey !== undefined
-        ? opts.apiKey
-        : process.env.AIOS_OPENAI_API_KEY || process.env.OPENAI_API_KEY || '';
+    this.defaultModel = opts.defaultModel || process.env[defaults.modelEnv] || defaults.model;
+    this.apiKey = resolveApiKey(defaults.apiKeyEnvs, opts.apiKey);
+    this.apiKeyHint = defaults.apiKeyEnvs[0];
     this.fetchImpl = opts.fetch || fetch;
     this.timeoutMs = opts.timeoutMs ?? 30_000;
   }
 
   private async request(path: string, init?: RequestInit): Promise<Response> {
     if (!this.apiKey) {
-      throw new Error('OpenAI API key missing (AIOS_OPENAI_API_KEY or OPENAI_API_KEY)');
+      throw new Error(`API key missing (${this.apiKeyHint}) for provider ${this.id}`);
     }
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), this.timeoutMs);
@@ -259,7 +330,7 @@ export class OpenAICompatibleProvider implements AIProvider {
     const res = await this.request('/models', { method: 'GET' });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
-      throw new Error(`OpenAI /models HTTP ${res.status}: ${text.slice(0, 200)}`);
+      throw new Error(`${this.id} /models HTTP ${res.status}: ${text.slice(0, 200)}`);
     }
     const body = (await res.json()) as {
       data?: Array<{ id: string }>;
@@ -274,7 +345,7 @@ export class OpenAICompatibleProvider implements AIProvider {
         provider: this.id,
         ok: false,
         baseUrl: this.baseUrl,
-        error: 'API key missing (AIOS_OPENAI_API_KEY)',
+        error: `API key missing (${this.apiKeyHint})`,
         latencyMs: Date.now() - started,
       };
     }
@@ -321,7 +392,7 @@ export class OpenAICompatibleProvider implements AIProvider {
     });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
-      throw new Error(`OpenAI /chat/completions HTTP ${res.status}: ${text.slice(0, 200)}`);
+      throw new Error(`${this.id} /chat/completions HTTP ${res.status}: ${text.slice(0, 200)}`);
     }
     // Official: usage.prompt_tokens / completion_tokens / total_tokens
     // https://developers.openai.com/api/reference/resources/chat
@@ -520,9 +591,97 @@ export class AnthropicProvider implements AIProvider {
 
 const PROVIDERS: Record<string, (opts?: ProviderOptions) => AIProvider> = {
   ollama: (opts) => new OllamaProvider(opts),
-  openai: (opts) => new OpenAICompatibleProvider(opts),
+  openai: (opts) => new OpenAICompatibleProvider({ ...opts, id: 'openai' }),
   anthropic: (opts) => new AnthropicProvider(opts),
+  openrouter: (opts) => new OpenAICompatibleProvider({ ...opts, id: 'openrouter' }),
+  groq: (opts) => new OpenAICompatibleProvider({ ...opts, id: 'groq' }),
+  gemini: (opts) => new OpenAICompatibleProvider({ ...opts, id: 'gemini' }),
 };
+
+/** Ordered primary + fallbacks for chat failover (ADR-0035). */
+export function resolveRouteChatChain(decision: RouteDecision): RouteBinding[] {
+  return [{ providerId: decision.providerId, modelId: decision.modelId }, ...decision.fallbacks];
+}
+
+/**
+ * Errors that justify hopping to the next route binding (quota / availability).
+ * 5xx stays on the same provider (resilience retry); 429/503/408 and quota wording hop.
+ */
+export function isFailoverEligibleError(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+  const msg = err.message.toLowerCase();
+  if (msg.includes('messages required') || msg.includes('api key missing')) return false;
+  if (msg.includes('circuit open')) return true;
+  if (msg.includes('rate limit') || msg.includes('resource_exhausted') || /\bquota\b/.test(msg)) {
+    return true;
+  }
+  const http = msg.match(/http\s+(\d{3})/i);
+  if (http) {
+    const code = Number(http[1]);
+    return code === 429 || code === 503 || code === 408;
+  }
+  return false;
+}
+
+function envFlagTruthy(value: string | undefined): boolean {
+  if (!value) return false;
+  const v = value.trim().toLowerCase();
+  return v === '1' || v === 'true' || v === 'yes' || v === 'on';
+}
+
+export type ChatRouteFailoverOptions = ProviderOptions & {
+  /**
+   * Opt-in failover across `decision.fallbacks`.
+   * Also enabled when `AIOS_ROUTE_FAILOVER=1` (or true/yes/on).
+   */
+  failover?: boolean;
+  /** Override process.env for failover flag / tests */
+  env?: Record<string, string | undefined>;
+};
+
+/**
+ * Chat using a RouteDecision chain. Without failover, only the primary binding runs.
+ * With failover (opt-in), 429/quota/unavailable hops to the next binding (#534 / ADR-0035).
+ */
+export async function chatWithRouteFailover(
+  decision: RouteDecision,
+  request: ChatRequest,
+  opts: ChatRouteFailoverOptions = {}
+): Promise<ChatResponse> {
+  const envMap = opts.env ?? process.env;
+  const failover = opts.failover === true || envFlagTruthy(envMap.AIOS_ROUTE_FAILOVER);
+  const chain = resolveRouteChatChain(decision);
+  const targets = failover ? chain : chain.slice(0, 1);
+  const errors: string[] = [];
+
+  for (let i = 0; i < targets.length; i++) {
+    const hop = targets[i]!;
+    if (!isProviderId(hop.providerId)) {
+      errors.push(`${hop.providerId}: invalid provider`);
+      continue;
+    }
+    const providerOpts: ProviderOptions = {
+      ...opts,
+      // Do not force resilience off; aliases inherit caller opts.
+    };
+    const p = getProvider(hop.providerId, providerOpts);
+    try {
+      return await p.chat({
+        ...request,
+        model: request.model || hop.modelId,
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      errors.push(`${hop.providerId}: ${message}`);
+      const last = i === targets.length - 1;
+      if (!failover || last || !isFailoverEligibleError(err)) {
+        throw err;
+      }
+    }
+  }
+
+  throw new Error(`chatWithRouteFailover: no route succeeded (${errors.join(' | ')})`);
+}
 
 /**
  * Wraps an AIProvider with retry + circuit breaker for chat/models.
