@@ -18,6 +18,7 @@ Exceptions that **do not** force a bump on their own: `chore`, `docs`, `ci`, `te
 
 | Tag        | Description                                                                                          |
 | ---------- | ---------------------------------------------------------------------------------------------------- |
+| `v0.49.13` | Free-tier provider aliases + route failover (ADR-0035 / #534)                                        |
 | `v0.49.12` | Console Attention Inspect run → Run trail (#528)                                                     |
 | `v0.49.11` | DecisionRecord failed/denied → Console Attention skim (#524)                                         |
 | `v0.49.10` | Skill `check:*` exitCriteria → DecisionRecord (#520); market-lookalike boundaries (#517)             |
