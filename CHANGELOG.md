@@ -4,10 +4,11 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.49.13] - 2026-09-24
+
 ### Added
 
-- 🔧 Cursor Agent Shell: project `preToolUse` PATH inject + sandbox readonly `~/.nvm` / shared build cache; document harness noise vs `node` missing (#491)
-- 🧹 `.markdownlint.json` — `MD024.siblings_only` + `MD013` off so Keep a Changelog stops flooding the IDE (#494)
+- 🔀 Free-tier provider aliases (`openrouter` / `groq` / `gemini`) + `AIOS_ROUTE_FALLBACK` / `chatWithRouteFailover` · ADR-0035 (#534)
 
 ## [0.49.12] - 2026-09-23
 

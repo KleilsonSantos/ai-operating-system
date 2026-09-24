@@ -429,6 +429,15 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **O que é**        | Roteamento consciente de complexidade/privacy/cost. |
 | **Para que serve** | Preferir local quando privacy exige.                |
 
+### Free-tier aliases + route failover (ADR-0035)
+
+|                    |                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| **Analogia**       | Três tomadas no mesmo quadro + disjuntor de transferência.                              |
+| **O que é**        | Aliases `openrouter`/`groq`/`gemini` + `AIOS_ROUTE_FALLBACK` + `chatWithRouteFailover`. |
+| **Para que serve** | Dev/demo em free tiers sem inventar um “mesh” separado; hop no 429 (opt-in).            |
+| **Não é**          | SLA de produção, multi-account, ou quota tracker live.                                  |
+
 ### Resource-Aware (ADR-0011)
 
 |                    |                                                                             |
@@ -589,6 +598,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **DecisionRecord**      | Ledger tipado das escolhas do run (≠ motor neural decision-only · ADR-0034)         |
 | **FIFO**                | Descarta o mais antigo quando a fila enche                                          |
 | **FOUNDATION**          | Constituição do produto                                                             |
+| **Free-tier failover**  | Aliases cloud + hop 429 opt-in (ADR-0035)                                           |
 | **Harness**             | Estrutura de controle em volta do modelo                                            |
 | **harness-\*-auditor**  | Agentes Copilot de auditoria de arquitetura (paralelos → synthesizer)               |
 | **Hook**                | Intercept before/after no pipeline                                                  |
