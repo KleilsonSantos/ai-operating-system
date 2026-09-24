@@ -535,12 +535,12 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 
 ### DecisionRecord (ledger em `PipelineRun` · #497 / ADR-0034)
 
-|                    |                                                                                                                                                                                               |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Analogia**       | Livro de bordo: cada escolha da esteira (intent, rota, skill, agente, gate) com motivo estável.                                                                                               |
-| **O que é**        | Array tipado `run.decisions` no mesmo `PipelineRun` (sem store paralelo; sem JSONL de governança).                                                                                            |
-| **Para que serve** | Auditoria “por que esta rota/skill/agente”; trail Visibility `kind: decision`; MCP `aios_get_run_decisions` / CLI `--get-run-decisions` (#502); Console Run trail Decisions + `runId` (#508). |
-| **Não é**          | `GovernanceDecision` (notas humanas ADR/policy); **não** é motor neural “decision-only” (Jev/Laya-style); não é LLM-as-judge nem auto-trigger de skills.                                      |
+|                    |                                                                                                                                                                                                                                           |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Analogia**       | Livro de bordo: cada escolha da esteira (intent, rota, skill, agente, gate) com motivo estável.                                                                                                                                           |
+| **O que é**        | Array tipado `run.decisions` no mesmo `PipelineRun` (sem store paralelo; sem JSONL de governança).                                                                                                                                        |
+| **Para que serve** | Auditoria “por que esta rota/skill/agente”; trail Visibility `kind: decision`; MCP `aios_get_run_decisions` / CLI `--get-run-decisions` (#502); Console Run trail Decisions + `runId` (#508); Attention skim de `failed`/`denied` (#524). |
+| **Não é**          | `GovernanceDecision` (notas humanas ADR/policy); **não** é motor neural “decision-only” (Jev/Laya-style); não é LLM-as-judge nem auto-trigger de skills.                                                                                  |
 
 ### Selection evals (`integrations/evals/` · #447)
 
