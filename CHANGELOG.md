@@ -2,6 +2,12 @@
 
 Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
+## [Unreleased]
+
+### Added
+
+- 🤖 Read-only `architecture-reviewer` Copilot agent and catalog entry for architecture/governance reviews (#447)
+
 ## [0.49.14] - 2026-09-27
 
 ### Fixed
