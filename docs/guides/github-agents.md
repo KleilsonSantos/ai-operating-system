@@ -8,13 +8,14 @@ These are **IDE/GitHub surfaces**, not the product UX. Product agent plugins liv
 
 ## General agents
 
-| Agent                   | File                           | Tools              | Purpose                                             |
-| ----------------------- | ------------------------------ | ------------------ | --------------------------------------------------- |
-| **task-planner**        | `task-planner.agent.md`        | read, search       | Plan slices — no implementation                     |
-| **code-reviewer**       | `code-reviewer.agent.md`       | read, search       | PR/diff review (policies, ADR, Git flow)            |
-| **docs-writer**         | `docs-writer.agent.md`         | read, search, edit | Docs aligned to code                                |
-| **appsec-reviewer**     | `appsec-reviewer.agent.md`     | read, search       | PR AppSec posture (secrets, MCP, SAFE_WRITE, paths) |
-| **release-coordinator** | `release-coordinator.agent.md` | read, search       | Release checklist (SemVer, CHANGELOG, promote, tag) |
+| Agent                     | File                             | Tools              | Purpose                                             |
+| ------------------------- | -------------------------------- | ------------------ | --------------------------------------------------- |
+| **task-planner**          | `task-planner.agent.md`          | read, search       | Plan slices — no implementation                     |
+| **code-reviewer**         | `code-reviewer.agent.md`         | read, search       | PR/diff review (policies, ADR, Git flow)            |
+| **docs-writer**           | `docs-writer.agent.md`           | read, search, edit | Docs aligned to code                                |
+| **appsec-reviewer**       | `appsec-reviewer.agent.md`       | read, search       | PR AppSec posture (secrets, MCP, SAFE_WRITE, paths) |
+| **release-coordinator**   | `release-coordinator.agent.md`   | read, search       | Release checklist (SemVer, CHANGELOG, promote, tag) |
+| **architecture-reviewer** | `architecture-reviewer.agent.md` | read, search       | Architecture and governance alignment review        |
 
 ## Harness architecture audit (parallel workers)
 
