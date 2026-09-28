@@ -8,13 +8,13 @@
 
 ## Context
 
-ADR-0025 added secret-**path** denial in `gatherContext`. Memory (`remember`) only truncated length. Hostile instruction text in allowed files, or injection-like memory notes, could still reach the prompt or durable store. Issue #447 required a security-spike outcome: implement minimal fail-closed hygiene **or** explicit deferral with risk.
+ADR-0025 added secret-**path** denial in `gatherContext`. Memory (`remember`) only truncated length, and a previously written or externally modified memory file could still be trusted by `recall()`. Hostile instruction text in allowed files, or injection-like memory notes, could therefore reach the prompt or durable store. Issue #447 required a security-spike outcome: implement minimal fail-closed hygiene **or** explicit deferral with risk.
 
 ## Decision
 
 1. **Shared heuristics (same `@aios/shared` module).** `scanUntrustedText` / `firstContentHygieneHit` / `assertMemoryContentAllowed` live in `packages/shared/src/index.ts` (no extra file — MCP strip-types). Covers injection cues, secret-material patterns, and ASCII control characters. Not a new engine.
 2. **Context.** After read+truncate, if hygiene hits, **skip** the snippet and emit `content-denied:<rel>:<code>:<detail>`. Path deny-list (`denied:`) remains unchanged.
-3. **Memory.** `remember()` calls `assertMemoryContentAllowed` after trim; reject with `memory.content_rejected:<code>:<detail>` (fail closed).
+3. **Memory.** `remember()` calls `assertMemoryContentAllowed` after trim; reject with `memory.content_rejected:<code>:<detail>` (fail closed). `recall()` revalidates entries loaded from disk, drops hostile/malformed rows, and returns auditable `memory-denied:<id>:<code>:<detail>` signals without exposing the rejected content to the prompt.
 4. **Default on.** Opt-out only via `AIOS_CONTENT_HYGIENE=0|false|off|no` (debug). Production posture is fail-closed.
 5. **Scope boundary.** This ADR does **not** add LLM-as-judge, output sanitization, MCP argument scanning, or a dedicated security product surface.
 
@@ -24,7 +24,7 @@ ADR-0025 added secret-**path** denial in `gatherContext`. Memory (`remember`) on
 
 - Closes the #447 security-spike checkbox with a concrete control plane behavior
 - Reuses one helper across Context and Memory (no duplication)
-- Signals remain auditable (`content-denied:` / thrown error codes)
+- Signals remain auditable (`content-denied:` / `memory-denied:` / thrown error codes)
 
 ### Trade-offs
 
