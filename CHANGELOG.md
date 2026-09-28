@@ -2,7 +2,7 @@
 
 Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
-## [Unreleased]
+## [0.49.14] - 2026-09-27
 
 ### Fixed
 
