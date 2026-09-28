@@ -182,6 +182,7 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
       count: mem.entries.length,
       entries: mem.entries,
       path: mem.path,
+      ...(mem.signals?.length ? { signals: mem.signals } : {}),
     };
   }
 
