@@ -572,6 +572,8 @@ export type MemoryStore = {
   workspaceId: string;
   updatedAt: string;
   entries: MemoryEntry[];
+  /** Entries discarded during read-time hygiene validation. */
+  signals?: string[];
 };
 
 /** How, not who — optional pack for the Prompt Engine (ADR-0026). */
@@ -1375,6 +1377,7 @@ export type PipelineResponse = {
     count: number;
     entries: MemoryEntry[];
     path?: string;
+    signals?: string[];
   };
   workflow: {
     ran: string[];

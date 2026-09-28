@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Fixed
+
+- 🔒 Memory recall revalidates persisted entries, drops hostile content, and propagates auditable `memory-denied:` signals · ADR-0033 (#447)
+
 ## [0.49.13] - 2026-09-24
 
 ### Added

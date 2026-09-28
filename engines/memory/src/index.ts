@@ -11,7 +11,12 @@ import {
   unlinkSync,
 } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { assertMemoryContentAllowed, type MemoryEntry, type MemoryStore } from '@aios/shared';
+import {
+  assertMemoryContentAllowed,
+  firstContentHygieneHit,
+  type MemoryEntry,
+  type MemoryStore,
+} from '@aios/shared';
 
 const ROLLUP_TAG = 'memory.rollup';
 const CONTENT_MAX = 4000;
@@ -50,15 +55,46 @@ function emptyStore(workspaceId: string): MemoryStore {
   return { workspaceId, updatedAt: new Date().toISOString(), entries: [] };
 }
 
+function sanitizeStoredEntries(entries: unknown): {
+  entries: MemoryEntry[];
+  signals: string[];
+} {
+  if (!Array.isArray(entries)) return { entries: [], signals: [] };
+
+  const safe: MemoryEntry[] = [];
+  const signals: string[] = [];
+  for (const candidate of entries) {
+    if (!candidate || typeof candidate !== 'object') continue;
+    const entry = candidate as Partial<MemoryEntry>;
+    if (typeof entry.id !== 'string' || typeof entry.content !== 'string') continue;
+    const hit = firstContentHygieneHit(entry.content);
+    if (hit) {
+      signals.push(`memory-denied:${entry.id}:${hit.code}:${hit.detail}`);
+      continue;
+    }
+    safe.push({
+      id: entry.id,
+      content: entry.content,
+      createdAt: typeof entry.createdAt === 'string' ? entry.createdAt : '',
+      ...(Array.isArray(entry.tags)
+        ? { tags: entry.tags.filter((tag): tag is string => typeof tag === 'string') }
+        : {}),
+    });
+  }
+  return { entries: safe, signals };
+}
+
 function readStore(file: string, workspaceId: string): MemoryStore {
   if (!existsSync(file)) return emptyStore(workspaceId);
   try {
     const raw = JSON.parse(readFileSync(file, 'utf8')) as MemoryStore;
     if (!raw || !Array.isArray(raw.entries)) return emptyStore(workspaceId);
+    const sanitized = sanitizeStoredEntries(raw.entries);
     return {
       workspaceId: raw.workspaceId || workspaceId,
       updatedAt: raw.updatedAt || new Date().toISOString(),
-      entries: raw.entries,
+      entries: sanitized.entries,
+      ...(sanitized.signals.length > 0 ? { signals: sanitized.signals } : {}),
     };
   } catch {
     return emptyStore(workspaceId);
@@ -218,6 +254,7 @@ export function recall(
     updatedAt: store.updatedAt,
     entries,
     path: file,
+    ...(store.signals?.length ? { signals: store.signals } : {}),
   };
 }
 
