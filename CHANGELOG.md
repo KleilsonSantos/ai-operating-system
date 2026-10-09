@@ -7,6 +7,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 ### Added
 
 - 🤖 Read-only `architecture-reviewer` Copilot agent and catalog entry for architecture/governance reviews (#447)
+- 📦 `@aios-platform/agent-template` — canonical scaffold `template/` + `resolveTemplateDir()`; `@aios-platform/create-agent` consumes it (#532)
 
 ## [0.49.14] - 2026-09-27
 

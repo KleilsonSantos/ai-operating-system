@@ -22,14 +22,16 @@ npm create @aios-platform/agent@latest -- --name my-agent
 
 ## Package order
 
-`@aios-platform/create-agent` depends on `@aios-platform/agent-registry`. Publish **registry first**, then create-agent.
+`@aios-platform/create-agent` depends on `@aios-platform/agent-registry` and `@aios-platform/agent-template` (#532). Publish in this order:
 
-The template lives **inside** `@aios-platform/create-agent` (`template/`). A separate `@aios/agent-template` package is optional and deferred.
+1. `@aios-platform/agent-registry`
+2. `@aios-platform/agent-template` (canonical `template/` + `resolveTemplateDir()`)
+3. `@aios-platform/create-agent`
 
 ## Dry-run / local smoke
 
 ```bash
-# Pack both tarballs, install locally, run create-agent bin (no npm auth)
+# Pack registry + agent-template + create-agent tarballs, scaffold locally (no npm auth)
 bash scripts/smoke-create-agent-pack.sh
 
 # Simulate publish metadata without uploading
@@ -54,6 +56,7 @@ Equivalent manual steps:
 
 ```bash
 pnpm --filter @aios-platform/agent-registry publish --access public --no-git-checks
+pnpm --filter @aios-platform/agent-template publish --access public --no-git-checks
 pnpm --filter @aios-platform/create-agent publish --access public --no-git-checks
 ```
 
