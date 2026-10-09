@@ -6,6 +6,7 @@ import {
   chatWithRouteFailover,
   getProvider,
   listProviderIds,
+  resolveProviderBaseUrl,
   routeModel,
 } from './index.ts';
 
@@ -307,5 +308,30 @@ describe('chatWithRouteFailover', () => {
     expect(out.message.content).toBe('from-groq');
     expect(out.provider).toBe('groq');
     expect(calls).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe('resolveProviderBaseUrl', () => {
+  it('returns built-in defaults without env overrides', () => {
+    expect(resolveProviderBaseUrl('ollama', {})).toBe('http://127.0.0.1:11434');
+    expect(resolveProviderBaseUrl('openai', {})).toBe('https://api.openai.com/v1');
+    expect(resolveProviderBaseUrl('anthropic', {})).toBe('https://api.anthropic.com');
+    expect(resolveProviderBaseUrl('gemini', {})).toBe(
+      'https://generativelanguage.googleapis.com/v1beta/openai'
+    );
+  });
+
+  it('honors operator env and strips trailing slashes', () => {
+    expect(resolveProviderBaseUrl('openai', { AIOS_OPENAI_BASE_URL: 'https://gw.test/v1/' })).toBe(
+      'https://gw.test/v1'
+    );
+    expect(resolveProviderBaseUrl('ollama', { AIOS_OLLAMA_URL: 'http://10.0.0.2:11434/' })).toBe(
+      'http://10.0.0.2:11434'
+    );
+  });
+
+  it('is case-insensitive and undefined for unknown providers', () => {
+    expect(resolveProviderBaseUrl(' OpenAI ', {})).toBe('https://api.openai.com/v1');
+    expect(resolveProviderBaseUrl('nope', {})).toBeUndefined();
   });
 });

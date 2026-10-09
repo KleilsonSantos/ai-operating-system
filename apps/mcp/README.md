@@ -33,9 +33,13 @@ pnpm --filter @aios/mcp dev
 
 **Live harness (CI):** `pnpm --filter @aios/mcp test` includes `stdio-live.test.ts` — spawns this server over stdio with product `tsx` (same as `dev`) via the official SDK client and round-trips `aios_list_agents`, a capability deny (`aios_workspace_remove` → `policy.denied`), and `aios_compile_prompt` (#440 / audit P1).
 
-Prefer an **absolute `node` path** (Cursor GUI often lacks `nvm`/`pnpm`). Set `AIOS_HOME` to this monorepo.
+Prefer an **absolute `node` path** (Cursor GUI often lacks `nvm`/`pnpm`) and an **absolute `--import` to `apps/mcp/node_modules/tsx/dist/loader.mjs`** — Cursor may ignore `cwd`, so bare `--import tsx` fails tool discovery. Set `AIOS_HOME` to this monorepo. See [cursor-chat-bridge](../../docs/guides/cursor-chat-bridge.md).
 
-Env: `AIOS_HOME`, `AIOS_REPO`, `AIOS_WORKSPACE`, `AIOS_SCOPE`, `AIOS_POLICIES_PATH`, `AIOS_WORKSPACES_PATH`, `AIOS_MCP_QUIET=1`, `AIOS_MCP_PRIVILEGE`, `AIOS_MCP_ALLOW_PRIVILEGED=1`, `AIOS_MCP_ALLOW_SAFE_WRITE=1`.
+Env: `AIOS_HOME`, `AIOS_REPO`, `AIOS_WORKSPACE`, `AIOS_SCOPE`, `AIOS_POLICIES_PATH`, `AIOS_WORKSPACES_PATH`, `AIOS_MCP_QUIET=1`, `AIOS_MCP_PRIVILEGE`, `AIOS_MCP_ALLOW_PRIVILEGED=1`, `AIOS_MCP_ALLOW_SAFE_WRITE=1`, `AIOS_MCP_ALLOWED_BASE_URLS`, `AIOS_MCP_ALLOWED_ROOTS`, `AIOS_MCP_PATH_SCOPE`.
+
+**Path scope:** path-like arguments (`repoPath`, `homePath`, `workspacesPath`, `policiesPath`, `outDir`, and the `path` of `aios_workspace_upsert`) must resolve (symlinks followed) under `AIOS_HOME`/cwd, a registered workspace, or a root in `AIOS_MCP_ALLOWED_ROOTS` (path-delimiter separated, empty by default). Otherwise the call is denied with `path.out_of_scope` before the tool runs. To use an external Obsidian vault (`outDir`) or onboard a new repo through `aios_workspace_upsert`, add its parent to `AIOS_MCP_ALLOWED_ROOTS`. `AIOS_MCP_PATH_SCOPE=off` disables the check (not recommended).
+
+**Provider `baseUrl` override:** `aios_provider_health`, `aios_provider_models`, and `aios_provider_chat` accept `baseUrl` only on the provider's own configured origin, or on an origin listed in `AIOS_MCP_ALLOWED_BASE_URLS` (comma-separated, empty by default). Anything else is denied with `provider.base_url_denied`, because provider API keys from the operator environment are attached to every request.
 
 **SAFE_WRITE consent (#378 / #327):** when must-policy `mcp-safe-write-consent` is loaded (default monorepo policies), `aios_memory_clear`, `aios_export_obsidian`, and `aios_pkb_rebuild_vectors` are denied until `AIOS_MCP_ALLOW_SAFE_WRITE=1`. The consent fails closed: when no policy file is found under `AIOS_HOME` (built-in defaults only), the rule is still enforced. A policy file that omits the rule is an explicit opt-out. Other SAFE_WRITE tools (e.g. `aios_memory_remember`) stay privilege-gated only.
 

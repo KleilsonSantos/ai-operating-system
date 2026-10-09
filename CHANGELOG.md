@@ -8,6 +8,11 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 - 🤖 Read-only `architecture-reviewer` Copilot agent and catalog entry for architecture/governance reviews (#447)
 
+### Security
+
+- 🔒 MCP `aios_provider_health` / `aios_provider_models` / `aios_provider_chat` accept a `baseUrl` override only on the provider's own origin or an origin listed in `AIOS_MCP_ALLOWED_BASE_URLS`, so operator API keys are not sent to arbitrary hosts (#548)
+- 🔒 MCP tool path arguments (`repoPath`, `homePath`, `workspacesPath`, `policiesPath`, `outDir`, workspace upsert `path`) are confined to `AIOS_HOME`, registered workspaces, and `AIOS_MCP_ALLOWED_ROOTS`; out-of-scope calls return `path.out_of_scope` (`AIOS_MCP_PATH_SCOPE=off` opts out) (#548)
+
 ## [0.49.14] - 2026-09-27
 
 ### Fixed
