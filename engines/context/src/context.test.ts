@@ -220,4 +220,54 @@ describe('gatherContext', () => {
     expect(noiseIdx).toBeGreaterThan(sharedIdx);
     expect(noiseIdx).toBeGreaterThan(adrIdx);
   });
+
+  it('lists test files by path without reading them or spending the snippet budget', () => {
+    const root = fixtureRoot();
+    writeFileSync(
+      join(root, 'engines', 'demo', 'src', 'demo.test.ts'),
+      'it("secret-ish body", () => {})\n'
+    );
+    writeFileSync(join(root, 'engines', 'demo', 'src', 'demo.spec.ts'), 'export {}\n');
+    mkdirSync(join(root, 'engines', 'demo', '__tests__'), { recursive: true });
+    writeFileSync(join(root, 'engines', 'demo', '__tests__', 'helper.ts'), 'export {}\n');
+
+    const bundle = gatherContext({ repoPath: root, scope: 'engines/demo' });
+    expect(bundle.testFiles).toEqual([
+      'engines/demo/__tests__/helper.ts',
+      'engines/demo/src/demo.spec.ts',
+      'engines/demo/src/demo.test.ts',
+    ]);
+    expect(bundle.signals).toContain('tests:3');
+    // `.test.` content never enters a snippet
+    expect(bundle.snippets.some((s) => s.path.endsWith('demo.test.ts'))).toBe(false);
+    expect(bundle.snippets.some((s) => s.content.includes('secret-ish body'))).toBe(false);
+  });
+
+  it('omits testFiles and the tests signal when the scope has no tests', () => {
+    const root = fixtureRoot();
+    const bundle = gatherContext({ repoPath: root, scope: 'engines/demo' });
+    expect(bundle.testFiles).toBeUndefined();
+    expect(bundle.signals.some((sig) => sig.startsWith('tests:'))).toBe(false);
+  });
+
+  it('caps testFiles at 20 paths but reports the true total in the signal', () => {
+    const root = fixtureRoot();
+    for (let i = 0; i < 25; i++) {
+      writeFileSync(
+        join(root, 'engines', 'demo', 'src', `t${String(i).padStart(2, '0')}.test.ts`),
+        'x\n'
+      );
+    }
+    const bundle = gatherContext({ repoPath: root, scope: 'engines/demo' });
+    expect(bundle.testFiles).toHaveLength(20);
+    expect(bundle.signals).toContain('tests:25');
+  });
+
+  it('does not list denied secret-like paths as tests', () => {
+    const root = fixtureRoot();
+    mkdirSync(join(root, 'engines', 'demo', 'secrets'), { recursive: true });
+    writeFileSync(join(root, 'engines', 'demo', 'secrets', 'x.test.ts'), 'x\n');
+    const bundle = gatherContext({ repoPath: root, scope: 'engines/demo' });
+    expect(bundle.testFiles).toBeUndefined();
+  });
 });

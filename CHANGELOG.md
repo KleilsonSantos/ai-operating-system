@@ -8,6 +8,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 - 🤖 Read-only `architecture-reviewer` Copilot agent and catalog entry for architecture/governance reviews (#447)
 
+### Fixed
+
+- 🧪 QA agent no longer reports `gap:no-test-files-in-context` when tests exist: the Context Engine lists `*.test.*` / `*.spec.*` / `__tests__` paths in `ContextBundle.testFiles` (paths only, capped at 20, `tests:<N>` signal) without spending the snippet budget (#544)
+
 ## [0.49.14] - 2026-09-27
 
 ### Fixed

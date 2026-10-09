@@ -486,7 +486,18 @@ export type ContextBundle = {
   signals: string[];
   /** Named budget applied during gather (ADR-0025). */
   budget?: ContextBudget;
+  /**
+   * Repo-relative test file paths found in scope (sorted, capped). Paths only — never content
+   * and never counted against the snippet budget. Lets the QA agent see tests the budget skips.
+   */
+  testFiles?: string[];
 };
+
+/** Test-file convention shared by the Context Engine and the QA agent. */
+export function isTestPath(relPath: string): boolean {
+  const normalized = relPath.replace(/\\/g, '/');
+  return /\.(test|spec)\.[cm]?[jt]sx?$/i.test(normalized) || /(^|\/)__tests__\//i.test(normalized);
+}
 
 export type AgentResult = {
   agentId: string;
