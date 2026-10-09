@@ -10,6 +10,7 @@ import {
 } from '@aios/status';
 import { runSafeAction, SAFE_ACTIONS } from './actions.ts';
 import { stringifyClientJson } from './json-response.ts';
+import { checkConsoleRequest } from './request-guard.ts';
 
 const port = Number(process.env.AIOS_CONSOLE_PORT || 8787);
 const homePath = process.env.AIOS_HOME || process.cwd();
@@ -18,9 +19,6 @@ function sendJson(res: import('node:http').ServerResponse, status: number, body:
   res.writeHead(status, {
     'Content-Type': 'application/json; charset=utf-8',
     'Cache-Control': 'no-store',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
   });
   res.end(stringifyClientJson(body));
 }
@@ -29,7 +27,6 @@ function sendPrometheus(res: import('node:http').ServerResponse, body: string): 
   res.writeHead(200, {
     'Content-Type': PROMETHEUS_CONTENT_TYPE,
     'Cache-Control': 'no-store',
-    'Access-Control-Allow-Origin': '*',
   });
   res.end(body);
 }
@@ -44,9 +41,6 @@ function sendInternalError(
   res.writeHead(500, {
     'Content-Type': 'application/json; charset=utf-8',
     'Cache-Control': 'no-store',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
   });
   res.end('{"error":"internal server error"}');
 }
@@ -62,17 +56,18 @@ async function readJsonBody(req: import('node:http').IncomingMessage): Promise<u
 }
 
 const server = createServer(async (req, res) => {
-  const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
-
-  if (req.method === 'OPTIONS') {
-    res.writeHead(204, {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
+  // Local API: reject foreign Host (DNS rebinding) and cross-site Origin; no CORS headers are sent.
+  const guard = checkConsoleRequest(req.headers);
+  if (!guard.ok) {
+    res.writeHead(403, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store',
     });
-    res.end();
+    res.end(`{"error":"forbidden","reason":"${guard.reason}"}`);
     return;
   }
+
+  const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
 
   if (req.method === 'GET' && (url.pathname === '/metrics' || url.pathname === '/api/metrics')) {
     try {

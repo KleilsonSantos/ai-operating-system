@@ -8,6 +8,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 - 🤖 Read-only `architecture-reviewer` Copilot agent and catalog entry for architecture/governance reviews (#447)
 
+### Security
+
+- 🔒 Console API rejects non-loopback `Host` and cross-site `Origin` (`403`) and no longer sends `Access-Control-Allow-Origin: *`; extra origins via `AIOS_CONSOLE_ALLOWED_ORIGINS` (#550)
+
 ## [0.49.14] - 2026-09-27
 
 ### Fixed
