@@ -22,7 +22,7 @@ You write _"Analyze my project."_ — policies, context, agents, and quality gat
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Phase                 | Phase 5c shipped · Visibility plane + control plane (see [`ROADMAP`](./docs/ROADMAP.md))                                                                                                                                                                                  |
 | Production            | `main` + SemVer tags                                                                                                                                                                                                                                                      |
-| Latest release        | [`v0.48.8`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.48.8)                                                                                                                                                                                   |
+| Latest release        | [`v0.49.14`](https://github.com/KleilsonSantos/ai-operating-system/releases/tag/v0.49.14)                                                                                                                                                                                 |
 | Monorepo              | pnpm workspaces + Turborepo                                                                                                                                                                                                                                               |
 | Integration           | `sandbox` → `main` · [`@aios/pipeline`](./packages/pipeline/README.md) · [Cursor chat](./docs/guides/cursor-chat-bridge.md)                                                                                                                                               |
 | Foundation            | [`docs/FOUNDATION.md`](./docs/FOUNDATION.md)                                                                                                                                                                                                                              |
@@ -43,6 +43,7 @@ packages/
   shared/                 # Types + MCP auth + model router
   pipeline/               # runPipeline — stable contract (#9)
   agent-registry/         # Agent discovery + manifest schema
+  agent-template/         # Canonical scaffold template (#532)
   create-agent/           # Scaffold CLI for community agents
   core/                   # Minimal stub (PipelineEvent); SSOT is @aios/pipeline
 engines/

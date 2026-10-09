@@ -16,7 +16,6 @@
   },
   "files": [
     "dist/**/*",
-    "template/**/*",
     "README.md"
   ],
   "scripts": {
@@ -51,7 +50,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@aios-platform/agent-registry": "workspace:*"
+    "@aios-platform/agent-registry": "workspace:*",
+    "@aios-platform/agent-template": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.4.0",

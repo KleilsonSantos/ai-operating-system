@@ -4,6 +4,10 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+### Added
+
+- 📦 `@aios-platform/agent-template` — canonical scaffold `template/` + `resolveTemplateDir()`; `@aios-platform/create-agent` consumes it (#532)
+
 ## [0.49.16] - 2026-11-12
 
 ### Security
