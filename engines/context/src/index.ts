@@ -5,7 +5,7 @@
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { buildKnowledgeGraph } from '@aios/knowledge';
-import { firstContentHygieneHit } from '@aios/shared';
+import { firstContentHygieneHit, isTestPath } from '@aios/shared';
 import type {
   ContextBudget,
   ContextBundle,
@@ -235,6 +235,9 @@ function priority(kind: ContextSnippetKind, relPath: string): number {
   return 10;
 }
 
+/** Cap on `ContextBundle.testFiles` (paths only). */
+const MAX_TEST_FILE_PATHS = 20;
+
 const MAX_KG_NEIGHBORS = 12;
 const KG_SCORE_BOOST = 55;
 
@@ -392,6 +395,7 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
 
   const candidates: Candidate[] = [];
   const seen = new Set<string>();
+  const testFiles: string[] = [];
 
   for (const abs of files) {
     if (!isPathUnderRepo(abs, repoPath)) continue;
@@ -403,6 +407,7 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
       signals.push(`denied:${rel}`);
       continue;
     }
+    if (isTestPath(rel)) testFiles.push(rel);
     const kind = kindFor(base, rel);
     if (!kind) continue;
     // sob escopo `.`, limitar código à raiz / src raso para não inundar
@@ -458,9 +463,19 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
     });
   }
 
+  if (testFiles.length > 0) signals.push(`tests:${testFiles.length}`);
   signals.push(`snippets:${snippets.length}`, `bytes:${total}`);
 
-  return { repoPath, scope, snippets, signals, budget };
+  return {
+    repoPath,
+    scope,
+    snippets,
+    signals,
+    budget,
+    ...(testFiles.length > 0
+      ? { testFiles: testFiles.sort((a, b) => a.localeCompare(b)).slice(0, MAX_TEST_FILE_PATHS) }
+      : {}),
+  };
 }
 
 /** @deprecated tipo movido para @aios/shared — re-export */
