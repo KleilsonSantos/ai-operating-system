@@ -769,6 +769,26 @@ export function getProvider(id: string = 'ollama', opts?: ProviderOptions): AIPr
   return new ResilientProvider(inner, opts ?? {});
 }
 
+/**
+ * Base URL a provider would use with no per-call override (operator env or built-in default).
+ * Single source of truth for callers that must compare an untrusted override against it.
+ */
+export function resolveProviderBaseUrl(
+  id: string,
+  env: Record<string, string | undefined> = process.env
+): string | undefined {
+  const key = id.trim().toLowerCase() || 'ollama';
+  if (key === 'ollama') return stripTrailingSlash(env.AIOS_OLLAMA_URL || DEFAULT_OLLAMA_URL);
+  if (key === 'anthropic') {
+    return stripTrailingSlash(env.AIOS_ANTHROPIC_BASE_URL || DEFAULT_ANTHROPIC_URL);
+  }
+  if (isOpenAICompatAliasId(key)) {
+    const defaults = OPENAI_COMPAT_DEFAULTS[key];
+    return stripTrailingSlash(env[defaults.baseUrlEnv] || defaults.baseUrl);
+  }
+  return undefined;
+}
+
 export function listProviderIds(): ProviderId[] {
   return Object.keys(PROVIDERS) as ProviderId[];
 }

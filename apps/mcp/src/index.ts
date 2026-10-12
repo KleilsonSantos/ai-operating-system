@@ -18,6 +18,7 @@ import {
   removeWorkspace,
   validateWorkspace,
   listValidatedWorkspaces,
+  resolveWorkspacePath,
 } from '@aios/workspace';
 import { buildKnowledgeGraph, summarizeKnowledge } from '@aios/knowledge';
 import { remember, recall, clearMemory, listMemoryWorkspaces } from '@aios/memory';
@@ -27,7 +28,7 @@ import {
   deniedSkillPayload,
   effectiveSkillIds,
 } from '@aios/prompt';
-import { getProvider, listProviderIds, routeModel } from '@aios/provider';
+import { getProvider, listProviderIds, resolveProviderBaseUrl, routeModel } from '@aios/provider';
 import {
   getGovernanceStatus,
   chatWithMetrics,
@@ -44,6 +45,13 @@ import { authorizeMcpTool, deniedMcpPayload, isModelCapabilityClass } from '@aio
 import { recordMcpToolAudit } from '@aios/status';
 import { readMonorepoVersion } from './version.ts';
 import { resolveMcpMustIds } from './must-policy-ids.ts';
+import { deniedBaseUrlResult, resolveMcpBaseUrl } from './provider-base-url.ts';
+import {
+  checkMcpPathArgs,
+  deniedPathResult,
+  isMcpPathScopeEnabled,
+  rootsFromEnv,
+} from './path-scope.ts';
 
 function mcpMustPolicyIds(): string[] {
   const home = process.env.AIOS_HOME || process.cwd();
@@ -52,6 +60,19 @@ function mcpMustPolicyIds(): string[] {
     configPath: process.env.AIOS_POLICIES_PATH,
   });
   return resolveMcpMustIds(bundle);
+}
+
+/** AIOS home + registered workspaces + operator roots (`AIOS_MCP_ALLOWED_ROOTS`). */
+function mcpPathRoots(): string[] {
+  const home = resolve(process.env.AIOS_HOME || process.cwd());
+  const roots = [home, ...rootsFromEnv()];
+  try {
+    const bundle = loadWorkspaces({ cwd: home, configPath: process.env.AIOS_WORKSPACES_PATH });
+    for (const w of bundle.workspaces) roots.push(resolveWorkspacePath(w, bundle.path));
+  } catch {
+    /* invalid registry: fall back to home + operator roots */
+  }
+  return roots;
 }
 
 function auditMcpDecision(decision: ReturnType<typeof authorizeMcpTool>, source = 'mcp'): void {
@@ -123,6 +144,23 @@ export function createAiosMcpServer(): McpServer {
             ],
             isError: true,
           };
+        }
+        if (isMcpPathScopeEnabled()) {
+          const scope = checkMcpPathArgs(args, {
+            roots: mcpPathRoots(),
+            home: resolve(process.env.AIOS_HOME || process.cwd()),
+            cwd: process.cwd(),
+          });
+          if (!scope.ok) {
+            auditMcpDecision({
+              allowed: false,
+              tool: String(name),
+              required: decision.required,
+              caller: decision.caller,
+              reason: `path.out_of_scope:${scope.arg}`,
+            });
+            return deniedPathResult(scope.arg);
+          }
         }
         return handler(args, extra);
       }) as never
@@ -1020,7 +1058,13 @@ export function createAiosMcpServer(): McpServer {
     },
     async ({ provider, baseUrl }) => {
       try {
-        const p = getProvider(provider || 'ollama', { baseUrl });
+        const base = resolveMcpBaseUrl(
+          provider || 'ollama',
+          baseUrl,
+          resolveProviderBaseUrl(provider || 'ollama')
+        );
+        if (!base.ok) return deniedBaseUrlResult(base);
+        const p = getProvider(provider || 'ollama', { baseUrl: base.baseUrl });
         const health = await p.health();
         return {
           content: [{ type: 'text', text: JSON.stringify(health, null, 2) }],
@@ -1048,7 +1092,13 @@ export function createAiosMcpServer(): McpServer {
     },
     async ({ provider, baseUrl }) => {
       try {
-        const p = getProvider(provider || 'ollama', { baseUrl });
+        const base = resolveMcpBaseUrl(
+          provider || 'ollama',
+          baseUrl,
+          resolveProviderBaseUrl(provider || 'ollama')
+        );
+        if (!base.ok) return deniedBaseUrlResult(base);
+        const p = getProvider(provider || 'ollama', { baseUrl: base.baseUrl });
         const models = await p.models();
         return {
           content: [
@@ -1103,9 +1153,11 @@ export function createAiosMcpServer(): McpServer {
           providerId = routed.providerId;
           modelId = model || routed.modelId;
         }
+        const base = resolveMcpBaseUrl(providerId, baseUrl, resolveProviderBaseUrl(providerId));
+        if (!base.ok) return deniedBaseUrlResult(base);
         const out = await chatWithMetrics({
           providerId,
-          baseUrl,
+          baseUrl: base.baseUrl,
           request: { model: modelId, messages, temperature },
           source: 'mcp',
         });
