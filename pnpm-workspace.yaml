@@ -7,8 +7,12 @@ packages:
 allowBuilds:
   esbuild: true
 
-minimumReleaseAgeExclude:
-  - brace-expansion@5.0.9
+# GHSA-vfj7 — braces stack-exhaustion DoS: no patched release exists on npm yet (latest 3.0.3,
+# fix listed as >=3.0.4). Reached only via markdownlint-cli2 (dev tooling parsing maintainer-
+# authored globs). Remove this entry once braces >=3.0.4 is published and lock is refreshed.
+auditConfig:
+  ignoreGhsas:
+    - GHSA-vfj7-8cjw-p6xm
 
 # pnpm 11: overrides belong here (package.json#pnpm is ignored).
 # Pins transitive CVEs that block pre-push `pnpm audit`.
@@ -19,7 +23,7 @@ minimumReleaseAgeExclude:
 # natively depends on brace-expansion >=5.0.8.
 overrides:
   # GHSA-5jgf / GHSA-f65p / GHSA-fph4 / GHSA-jqff — SSRF / host confusion (need >=3.1.6)
-  fast-uri: 3.1.6
+  fast-uri: 3.1.8
   # GHSA-x5fp / GHSA-4mjr — qs array-limit bypass + DoS via isBuffer (need >=6.16.0)
   qs: 6.16.0
   '@hono/node-server': 2.0.10
@@ -27,11 +31,26 @@ overrides:
   # also covers prior GHSA-8j4g CORS ReDoS pin
   hono: 4.13.7
   # GHSA-mwp4 / GHSA-4xrf / GHSA-22jq — SSRF / trust-boundary via ip-address
-  ip-address: 10.3.1
+  ip-address: 10.7.3
   # GHSA-fxqj-rqcc-2cmp — sourceMappingURL incomplete fix
   postcss: 8.5.23
   # GHSA-2v37-7h3g-55p8 — nanoid infinite loop when size is zero
   nanoid: 3.3.18
   'glob@10>minimatch': 10.2.5
   # GHSA-7w5x-hrqm-74c2 — smol-toml DoS via malformed TOML (markdownlint-cli2 pins 1.7.0)
-  smol-toml: 1.8.0
+  smol-toml: 1.9.0
+  # GHSA-jqcg — proxy-addr IP spoofing via IPv4-mapped IPv6 (need >=2.0.8)
+  'proxy-addr@<2.0.8': 2.0.8
+  # GHSA-pqg4 — shell-quote quote() command injection (need >=1.11.0)
+  'shell-quote@<1.11.0': 1.12.0
+  # GHSA-68fv — source-map-js event-loop DoS (need >=1.2.2)
+  'source-map-js@<1.2.2': 1.2.2
+  # GHSA-r3ph — js-yaml merge-key CPU use (need >=5.4.1)
+  'js-yaml@>=5.0.0 <5.4.1': 5.4.3
+  # GHSA-253c — markdown-it linkify quadratic paths (need >=14.3.1)
+  'markdown-it@<14.3.1': 14.3.1
+  # GHSA-qhr7 / GHSA-6j4f / GHSA-q2hr — brace-expansion DoS (need >=5.0.12); scoped to 5.x
+  # so minimatch@9 consumers of the CJS export stay untouched (see note above)
+  'brace-expansion@>=5.0.0 <5.0.12': 5.0.12
+  # GHSA-238p — katex trust bypass (need >=0.18.2); only reached via markdownlint-cli2
+  'katex@<0.18.2': 0.18.2
