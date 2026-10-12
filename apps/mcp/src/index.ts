@@ -43,6 +43,7 @@ import { AgentRegistry } from '@aios-platform/agent-registry';
 import { authorizeMcpTool, deniedMcpPayload, isModelCapabilityClass } from '@aios/shared';
 import { recordMcpToolAudit } from '@aios/status';
 import { readMonorepoVersion } from './version.ts';
+import { resolveMcpMustIds } from './must-policy-ids.ts';
 
 function mcpMustPolicyIds(): string[] {
   const home = process.env.AIOS_HOME || process.cwd();
@@ -50,7 +51,7 @@ function mcpMustPolicyIds(): string[] {
     cwd: home,
     configPath: process.env.AIOS_POLICIES_PATH,
   });
-  return applyPolicies(bundle.rules).mustIds;
+  return resolveMcpMustIds(bundle);
 }
 
 function auditMcpDecision(decision: ReturnType<typeof authorizeMcpTool>, source = 'mcp'): void {

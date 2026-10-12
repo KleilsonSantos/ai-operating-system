@@ -102,6 +102,15 @@ export function assertSafeObsidianOutDir(
   roots: { homePath: string; repoPath: string }
 ): void {
   const resolved = canonicalPath(resolve(outDir));
+  // The export writes README.md / index.md at its root, so it must be a dedicated directory:
+  // never a project root or one of its ancestors (e.g. `--out .` would overwrite README.md).
+  for (const root of [roots.homePath, roots.repoPath]) {
+    if (isUnder(canonicalPath(resolve(root)), resolved)) {
+      throw new Error(
+        `exportObsidian: outDir must be a dedicated subdirectory, not a project root or its parent (got ${resolved})`
+      );
+    }
+  }
   const forbidden = [
     resolve(roots.homePath, 'docs', 'adr'),
     resolve(roots.homePath, 'policies'),

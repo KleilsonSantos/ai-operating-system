@@ -13,6 +13,7 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 ### Fixed
 
 - 🔒 Memory recall revalidates persisted entries, drops hostile content, and propagates auditable `memory-denied:` signals · ADR-0033 (#447)
+- 🔒 MCP `mcp-safe-write-consent` fails closed when no policy file is loaded; Obsidian export refuses a project root (or its parent) as `outDir`, so `--out .` can no longer overwrite `README.md`; `.cursor/mcp.json.example` and the HTTP example use `tsx` instead of `--experimental-strip-types` (#552)
 
 ## [0.49.13] - 2026-09-24
 
