@@ -3,7 +3,8 @@
     "aios": {
       "command": "/ABS/PATH/TO/node",
       "args": [
-        "--experimental-strip-types",
+        "--import",
+        "/ABS/PATH/TO/ai-operating-system/apps/mcp/node_modules/tsx/dist/loader.mjs",
         "/ABS/PATH/TO/ai-operating-system/apps/mcp/src/index.ts"
       ],
       "cwd": "/ABS/PATH/TO/ai-operating-system/apps/mcp",
