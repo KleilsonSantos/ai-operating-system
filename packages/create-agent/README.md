@@ -2,6 +2,8 @@
 
 Scaffold a new AIOS agent package (Phase 5b / [ADR-0023](../../docs/adr/0023-agent-registry-marketplace.md)).
 
+Template files ship in [`@aios-platform/agent-template`](../agent-template/) (#532).
+
 ## Usage (npm)
 
 ```bash
@@ -18,9 +20,10 @@ pnpm --filter @aios-platform/create-agent dev -- --name my-security
 ## API
 
 ```ts
-import { scaffoldAgent } from '@aios-platform/create-agent';
+import { scaffoldAgent, resolveTemplateDir } from '@aios-platform/create-agent';
 
 await scaffoldAgent({ name: 'my-security', targetDir: './agent-my-security' });
+resolveTemplateDir(); // absolute path to agent-template/template
 ```
 
 ## Maintainers

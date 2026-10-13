@@ -577,6 +577,15 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **Para que serve** | Context pula snippet (`content-denied:`); Memory rejeita `remember` fail-closed.              |
 | **Não é**          | Produto anti-injection completo; não é juiz-LLM; opt-out só debug (`AIOS_CONTENT_HYGIENE=0`). |
 
+### Agent template (`@aios-platform/agent-template` · #532)
+
+|                    |                                                                                  |
+| ------------------ | -------------------------------------------------------------------------------- |
+| **Analogia**       | Forma de bolo: o molde do pacote de agente; o `create-agent` só preenche e assa. |
+| **O que é**        | Pacote npm com `template/` canônico + `resolveTemplateDir()` para o scaffolder.  |
+| **Para que serve** | Separar arquivos de scaffold do CLI `create-agent` (Phase 5b leftover).          |
+| **Não é**          | Agente runtime; não é o Agent Registry; não é marketplace HTTP.                  |
+
 ---
 
 ## Etapa 10 — Índice A–Z (consulta rápida)
@@ -586,6 +595,7 @@ READ_ONLY  →  SAFE_WRITE  →  CONTROLLED_EXECUTION  →  PRIVILEGED  →  HUM
 | **ACT**                 | Capacidade de _escrever/aplicar_ mudança — hoje honesta = false no pipeline default |
 | **ADR**                 | Decisão arquitetural registrada                                                     |
 | **Agent**               | Plugin especializado (Architecture, AppSec, Docs, QA…)                              |
+| **agent-template**      | Pacote npm com `template/` canônico do scaffolder (`create-agent` consome)          |
 | **appsec-reviewer**     | Agente Copilot: review AppSec de PR (não é o plugin `agent-appsec`)                 |
 | **Brief**               | Texto governado do Prompt Engine                                                    |
 | **Capability class**    | Classe de modelo (fast/coding/…) não vendor                                         |
