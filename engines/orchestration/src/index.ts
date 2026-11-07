@@ -1,4 +1,5 @@
 /** Orchestration Engine — Coordena workflow e plugins a partir do intent (#8). */
+import { randomUUID } from 'node:crypto';
 import type { Intent, AgentResult, PolicyRule, ContextBundle } from '@aios/shared';
 import { applyPolicies, loadPolicies } from '@aios/policy';
 import { shouldRunAgent, type AgentId } from '@aios/decision';
@@ -28,6 +29,11 @@ const BUILTIN_PLUGINS: Plugin[] = [
   { id: 'qa', run: RUNNERS.qa },
 ];
 
+/** W3C Trace Context span-id: 16 lowercase hex chars (8 bytes) — https://www.w3.org/TR/trace-context/#span-id */
+function randomSpanId(): string {
+  return randomUUID().replace(/-/g, '').slice(0, 16);
+}
+
 const PACKAGE_TO_AGENT_ID: Record<string, AgentId> = {
   '@aios/agent-architecture': 'architecture',
   '@aios/agent-appsec': 'appsec',
@@ -48,6 +54,9 @@ export type WorkflowOptions = {
   registryPath?: string;
   /** Test / operator override: package names considered when source is registry. */
   registryAgentNames?: string[];
+  /** Correlates `agent.execution` rows back to the enclosing `PipelineRun` (ADR-0030 gap). */
+  runId?: string;
+  traceId?: string;
 };
 
 export type WorkflowResult = {
@@ -119,6 +128,7 @@ export async function runWorkflow(
   const ctx = options.context;
   const contextRefs = (ctx?.snippets ?? []).map((s) => `context:${s.path}`);
   const homePath = options.homePath;
+  const { runId, traceId } = options;
   const selected = await selectWorkflowPlugins(options);
   const plugins = selected.plugins;
 
@@ -140,10 +150,14 @@ export async function runWorkflow(
       if (ctx && ctx.snippets.length > 0) {
         findings.unshift(`context.injected:${ctx.snippets.length}`);
       }
+      const durationMs = Date.now() - started;
+      const spanId = randomSpanId();
       const enriched: AgentResult = {
         ...result,
         references: [...result.references, ...policyRefs, ...contextRefs],
         findings,
+        durationMs,
+        spanId,
       };
       results.push(enriched);
       ran.push(plugin.id);
@@ -151,26 +165,38 @@ export async function runWorkflow(
         {
           agent: `@aios/agent-${plugin.id}`,
           outcome: enriched.ok ? 'success' : 'failure',
-          durationMs: Date.now() - started,
+          durationMs,
           source: 'orchestration',
+          runId,
+          traceId,
+          spanId,
+          visibility: traceId ? 'observed' : undefined,
         },
         { homePath }
       );
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
+      const durationMs = Date.now() - started;
+      const spanId = randomSpanId();
       results.push({
         agentId: plugin.id,
         ok: false,
         findings: [`orchestration.error:${message.slice(0, 120)}`],
         references: [...policyRefs, ...contextRefs],
+        durationMs,
+        spanId,
       });
       ran.push(plugin.id);
       recordAgentExecution(
         {
           agent: `@aios/agent-${plugin.id}`,
           outcome: 'failure',
-          durationMs: Date.now() - started,
+          durationMs,
           source: 'orchestration',
+          runId,
+          traceId,
+          spanId,
+          visibility: traceId ? 'observed' : undefined,
         },
         { homePath }
       );
