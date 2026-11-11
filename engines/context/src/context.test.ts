@@ -48,6 +48,30 @@ describe('gatherContext', () => {
     expect(bundle.signals.some((s) => s.startsWith('snippets:'))).toBe(true);
   });
 
+  it('reconhece pom.xml (Maven) como manifest', () => {
+    const root = fixtureRoot();
+    writeFileSync(join(root, 'pom.xml'), '<project><modelVersion>4.0.0</modelVersion></project>\n');
+    const bundle = gatherContext({ repoPath: root });
+    const pomSnippet = bundle.snippets.find((s) => s.path === 'pom.xml');
+    expect(pomSnippet).toBeDefined();
+    expect(pomSnippet?.kind).toBe('manifest');
+  });
+
+  it('manifest vence docs/ quando o orçamento de snippets é apertado', () => {
+    const root = fixtureRoot();
+    writeFileSync(join(root, 'pom.xml'), '<project><modelVersion>4.0.0</modelVersion></project>\n');
+    mkdirSync(join(root, 'docs', 'guides'), { recursive: true });
+    for (let i = 0; i < 20; i += 1) {
+      writeFileSync(join(root, 'docs', 'guides', `guide-${i}.md`), `# Guide ${i}\n`);
+    }
+    const bundle = gatherContext({
+      repoPath: root,
+      maxSnippets: 16,
+    });
+    const paths = bundle.snippets.map((s) => s.path);
+    expect(paths).toContain('pom.xml');
+  });
+
   it('respeita escopo por path', () => {
     const root = fixtureRoot();
     const bundle = gatherContext({
