@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -90,6 +90,47 @@ describe('runPipeline', () => {
       else process.env.AIOS_HOME = prevHome;
       if (prevPersist === undefined) delete process.env.AIOS_PERSIST_RUNS;
       else process.env.AIOS_PERSIST_RUNS = prevPersist;
+    }
+  });
+
+  it('correlates agent.execution JSONL rows with PipelineRun.traceId (ADR-0030 gap)', async () => {
+    const repo = fixtureRepo();
+    const home = mkdtempSync(join(tmpdir(), 'aios-pipe-trace-'));
+    temps.push(home);
+    const prevHome = process.env.AIOS_HOME;
+    process.env.AIOS_HOME = home;
+    try {
+      const res = await runPipeline({
+        input: 'Analise meu projeto.',
+        repoPath: repo,
+      });
+      expect(res.run?.traceId).toMatch(/^[0-9a-f]{32}$/);
+
+      const agentSteps = res.run!.steps.filter((s) => s.kind === 'agent' && s.agentId);
+      expect(agentSteps.length).toBeGreaterThan(0);
+      for (const step of agentSteps) {
+        expect(typeof step.durationMs).toBe('number');
+        expect(step.spanId).toMatch(/^[0-9a-f]{16}$/);
+      }
+      const stepSpanIds = new Set(agentSteps.map((s) => s.spanId));
+      expect(stepSpanIds.size).toBe(agentSteps.length);
+
+      const events = readFileSync(join(home, '.aios', 'metrics', 'events.jsonl'), 'utf8')
+        .trim()
+        .split('\n')
+        .map((l) => JSON.parse(l) as Record<string, unknown>)
+        .filter((e) => e.kind === 'agent.execution');
+      expect(events.length).toBe(res.run!.agentIds.length);
+      const eventSpanIds = new Set(events.map((e) => e.spanId));
+      for (const ev of events) {
+        expect(ev.runId).toBe(res.run!.runId);
+        expect(ev.traceId).toBe(res.run!.traceId);
+        expect(ev.visibility).toBe('observed');
+      }
+      expect(eventSpanIds).toEqual(stepSpanIds);
+    } finally {
+      if (prevHome === undefined) delete process.env.AIOS_HOME;
+      else process.env.AIOS_HOME = prevHome;
     }
   });
 

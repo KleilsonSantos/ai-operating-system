@@ -18,6 +18,7 @@ import {
   type ChatResponse,
   type ChatUsage,
   type GovernanceStatus,
+  type Visibility,
 } from '@aios/shared';
 
 export { MCP_TOOL_CATALOG } from '@aios/shared';
@@ -44,6 +45,7 @@ export type ProviderChatMetricInput = {
   usage?: ChatUsage;
   error?: string;
   source?: string;
+  visibility?: Visibility;
 };
 
 export type ProviderChatTotals = {
@@ -66,6 +68,11 @@ export type AgentExecutionMetricInput = {
   outcome: AgentExecutionOutcome;
   durationMs?: number;
   source?: string;
+  /** Links back to {@link PipelineRun.runId} — closes the ADR-0030 correlation gap. */
+  runId?: string;
+  traceId?: string;
+  spanId?: string;
+  visibility?: Visibility;
 };
 
 export type AgentExecutionTotals = {
@@ -95,6 +102,7 @@ export type DeliveryCiMetricInput = {
   commit?: string;
   url?: string;
   source?: string;
+  visibility?: Visibility;
 };
 
 export type DeliveryCiByCheck = {
@@ -603,6 +611,7 @@ export function recordProviderChatMetric(
       usage: input.usage,
       error: input.error,
       source: input.source,
+      visibility: input.visibility,
     },
     options
   );
@@ -623,6 +632,10 @@ export function recordAgentExecution(
       ok,
       durationMs: input.durationMs,
       source: input.source,
+      runId: input.runId,
+      traceId: input.traceId,
+      spanId: input.spanId,
+      visibility: input.visibility,
     },
     options
   );
@@ -682,6 +695,10 @@ export function listAgentExecutions(
       durationMs: typeof ev.durationMs === 'number' ? ev.durationMs : undefined,
       source: typeof ev.source === 'string' ? ev.source : undefined,
       ok: typeof ev.ok === 'boolean' ? ev.ok : outcome === 'success',
+      runId: typeof ev.runId === 'string' ? ev.runId : undefined,
+      traceId: typeof ev.traceId === 'string' ? ev.traceId : undefined,
+      spanId: typeof ev.spanId === 'string' ? ev.spanId : undefined,
+      visibility: typeof ev.visibility === 'string' ? (ev.visibility as Visibility) : undefined,
     });
   }
 
@@ -704,6 +721,7 @@ export function recordDeliveryCiMetric(
       commit: input.commit,
       url: input.url,
       source: input.source || 'local',
+      visibility: input.visibility,
     },
     options
   );
@@ -1011,6 +1029,7 @@ export function recordMcpToolAudit(
     reason?: string;
     policyId?: string;
     source?: string;
+    visibility?: Visibility;
   },
   options: { homePath?: string } = {}
 ): string {
@@ -1024,6 +1043,7 @@ export function recordMcpToolAudit(
       reason: input.reason,
       policyId: input.policyId,
       source: input.source,
+      visibility: input.visibility,
     },
     options
   );
