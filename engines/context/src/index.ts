@@ -122,6 +122,9 @@ const MANIFEST_NAMES = new Set([
   'cargo.toml',
   'go.mod',
   'pyproject.toml',
+  'pom.xml',
+  'build.gradle',
+  'build.gradle.kts',
 ]);
 
 const CODE_EXT = new Set([
@@ -225,10 +228,10 @@ function priority(kind: ContextSnippetKind, relPath: string): number {
   if (kind === 'doc' && lower.includes('foundation')) return 100;
   if (kind === 'doc' && lower.startsWith('.trae/rules/')) return 95;
   if (kind === 'doc' && lower.startsWith('readme')) return 90;
+  if (kind === 'manifest' && lower === 'package.json') return 86;
+  if (kind === 'manifest') return 85;
   if (kind === 'doc' && lower.startsWith('docs/')) return 80;
   if (kind === 'doc' && lower === 'agents.md') return 45;
-  if (kind === 'manifest' && lower === 'package.json') return 70;
-  if (kind === 'manifest') return 60;
   if (kind === 'doc') return 50;
   if (kind === 'code' && lower.includes('/src/')) return 40;
   if (kind === 'code') return 30;
