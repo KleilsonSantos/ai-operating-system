@@ -10,6 +10,11 @@
       "id": "cloud-event-lab",
       "name": "Cloud Event Lab (external)",
       "path": "../cloud-event-lab"
+    },
+    {
+      "id": "vaultspring",
+      "name": "VaultSpring (external)",
+      "path": "../VaultSpring"
     }
   ]
 }
