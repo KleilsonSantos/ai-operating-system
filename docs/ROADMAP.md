@@ -96,6 +96,10 @@ Thin runtime on the existing pipeline — not a second orchestrator. [ADR-0024](
 - [x] Skill packs — optional Prompt Engine manifests (#284 / ADR-0026)
 - [x] Central hook bus — named lifecycle points on `runPipeline` (#288 / ADR-0027)
 
+## Deferred (trigger-gated)
+
+- [ ] Runtime observability engine (alerting/dashboards beyond the existing Prometheus text export, #130 / ADR-0021) and a DevOps/infra review checklist (container/deploy posture) — defer until an AIOS app (`apps/console`, `apps/mcp`) runs as a continuously deployed service. Building either now would mirror project-specific checklists (see VaultSpring's `observability-reviewer`/`devops-reviewer` agents) without a real deployed target to anchor against.
+
 ## Out of scope (on purpose)
 
 - Replacing IDEs or Copilot as an editor — AIOS governs and orchestrates; it does not compete as autocomplete

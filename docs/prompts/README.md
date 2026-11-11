@@ -93,4 +93,4 @@ One-off chat dumps, vendor skill packs, and prompts that only repeat policies do
 
 ## Catalog (MVP)
 
-See [`index.yaml`](./index.yaml). Initial domains: `documentation`, `knowledge`, `ai-engineering`.
+See [`index.yaml`](./index.yaml). Initial domains: `documentation`, `knowledge`, `ai-engineering`, `observability`.
