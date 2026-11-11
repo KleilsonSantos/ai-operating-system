@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalPassThroughEnv": ["PNPM_CONFIG_PM_ON_FAIL"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
