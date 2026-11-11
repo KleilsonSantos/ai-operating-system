@@ -22,21 +22,27 @@ auditConfig:
 # with "default is not a function". Lift the consumer to minimatch@10 instead, which
 # natively depends on brace-expansion >=5.0.8.
 overrides:
-  # GHSA-5jgf / GHSA-f65p / GHSA-fph4 / GHSA-jqff — SSRF / host confusion (need >=3.1.6)
-  fast-uri: 3.1.8
-  # GHSA-x5fp / GHSA-4mjr — qs array-limit bypass + DoS via isBuffer (need >=6.16.0)
-  qs: 6.16.0
-  '@hono/node-server': 2.0.10
-  # GHSA-gqvv / GHSA-g6gw / GHSA-crvj — toSSG path, parseBody DoS, fragment query (need >=4.13.5)
+  # GHSA-5jgf / GHSA-f65p / GHSA-fph4 / GHSA-jqff — SSRF / host confusion (need >=3.1.9)
+  fast-uri: 3.1.9
+  # GHSA-x5fp / GHSA-4mjr — qs array-limit bypass + DoS via isBuffer (need >=6.16.1)
+  qs: 6.16.1
+  # GHSA-rmxm-3fg6-px4f — serveStatic decodes the request path a second time, bypassing
+  # middleware on static paths (need >=2.1.3)
+  '@hono/node-server': 2.1.3
+  # GHSA-gqvv / GHSA-g6gw / GHSA-crvj — toSSG path, parseBody DoS, fragment query (need >=4.13.11)
   # also covers prior GHSA-8j4g CORS ReDoS pin
-  hono: 4.13.7
-  # GHSA-mwp4 / GHSA-4xrf / GHSA-22jq — SSRF / trust-boundary via ip-address
-  ip-address: 10.7.3
+  hono: 4.13.11
+  # GHSA-mwp4 / GHSA-4xrf / GHSA-22jq — SSRF / trust-boundary via ip-address (need >=10.7.4)
+  ip-address: 10.7.4
   # GHSA-fxqj-rqcc-2cmp — sourceMappingURL incomplete fix
   postcss: 8.5.23
   # GHSA-2v37-7h3g-55p8 — nanoid infinite loop when size is zero
   nanoid: 3.3.18
-  'glob@10>minimatch': 10.2.5
+  # GHSA-g3hv-75wg-m249 — minimatch DoS via globparts amplification (need >=11.0.1). Unscoped:
+  # the lockfile already dedupes to a single minimatch version (no minimatch@9 left to
+  # protect from the brace-expansion@5 note above), and 11.0.1 ships the same dual CJS/ESM
+  # export shape and Node engine range as the prior 10.x pin, so no regression expected.
+  minimatch: 11.0.1
   # GHSA-7w5x-hrqm-74c2 — smol-toml DoS via malformed TOML (markdownlint-cli2 pins 1.7.0)
   smol-toml: 1.9.0
   # GHSA-jqcg — proxy-addr IP spoofing via IPv4-mapped IPv6 (need >=2.0.8)
@@ -47,10 +53,23 @@ overrides:
   'source-map-js@<1.2.2': 1.2.2
   # GHSA-r3ph — js-yaml merge-key CPU use (need >=5.4.1)
   'js-yaml@>=5.0.0 <5.4.1': 5.4.3
-  # GHSA-253c — markdown-it linkify quadratic paths (need >=14.3.1)
-  'markdown-it@<14.3.1': 14.3.1
+  # GHSA-253c / GHSA-f26p — markdown-it smartquotes + multi-line link-ref quadratic paths
+  # (need >=14.3.3; also covers the <14.3.2 smartquotes advisory)
+  'markdown-it@<14.3.3': 14.3.3
   # GHSA-qhr7 / GHSA-6j4f / GHSA-q2hr — brace-expansion DoS (need >=5.0.12); scoped to 5.x
   # so minimatch@9 consumers of the CJS export stay untouched (see note above)
   'brace-expansion@>=5.0.0 <5.0.12': 5.0.12
   # GHSA-238p — katex trust bypass (need >=0.18.2); only reached via markdownlint-cli2
   'katex@<0.18.2': 0.18.2
+  # GHSA-h8cg — launch-editor fs.existsSync bypass + CLI flag/escaping issues, reached via
+  # vite's dev-server middleware (need >=8.2.4); dev-only (vitest/@vitejs/plugin-react)
+  vite: 8.2.4
+  # GHSA-2vxr — @vitest/mocker code injection via manual mock registration + Windows
+  # backslash traversal bypass (need >=4.1.12)
+  '@vitest/mocker': 4.1.12
+  # GHSA-wtxc — Zod can exhaust memory validating oversized constrained collections
+  # (need >=4.6.6); within the ^4.0 range @modelcontextprotocol/sdk already accepts
+  zod: 4.6.6
+  # GHSA-rs9p — body-parser DoS via trailing bytes after a compressed request body
+  # (need >=2.4.0); within express@5's own ^2.2.1 requirement
+  body-parser: 2.4.0
