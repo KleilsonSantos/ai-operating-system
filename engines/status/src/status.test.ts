@@ -327,4 +327,27 @@ describe('listAgentExecutions', () => {
     expect(rows.map((r) => r.agent)).toEqual(['a', 'b']);
     expect(rows.every((r) => r.kind === 'agent.execution')).toBe(true);
   });
+
+  it('round-trips runId/traceId/spanId/visibility (ADR-0030 correlation gap)', () => {
+    const root = mkdtempSync(join(tmpdir(), 'aios-status-list-trace-'));
+    temps.push(root);
+    recordAgentExecution(
+      {
+        agent: '@aios/agent-docs',
+        outcome: 'success',
+        durationMs: 12,
+        source: 'test',
+        runId: 'run-123',
+        traceId: 'abc123',
+        spanId: 'span-456',
+        visibility: 'observed',
+      },
+      { homePath: root }
+    );
+    const [record] = listAgentExecutions({ homePath: root });
+    expect(record?.runId).toBe('run-123');
+    expect(record?.traceId).toBe('abc123');
+    expect(record?.spanId).toBe('span-456');
+    expect(record?.visibility).toBe('observed');
+  });
 });

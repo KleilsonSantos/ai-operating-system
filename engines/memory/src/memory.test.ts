@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -125,5 +125,65 @@ describe('memory', () => {
     expect(rollups.entries[0]!.content).toContain('one');
     const all = recall('ws', { ...opts, limit: 10 });
     expect(all.entries).toHaveLength(3);
+  });
+});
+
+describe('store durability', () => {
+  function home(): { homePath: string; dir: string } {
+    const homePath = mkdtempSync(join(tmpdir(), 'aios-mem-dur-'));
+    temps.push(homePath);
+    const dir = join(homePath, '.aios', 'memory');
+    mkdirSync(dir, { recursive: true });
+    return { homePath, dir };
+  }
+
+  it('leaves no temp file behind and writes valid JSON', () => {
+    const { homePath, dir } = home();
+    remember('ws', 'first', { homePath });
+    remember('ws', 'second', { homePath });
+    expect(readdirSync(dir)).toEqual(['ws.json']);
+    const parsed = JSON.parse(readFileSync(join(dir, 'ws.json'), 'utf8')) as {
+      entries: MemoryEntry[];
+    };
+    expect(parsed.entries.map((e) => e.content)).toEqual(['first', 'second']);
+  });
+
+  it('recall reports a corrupt store as a signal without touching the file', () => {
+    const { homePath, dir } = home();
+    writeFileSync(join(dir, 'ws.json'), '{"entries":[{"id":"a","content":"half');
+    const out = recall('ws', { homePath });
+    expect(out.entries).toEqual([]);
+    expect(out.signals).toEqual(['memory-corrupt:ws']);
+    expect(readdirSync(dir)).toEqual(['ws.json']);
+  });
+
+  it('remember quarantines a corrupt store instead of overwriting it', () => {
+    const { homePath, dir } = home();
+    const damaged = '{"entries":[{"id":"a","content":"precious","createdAt":"x"';
+    writeFileSync(join(dir, 'ws.json'), damaged);
+    remember('ws', 'fresh', { homePath });
+
+    const files = readdirSync(dir).sort();
+    const corrupt = files.find((f) => f.startsWith('ws.json.corrupt-'));
+    expect(corrupt).toBeDefined();
+    expect(readFileSync(join(dir, corrupt!), 'utf8')).toBe(damaged);
+    expect(files).toContain('ws.json');
+    expect(recall('ws', { homePath }).entries.map((e) => e.content)).toEqual(['fresh']);
+  });
+
+  it('treats valid JSON without an entries array as corrupt too', () => {
+    const { homePath, dir } = home();
+    writeFileSync(join(dir, 'ws.json'), '{"workspaceId":"ws"}');
+    expect(recall('ws', { homePath }).signals).toEqual(['memory-corrupt:ws']);
+    remember('ws', 'x', { homePath });
+    expect(readdirSync(dir).some((f) => f.startsWith('ws.json.corrupt-'))).toBe(true);
+  });
+
+  it('keeps quarantine and temp files out of listMemoryWorkspaces', () => {
+    const { homePath, dir } = home();
+    writeFileSync(join(dir, 'ws.json.corrupt-1'), 'x');
+    writeFileSync(join(dir, 'ws.json.tmp-1-abc'), 'x');
+    remember('other', 'y', { homePath });
+    expect(listMemoryWorkspaces({ homePath })).toEqual(['other']);
   });
 });

@@ -1,5 +1,5 @@
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { afterEach, describe, expect, it } from 'vitest';
 import { assertSafeObsidianOutDir, exportObsidian, noteBasename } from './export-obsidian.js';
@@ -46,6 +46,23 @@ describe('assertSafeObsidianOutDir', () => {
         repoPath: home,
       })
     ).toThrow(/docs\/adr/);
+  });
+
+  it('rejects outDir equal to a project root or one of its parents', () => {
+    const home = miniRepo();
+    const roots = { homePath: home, repoPath: home };
+    expect(() => assertSafeObsidianOutDir(home, roots)).toThrow(/dedicated subdirectory/);
+    expect(() => assertSafeObsidianOutDir(dirname(home), roots)).toThrow(/dedicated subdirectory/);
+    expect(() => assertSafeObsidianOutDir(join(home, 'vault'), roots)).not.toThrow();
+  });
+
+  it('does not overwrite the root README.md when outDir is "."', () => {
+    const home = miniRepo();
+    writeFileSync(join(home, 'README.md'), 'KEEP');
+    expect(() => exportObsidian({ homePath: home, repoPath: home, outDir: '.' })).toThrow(
+      /dedicated subdirectory/
+    );
+    expect(readFileSync(join(home, 'README.md'), 'utf8')).toBe('KEEP');
   });
 });
 

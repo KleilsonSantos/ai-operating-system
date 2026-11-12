@@ -8,6 +8,7 @@ import {
   readFileSync,
   writeFileSync,
   readdirSync,
+  renameSync,
   unlinkSync,
 } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -84,20 +85,48 @@ function sanitizeStoredEntries(entries: unknown): {
   return { entries: safe, signals };
 }
 
-function readStore(file: string, workspaceId: string): MemoryStore {
-  if (!existsSync(file)) return emptyStore(workspaceId);
+/** Unreadable store: surfaced as a signal and preserved on the next write, never silently reset. */
+function corruptStore(workspaceId: string): { store: MemoryStore; corrupt: true } {
+  return {
+    store: { ...emptyStore(workspaceId), signals: [`memory-corrupt:${workspaceId}`] },
+    corrupt: true,
+  };
+}
+
+function readStoreChecked(
+  file: string,
+  workspaceId: string
+): { store: MemoryStore; corrupt: boolean } {
+  if (!existsSync(file)) return { store: emptyStore(workspaceId), corrupt: false };
   try {
     const raw = JSON.parse(readFileSync(file, 'utf8')) as MemoryStore;
-    if (!raw || !Array.isArray(raw.entries)) return emptyStore(workspaceId);
+    if (!raw || !Array.isArray(raw.entries)) return corruptStore(workspaceId);
     const sanitized = sanitizeStoredEntries(raw.entries);
     return {
-      workspaceId: raw.workspaceId || workspaceId,
-      updatedAt: raw.updatedAt || new Date().toISOString(),
-      entries: sanitized.entries,
-      ...(sanitized.signals.length > 0 ? { signals: sanitized.signals } : {}),
+      store: {
+        workspaceId: raw.workspaceId || workspaceId,
+        updatedAt: raw.updatedAt || new Date().toISOString(),
+        entries: sanitized.entries,
+        ...(sanitized.signals.length > 0 ? { signals: sanitized.signals } : {}),
+      },
+      corrupt: false,
     };
   } catch {
-    return emptyStore(workspaceId);
+    return corruptStore(workspaceId);
+  }
+}
+
+function readStore(file: string, workspaceId: string): MemoryStore {
+  return readStoreChecked(file, workspaceId).store;
+}
+
+/** Keep an unreadable store next to the original so a write never destroys it. */
+function quarantineCorruptStore(file: string): void {
+  try {
+    renameSync(file, `${file}.corrupt-${Date.now()}`);
+  } catch (err) {
+    const reason = err instanceof Error ? err.message : String(err);
+    throw new Error(`memory.quarantine_failed:${reason}`, { cause: err });
   }
 }
 
@@ -181,7 +210,19 @@ function writeStore(
     updatedAt: new Date().toISOString(),
     entries,
   };
-  writeFileSync(file, JSON.stringify(next, null, 2) + '\n', 'utf8');
+  // Write beside the target, then rename: a crash never leaves a half-written store.
+  const tmp = `${file}.tmp-${process.pid}-${Math.random().toString(36).slice(2, 8)}`;
+  try {
+    writeFileSync(tmp, JSON.stringify(next, null, 2) + '\n', 'utf8');
+    renameSync(tmp, file);
+  } catch (err) {
+    try {
+      unlinkSync(tmp);
+    } catch {
+      /* temp file may not exist */
+    }
+    throw err;
+  }
 }
 
 export function resolveStoreDir(options: MemoryOptions = {}): string {
@@ -203,7 +244,8 @@ export function remember(
   const max = options.maxEntries ?? 50;
   const compress = compressOnEvictEnabled(options);
   const file = storePath(dir, workspaceId);
-  const store = readStore(file, sanitizeId(workspaceId));
+  const { store, corrupt } = readStoreChecked(file, sanitizeId(workspaceId));
+  if (corrupt) quarantineCorruptStore(file);
   const entry: MemoryEntry = {
     id: newEntryId(),
     content: text.slice(0, CONTENT_MAX),

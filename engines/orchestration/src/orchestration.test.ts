@@ -43,6 +43,40 @@ describe('runWorkflow agent.execution metrics', () => {
     expect(snap.agentExecution?.byAgent.length).toBeGreaterThan(0);
     expect(snap.agentExecution!.byAgent[0]!.healthScore).toBeGreaterThan(0);
   });
+
+  it('carries runId/traceId onto agent.execution rows and the returned AgentResult (ADR-0030 gap)', async () => {
+    const home = mkdtempSync(join(tmpdir(), 'aios-orch-trace-'));
+    temps.push(home);
+
+    const out = await runWorkflow(
+      {
+        kind: 'analyze.project',
+        raw: 'Analyze my project.',
+        confidence: 1,
+        signals: ['test'],
+      },
+      { homePath: home, runId: 'run-abc', traceId: 'trace-xyz' }
+    );
+    expect(out.ran.length).toBeGreaterThan(0);
+    expect(out.results.every((r) => typeof r.durationMs === 'number')).toBe(true);
+    expect(
+      out.results.every((r) => typeof r.spanId === 'string' && /^[0-9a-f]{16}$/.test(r.spanId!))
+    ).toBe(true);
+    const uniqueSpanIds = new Set(out.results.map((r) => r.spanId));
+    expect(uniqueSpanIds.size).toBe(out.results.length);
+
+    const file = join(home, '.aios', 'metrics', 'events.jsonl');
+    const lines = readFileSync(file, 'utf8')
+      .trim()
+      .split('\n')
+      .filter(Boolean)
+      .map((l) => JSON.parse(l) as Record<string, unknown>);
+    expect(lines.every((l) => l.runId === 'run-abc' && l.traceId === 'trace-xyz')).toBe(true);
+    expect(lines.every((l) => l.visibility === 'observed')).toBe(true);
+    expect(
+      lines.every((l) => typeof l.spanId === 'string' && /^[0-9a-f]{16}$/.test(l.spanId as string))
+    ).toBe(true);
+  });
 });
 
 describe('computeAgentHealthScore', () => {

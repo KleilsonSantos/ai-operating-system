@@ -37,7 +37,7 @@ Prefer an **absolute `node` path** (Cursor GUI often lacks `nvm`/`pnpm`). Set `A
 
 Env: `AIOS_HOME`, `AIOS_REPO`, `AIOS_WORKSPACE`, `AIOS_SCOPE`, `AIOS_POLICIES_PATH`, `AIOS_WORKSPACES_PATH`, `AIOS_MCP_QUIET=1`, `AIOS_MCP_PRIVILEGE`, `AIOS_MCP_ALLOW_PRIVILEGED=1`, `AIOS_MCP_ALLOW_SAFE_WRITE=1`.
 
-**SAFE_WRITE consent (#378 / #327):** when must-policy `mcp-safe-write-consent` is loaded (default monorepo policies), `aios_memory_clear`, `aios_export_obsidian`, and `aios_pkb_rebuild_vectors` are denied until `AIOS_MCP_ALLOW_SAFE_WRITE=1`. Other SAFE_WRITE tools (e.g. `aios_memory_remember`) stay privilege-gated only.
+**SAFE_WRITE consent (#378 / #327):** when must-policy `mcp-safe-write-consent` is loaded (default monorepo policies), `aios_memory_clear`, `aios_export_obsidian`, and `aios_pkb_rebuild_vectors` are denied until `AIOS_MCP_ALLOW_SAFE_WRITE=1`. The consent fails closed: when no policy file is found under `AIOS_HOME` (built-in defaults only), the rule is still enforced. A policy file that omits the rule is an explicit opt-out. Other SAFE_WRITE tools (e.g. `aios_memory_remember`) stay privilege-gated only.
 
 ## Streamable HTTP (opt-in)
 
@@ -46,7 +46,7 @@ Off by default (Resource-Aware). Loopback only unless `AIOS_MCP_HOST` is set.
 ```bash
 pnpm --filter @aios/mcp dev:http
 # equivalent:
-AIOS_MCP_HTTP=1 node --experimental-strip-types apps/mcp/src/index.ts --http --port 8791
+AIOS_MCP_HTTP=1 pnpm --filter @aios/mcp exec tsx src/index.ts --http --port 8791
 ```
 
 - Endpoint: `POST http://127.0.0.1:8791/mcp` (stateless)

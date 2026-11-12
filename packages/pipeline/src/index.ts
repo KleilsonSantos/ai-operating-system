@@ -187,11 +187,15 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
   }
 
   const homePath = process.env.AIOS_HOME || process.cwd();
+  const runId = randomUUID();
+  const traceId = randomUUID().replace(/-/g, '');
   const workflow = await runWorkflow(intent, {
     policies: policyBundle.rules,
     context,
     homePath,
     pluginSource: request.pluginSource,
+    runId,
+    traceId,
   });
 
   // Default runPipeline is analysis-only (heuristic plugins; no repo writes) — #377 / ADR-0024.
@@ -227,6 +231,8 @@ export async function runPipeline(request: PipelineRequest): Promise<PipelineRes
     hasContextPaths: context.snippets.length > 0,
   });
   const run = buildPipelineRun({
+    runId,
+    traceId,
     intentKind: intent.kind,
     workspaceId: workspaceMeta?.id ?? memoryWorkspaceId,
     policyIds: applied.mustIds,
@@ -296,6 +302,8 @@ function stepId(kind: PipelineStep['kind']): string {
 }
 
 function buildPipelineRun(input: {
+  runId: string;
+  traceId: string;
   intentKind: string;
   workspaceId?: string;
   policyIds: string[];
@@ -311,7 +319,7 @@ function buildPipelineRun(input: {
   skillResolutions: SkillResolutionDecision[];
   hookIds: string[];
 }): PipelineRun {
-  const runId = randomUUID();
+  const { runId, traceId } = input;
   const recordHooks = recordsLifecycleHooks(input.hookIds);
   const hook = (point: string): PipelineStep => ({
     stepId: stepId('hook'),
@@ -375,6 +383,10 @@ function buildPipelineRun(input: {
       kind: 'agent',
       status: result && !result.ok ? 'fail' : 'ok',
       agentId,
+      // Only the agent steps carry a real, measured duration/spanId (from the orchestration
+      // loop) — the other step kinds here are not individually timed, so these stay unset.
+      durationMs: result?.durationMs,
+      spanId: result?.spanId,
     });
   }
   for (const agentId of input.skipped) {
@@ -404,6 +416,7 @@ function buildPipelineRun(input: {
   return {
     runId,
     taskId: runId,
+    traceId,
     intentKind: input.intentKind,
     ...(input.workspaceId ? { workspaceId: input.workspaceId } : {}),
     policyIds: [...input.policyIds],

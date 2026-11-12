@@ -5,7 +5,7 @@
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { buildKnowledgeGraph } from '@aios/knowledge';
-import { firstContentHygieneHit } from '@aios/shared';
+import { firstContentHygieneHit, isTestPath } from '@aios/shared';
 import type {
   ContextBudget,
   ContextBundle,
@@ -122,6 +122,9 @@ const MANIFEST_NAMES = new Set([
   'cargo.toml',
   'go.mod',
   'pyproject.toml',
+  'pom.xml',
+  'build.gradle',
+  'build.gradle.kts',
 ]);
 
 const CODE_EXT = new Set([
@@ -225,15 +228,18 @@ function priority(kind: ContextSnippetKind, relPath: string): number {
   if (kind === 'doc' && lower.includes('foundation')) return 100;
   if (kind === 'doc' && lower.startsWith('.trae/rules/')) return 95;
   if (kind === 'doc' && lower.startsWith('readme')) return 90;
+  if (kind === 'manifest' && lower === 'package.json') return 86;
+  if (kind === 'manifest') return 85;
   if (kind === 'doc' && lower.startsWith('docs/')) return 80;
   if (kind === 'doc' && lower === 'agents.md') return 45;
-  if (kind === 'manifest' && lower === 'package.json') return 70;
-  if (kind === 'manifest') return 60;
   if (kind === 'doc') return 50;
   if (kind === 'code' && lower.includes('/src/')) return 40;
   if (kind === 'code') return 30;
   return 10;
 }
+
+/** Cap on `ContextBundle.testFiles` (paths only). */
+const MAX_TEST_FILE_PATHS = 20;
 
 const MAX_KG_NEIGHBORS = 12;
 const KG_SCORE_BOOST = 55;
@@ -392,6 +398,7 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
 
   const candidates: Candidate[] = [];
   const seen = new Set<string>();
+  const testFiles: string[] = [];
 
   for (const abs of files) {
     if (!isPathUnderRepo(abs, repoPath)) continue;
@@ -403,6 +410,7 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
       signals.push(`denied:${rel}`);
       continue;
     }
+    if (isTestPath(rel)) testFiles.push(rel);
     const kind = kindFor(base, rel);
     if (!kind) continue;
     // sob escopo `.`, limitar código à raiz / src raso para não inundar
@@ -458,9 +466,19 @@ export function gatherContext(repoPathOrOptions: string | GatherContextOptions):
     });
   }
 
+  if (testFiles.length > 0) signals.push(`tests:${testFiles.length}`);
   signals.push(`snippets:${snippets.length}`, `bytes:${total}`);
 
-  return { repoPath, scope, snippets, signals, budget };
+  return {
+    repoPath,
+    scope,
+    snippets,
+    signals,
+    budget,
+    ...(testFiles.length > 0
+      ? { testFiles: testFiles.sort((a, b) => a.localeCompare(b)).slice(0, MAX_TEST_FILE_PATHS) }
+      : {}),
+  };
 }
 
 /** @deprecated tipo movido para @aios/shared — re-export */

@@ -2,10 +2,18 @@
 # Machine-readable; keep in sync with by-domain/**/*.md frontmatter.
 
 version: 1
-updated_at: 2026-09-01
+updated_at: 2026-11-07
 root: docs/prompts
 
 prompts:
+  - id: prompt.observability.runtime-observability-gap-tracking
+    path: by-domain/observability/runtime-observability-gap-tracking.v1.md
+    domain: observability
+    version: 1
+    status: active
+    language: pt-BR
+    tags: [observability, deferred, roadmap, devops]
+
   - id: prompt.documentation.readme-docs-architecture-audit
     path: by-domain/documentation/readme-docs-architecture-audit.v1.md
     domain: documentation
