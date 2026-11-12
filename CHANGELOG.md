@@ -4,15 +4,24 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.49.15] - 2026-11-11
+
 ### Added
 
 - 🤖 Read-only `architecture-reviewer` Copilot agent and catalog entry for architecture/governance reviews (#447)
+- 🔭 `PipelineRun` ↔ `agent.execution` trace/span correlation — additive `traceId`/`spanId`/`runId`/`visibility` fields, generated before `runWorkflow` runs so they can actually correlate · ADR-0030 (#559)
+- ☕ Context Engine recognizes `pom.xml`/`build.gradle`/`build.gradle.kts` as manifests, prioritized above `docs/` (#563)
 
 ### Fixed
 
 - 🔒 MCP `mcp-safe-write-consent` fails closed when no policy file is loaded; Obsidian export refuses a project root (or its parent) as `outDir`, so `--out .` can no longer overwrite `README.md`; `.cursor/mcp.json.example` and the HTTP example use `tsx` instead of `--experimental-strip-types` (#552)
 - 🧪 QA agent no longer reports `gap:no-test-files-in-context` when tests exist: the Context Engine lists `*.test.*` / `*.spec.*` / `__tests__` paths in `ContextBundle.testFiles` (paths only, capped at 20, `tests:<N>` signal) without spending the snippet budget (#544)
 - 🧠 Memory store writes atomically (temp file + rename); an unreadable store is reported as `memory-corrupt:<workspaceId>` and preserved as `<id>.json.corrupt-<ts>` on the next write instead of being silently reset (#546)
+
+### Changed
+
+- 🔒 Refreshed `pnpm audit` overrides (vite, zod, body-parser, `@hono/node-server`, minimatch, markdown-it, fast-uri, qs, hono, ip-address) and ported the `PNPM_CONFIG_PM_ON_FAIL` turbo passthrough fix that unblocks local typecheck/test on Intel Macs (#560)
+- 📚 PKB intake: cataloged the deferred runtime-observability-engine decision, trigger-gated on an AIOS app running as a continuously deployed service (#564)
 
 ## [0.49.14] - 2026-09-27
 
