@@ -4,6 +4,14 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 ## [Unreleased]
 
+## [0.49.16] - 2026-11-12
+
+### Security
+
+- 🔒 Console API rejects non-loopback `Host` and cross-site `Origin` (`403`) and no longer sends `Access-Control-Allow-Origin: *`; extra origins via `AIOS_CONSOLE_ALLOWED_ORIGINS` (#550)
+- 🔒 MCP `aios_provider_health` / `aios_provider_models` / `aios_provider_chat` accept a `baseUrl` override only on the provider's own origin or an origin listed in `AIOS_MCP_ALLOWED_BASE_URLS`, so operator API keys are not sent to arbitrary hosts (#548)
+- 🔒 MCP tool path arguments (`repoPath`, `homePath`, `workspacesPath`, `policiesPath`, `outDir`, workspace upsert `path`) are confined to `AIOS_HOME`, registered workspaces, and `AIOS_MCP_ALLOWED_ROOTS`; out-of-scope calls return `path.out_of_scope` (`AIOS_MCP_PATH_SCOPE=off` opts out) (#548)
+
 ## [0.49.15] - 2026-11-11
 
 ### Added
@@ -22,12 +30,6 @@ Formato [Keep a Changelog](https://keepachangelog.com/) + Conventional Commits.
 
 - 🔒 Refreshed `pnpm audit` overrides (vite, zod, body-parser, `@hono/node-server`, minimatch, markdown-it, fast-uri, qs, hono, ip-address) and ported the `PNPM_CONFIG_PM_ON_FAIL` turbo passthrough fix that unblocks local typecheck/test on Intel Macs (#560)
 - 📚 PKB intake: cataloged the deferred runtime-observability-engine decision, trigger-gated on an AIOS app running as a continuously deployed service (#564)
-
-### Security
-
-- 🔒 Console API rejects non-loopback `Host` and cross-site `Origin` (`403`) and no longer sends `Access-Control-Allow-Origin: *`; extra origins via `AIOS_CONSOLE_ALLOWED_ORIGINS` (#550)
-- 🔒 MCP `aios_provider_health` / `aios_provider_models` / `aios_provider_chat` accept a `baseUrl` override only on the provider's own origin or an origin listed in `AIOS_MCP_ALLOWED_BASE_URLS`, so operator API keys are not sent to arbitrary hosts (#548)
-- 🔒 MCP tool path arguments (`repoPath`, `homePath`, `workspacesPath`, `policiesPath`, `outDir`, workspace upsert `path`) are confined to `AIOS_HOME`, registered workspaces, and `AIOS_MCP_ALLOWED_ROOTS`; out-of-scope calls return `path.out_of_scope` (`AIOS_MCP_PATH_SCOPE=off` opts out) (#548)
 
 ## [0.49.14] - 2026-09-27
 
