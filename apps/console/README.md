@@ -27,6 +27,8 @@ Node **24+**: the API uses **`tsx`** (not `--experimental-strip-types`) because 
 | `POST /api/action`                  | `{ action, input?, workspaceId?, scope?, skillIds? }` → result + latency |
 | `GET /api/health`                   | API liveness                                                             |
 
+**Request guard:** the API answers `403` unless `Host` is loopback (`127.0.0.1`, `localhost`, `[::1]`) and any `Origin` is the Vite UI (`http://localhost:5173` / `http://127.0.0.1:5173`) or listed in `AIOS_CONSOLE_ALLOWED_ORIGINS` (comma-separated). Requests without `Origin` (curl, Postman, Prometheus scrape) pass. No CORS headers are sent; the UI uses the same-origin `/api` proxy. This blocks DNS rebinding and calls from other web pages; it is not authentication.
+
 CLI (no console required): `aios --metrics-prometheus`
 
 Safe actions: `contract` · `validate_workspaces` · `load_policies` · `compile_brief` · `provider_ping` · `memory_recall` · `memory_remember` · `audit_docs` · `governance_audit` · `operational_state`.
