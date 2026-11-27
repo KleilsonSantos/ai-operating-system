@@ -1,18 +1,19 @@
 /**
- * Scaffold a new AIOS agent package from the built-in template.
- * Phase 5b / ADR-0023 · Issue #211
+ * Scaffold a new AIOS agent package from `@aios-platform/agent-template`.
+ * Phase 5b / ADR-0023 · Issues #211 · #532
  */
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { AgentRegistry } from '@aios-platform/agent-registry';
+import { resolveTemplateDir } from '@aios-platform/agent-template';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-/** Default template root (sibling of src/). */
+/** Default template root from `@aios-platform/agent-template`. */
 export function defaultTemplateDir(): string {
-  return path.join(__dirname, '..', 'template');
+  return resolveTemplateDir();
 }
+
+/** Re-export for callers that only depend on create-agent. */
+export { resolveTemplateDir } from '@aios-platform/agent-template';
 
 export interface ScaffoldOptions {
   /** Agent short name or scoped name (`my-agent` or `@org/my-agent`). */
